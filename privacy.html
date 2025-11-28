@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy - Madarsa System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Define the color variables based on user-provided images */
+        :root {
+            --color-primary: #00A693;
+            /* Green/Teal */
+            --color-background: #F2F3F4;
+            /* Titanium/Platinum */
+            --color-accent: #E08A27;
+            /* Gold/Orange for luxury feel */
+            --color-text-dark: #1A1A1A;
+            /* Soft Black */
+            --color-text-light: #FFFFFF;
+            /* White */
+            --color-module-bg: #EBEBEB;
+            /* Light Grey for Module Boxes */
+        }
+
+        /* --- Global Styles: User-Select and Fonts (Consistency) --- */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Noto+Sans+Devanagari:wght@100..900&family=Jameel+Noori+Nastaleeq&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--color-background);
+            color: var(--color-text-dark);
+            transition: all 0.3s ease;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            overflow-x: hidden;
+        }
+
+        .lang-en {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .lang-hi {
+            font-family: 'Noto Sans Devangari', sans-serif;
+            direction: ltr;
+        }
+
+        .lang-ur {
+            font-family: "Jameel Noori Nastaleeq", "Urdu Typesetting", "Nastaliq", 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            direction: rtl;
+        }
+
+        /* Ensure specific fonts are applied correctly to the main text */
+        .page-main-title,
+        .content-container * {
+            transition: all 0.3s ease;
+        }
+
+        .lang-ur .page-main-title,
+        .lang-ur .content-container * {
+            font-family: "Jameel Noori Nastaleeq", "Urdu Typesetting", "Nastaliq", 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+        }
+
+        .lang-hi .page-main-title,
+        .lang-hi .content-container * {
+            font-family: 'Noto Sans Devangari', sans-serif !important;
+        }
+
+        /* --- Header Styling (Consistency) --- */
+        header {
+            background-color: var(--color-text-light);
+            border-bottom: 2px solid rgba(0, 0, 0, 0.05);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        @media (max-width: 767px) {
+            header nav {
+                white-space: nowrap;
+                flex-shrink: 0;
+            }
+
+            header nav a {
+                font-size: 0.75rem;
+            }
+        }
+
+        /* --- Main Content Area (Full width) --- */
+        .main-content-area {
+            flex-grow: 1;
+            padding: 2rem;
+        }
+
+        /* --- Page Title Styling (Left-aligned, capitalized) --- */
+        .page-main-title {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 2.5rem;
+            color: var(--color-text-dark);
+            text-transform: uppercase;
+            text-align: left;
+            padding-left: 2rem;
+            line-height: 1.2;
+        }
+
+        @media (max-width: 767px) {
+            .page-main-title {
+                font-size: 2rem;
+                text-align: center;
+                padding-left: 0;
+            }
+        }
+
+        /* --- Content Layout --- */
+        .content-container {
+            /* Standard document width for readability */
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .content-container h3 {
+            color: var(--color-primary);
+            font-size: 1.75rem;
+            /* text-2xl */
+            font-weight: 700;
+            /* font-bold */
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .content-container p {
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
+        .content-container ul {
+            list-style: disc;
+            margin-left: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Footer Styling (Consistency) */
+        footer {
+            background-color: var(--color-text-dark);
+            color: var(--color-background);
+        }
+
+        /* --- Language Dialog: Animation Styles (Consistency) --- */
+        .dialog-backdrop {
+            background-color: rgba(0, 0, 0, 0.7);
+            transition: opacity 0.3s ease;
+        }
+
+        .dialog-content {
+            background-color: var(--color-background);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            border: 3px solid var(--color-primary);
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        .rtl-text-right {
+            text-align: right;
+        }
+    </style>
+</head>
+
+<body class="lang-en">
+
+    <!-- Language Data Structure (Centralized) -->
+    <script>
+        // --- HISTORY FIX FUNCTION ---
+        function goToHomepage() {
+            window.location.replace('index.html');
+        }
+
+        const langData = {
+            'en': {
+                'madarsa_system': 'Madarsa System',
+                'sub_title': 'Excellence in Islamic Education Management',
+                'about': 'About',
+                'privacy': 'Privacy',
+                'home': 'Home',
+                'select_language': 'Select Language',
+                'en_option': 'English',
+                'hi_option': 'हिन्दी (Hindi)',
+                'ur_option': 'اردو (Urdu)',
+                'footer_company': 'Madarsa Tech',
+                'footer_tagline': 'Crafting premium digital solutions that drive innovation and growth.',
+                'quick_links': 'Quick Links',
+                'connect': 'Connect With Us',
+                'all_rights': '© 2025 Madarsa Tech. All Rights Reserved.',
+
+                // Privacy Page Specific (Extended Content)
+                'privacy_title': 'Privacy Policy',
+                'last_updated': 'Last Updated: November 28, 2025',
+                'p_intro': 'Your privacy is paramount to us. This Privacy Policy explains how Madarsa System collects, uses, discloses, and safeguards your information when you use our digital management platform.',
+
+                // Section 1: Data Collection and Use
+                'p_section1_head': '1. Data Collection and Use',
+                'p_section1_para1': 'We collect necessary information to provide the core functionality of the Madarsa System:',
+                'p_section1_list1_1': 'Institutional Data: Madarsa name, address, and administrative contact details.',
+                'p_section1_list1_2': 'User Data: Names, roles (Administrator, Teacher, Student), and login credentials.',
+                'p_section1_list1_3': 'Academic Records: Attendance, grades, curriculum data, and performance reports.',
+                'p_section1_list1_4': 'Financial Data: Fee payments, expense tracking, and salary disbursements.',
+                'p_section1_para2': 'This data is used solely for the operation and improvement of the Madarsa System services, ensuring efficient administration and transparent academic management.',
+
+                // Section 2: Log Data and Non-Personal Information (NEW)
+                'p_section2_head': '2. Log Data and Usage Information',
+                'p_section2_para1': 'Like most application operators, we collect information that your browser sends whenever you visit our Service ("Log Data"). This Log Data may include:',
+                'p_section2_list2_1': 'Time and date of access and pages viewed.',
+                'p_section2_list2_2': 'Time spent on those pages and other statistics.',
+                'p_section2_list2_3': 'Browser type and version, and IP address (for security purposes).',
+                'p_section2_para2': 'This information is non-personal and is used for internal analysis to enhance the performance and reliability of the platform.',
+
+                // Section 3: Data Security (Enhanced)
+                'p_section3_head': '3. Data Security and Retention',
+                'p_section3_para1': 'We implement robust security measures, including data encryption (both in transit and at rest) and strict role-based access controls, to protect your data from unauthorized access, alteration, disclosure, or destruction. Access is strictly limited to authorized personnel within the Madarsa institution only.',
+                'p_section3_para2': 'Data Retention: We retain user data for as long as the institutional account is active and for a mandatory period thereafter as required by regulatory compliance or institutional mandates.',
+
+                // Section 4: Third-Party Services (NEW)
+                'p_section4_head': '4. Third-Party Services',
+                'p_section4_para1': 'We may employ third-party companies and individuals to facilitate our Service (e.g., hosting, database management, cloud services). These third parties have access to your Personal Data only to perform these tasks on our behalf and are obligated not to disclose or use it for any other purpose.',
+                'p_section4_list4_1': 'Hosting Providers (e.g., Google Cloud, Firebase): Used for application infrastructure and data storage.',
+                'p_section4_list4_2': 'Communication Services (e.g., SMS/Email APIs): Used for transactional notifications and alerts.',
+
+                // Section 5: Disclosure of Information (Updated)
+                'p_section5_head': '5. Disclosure of Personal Information',
+                'p_section5_para1': 'Madarsa System does not share, sell, rent, or trade any personally identifiable information with outside parties for marketing or promotional purposes.',
+                'p_section5_para2': 'Data may only be disclosed in the following exceptional circumstances:',
+                'p_section5_list5_1': 'Legal Requirements: If required to do so by law or in response to valid requests by public authorities.',
+                'p_section5_list5_2': 'Protecting Rights: To protect the rights, property, or safety of the Madarsa System, our users, or the public.',
+
+                // Section 6: User Rights and Access (NEW)
+                'p_section6_head': '6. Your Data Protection Rights',
+                'p_section6_para1': 'Depending on your location and role within the institution, you may have the following rights concerning your data:',
+                'p_section6_list6_1': 'The right to access: Request copies of your personal data we hold.',
+                'p_section6_list6_2': 'The right to rectification: Request correction of inaccurate information.',
+                'p_section6_list6_3': 'The right to erasure: Request that we erase your personal data under certain conditions.',
+                'p_section6_list6_4': 'The right to object: Object to the processing of your personal data under certain conditions.',
+
+                // Section 7: Children's Privacy (NEW)
+                'p_section7_head': "7. Children's Privacy",
+                'p_section7_content': 'Our Service primarily manages student data under the direction of the Madarsa administration. We do not directly solicit personal information from children under the age of 13. All data collection regarding minor students is managed by the Madarsa institution, which is responsible for obtaining parental consent.',
+
+                // Section 8: Policy Changes
+                'p_section8_head': '8. Changes to this Policy',
+                'p_section8_content': 'We may update this Privacy Policy from time to time. We will notify you of any material changes by posting the new Privacy Policy on this page. Your continued use of the service after any changes constitutes acceptance of the new policy.',
+            },
+            'hi': {
+                'madarsa_system': 'मदरसा प्रणाली',
+                'sub_title': 'इस्लामी शिक्षा प्रबंधन में उत्कृष्टता',
+                'about': 'हमारे बारे में',
+                'privacy': 'गोपनीयता',
+                'home': 'होम',
+                'select_language': 'भाषा चुनें',
+                'en_option': 'English',
+                'hi_option': 'हिन्दी (Hindi)',
+                'ur_option': 'اردو (Urdu)',
+                'footer_company': 'मदरसा तकनीक',
+                'footer_tagline': 'प्रीमियम डिजिटल समाधान तैयार करना जो नवाचार और विकास को बढ़ावा देता है।',
+                'quick_links': 'त्वरित लिंक',
+                'connect': 'हमसे जुड़ें',
+                'all_rights': '© 2025 मदरसा तकनीक। सर्वाधिकार सुरक्षित।',
+
+                // Privacy Page Specific (Extended Content)
+                'privacy_title': 'गोपनीयता नीति',
+                'last_updated': 'अंतिम अपडेट: 28 नवंबर, 2025',
+                'p_intro': 'आपकी गोपनीयता हमारे लिए सर्वोपरि है। यह गोपनीयता नीति बताती है कि जब आप हमारे डिजिटल प्रबंधन प्लेटफॉर्म का उपयोग करते हैं तो मदरसा सिस्टम आपकी जानकारी को कैसे एकत्र करता है, उपयोग करता है, प्रकट करता है और सुरक्षित रखता है।',
+
+                // Section 1: Data Collection and Use
+                'p_section1_head': '1. डेटा संग्रह और उपयोग',
+                'p_section1_para1': 'हम मदरसा प्रणाली की मुख्य कार्यक्षमता प्रदान करने के लिए आवश्यक जानकारी एकत्र करते हैं:',
+                'p_section1_list1_1': 'संस्थागत डेटा: मदरसे का नाम, पता और प्रशासनिक संपर्क विवरण।',
+                'p_section1_list1_2': 'उपयोगकर्ता डेटा: नाम, भूमिकाएँ (प्रशासक, शिक्षक, छात्र), और लॉगिन क्रेडेंशियल।',
+                'p_section1_list1_3': 'शैक्षणिक रिकॉर्ड: उपस्थिति, ग्रेड, पाठ्यक्रम डेटा, और प्रदर्शन रिपोर्ट।',
+                'p_section1_list1_4': 'वित्तीय डेटा: शुल्क भुगतान, व्यय ट्रैकिंग, और वेतन वितरण।',
+                'p_section1_para2': 'यह डेटा केवल मदरसा प्रणाली सेवाओं के संचालन और सुधार के लिए उपयोग किया जाता है, कुशल प्रशासन और पारदर्शी शैक्षणिक प्रबंधन सुनिश्चित करता है।',
+
+                // Section 2: Log Data and Non-Personal Information (NEW)
+                'p_section2_head': '2. लॉग डेटा और उपयोग की जानकारी',
+                'p_section2_para1': 'अधिकांश एप्लिकेशन ऑपरेटरों की तरह, हम वह जानकारी एकत्र करते हैं जिसे आप हमारी सेवा ("लॉग डेटा") पर जाते समय आपका ब्राउज़र भेजता है। इस लॉग डेटा में शामिल हो सकते हैं:',
+                'p_section2_list2_1': 'पहुँच का समय और तारीख और देखे गए पृष्ठ।',
+                'p_section2_list2_2': 'उन पृष्ठों पर बिताया गया समय और अन्य आँकड़े।',
+                'p_section2_list2_3': 'ब्राउज़र प्रकार और संस्करण, और आईपी पता (सुरक्षा उद्देश्यों के लिए)।',
+                'p_section2_para2': 'यह जानकारी गैर-व्यक्तिगत है और इसका उपयोग प्लेटफ़ॉर्म के प्रदर्शन और विश्वसनीयता को बढ़ाने के लिए आंतरिक विश्लेषण के लिए किया जाता है।',
+
+                // Section 3: Data Security (Enhanced)
+                'p_section3_head': '3. डेटा सुरक्षा और प्रतिधारण',
+                'p_section3_para1': 'हम आपके डेटा को अनधिकृत पहुँच, परिवर्तन, प्रकटीकरण या विनाश से बचाने के लिए डेटा एन्क्रिप्शन (गमन और आराम दोनों में) और सख्त भूमिका-आधारित पहुँच नियंत्रण सहित मजबूत सुरक्षा उपाय लागू करते हैं। पहुँच मदरसे की संस्था के भीतर केवल अधिकृत कर्मियों तक ही सीमित है।',
+                'p_section3_para2': 'डेटा प्रतिधारण: हम संस्थागत खाता सक्रिय होने तक और उसके बाद नियामक अनुपालन या संस्थागत अधिदेशों द्वारा आवश्यक अनिवार्य अवधि के लिए उपयोगकर्ता डेटा बनाए रखते हैं।',
+
+                // Section 4: Third-Party Services (NEW)
+                'p_section4_head': '4. तृतीय-पक्ष सेवाएँ',
+                'p_section4_para1': 'हम अपनी सेवा को सुविधाजनक बनाने के लिए तृतीय-पक्ष कंपनियों और व्यक्तियों को नियुक्त कर सकते हैं (उदाहरण के लिए, होस्टिंग, डेटाबेस प्रबंधन, क्लाउड सेवाएँ)। इन तृतीय पक्षों को हमारी ओर से इन कार्यों को करने के लिए ही आपके व्यक्तिगत डेटा तक पहुँच प्राप्त है और वे इसे किसी अन्य उद्देश्य के लिए प्रकट या उपयोग नहीं करने के लिए बाध्य हैं।',
+                'p_section4_list4_1': 'होस्टिंग प्रदाता (उदाहरण के लिए, Google Cloud, Firebase): एप्लिकेशन इन्फ्रास्ट्रक्चर और डेटा स्टोरेज के लिए उपयोग किए जाते हैं।',
+                'p_section4_list4_2': 'संचार सेवाएँ (उदाहरण के लिए, एसएमएस/ईमेल एपीआई): लेन-देन संबंधी सूचनाओं और अलर्ट के लिए उपयोग किए जाते हैं।',
+
+                // Section 5: Disclosure of Information (Updated)
+                'p_section5_head': '5. व्यक्तिगत जानकारी का प्रकटीकरण',
+                'p_section5_para1': 'मदरसा सिस्टम विपणन या प्रचार उद्देश्यों के लिए बाहरी पार्टियों के साथ किसी भी व्यक्तिगत रूप से पहचान योग्य जानकारी को साझा, बेचता, किराए पर या व्यापार नहीं करता है।',
+                'p_section5_para2': 'डेटा का खुलासा केवल निम्नलिखित असाधारण परिस्थितियों में किया जा सकता है:',
+                'p_section5_list5_1': 'कानूनी आवश्यकताएं: यदि कानून द्वारा ऐसा करना आवश्यक हो या सार्वजनिक अधिकारियों के वैध अनुरोधों के जवाब में।',
+                'p_section5_list5_2': 'अधिकारों की सुरक्षा: मदरसा सिस्टम, हमारे उपयोगकर्ताओं या जनता के अधिकारों, संपत्ति या सुरक्षा की रक्षा के लिए।',
+
+                // Section 6: User Rights and Access (NEW)
+                'p_section6_head': '6. आपके डेटा संरक्षण अधिकार',
+                'p_section6_para1': 'संस्था के भीतर आपके स्थान और भूमिका के आधार पर, आपके डेटा के संबंध में आपके निम्नलिखित अधिकार हो सकते हैं:',
+                'p_section6_list6_1': 'पहुँच का अधिकार: हमारे पास मौजूद आपके व्यक्तिगत डेटा की प्रतियों का अनुरोध करें।',
+                'p_section6_list6_2': 'सुधार का अधिकार: गलत जानकारी को सुधारने का अनुरोध करें।',
+                'p_section6_list6_3': 'मिटाने का अधिकार: कुछ शर्तों के तहत आपके व्यक्तिगत डेटा को मिटाने का अनुरोध करें।',
+                'p_section6_list6_4': 'आपत्ति का अधिकार: कुछ शर्तों के तहत आपके व्यक्तिगत डेटा के प्रसंस्करण पर आपत्ति करें।',
+
+                // Section 7: Children's Privacy (NEW)
+                'p_section7_head': '7. बच्चों की गोपनीयता',
+                'p_section7_content': 'हमारी सेवा मुख्य रूप से मदरसा प्रशासन के निर्देश पर छात्र डेटा का प्रबंधन करती है। हम 13 वर्ष से कम उम्र के बच्चों से सीधे व्यक्तिगत जानकारी नहीं मांगते हैं। नाबालिग छात्रों से संबंधित सभी डेटा संग्रह का प्रबंधन मदरसा संस्था द्वारा किया जाता है, जो माता-पिता की सहमति प्राप्त करने के लिए जिम्मेदार है।',
+
+                // Section 8: Policy Changes
+                'p_section8_head': '8. इस नीति में परिवर्तन',
+                'p_section8_content': 'हम इस गोपनीयता नीति को समय-समय पर अपडेट कर सकते हैं। हम इस पृष्ठ पर नई गोपनीयता नीति पोस्ट करके आपको किसी भी महत्वपूर्ण बदलाव के बारे में सूचित करेंगे। किसी भी बदलाव के बाद सेवा का आपका निरंतर उपयोग नई नीति की स्वीकृति का गठन करता है।',
+            },
+            'ur': {
+                'madarsa_system': 'مدرسہ نظام',
+                'sub_title': 'اسلامی تعلیم کے انتظام میں فضیلت',
+                'about': 'ہمارے بارے میں',
+                'privacy': 'رازداری',
+                'home': 'صفحہ اول',
+                'select_language': 'زبان منتخب کریں',
+                'en_option': 'English',
+                'hi_option': 'ہندی (Hindi)',
+                'ur_option': 'اردو (Urdu)',
+                'footer_company': 'مدرسہ ٹیک',
+                'footer_tagline': 'پریمیم ڈیجیٹل حل تیار کرنا جو جدت اور ترقی کو فروغ دیتا ہے۔',
+                'quick_links': 'فوری لنکس',
+                'connect': 'ہم سے رابطہ کریں',
+                'all_rights': '© 2025 مدرسہ ٹیک۔ جملہ حقوق محفوظ ہیں۔',
+
+                // Privacy Page Specific (Extended Content)
+                'privacy_title': 'رازداری کی پالیسی',
+                'last_updated': 'آخری تازہ کاری: 28 نومبر، 2025',
+                'p_intro': 'آپ کی رازداری ہمارے لیے سب سے اہم ہے۔ یہ رازداری کی پالیسی بتاتی ہے کہ جب آپ ہمارا ڈیجیٹل انتظامی پلیٹ فارم استعمال کرتے ہیں تو مدرسہ سسٹم آپ کی معلومات کو کیسے جمع کرتا ہے، استعمال کرتا ہے، ظاہر کرتا ہے اور محفوظ رکھتا ہے۔',
+
+                // Section 1: Data Collection and Use
+                'p_section1_head': '1. ڈیٹا اکٹھا کرنا اور استعمال',
+                'p_section1_para1': 'ہم مدرسہ سسٹم کی بنیادی فعالیت فراہم کرنے کے لیے ضروری معلومات جمع کرتے ہیں:',
+                'p_section1_list1_1': 'ادارہ جاتی ڈیٹا: مدرسے کا نام، پتہ، اور انتظامی رابطہ کی تفصیلات۔',
+                'p_section1_list1_2': 'صارف کا ڈیٹا: نام، کردار (منتظم، استاد، طالب علم)، اور لاگ ان کی اسناد۔',
+                'p_section1_list1_3': 'تعلیمی ریکارڈ: حاضری، گریڈز، نصاب کا ڈیٹا، اور کارکردگی کی رپورٹس۔',
+                'p_section1_list1_4': 'مالیاتی ڈیٹا: فیس کی ادائیگی، اخراجات کی ٹریکنگ، اور تنخواہوں کی تقسیم۔',
+                'p_section1_para2': 'یہ ڈیٹا صرف مدرسہ سسٹم کی خدمات کے آپریشن اور بہتری کے لیے استعمال ہوتا ہے، موثر انتظام اور شفاف تعلیمی انتظام کو یقینی بناتا ہے۔',
+
+                // Section 2: Log Data and Non-Personal Information (NEW)
+                'p_section2_head': '2. لاگ ڈیٹا اور استعمال کی معلومات',
+                'p_section2_para1': 'زیادہ تر ایپلیکیشن آپریٹرز کی طرح، ہم وہ معلومات جمع کرتے ہیں جو آپ کا براؤزر ہماری سروس ("لاگ ڈیٹا") پر جاتے وقت بھیجتا ہے۔ اس لاگ ڈیٹا میں شامل ہو سکتے ہیں:',
+                'p_section2_list2_1': 'رسائی کا وقت اور تاریخ اور دیکھے گئے صفحات۔',
+                'p_section2_list2_2': 'ان صفحات پر گزارا گیا وقت اور دیگر اعداد و شمار۔',
+                'p_section2_list2_3': 'براؤزر کی قسم اور ورژن، اور IP پتہ (سیکیورٹی مقاصد کے لیے)۔',
+                'p_section2_para2': 'یہ معلومات غیر ذاتی ہے اور پلیٹ فارم کی کارکردگی اور وشوسنییتا کو بڑھانے کے لیے اندرونی تجزیہ کے لیے استعمال ہوتی ہے۔',
+
+                // Section 3: Data Security (Enhanced)
+                'p_section3_head': '3. ڈیٹا سیکیورٹی اور برقرار رکھنا',
+                'p_section3_para1': 'ہم غیر مجاز رسائی، تبدیلی، انکشاف، یا تباہی سے آپ کے ڈیٹا کو بچانے کے لیے مضبوط سیکیورٹی اقدامات نافذ کرتے ہیں، بشمول ڈیٹا انکرپشن (منتقلی اور آرام دونوں میں) اور سخت کردار پر مبنی رسائی کنٹرول۔ رسائی صرف مدرسہ ادارے کے اندر مجاز اہلکاروں تک سختی سے محدود ہے۔',
+                'p_section3_para2': 'ڈیٹا برقرار رکھنا: ہم صارف کے ڈیٹا کو اس وقت تک برقرار رکھتے ہیں جب تک ادارہ جاتی اکاؤنٹ فعال رہتا ہے اور اس کے بعد ریگولیٹری تعمیل یا ادارہ جاتی مینڈیٹ کے ذریعہ درکار لازمی مدت تک۔',
+
+                // Section 4: Third-Party Services (NEW)
+                'p_section4_head': '4. تیسرے فریق کی خدمات',
+                'p_section4_para1': 'ہم اپنی سروس کو آسان بنانے کے لیے تیسرے فریق کی کمپنیوں اور افراد کو ملازمت دے سکتے ہیں (مثلاً، ہوسٹنگ، ڈیٹا بیس مینجمنٹ، کلاؤڈ سروسز)۔ ان تیسرے فریقوں کو ہماری جانب سے یہ کام انجام دینے کے لیے ہی آپ کے ذاتی ڈیٹا تک رسائی حاصل ہے اور وہ اسے کسی دوسرے مقصد کے لیے ظاہر یا استعمال نہ کرنے کے پابند ہیں۔',
+                'p_section4_list4_1': 'ہوسٹنگ فراہم کرنے والے (مثلاً، Google Cloud, Firebase): ایپلیکیشن انفراسٹرکچر اور ڈیٹا اسٹوریج کے لیے استعمال ہوتے ہیں۔',
+                'p_section4_list4_2': 'مواصلاتی خدمات (مثلاً، SMS/ای میل APIs): لین دین کی اطلاعات اور انتباہات کے لیے استعمال ہوتے ہیں۔',
+
+                // Section 5: Disclosure of Information (Updated)
+                'p_section5_head': '5. ذاتی معلومات کا انکشاف',
+                'p_section5_para1': 'مدرسہ سسٹم مارکیٹنگ یا پروموشنل مقاصد کے لیے بیرونی فریقین کے ساتھ کسی بھی ذاتی طور پر قابل شناخت معلومات کو شیئر، فروخت، کرایہ پر یا تجارت نہیں کرتا ہے۔',
+                'p_section5_para2': 'ڈیٹا کا انکشاف صرف مندرجہ ذیل غیر معمولی حالات میں کیا جا سکتا ہے:',
+                'p_section5_list5_1': 'قانونی تقاضے: اگر قانون کی طرف سے ایسا کرنے کی ضرورت ہو یا عوامی حکام کی جائز درخواستوں کے جواب میں۔',
+                'p_section5_list5_2': 'حقوق کا تحفظ: مدرسہ سسٹم، ہمارے صارفین، یا عوام کے حقوق، املاک یا سلامتی کی حفاظت کے لیے۔',
+
+                // Section 6: User Rights and Access (NEW)
+                'p_section6_head': '6. آپ کے ڈیٹا کے تحفظ کے حقوق',
+                'p_section6_para1': 'ادارے کے اندر آپ کے مقام اور کردار کے لحاظ سے، آپ کے ڈیٹا کے حوالے سے درج ذیل حقوق ہو سکتے ہیں:',
+                'p_section6_list6_1': 'رسائی کا حق: ہمارے پاس موجود آپ کے ذاتی ڈیٹا کی کاپیاں طلب کریں۔',
+                'p_section6_list6_2': 'تصحیح کا حق: غلط معلومات کی درستگی کی درخواست کریں۔',
+                'p_section6_list6_3': 'مٹانے کا حق: مخصوص شرائط کے تحت آپ کے ذاتی ڈیٹا کو مٹانے کی درخواست کریں۔',
+                'p_section6_list6_4': 'اعتراض کا حق: مخصوص شرائط کے تحت آپ کے ذاتی ڈیٹا کی پروسیسنگ پر اعتراض کریں۔',
+
+                // Section 7: Children's Privacy (NEW)
+                'p_section7_head': '7. بچوں کی رازداری',
+                'p_section7_content': 'ہماری سروس بنیادی طور پر مدرسہ انتظامیہ کی ہدایت پر طالب علم کے ڈیٹا کا انتظام کرتی ہے۔ ہم 13 سال سے کم عمر کے بچوں سے براہ راست ذاتی معلومات نہیں مانگتے ہیں۔ نابالغ طلباء سے متعلق تمام ڈیٹا اکٹھا کرنا مدرسہ ادارے کے زیر انتظام ہے، جو والدین کی رضامندی حاصل کرنے کا ذمہ دار ہے۔',
+
+                // Section 8: Policy Changes
+                'p_section8_head': '8. اس پالیسی میں تبدیلیاں',
+                'p_section8_content': 'ہم وقتاً فوقتاً اس رازداری کی پالیسی کو اپ ڈیٹ کر سکتے ہیں۔ ہم اس صفحے پر نئی رازداری کی پالیسی پوسٹ کر کے آپ کو کسی بھی اہم تبدیلی کے بارے میں مطلع کریں گے۔ کسی بھی تبدیلی کے بعد سروس کا آپ کا مسلسل استعمال نئی پالیسی کی قبولیت کو تشکیل دیتا ہے۔',
+            }
+        };
+
+        // --- Core Application Logic ---
+
+        let currentLang = 'en';
+        let dialogContentElement;
+
+        function getTranslation(key) {
+            return langData[currentLang][key] || langData['en'][key] || key;
+        }
+
+        function updateContent() {
+            document.body.className = 'lang-' + currentLang;
+            const isRtl = currentLang === 'ur';
+
+            document.querySelectorAll('[data-lang-key]').forEach(el => {
+                const key = el.getAttribute('data-lang-key');
+                el.textContent = getTranslation(key);
+            });
+
+            const pageTitleElement = document.getElementById('page-main-title');
+            if (pageTitleElement) {
+                pageTitleElement.textContent = getTranslation('privacy_title').toUpperCase();
+            }
+
+            document.getElementById('current-lang-display').textContent = getTranslation(currentLang + '_option');
+
+            document.getElementById('main-content-wrapper').style.direction = isRtl ? 'rtl' : 'ltr';
+        }
+
+        function changeLanguage(lang) {
+            if (lang in langData) {
+                currentLang = lang;
+                localStorage.setItem('madarsaSystemLang', lang);
+                updateContent();
+                closeLanguageDialog();
+            }
+        }
+
+        function openLanguageDialog() {
+            const dialog = document.getElementById('language-dialog');
+            if (dialog) {
+                dialog.classList.remove('hidden');
+                setTimeout(() => {
+                    dialog.classList.remove('opacity-0');
+                    if (dialogContentElement) {
+                        dialogContentElement.classList.remove('scale-95');
+                        dialogContentElement.classList.add('scale-100');
+                    }
+                }, 10);
+            }
+        }
+
+        function closeLanguageDialog() {
+            const dialog = document.getElementById('language-dialog');
+            if (dialog) {
+                dialog.classList.add('opacity-0');
+                if (dialogContentElement) {
+                    dialogContentElement.classList.remove('scale-100');
+                    dialogContentElement.classList.add('scale-95');
+                }
+                setTimeout(() => {
+                    dialog.classList.add('hidden');
+                }, 300);
+            }
+        }
+
+        window.onload = function () {
+            dialogContentElement = document.getElementById('dialog-content');
+
+            const storedLang = localStorage.getItem('madarsaSystemLang');
+            currentLang = (storedLang && storedLang in langData) ? storedLang : 'en';
+
+            const langEnBtn = document.getElementById('lang-en-btn');
+            if (langEnBtn) { langEnBtn.addEventListener('click', () => changeLanguage('en')); }
+
+            const langHiBtn = document.getElementById('lang-hi-btn');
+            if (langHiBtn) { langHiBtn.addEventListener('click', () => changeLanguage('hi')); }
+
+            const langUrBtn = document.getElementById('lang-ur-btn');
+            if (langUrBtn) { langUrBtn.addEventListener('click', () => changeLanguage('ur')); }
+
+            const langToggle = document.getElementById('language-toggle');
+            if (langToggle) { langToggle.addEventListener('click', openLanguageDialog); }
+
+            const dialogCloseBtn = document.getElementById('dialog-close-btn');
+            if (dialogCloseBtn) { dialogCloseBtn.addEventListener('click', closeLanguageDialog); }
+
+            updateContent();
+        };
+    </script>
+
+
+    <!-- HEADER -->
+    <header class="sticky top-0 z-20 w-full p-4 md:px-8 flex items-center justify-between">
+        <!-- Logo & System Name -->
+        <div class="flex items-center space-x-3">
+            <div class="w-8 h-8 rounded-full flex items-center justify-center p-1">
+                <!-- Using external SVG file -->
+                <img src="assets/logo.svg" alt="Logo" class="w-full h-full">
+            </div>
+
+            <!-- System Name & Subtitle -->
+            <div>
+                <h1 data-lang-key="madarsa_system" class="text-xl md:text-2xl font-bold"
+                    style="color: var(--color-text-dark);">Madarsa System</h1>
+                <p data-lang-key="sub_title" class="text-xs md:text-sm font-medium" style="color: var(--color-accent);">
+                    Excellence in Islamic Education Management
+                </p>
+            </div>
+        </div>
+
+
+        <!-- Navigation and Language Toggle -->
+        <nav class="flex items-center space-x-4 md:space-x-6">
+            <!-- Navigation Links -->
+            <a href="about.html" data-lang-key="about"
+                class="text-sm md:text-base font-medium hover:text-primary transition-colors flex-shrink-0"
+                style="color: var(--color-text-dark);">About</a>
+            <a href="privacy.html" data-lang-key="privacy"
+                class="text-sm md:text-base font-medium hover:text-primary transition-colors flex-shrink-0"
+                style="color: var(--color-text-dark);">Privacy</a>
+
+            <!-- Language Change Icon -->
+            <button id="language-toggle" class="p-2 rounded-full hover:bg-gray-100 transition-all flex-shrink-0"
+                aria-label="Change Language">
+
+                <img src="assets/language.svg" alt="Language Icon" class="w-6 h-6"
+                    style="color: var(--color-primary);" />
+            </button>
+
+        </nav>
+    </header>
+
+
+    <!-- --- 2. MAIN CONTENT AREA (Full width) --- -->
+    <main id="main-content-wrapper" class="main-content-area min-h-[calc(100vh-10rem)]">
+
+        <!-- --- 3. PAGE TITLE --- -->
+        <h2 id="page-main-title" class="page-main-title">PRIVACY POLICY</h2>
+
+        <!-- --- 4. PRIVACY CONTENT SECTION --- -->
+        <section class="content-container">
+
+            <p data-lang-key="p_intro" class="text-base font-medium mb-8">
+                Your privacy is paramount to us. This Privacy Policy explains how Madarsa System collects, uses,
+                discloses, and safeguards your information when you use our digital management platform.
+            </p>
+
+            <p data-lang-key="last_updated" class="text-sm font-medium italic mb-8" style="color: var(--color-accent);">
+                Last Updated: November 28, 2025
+            </p>
+
+            <!-- 1. Data Collection -->
+            <h3 data-lang-key="p_section1_head">1. Data Collection and Use</h3>
+            <p data-lang-key="p_section1_para1">We collect necessary information to provide the core functionality of
+                the Madarsa System:</p>
+            <ul class="text-sm list-disc">
+                <li data-lang-key="p_section1_list1_1">Institutional Data: Madarsa name, address, and administrative
+                    contact details.</li>
+                <li data-lang-key="p_section1_list1_2">User Data: Names, roles (Administrator, Teacher, Student), and
+                    login credentials.</li>
+                <li data-lang-key="p_section1_list1_3">Academic Records: Attendance, grades, curriculum data, and
+                    performance reports.</li>
+                <li data-lang-key="p_section1_list1_4">Financial Data: Fee payments, expense tracking, and salary
+                    disbursements.</li>
+            </ul>
+            <p data-lang-key="p_section1_para2">This data is used solely for the operation and improvement of the
+                Madarsa System services, ensuring efficient administration and transparent academic management.</p>
+
+            <!-- 2. Log Data and Non-Personal Information (NEW) -->
+            <h3 data-lang-key="p_section2_head">2. Log Data and Usage Information</h3>
+            <p data-lang-key="p_section2_para1">Like most application operators, we collect information that your
+                browser sends whenever you visit our Service ("Log Data"). This Log Data may include:</p>
+            <ul class="text-sm list-disc">
+                <li data-lang-key="p_section2_list2_1">Time and date of access and pages viewed.</li>
+                <li data-lang-key="p_section2_list2_2">Time spent on those pages and other statistics.</li>
+                <li data-lang-key="p_section2_list2_3">Browser type and version, and IP address (for security purposes).
+                </li>
+            </ul>
+            <p data-lang-key="p_section2_para2">This information is non-personal and is used for internal analysis to
+                enhance the performance and reliability of the platform.</p>
+
+            <!-- 3. Data Security (Enhanced) -->
+            <h3 data-lang-key="p_section3_head">3. Data Security and Retention</h3>
+            <p data-lang-key="p_section3_para1">We implement robust security measures, including data encryption (both
+                in transit and at rest) and strict role-based access controls, to protect your data from unauthorized
+                access, alteration, disclosure, or destruction. Access is strictly limited to authorized personnel
+                within the Madarsa institution only.</p>
+            <p data-lang-key="p_section3_para2">Data Retention: We retain user data for as long as the institutional
+                account is active and for a mandatory period thereafter as required by regulatory compliance or
+                institutional mandates.</p>
+
+            <!-- 4. Third-Party Services (NEW) -->
+            <h3 data-lang-key="p_section4_head">4. Third-Party Services</h3>
+            <p data-lang-key="p_section4_para1">We may employ third-party companies and individuals to facilitate our
+                Service (e.g., hosting, database management, cloud services). These third parties have access to your
+                Personal Data only to perform these tasks on our behalf and are obligated not to disclose or use it for
+                any other purpose.</p>
+            <ul class="text-sm list-disc">
+                <li data-lang-key="p_section4_list4_1">Hosting Providers (e.g., Google Cloud, Firebase): Used for
+                    application infrastructure and data storage.</li>
+                <li data-lang-key="p_section4_list4_2">Communication Services (e.g., SMS/Email APIs): Used for
+                    transactional notifications and alerts.</li>
+            </ul>
+
+            <!-- 5. Disclosure of Information (Updated) -->
+            <h3 data-lang-key="p_section5_head">5. Disclosure of Personal Information</h3>
+            <p data-lang-key="p_section5_para1">Madarsa System does not share, sell, rent, or trade any personally
+                identifiable information with outside parties for marketing or promotional purposes.</p>
+            <p data-lang-key="p_section5_para2">Data may only be disclosed in the following exceptional circumstances:
+            </p>
+            <ul class="text-sm list-disc">
+                <li data-lang-key="p_section5_list5_1">Legal Requirements: If required to do so by law or in response to
+                    valid requests by public authorities.</li>
+                <li data-lang-key="p_section5_list5_2">Protecting Rights: To protect the rights, property, or safety of
+                    the Madarsa System, our users, or the public.</li>
+            </ul>
+
+            <!-- 6. User Rights and Access (NEW) -->
+            <h3 data-lang-key="p_section6_head">6. Your Data Protection Rights</h3>
+            <p data-lang-key="p_section6_para1">Depending on your location and role within the institution, you may have
+                the following rights concerning your data:</p>
+            <ul class="text-sm list-disc">
+                <li data-lang-key="p_section6_list6_1">The right to access: Request copies of your personal data we
+                    hold.</li>
+                <li data-lang-key="p_section6_list6_2">The right to rectification: Request correction of inaccurate
+                    information.</li>
+                <li data-lang-key="p_section6_list6_3">The right to erasure: Request that we erase your personal data
+                    under certain conditions.</li>
+                <li data-lang-key="p_section6_list6_4">The right to object: Object to the processing of your personal
+                    data under certain conditions.</li>
+            </ul>
+
+            <!-- 7. Children's Privacy (NEW) -->
+            <h3 data-lang-key="p_section7_head">7. Children's Privacy</h3>
+            <p data-lang-key="p_section7_content">Our Service primarily manages student data under the direction of the
+                Madarsa administration. We do not directly solicit personal information from children under the age of
+                13. All data collection regarding minor students is managed by the Madarsa institution, which is
+                responsible for obtaining parental consent.</p>
+
+            <!-- 8. Policy Changes -->
+            <h3 data-lang-key="p_section8_head">8. Changes to this Policy</h3>
+            <p data-lang-key="p_section8_content">We may update this Privacy Policy from time to time. We will notify
+                you of any material changes by posting the new Privacy Policy on this page. Your continued use of the
+                service after any changes constitutes acceptance of the new policy.</p>
+
+        </section>
+
+    </main>
+
+    <!-- --- 5. LANGUAGE CHANGE DIALOG (Consistency) --- -->
+    <div id="language-dialog"
+        class="hidden opacity-0 fixed inset-0 z-50 flex items-center justify-center dialog-backdrop">
+        <div id="dialog-content" class="dialog-content p-6 rounded-xl w-11/12 max-w-sm transform scale-95">
+
+            <div class="flex justify-between items-center mb-4">
+                <h3 data-lang-key="select_language" class="text-lg font-bold">Select Language</h3>
+                <button id="dialog-close-btn" class="text-gray-500 hover:text-gray-900 transition-colors p-1"
+                    aria-label="Close">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                        stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+
+            <p class="mb-4 text-sm font-medium">Current Language: <span id="current-lang-display"
+                    class="font-bold text-primary" style="color: var(--color-primary);">English</span></p>
+
+            <div class="space-y-3">
+                <button id="lang-en-btn"
+                    class="w-full text-center py-3 rounded-lg font-semibold hover:bg-gray-200 transition-colors"
+                    style="border: 1px solid var(--color-primary);">English</button>
+                <button id="lang-hi-btn"
+                    class="w-full text-center py-3 rounded-lg font-semibold hover:bg-gray-200 transition-colors"
+                    style="border: 1px solid var(--color-primary);">हिन्दी (Hindi)</button>
+                <button id="lang-ur-btn"
+                    class="w-full text-center py-3 rounded-lg font-semibold hover:bg-gray-200 transition-colors lang-ur"
+                    style="border: 1px solid var(--color-primary); direction: rtl;">اردو (Urdu)</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- --- 6. FOOTER (Added back for public page consistency) --- -->
+    <footer class="p-8 md:p-12 mt-12">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-16">
+
+            <!-- Company Info & Tagline -->
+            <div>
+                <h4 data-lang-key="footer_company" class="text-xl font-bold mb-3" style="color: var(--color-accent);">
+                    Madarsa Tech</h4>
+                <p data-lang-key="footer_tagline" class="text-sm font-light leading-relaxed">Crafting premium digital
+                    solutions that drive innovation and growth.</p>
+            </div>
+
+            <!-- Quick Links -->
+            <div>
+                <h4 data-lang-key="quick_links" class="text-lg font-semibold mb-3">Quick Links</h4>
+                <ul class="space-y-2 text-sm">
+                    <li><a href="index.html" data-lang-key="home"
+                            class="footer-link hover:text-primary transition-colors">Home</a></li>
+                    <li><a href="about.html" data-lang-key="about"
+                            class="footer-link hover:text-primary transition-colors">About</a></li>
+                    <li><a href="privacy.html" data-lang-key="privacy"
+                            class="footer-link hover:text-primary transition-colors">Privacy</a></li>
+                </ul>
+            </div>
+
+            <!-- Connect With Us -->
+            <div>
+                <h4 data-lang-key="connect" class="text-lg font-semibold mb-3">Connect With Us</h4>
+                <div class="flex space-x-4">
+                    <!-- LinkedIn Icon -->
+                    <a href="#" target="_blank" class="hover:text-primary transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                            fill="currentColor">
+                            <path
+                                d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.518-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.764 7 2.456v6.779z" />
+                        </svg>
+                    </a>
+                    <!-- GitHub Icon -->
+                    <a href="#" target="_blank" class="hover:text-primary transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                            fill="currentColor">
+                            <path
+                                d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.08-.731.084-.716.084-.716 1.192.083 1.815 1.229 1.815 1.229 1.06 1.815 2.813 1.293 3.493.98.107-.76.417-1.292.76-1.594-2.665-.304-5.467-1.334-5.467-5.931 0-1.311.468-2.381 1.236-3.221-.124-.303-.537-1.523.117-3.176 0 0 1.008-.322 3.301 1.229 1.008-.281 2.073-.423 3.138-.428 1.065.005 2.13.147 3.138.428 2.292-1.551 3.301-1.229 3.301-1.229.653 1.653.24 2.873.117 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.923.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.565 21.799 24 17.3 24 12c0-6.627-5.373-12-12-12z" />
+                        </svg>
+                    </a>
+                </div>
+            </div>
+
+            <div class="mt-8 pt-4 border-t border-gray-700 text-center">
+                <p data-lang-key="all_rights" class="text-sm font-light" style="color: var(--color-background);">© 2025
+                    Madarsa Tech. All Rights Reserved.</p>
+            </div>
+    </footer>
+
+
+</body>
+
+</html>

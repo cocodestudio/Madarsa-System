@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Madarsa System - Home</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --color-primary: #00A693;
+            --color-background: #F2F3F4;
+            --color-accent: #E08A27;
+            --color-text-dark: #1A1A1A;
+            --color-text-light: #FFFFFF;
+            --color-module-bg: #EBEBEB;
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Noto+Sans+Devanagari:wght@100..900&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--color-background);
+            color: var(--color-text-dark);
+            transition: all 0.3s ease;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        .lang-en {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .lang-hi {
+            font-family: 'Noto Sans Devangari', sans-serif;
+            direction: ltr;
+        }
+
+        .lang-ur {
+            font-family: "Jameel Noori Nastaleeq", "Urdu Typesetting", "Nastaliq", 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            direction: rtl;
+        }
+
+        .hero-section * {
+            transition: all 0.3s ease;
+        }
+
+        .lang-ur .hero-section * {
+            font-family: "Jameel Noori Nastaleeq", "Urdu Typesetting", "Nastaliq", 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+        }
+
+        .lang-hi .hero-section * {
+            font-family: 'Noto Sans Devangari', sans-serif !important;
+        }
+
+        header {
+            background-color: var(--color-text-light);
+            border-bottom: 2px solid rgba(0, 0, 0, 0.05);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        @media (max-width: 767px) {
+            header nav {
+                white-space: nowrap;
+                flex-shrink: 0;
+            }
+
+            header nav a {
+                font-size: 0.75rem;
+            }
+        }
+
+        .hero-section {
+            position: relative;
+            overflow: hidden;
+            background-color: var(--color-background);
+            z-index: 1;
+            padding: 8rem 2rem 4rem 2rem;
+        }
+
+        .separator-container {
+            max-width: 800px;
+            margin: 2rem auto 4rem auto;
+            text-align: center;
+        }
+
+        .separator-line {
+            height: 1px;
+            border: none;
+            background-color: rgba(0, 0, 0, 0.1);
+            position: relative;
+            margin-top: 1rem;
+        }
+
+        .separator-line::after {
+            content: '';
+            position: absolute;
+            top: -1px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 3px;
+            background-color: var(--color-primary);
+            border-radius: 5px;
+        }
+
+        .module-grid {
+            display: grid;
+            gap: 2rem;
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        @media (min-width: 1024px) {
+            .module-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (min-width: 640px) and (max-width: 1023px) {
+            .module-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 639px) {
+            .module-grid {
+                grid-template-columns: 1fr;
+                padding: 1rem;
+            }
+        }
+
+        .module-button {
+            background: linear-gradient(145deg, rgba(255, 255, 255, 1) 0%, var(--color-module-bg) 100%);
+            color: var(--color-text-dark);
+            border-radius: 2rem;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+            border: none;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            aspect-ratio: 1.5 / 1;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: flex-start;
+            text-align: left;
+        }
+
+        .module-button:hover {
+            transform: translateY(-5px);
+            box-shadow:
+                0 0 0 3px var(--color-text-dark),
+                0 10px 25px rgba(0, 0, 0, 0.25);
+            border: none;
+        }
+
+        .module-icon {
+            position: absolute;
+            bottom: 1.5rem;
+            right: 1.5rem;
+            opacity: 0.2;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            color: var(--color-text-dark);
+        }
+
+        .module-button:hover .module-icon {
+            opacity: 0.4;
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .module-button h3 {
+            color: var(--color-text-dark);
+        }
+
+        .module-button .subtitle-text {
+            color: var(--color-text-dark);
+            opacity: 0.7;
+            transition: all 0.3s ease;
+        }
+
+        footer {
+            background-color: var(--color-text-dark);
+            color: var(--color-background);
+        }
+
+        .dialog-backdrop {
+            background-color: rgba(0, 0, 0, 0.7);
+            transition: opacity 0.3s ease;
+        }
+
+        .dialog-content {
+            background-color: var(--color-background);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            border: 3px solid var(--color-primary);
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        .rtl-text-right {
+            text-align: right;
+        }
+    </style>
+</head>
+
+<body class="lang-en">
+
+    <!-- Language Data Structure -->
+    <script>
+        const langData = {
+            'en': {
+                'madarsa_system': 'Madarsa System',
+                'sub_title': 'Excellence in Islamic Education Management',
+                'about': 'About',
+                'privacy': 'Privacy',
+                'hero_title': 'Integrated Digital Management for Islamic Institutions',
+                'hero_highlight': 'Innovation',
+                'hero_desc': 'Transforming traditional madarsa operations through modern, secure, and intuitive digital tools. Access all your academic, financial, and administrative needs from a single, unified platform.',
+                'academic_system': 'Academic System',
+                'academic_desc': 'Manage curricula, grades, and student performance.',
+                'accounting_system': 'Accounting System',
+                'accounting_desc': 'Handle fees, expenses, and financial reports.',
+                'kitchen_system': 'Kitchen System',
+                'kitchen_desc': 'Organize meal planning and inventory.',
+                'library_system': 'Library System',
+                'library_desc': 'Track books, circulation, and cataloging.',
+                'hostel_system': 'Hostel System',
+                'hostel_desc': 'Manage room assignments and resident records.',
+                'administration': 'Administration',
+                'admin_desc': 'Oversee staff, general records, and compliance.',
+                'footer_company': 'Madarsa System',
+                'footer_tagline': 'Crafting premium digital solutions that drive innovation and growth.',
+                'quick_links': 'Quick Links',
+                'connect': 'Connect With Us',
+                'all_rights': '© 2025 Madarsa System. All Rights Reserved.',
+                'select_language': 'Select Language',
+                'en_option': 'English',
+                'hi_option': 'हिन्दी (Hindi)',
+                'ur_option': 'اردو (Urdu)',
+                'home': 'Home',
+                'explore_modules': 'Explore Our Modules'
+            },
+            'hi': {
+                'madarsa_system': 'मदरसा प्रणाली',
+                'sub_title': 'इस्लामी शिक्षा प्रबंधन में उत्कृष्टता',
+                'about': 'हमारे बारे में',
+                'privacy': 'गोपनीयता',
+                'hero_title': 'इस्लामी संस्थाओं के लिए एकीकृत डिजिटल प्रबंधन',
+                'hero_highlight': 'नवाचार',
+                'hero_desc': 'आधुनिक, सुरक्षित और सहज डिजिटल उपकरणों के माध्यम से पारंपरिक मदरसा संचालन को बदलना। अपनी सभी शैक्षणिक, वित्तीय और प्रशासनिक जरूरतों को एक ही, एकीकृत मंच से एक्सेस करें।',
+                'academic_system': 'शैक्षणिक प्रणाली',
+                'academic_desc': 'पाठ्यक्रम, ग्रेड और छात्र प्रदर्शन का प्रबंधन करें।',
+                'accounting_system': 'लेखांकन प्रणाली',
+                'accounting_desc': 'शुल्क, खर्च और वित्तीय रिपोर्ट संभालें।',
+                'kitchen_system': 'रसोईघर प्रणाली',
+                'kitchen_desc': 'भोजन योजना और इन्वेंट्री को व्यवस्थित करें।',
+                'library_system': 'पुस्तकालय प्रणाली',
+                'library_desc': 'पुस्तकों, परिसंचरण और सूचीकरण पर नज़र रखें।',
+                'hostel_system': 'छात्रावास प्रणाली',
+                'hostel_desc': 'कमरे के असाइनमेंट और निवासी रिकॉर्ड प्रबंधित करें।',
+                'administration': 'प्रशासन',
+                'admin_desc': 'कर्मचारियों, सामान्य रिकॉर्ड और अनुपालन की देखरेख करें।',
+                'footer_company': 'मदरसा तकनीक',
+                'footer_tagline': 'प्रीमियम डिजिटल समाधान तैयार करना जो नवाचार और विकास को बढ़ावा देता है।',
+                'quick_links': 'त्वरित लिंक',
+                'connect': 'हमसे जुड़ें',
+                'all_rights': '© 2025 मदरसा तकनीक। सर्वाधिकार सुरक्षित।',
+                'select_language': 'भाषा चुनें',
+                'en_option': 'English',
+                'hi_option': 'हिन्दी (Hindi)',
+                'ur_option': 'اردو (Urdu)',
+                'home': 'होम',
+                'explore_modules': 'हमारे मॉड्यूल देखें'
+            },
+            'ur': {
+                'madarsa_system': 'مدرسہ نظام',
+                'sub_title': 'اسلامی تعلیم کے انتظام میں فضیلت',
+                'about': 'ہمارے بارے میں',
+                'privacy': 'رازداری',
+                'hero_title': 'اسلامی اداروں کے لیے مربوط ڈیجیٹل انتظام',
+                'hero_highlight': 'جدت',
+                'hero_desc': 'جدید، محفوظ اور بدیہی ڈیجیٹل آلات کے ذریعے روایتی مدرسہ آپریشنز کو تبدیل کرنا۔ اپنی تمام تعلیمی، مالیاتی اور انتظامی ضروریات کو ایک ہی، متحدہ پلیٹ فارم سے حاصل کریں۔',
+                'academic_system': 'تعلیمی نظام',
+                'academic_desc': 'نصابات، درجات اور طلباء کی کارکردگی کا انتظام کریں۔',
+                'accounting_system': 'اکاؤنٹنگ سسٹم',
+                'accounting_desc': 'فیس، اخراجات، اور مالیاتی رپورٹس کو سنبھالیں۔',
+                'kitchen_system': 'باورچی خانے کا نظام',
+                'kitchen_desc': 'کھانے کی منصوبہ بندی اور انوینٹری کو منظم کریں۔',
+                'library_system': 'لائبریری کا نظام',
+                'library_desc': 'کتابوں، گردش اور کیٹلاگنگ کو ٹریک کریں۔',
+                'hostel_system': 'ہاسٹل کا نظام',
+                'hostel_desc': 'کمروں کی تقسیم اور رہائشی ریکارڈ کا انتظام کریں۔',
+                'administration': 'انتظامیہ',
+                'admin_desc': 'عملے، عمومی ریکارڈ اور تعمیل کی نگرانی کریں۔',
+                'footer_company': 'مدرسہ ٹیک',
+                'footer_tagline': 'پریمیم ڈیجیٹل حل تیار کرنا جو جدت اور ترقی کو فروغ دیتا ہے۔',
+                'quick_links': 'فوری لنکس',
+                'connect': 'ہم سے رابطہ کریں',
+                'all_rights': '© 2025 مدرسہ ٹیک۔ جملہ حقوق محفوظ ہیں۔',
+                'select_language': 'زبان منتخب کریں',
+                'en_option': 'English',
+                'hi_option': 'ہندی (Hindi)',
+                'ur_option': 'اردو (Urdu)',
+                'home': 'صفحہ اول',
+                'explore_modules': 'ہمارے ماڈیولز دریافت کریں'
+            }
+        };
+
+        let currentLang = 'en';
+        let dialogContentElement;
+
+        function getTranslation(key) {
+            return langData[currentLang][key] || langData['en'][key] || key;
+        }
+
+        // Function to update all text elements
+        function updateContent() {
+            document.body.className = 'lang-' + currentLang;
+            const isRtl = currentLang === 'ur';
+
+            document.querySelectorAll('[data-lang-key]').forEach(el => {
+                const key = el.getAttribute('data-lang-key');
+                el.textContent = getTranslation(key);
+            });
+
+            const heroTitleElement = document.getElementById('hero-title');
+            if (heroTitleElement) {
+                const fullText = getTranslation('hero_title');
+                const highlightWord = getTranslation('hero_highlight');
+                const newHtml = fullText.replace(highlightWord, `<span class="text-primary font-extrabold" style="color: var(--color-primary);">${highlightWord}</span>`);
+                heroTitleElement.innerHTML = newHtml;
+            }
+
+            document.querySelectorAll('.footer-link').forEach(el => {
+                el.classList.toggle('rtl-text-right', isRtl);
+            });
+
+            document.getElementById('current-lang-display').textContent = getTranslation(currentLang + '_option');
+            document.getElementById('main-content-wrapper').style.direction = isRtl ? 'rtl' : 'ltr';
+        }
+
+        // Function to change language and store in local storage
+        function changeLanguage(lang) {
+            if (lang in langData) {
+                currentLang = lang;
+                localStorage.setItem('madarsaSystemLang', lang);
+                updateContent();
+                closeLanguageDialog();
+            }
+        }
+
+        // Language Dialog Animation
+        function openLanguageDialog() {
+            const dialog = document.getElementById('language-dialog');
+            dialog.classList.remove('hidden');
+
+            setTimeout(() => {
+                dialog.classList.remove('opacity-0');
+                dialogContentElement.classList.remove('scale-95');
+                dialogContentElement.classList.add('scale-100');
+            }, 10);
+        }
+
+        function closeLanguageDialog() {
+            const dialog = document.getElementById('language-dialog');
+            dialog.classList.add('opacity-0');
+            dialogContentElement.classList.remove('scale-100');
+            dialogContentElement.classList.add('scale-95');
+
+            setTimeout(() => {
+                dialog.classList.add('hidden');
+            }, 300);
+        }
+
+        // Initialize function
+        window.onload = function () {
+            dialogContentElement = document.getElementById('dialog-content');
+            const storedLang = localStorage.getItem('madarsaSystemLang');
+            currentLang = (storedLang && storedLang in langData) ? storedLang : 'en';
+            document.getElementById('lang-en-btn').addEventListener('click', () => changeLanguage('en'));
+            document.getElementById('lang-hi-btn').addEventListener('click', () => changeLanguage('hi'));
+            document.getElementById('lang-ur-btn').addEventListener('click', () => changeLanguage('ur'));
+            document.getElementById('language-toggle').addEventListener('click', openLanguageDialog);
+            document.getElementById('dialog-close-btn').addEventListener('click', closeLanguageDialog);
+            updateContent();
+        };
+        function handleModuleClick(moduleName) {
+            console.log(`Clicked on module: ${moduleName}. Implementation will be added on separate pages later.`);
+        }
+    </script>
+
+
+    <!-- HEADER -->
+    <header class="sticky top-0 z-20 w-full p-4 md:px-8 flex items-center justify-between">
+        <!-- Logo & System Name -->
+        <div class="flex items-center space-x-3">
+            <div class="w-8 h-8 rounded-full flex items-center justify-center p-1">
+                <!-- Using external SVG file -->
+                <img src="assets/logo.svg" alt="Logo" class="w-full h-full">
+            </div>
+
+            <!-- System Name & Subtitle -->
+            <div>
+                <h1 data-lang-key="madarsa_system" class="text-xl md:text-2xl font-bold"
+                    style="color: var(--color-text-dark);">Madarsa System</h1>
+                <p data-lang-key="sub_title" class="text-xs md:text-sm font-medium" style="color: var(--color-accent);">
+                    Excellence in Islamic Education Management
+                </p>
+            </div>
+        </div>
+
+
+        <!-- Navigation and Language Toggle -->
+        <nav class="flex items-center space-x-4 md:space-x-6">
+            <!-- Navigation Links -->
+            <a href="about.html" data-lang-key="about"
+                class="text-sm md:text-base font-medium hover:text-primary transition-colors flex-shrink-0"
+                style="color: var(--color-text-dark);">About</a>
+            <a href="privacy.html" data-lang-key="privacy"
+                class="text-sm md:text-base font-medium hover:text-primary transition-colors flex-shrink-0"
+                style="color: var(--color-text-dark);">Privacy</a>
+
+            <!-- Language Change Icon -->
+            <button id="language-toggle" class="p-2 rounded-full hover:bg-gray-100 transition-all flex-shrink-0"
+                aria-label="Change Language">
+
+                <img src="assets/language.svg" alt="Language Icon" class="w-6 h-6"
+                    style="color: var(--color-primary);" />
+            </button>
+
+        </nav>
+    </header>
+
+
+    <!-- MAIN CONTENT WRAPPER -->
+    <main id="main-content-wrapper" class="p-4 md:p-8 min-h-[calc(100vh-10rem)]">
+
+        <!-- HERO SECTION -->
+        <section class="hero-section mb-0 text-center">
+            <div class="relative z-10 max-w-7xl mx-auto">
+                <h2 id="hero-title" class="text-4xl md:text-7xl font-black mb-6 leading-tight"
+                    style="color: var(--color-text-dark);">
+                </h2>
+                <p data-lang-key="hero_desc" class="text-base md:text-xl max-w-5xl mx-auto font-medium"
+                    style="color: var(--color-text-dark);">
+                    Transforming traditional madarsa operations through modern, secure, and intuitive digital tools.
+                    Access all your academic, financial, and administrative needs from a single, unified platform.
+                </p>
+            </div>
+        </section>
+
+        <!-- SPACE FILLER -->
+        <div class="separator-container">
+            <h3 data-lang-key="explore_modules" class="text-lg font-bold" style="color: var(--color-text-dark);">Explore
+                Our Modules</h3>
+            <hr class="separator-line">
+        </div>
+
+
+        <!-- MODULE BUTTONS -->
+        <section class="module-section">
+            <div class="module-grid">
+
+                <!-- ACADEMIC SYSTEM -->
+                <a href="academic_system.html" class="module-button">
+                    <h3 data-lang-key="academic_system" class="text-xl md:text-2xl font-bold mb-2">Academic System</h3>
+                    <p data-lang-key="academic_desc" class="subtitle-text text-sm md:text-base font-medium">Manage
+                        curricula, grades, and student performance.</p>
+                    <svg class="module-icon w-12 h-12 md:w-16 md:h-16" xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M12 20V10" />
+                        <path d="M18.6 12.6L12 16l-6.6-3.4" />
+                        <path d="M12 2L2 7l10 5 10-5z" />
+                    </svg>
+                </a>
+
+                <!-- ACCOUNTING SYSTEM -->
+                <a href="accounting_system.html" class="module-button">
+                    <h3 data-lang-key="accounting_system" class="text-xl md:text-2xl font-bold mb-2">Accounting System
+                    </h3>
+                    <p data-lang-key="accounting_desc" class="subtitle-text text-sm md:text-base font-medium">Handle
+                        fees, expenses, and financial reports.</p>
+                    <svg class="module-icon w-12 h-12 md:w-16 md:h-16" xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M5 20h14" />
+                        <path d="M7 16l2-8 3 4 3-4 2 8" />
+                        <path d="M12 15l2 5" />
+                        <path d="M12 15l-2 5" />
+                        <path d="M16 3l1 5" />
+                    </svg>
+                </a>
+
+                <!-- KITCHEN SYSTEM -->
+                <a href="kitchen_system.html" class="module-button">
+                    <h3 data-lang-key="kitchen_system" class="text-xl md:text-2xl font-bold mb-2">Kitchen System</h3>
+                    <p data-lang-key="kitchen_desc" class="subtitle-text text-sm md:text-base font-medium">Organize meal
+                        planning and inventory.</p>
+                    <svg class="module-icon w-12 h-12 md:w-16 md:h-16" xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M12 2v20" />
+                        <path d="M16 16l-4 4-4-4" />
+                        <path d="M18 6l-6 6-6-6" />
+                        <path d="M8 2h8" />
+                    </svg>
+                </a>
+
+                <!-- LIBRARY SYSTEM -->
+                <a href="library_system.html" class="module-button">
+                    <h3 data-lang-key="library_system" class="text-xl md:text-2xl font-bold mb-2">Library System</h3>
+                    <p data-lang-key="library_desc" class="subtitle-text text-sm md:text-base font-medium">Track books,
+                        circulation, and cataloging.</p>
+                    <svg class="module-icon w-12 h-12 md:w-16 md:h-16" xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M4 19.5A2.5 2.5 0 016.5 17H20" />
+                        <path
+                            d="M6.5 2H20v20c0 1.38-1.12 2.5-2.5 2.5H6.5A2.5 2.5 0 014 19.5v-15c0-.83.67-1.5 1.5-1.5H11m4 1.5H19" />
+                    </svg>
+                </a>
+
+                <!-- HOSTEL SYSTEM -->
+                <a href="hostel_system.html" class="module-button">
+                    <h3 data-lang-key="hostel_system" class="text-xl md:text-2xl font-bold mb-2">Hostel System</h3>
+                    <p data-lang-key="hostel_desc" class="subtitle-text text-sm md:text-base font-medium">Manage room
+                        assignments and resident records.</p>
+                    <svg class="module-icon w-12 h-12 md:w-16 md:h-16" xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M2 4h18" />
+                        <path d="M2 8h18" />
+                        <path d="M2 12h18" />
+                        <path d="M18 8v4" />
+                    </svg>
+                </a>
+
+                <!-- ADMINISTRATION -->
+                <a href="administration.html" class="module-button">
+                    <h3 data-lang-key="administration" class="text-xl md:text-2xl font-bold mb-2">Administration</h3>
+                    <p data-lang-key="admin_desc" class="subtitle-text text-sm md:text-base font-medium">Oversee staff,
+                        general records, and compliance.</p>
+                    <svg class="module-icon w-12 h-12 md:w-16 md:h-16" xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                    </svg>
+                </a>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- LANGUAGE CHANGE DIALOG -->
+    <div id="language-dialog"
+        class="hidden opacity-0 fixed inset-0 z-50 flex items-center justify-center dialog-backdrop">
+        <div id="dialog-content" class="dialog-content p-6 rounded-xl w-11/12 max-w-sm transform scale-95">
+
+            <div class="flex justify-between items-center mb-4">
+                <h3 data-lang-key="select_language" class="text-lg font-bold">Select Language</h3>
+                <button id="dialog-close-btn" class="text-gray-500 hover:text-gray-900 transition-colors p-1"
+                    aria-label="Close">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                        stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+
+            <p class="mb-4 text-sm font-medium">Current Language: <span id="current-lang-display"
+                    class="font-bold text-primary" style="color: var(--color-primary);">English</span></p>
+
+            <div class="space-y-3">
+                <button id="lang-en-btn"
+                    class="w-full text-center py-3 rounded-lg font-semibold hover:bg-gray-200 transition-colors"
+                    style="border: 1px solid var(--color-primary);">English</button>
+                <button id="lang-hi-btn"
+                    class="w-full text-center py-3 rounded-lg font-semibold hover:bg-gray-200 transition-colors"
+                    style="border: 1px solid var(--color-primary);">हिन्दी (Hindi)</button>
+                <button id="lang-ur-btn"
+                    class="w-full text-center py-3 rounded-lg font-semibold hover:bg-gray-200 transition-colors lang-ur"
+                    style="border: 1px solid var(--color-primary); direction: rtl;">اردو (Urdu)</button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- FOOTER -->
+    <footer class="p-8 md:p-12 mt-12">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-16">
+
+            <!-- Company Info & Tagline -->
+            <div>
+                <h4 data-lang-key="footer_company" class="text-xl font-bold mb-3" style="color: var(--color-accent);">
+                    Madarsa System</h4>
+                <p data-lang-key="footer_tagline" class="text-sm font-light leading-relaxed">Crafting premium digital
+                    solutions that drive innovation and growth.</p>
+            </div>
+
+            <!-- Quick Links -->
+<div>
+    <h4 data-lang-key="quick_links" class="text-lg font-semibold mb-3">Quick Links</h4>
+    <ul class="space-y-2 text-sm">
+        <li><a href="index.html" data-lang-key="home"
+                class="footer-link hover:text-primary transition-colors">Home</a></li>
+        <li><a href="about.html" data-lang-key="about"
+                class="footer-link hover:text-primary transition-colors">About</a></li>
+        <li><a href="privacy.html" data-lang-key="privacy"
+                class="footer-link hover:text-primary transition-colors">Privacy</a></li>
+    </ul>
+</div>
+
+            <!-- Connect With Us -->
+            <div>
+                <h4 data-lang-key="connect" class="text-lg font-semibold mb-3">Connect With Us</h4>
+                <div class="flex space-x-4">
+                    <a href="#" target="_blank" class="hover:text-primary transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                            fill="currentColor">
+                            <path
+                                d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.518-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.764 7 2.456v6.779z" />
+                        </svg>
+                    </a>
+                    <a href="#" target="_blank" class="hover:text-primary transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                            fill="currentColor">
+                            <path
+                                d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.08-.731.084-.716.084-.716 1.192.083 1.815 1.229 1.815 1.229 1.06 1.815 2.813 1.293 3.493.98.107-.76.417-1.292.76-1.594-2.665-.304-5.467-1.334-5.467-5.931 0-1.311.468-2.381 1.236-3.221-.124-.303-.537-1.523.117-3.176 0 0 1.008-.322 3.301 1.229 1.008-.281 2.073-.423 3.138-.428 1.065.005 2.13.147 3.138.428 2.292-1.551 3.301-1.229 3.301-1.229.653 1.653.24 2.873.117 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.923.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.565 21.799 24 17.3 24 12c0-6.627-5.373-12-12-12z" />
+                        </svg>
+                    </a>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="mt-8 pt-4 border-t border-gray-700 text-center">
+            <p data-lang-key="all_rights" class="text-sm font-light" style="color: var(--color-background);">© 2025
+                Madarsa System. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+</body>
+
+</html>

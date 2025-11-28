@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - Madarsa System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Define the color variables based on user-provided images */
+        :root {
+            --color-primary: #00A693;
+            /* Green/Teal */
+            --color-background: #F2F3F4;
+            /* Titanium/Platinum */
+            --color-accent: #E08A27;
+            /* Gold/Orange for luxury feel */
+            --color-text-dark: #1A1A1A;
+            /* Soft Black */
+            --color-text-light: #FFFFFF;
+            /* White */
+            --color-module-bg: #EBEBEB;
+            /* Light Grey for Module Boxes */
+        }
+
+        /* --- Global Styles: User-Select and Fonts (Consistency) --- */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Noto+Sans+Devanagari:wght@100..900&family=Jameel+Noori+Nastaleeq&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--color-background);
+            color: var(--color-text-dark);
+            transition: all 0.3s ease;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            overflow-x: hidden;
+        }
+
+        .lang-en {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .lang-hi {
+            font-family: 'Noto Sans Devangari', sans-serif;
+            direction: ltr;
+        }
+
+        .lang-ur {
+            font-family: "Jameel Noori Nastaleeq", "Urdu Typesetting", "Nastaliq", 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            direction: rtl;
+        }
+
+        /* Ensure specific fonts are applied correctly to the main text */
+        .page-main-title,
+        .content-container * {
+            transition: all 0.3s ease;
+        }
+
+        .lang-ur .page-main-title,
+        .lang-ur .content-container * {
+            font-family: "Jameel Noori Nastaleeq", "Urdu Typesetting", "Nastaliq", 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+        }
+
+        .lang-hi .page-main-title,
+        .lang-hi .content-container * {
+            font-family: 'Noto Sans Devangari', sans-serif !important;
+        }
+
+        /* --- Header Styling (Consistency) --- */
+        header {
+            background-color: var(--color-text-light);
+            border-bottom: 2px solid rgba(0, 0, 0, 0.05);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        @media (max-width: 767px) {
+            header nav {
+                white-space: nowrap;
+                flex-shrink: 0;
+            }
+
+            header nav a {
+                font-size: 0.75rem;
+            }
+        }
+
+        /* --- Main Content Area (Full width) --- */
+        .main-content-area {
+            flex-grow: 1;
+            padding: 2rem;
+        }
+
+        /* --- Page Title Styling (Left-aligned, capitalized) --- */
+        .page-main-title {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 2.5rem;
+            color: var(--color-text-dark);
+            text-transform: uppercase;
+            text-align: left;
+            padding-left: 2rem;
+            line-height: 1.2;
+        }
+
+        @media (max-width: 767px) {
+            .page-main-title {
+                font-size: 2rem;
+                text-align: center;
+                padding-left: 0;
+            }
+        }
+
+        /* --- Content Cards for Mission/Vision --- */
+        .info-card {
+            background: linear-gradient(145deg, rgba(255, 255, 255, 1) 0%, var(--color-module-bg) 100%);
+            border-radius: 1.5rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            padding: 2rem;
+            height: 100%;
+        }
+
+        .info-card h3 {
+            color: var(--color-primary);
+            font-weight: 900;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+        }
+
+        /* Footer Styling (Copied from index.html) */
+        footer {
+            background-color: var(--color-text-dark);
+            color: var(--color-background);
+        }
+
+        /* --- Language Dialog: Animation Styles (Consistency) --- */
+        .dialog-backdrop {
+            background-color: rgba(0, 0, 0, 0.7);
+            transition: opacity 0.3s ease;
+        }
+
+        .dialog-content {
+            background-color: var(--color-background);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            border: 3px solid var(--color-primary);
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        .rtl-text-right {
+            text-align: right;
+        }
+    </style>
+</head>
+
+<body class="lang-en">
+
+    <!-- Language Data Structure (Centralized) -->
+    <script>
+        // --- HISTORY FIX FUNCTION ---
+        function goToHomepage() {
+            window.location.replace('index.html');
+        }
+
+        const langData = {
+            'en': {
+                'madarsa_system': 'Madarsa System',
+                'sub_title': 'Excellence in Islamic Education Management',
+                'about': 'About',
+                'privacy': 'Privacy',
+                'home': 'Home',
+                'select_language': 'Select Language',
+                'en_option': 'English',
+                'hi_option': 'हिन्दी (Hindi)',
+                'ur_option': 'اردو (Urdu)',
+                'footer_company': 'Madarsa Tech',
+                'footer_tagline': 'Crafting premium digital solutions that drive innovation and growth.',
+                'quick_links': 'Quick Links',
+                'connect': 'Connect With Us',
+                'all_rights': '© 2025 Madarsa Tech. All Rights Reserved.',
+
+                // About Page Specific
+                'about_title': 'About Us',
+                'about_intro_heading': 'Digital Transformation for Sacred Education',
+                'about_intro_para1': 'The Madarsa System is a dedicated digital platform designed to modernize the administration and academic processes of Islamic educational institutions (Madaris). Recognizing the unique requirements of traditional learning environments, our system integrates the timeless wisdom of Islamic education with contemporary technological efficiency.',
+                'about_intro_para2': 'We aim to streamline operations, enhance resource management, and provide stakeholders—from administrators and teachers to students and parents—with transparent, accessible, and secure tools.',
+                'mission_title': 'Our Mission',
+                'mission_content': 'To empower Islamic institutions globally by providing robust, easy-to-use, and culturally-aligned management software, fostering operational excellence and focusing resources back onto student development and sacred learning.',
+                'vision_title': 'Our Vision',
+                'vision_content': 'To be the world\'s leading provider of Madarsa Management Solutions, setting the standard for digital integration and administrative efficiency within the global Islamic education sector.',
+                'values_title': 'Core Values',
+                'value1': 'Tawfiq (Divine Guidance)',
+                'value2': 'Amanah (Trustworthiness)',
+                'value3': 'Ihsan (Excellence)',
+                'value4': 'Khidmah (Service)',
+            },
+            'hi': {
+                'madarsa_system': 'मदरसा प्रणाली',
+                'sub_title': 'इस्लामी शिक्षा प्रबंधन में उत्कृष्टता',
+                'about': 'हमारे बारे में',
+                'privacy': 'गोपनीयता',
+                'home': 'होम',
+                'select_language': 'भाषा चुनें',
+                'en_option': 'English',
+                'hi_option': 'हिन्दी (Hindi)',
+                'ur_option': 'اردو (Urdu)',
+                'footer_company': 'मदरसा तकनीक',
+                'footer_tagline': 'प्रीमियम डिजिटल समाधान तैयार करना जो नवाचार और विकास को बढ़ावा देता है।',
+                'quick_links': 'त्वरित लिंक',
+                'connect': 'हमसे जुड़ें',
+                'all_rights': '© 2025 मदरसा तकनीक। सर्वाधिकार सुरक्षित।',
+
+                // About Page Specific
+                'about_title': 'हमारे बारे में',
+                'about_intro_heading': 'पवित्र शिक्षा के लिए डिजिटल परिवर्तन',
+                'about_intro_para1': 'मदरसा प्रणाली एक समर्पित डिजिटल प्लेटफॉर्म है जिसे इस्लामी शिक्षण संस्थानों (मदरसों) के प्रशासन और शैक्षणिक प्रक्रियाओं को आधुनिक बनाने के लिए डिज़ाइन किया गया है। पारंपरिक शिक्षण वातावरण की अनूठी आवश्यकताओं को पहचानते हुए, हमारा सिस्टम इस्लामी शिक्षा के शाश्वत ज्ञान को समकालीन तकनीकी दक्षता के साथ एकीकृत करता है।',
+                'about_intro_para2': 'हमारा लक्ष्य संचालन को सुव्यवस्थित करना, संसाधन प्रबंधन को बढ़ाना और हितधारकों—प्रशासकों और शिक्षकों से लेकर छात्रों और अभिभावकों तक—को पारदर्शी, सुलभ और सुरक्षित उपकरण प्रदान करना है।',
+                'mission_title': 'हमारा मिशन',
+                'mission_content': 'मजबूत, उपयोग में आसान और सांस्कृतिक रूप से संरेखित प्रबंधन सॉफ्टवेयर प्रदान करके वैश्विक स्तर पर इस्लामी संस्थानों को सशक्त बनाना, परिचालन उत्कृष्टता को बढ़ावा देना और संसाधनों को छात्र विकास और पवित्र शिक्षा पर केंद्रित करना।',
+                'vision_title': 'हमारी दृष्टि',
+                'vision_content': 'वैश्विक इस्लामी शिक्षा क्षेत्र के भीतर डिजिटल एकीकरण और प्रशासनिक दक्षता के लिए मानक स्थापित करते हुए, मदरसा प्रबंधन समाधानों का दुनिया का अग्रणी प्रदाता बनना।',
+                'values_title': 'मूल्य',
+                'value1': 'तौफ़ीक़ (ईश्वरीय मार्गदर्शन)',
+                'value2': 'अमानत (विश्वसनीयता)',
+                'value3': 'इह्सान (उत्कृष्टता)',
+                'value4': 'ख़िदमत (सेवा)',
+            },
+            'ur': {
+                'madarsa_system': 'مدرسہ نظام',
+                'sub_title': 'اسلامی تعلیم کے انتظام میں فضیلت',
+                'about': 'ہمارے بارے میں',
+                'privacy': 'رازداری',
+                'home': 'صفحہ اول',
+                'select_language': 'زبان منتخب کریں',
+                'en_option': 'English',
+                'hi_option': 'ہندی (Hindi)',
+                'ur_option': 'اردو (Urdu)',
+                'footer_company': 'مدرسہ ٹیک',
+                'footer_tagline': 'پریمیم ڈیجیٹل حل تیار کرنا جو جدت اور ترقی کو فروغ دیتا ہے۔',
+                'quick_links': 'فوری لنکس',
+                'connect': 'ہم سے رابطہ کریں',
+                'all_rights': '© 2025 مدرسہ ٹیک۔ جملہ حقوق محفوظ ہیں۔',
+
+                // About Page Specific
+                'about_title': 'ہمارے بارے میں',
+                'about_intro_heading': 'مقدس تعلیم کے لیے ڈیجیٹل تبدیلی',
+                'about_intro_para1': 'مدرسہ نظام ایک وقف شدہ ڈیجیٹل پلیٹ فارم ہے جسے اسلامی تعلیمی اداروں (مدارس) کے انتظامی اور تعلیمی عمل کو جدید بنانے کے لیے ڈیزائن کیا گیا ہے۔ روایتی تدریسی ماحول کی منفرد ضروریات کو تسلیم کرتے ہوئے، ہمارا نظام اسلامی تعلیم کی لازوال حکمت کو عصری تکنیکی کارکردگی کے ساتھ مربوط کرتا ہے۔',
+                'about_intro_para2': 'ہمارا مقصد آپریشنز کو ہموار کرنا، وسائل کے انتظام کو بہتر بنانا، اور اسٹیک ہولڈرز—منتظمین اور اساتذہ سے لے کر طلباء اور والدین تک—کو شفاف، قابل رسائی اور محفوظ ٹولز فراہم کرنا ہے۔',
+                'mission_title': 'ہمارا مشن',
+                'mission_content': 'مضبوط، استعمال میں آسان، اور ثقافتی طور پر ہم آہنگ انتظامی سافٹ ویئر فراہم کر کے عالمی سطح پر اسلامی اداروں کو بااختیار بنانا، آپریشنل فضیلت کو فروغ دینا اور وسائل کو طالب علموں کی ترقی اور مقدس تعلیم پر مرکوز کرنا۔',
+                'vision_title': 'ہمارا وژن',
+                'vision_content': 'عالمی اسلامی تعلیمی شعبے کے اندر ڈیجیٹل انضمام اور انتظامی کارکردگی کا معیار قائم کرتے ہوئے، مدرسہ مینجمنٹ سلوشنز کا دنیا کا صف اول کا فراہم کنندہ بننا۔',
+                'values_title': 'بنیادی اقدار',
+                'value1': 'توفیق (خدائی رہنمائی)',
+                'value2': 'امانت (بھروسہ)',
+                'value3': 'احسان (فضیلت)',
+                'value4': 'خدمت (خدمت)',
+            }
+        };
+
+        // --- Core Application Logic ---
+
+        let currentLang = 'en';
+        let dialogContentElement;
+
+        function getTranslation(key) {
+            return langData[currentLang][key] || langData['en'][key] || key;
+        }
+
+        function updateContent() {
+            document.body.className = 'lang-' + currentLang;
+            const isRtl = currentLang === 'ur';
+
+            document.querySelectorAll('[data-lang-key]').forEach(el => {
+                const key = el.getAttribute('data-lang-key');
+                el.textContent = getTranslation(key);
+            });
+
+            const pageTitleElement = document.getElementById('page-main-title');
+            if (pageTitleElement) {
+                pageTitleElement.textContent = getTranslation('about_title').toUpperCase();
+            }
+
+            document.getElementById('current-lang-display').textContent = getTranslation(currentLang + '_option');
+
+            document.getElementById('main-content-wrapper').style.direction = isRtl ? 'rtl' : 'ltr';
+        }
+
+        function changeLanguage(lang) {
+            if (lang in langData) {
+                currentLang = lang;
+                localStorage.setItem('madarsaSystemLang', lang);
+                updateContent();
+                closeLanguageDialog();
+            }
+        }
+
+        function openLanguageDialog() {
+            const dialog = document.getElementById('language-dialog');
+            if (dialog) {
+                dialog.classList.remove('hidden');
+                setTimeout(() => {
+                    dialog.classList.remove('opacity-0');
+                    if (dialogContentElement) {
+                        dialogContentElement.classList.remove('scale-95');
+                        dialogContentElement.classList.add('scale-100');
+                    }
+                }, 10);
+            }
+        }
+
+        function closeLanguageDialog() {
+            const dialog = document.getElementById('language-dialog');
+            if (dialog) {
+                dialog.classList.add('opacity-0');
+                if (dialogContentElement) {
+                    dialogContentElement.classList.remove('scale-100');
+                    dialogContentElement.classList.add('scale-95');
+                }
+                setTimeout(() => {
+                    dialog.classList.add('hidden');
+                }, 300);
+            }
+        }
+
+        window.onload = function () {
+            dialogContentElement = document.getElementById('dialog-content');
+
+            const storedLang = localStorage.getItem('madarsaSystemLang');
+            currentLang = (storedLang && storedLang in langData) ? storedLang : 'en';
+
+            const langEnBtn = document.getElementById('lang-en-btn');
+            if (langEnBtn) { langEnBtn.addEventListener('click', () => changeLanguage('en')); }
+
+            const langHiBtn = document.getElementById('lang-hi-btn');
+            if (langHiBtn) { langHiBtn.addEventListener('click', () => changeLanguage('hi')); }
+
+            const langUrBtn = document.getElementById('lang-ur-btn');
+            if (langUrBtn) { langUrBtn.addEventListener('click', () => changeLanguage('ur')); }
+
+            const langToggle = document.getElementById('language-toggle');
+            if (langToggle) { langToggle.addEventListener('click', openLanguageDialog); }
+
+            const dialogCloseBtn = document.getElementById('dialog-close-btn');
+            if (dialogCloseBtn) { dialogCloseBtn.addEventListener('click', closeLanguageDialog); }
+
+            updateContent();
+        };
+    </script>
+
+
+    <!-- HEADER -->
+    <header class="sticky top-0 z-20 w-full p-4 md:px-8 flex items-center justify-between">
+        <!-- Logo & System Name -->
+        <div class="flex items-center space-x-3">
+            <div class="w-8 h-8 rounded-full flex items-center justify-center p-1">
+                <!-- Using external SVG file -->
+                <img src="assets/logo.svg" alt="Logo" class="w-full h-full">
+            </div>
+
+            <!-- System Name & Subtitle -->
+            <div>
+                <h1 data-lang-key="madarsa_system" class="text-xl md:text-2xl font-bold"
+                    style="color: var(--color-text-dark);">Madarsa System</h1>
+                <p data-lang-key="sub_title" class="text-xs md:text-sm font-medium" style="color: var(--color-accent);">
+                    Excellence in Islamic Education Management
+                </p>
+            </div>
+        </div>
+
+
+        <!-- Navigation and Language Toggle -->
+        <nav class="flex items-center space-x-4 md:space-x-6">
+            <!-- Navigation Links -->
+            <a href="about.html" data-lang-key="about"
+                class="text-sm md:text-base font-medium hover:text-primary transition-colors flex-shrink-0"
+                style="color: var(--color-text-dark);">About</a>
+            <a href="privacy.html" data-lang-key="privacy"
+                class="text-sm md:text-base font-medium hover:text-primary transition-colors flex-shrink-0"
+                style="color: var(--color-text-dark);">Privacy</a>
+
+            <!-- Language Change Icon -->
+            <button id="language-toggle" class="p-2 rounded-full hover:bg-gray-100 transition-all flex-shrink-0"
+                aria-label="Change Language">
+
+                <img src="assets/language.svg" alt="Language Icon" class="w-6 h-6"
+                    style="color: var(--color-primary);" />
+            </button>
+
+        </nav>
+    </header>
+
+
+    <!-- --- 2. MAIN CONTENT AREA (Full width) --- -->
+    <main id="main-content-wrapper" class="main-content-area min-h-[calc(100vh-10rem)]">
+
+        <!-- --- 3. PAGE TITLE --- -->
+        <h2 id="page-main-title" class="page-main-title">ABOUT US</h2>
+
+        <!-- --- 4. ABOUT CONTENT SECTION --- -->
+        <section class="content-container max-w-7xl mx-auto px-4">
+
+            <!-- Introduction Section (2-column layout on desktop) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+                <div class="md:col-span-2">
+                    <h3 data-lang-key="about_intro_heading" class="text-3xl font-extrabold mb-4"
+                        style="color: var(--color-text-dark);">
+                        Digital Transformation for Sacred Education
+                    </h3>
+                </div>
+
+                <div>
+                    <p data-lang-key="about_intro_para1" class="text-base leading-relaxed mb-4">
+                        The Madarsa System is a dedicated digital platform designed to modernize the administration and
+                        academic processes of Islamic educational institutions (Madaris). Recognizing the unique
+                        requirements of traditional learning environments, our system integrates the timeless wisdom of
+                        Islamic education with contemporary technological efficiency.
+                    </p>
+                </div>
+                <div>
+                    <p data-lang-key="about_intro_para2" class="text-base leading-relaxed">
+                        We aim to streamline operations, enhance resource management, and provide stakeholders—from
+                        administrators and teachers to students and parents—with transparent, accessible, and secure
+                        tools.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Mission, Vision, Values Section (Grid Layout) -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+
+                <!-- Mission Card -->
+                <div class="info-card">
+                    <h3 data-lang-key="mission_title" class="text-xl font-bold">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mr-3" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M3 10v11m6-9v9m6-12v12m6-9v9M3 10l9-6 9 6" />
+                        </svg>
+                        Our Mission
+                    </h3>
+                    <p data-lang-key="mission_content" class="text-sm leading-relaxed">
+                        To empower Islamic institutions globally by providing robust, easy-to-use, and
+                        culturally-aligned management software, fostering operational excellence and focusing resources
+                        back onto student development and sacred learning.
+                    </p>
+                </div>
+
+                <!-- Vision Card -->
+                <div class="info-card">
+                    <h3 data-lang-key="vision_title" class="text-xl font-bold">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mr-3" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
+                        </svg>
+                        Our Vision
+                    </h3>
+                    <p data-lang-key="vision_content" class="text-sm leading-relaxed">
+                        To be the world's leading provider of Madarsa Management Solutions, setting the standard for
+                        digital integration and administrative efficiency within the global Islamic education sector.
+                    </p>
+                </div>
+
+                <!-- Values Card -->
+                <div class="info-card md:col-span-1">
+                    <h3 data-lang-key="values_title" class="text-xl font-bold">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mr-3" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.28 2.28a1.25 1.25 0 010 1.77L13.72 17.5a1.25 1.25 0 01-1.77 0L8 13.5zM17 10h.01M17 14h.01M17 18h.01" />
+                        </svg>
+                        Core Values
+                    </h3>
+                    <ul class="list-none space-y-1 text-sm font-semibold">
+                        <li data-lang-key="value1">Tawfiq (Divine Guidance)</li>
+                        <li data-lang-key="value2">Amanah (Trustworthiness)</li>
+                        <li data-lang-key="value3">Ihsan (Excellence)</li>
+                        <li data-lang-key="value4">Khidmah (Service)</li>
+                    </ul>
+                </div>
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- --- 5. LANGUAGE CHANGE DIALOG (Consistency) --- -->
+    <div id="language-dialog"
+        class="hidden opacity-0 fixed inset-0 z-50 flex items-center justify-center dialog-backdrop">
+        <div id="dialog-content" class="dialog-content p-6 rounded-xl w-11/12 max-w-sm transform scale-95">
+
+            <div class="flex justify-between items-center mb-4">
+                <h3 data-lang-key="select_language" class="text-lg font-bold">Select Language</h3>
+                <button id="dialog-close-btn" class="text-gray-500 hover:text-gray-900 transition-colors p-1"
+                    aria-label="Close">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                        stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+
+            <p class="mb-4 text-sm font-medium">Current Language: <span id="current-lang-display"
+                    class="font-bold text-primary" style="color: var(--color-primary);">English</span></p>
+
+            <div class="space-y-3">
+                <button id="lang-en-btn"
+                    class="w-full text-center py-3 rounded-lg font-semibold hover:bg-gray-200 transition-colors"
+                    style="border: 1px solid var(--color-primary);">English</button>
+                <button id="lang-hi-btn"
+                    class="w-full text-center py-3 rounded-lg font-semibold hover:bg-gray-200 transition-colors"
+                    style="border: 1px solid var(--color-primary);">हिन्दी (Hindi)</button>
+                <button id="lang-ur-btn"
+                    class="w-full text-center py-3 rounded-lg font-semibold hover:bg-gray-200 transition-colors lang-ur"
+                    style="border: 1px solid var(--color-primary); direction: rtl;">اردو (Urdu)</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- --- 6. FOOTER (Added back for public page consistency) --- -->
+    <footer class="p-8 md:p-12 mt-12">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-16">
+
+            <!-- Company Info & Tagline -->
+            <div>
+                <h4 data-lang-key="footer_company" class="text-xl font-bold mb-3" style="color: var(--color-accent);">
+                    Madarsa Tech</h4>
+                <p data-lang-key="footer_tagline" class="text-sm font-light leading-relaxed">Crafting premium digital
+                    solutions that drive innovation and growth.</p>
+            </div>
+
+            <!-- Quick Links -->
+            <div>
+                <h4 data-lang-key="quick_links" class="text-lg font-semibold mb-3">Quick Links</h4>
+                <ul class="space-y-2 text-sm">
+                    <li><a href="index.html" data-lang-key="home"
+                            class="footer-link hover:text-primary transition-colors">Home</a></li>
+                    <li><a href="about.html" data-lang-key="about"
+                            class="footer-link hover:text-primary transition-colors">About</a></li>
+                    <li><a href="privacy.html" data-lang-key="privacy"
+                            class="footer-link hover:text-primary transition-colors">Privacy</a></li>
+                </ul>
+            </div>
+
+            <!-- Connect With Us -->
+            <div>
+                <h4 data-lang-key="connect" class="text-lg font-semibold mb-3">Connect With Us</h4>
+                <div class="flex space-x-4">
+                    <!-- LinkedIn Icon -->
+                    <a href="#" target="_blank" class="hover:text-primary transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                            fill="currentColor">
+                            <path
+                                d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.518-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.764 7 2.456v6.779z" />
+                        </svg>
+                    </a>
+                    <!-- GitHub Icon -->
+                    <a href="#" target="_blank" class="hover:text-primary transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                            fill="currentColor">
+                            <path
+                                d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.08-.731.084-.716.084-.716 1.192.083 1.815 1.229 1.815 1.229 1.06 1.815 2.813 1.293 3.493.98.107-.76.417-1.292.76-1.594-2.665-.304-5.467-1.334-5.467-5.931 0-1.311.468-2.381 1.236-3.221-.124-.303-.537-1.523.117-3.176 0 0 1.008-.322 3.301 1.229 1.008-.281 2.073-.423 3.138-.428 1.065.005 2.13.147 3.138.428 2.292-1.551 3.301-1.229 3.301-1.229.653 1.653.24 2.873.117 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.923.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.565 21.799 24 17.3 24 12c0-6.627-5.373-12-12-12z" />
+                        </svg>
+                    </a>
+                </div>
+            </div>
+
+            <div class="mt-8 pt-4 border-t border-gray-700 text-center">
+                <p data-lang-key="all_rights" class="text-sm font-light" style="color: var(--color-background);">© 2025
+                    Madarsa Tech. All Rights Reserved.</p>
+            </div>
+    </footer>
+
+
+</body>
+
+</html>
