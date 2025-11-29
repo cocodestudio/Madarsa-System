@@ -22,16 +22,18 @@
             --color-text-light: #FFFFFF;
         }
 
-        /* Local Urdu Font */
+        /* Local Urdu Font - NOTE: Using web-safe Nastaliq is recommended for better compatibility */
         @font-face {
             font-family: "UrduLocal";
+            /* This local path will only work if the file is truly accessible by the browser environment */
             src: url("assets/urdu.ttf") format("truetype");
             font-weight: 400;
             font-style: normal;
         }
 
         /* Google Fonts (Poppins + Hindi only) */
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;700&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap');
+
 
         body {
             font-family: 'Poppins', sans-serif;
@@ -74,7 +76,8 @@
         }
 
         .lang-ur {
-            font-family: 'UrduLocal', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+            /* Fallback to web-safe Nastaliq if local font fails */
+            font-family: 'UrduLocal', 'Noto Nastaliq Urdu', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
             direction: rtl;
             line-height: 1.8;
             text-align: right;
@@ -164,6 +167,7 @@
             border-radius: 0.75rem;
             transition: background-color 0.3s, transform 0.1s;
             box-shadow: 0 4px 10px rgba(0, 166, 147, 0.4);
+            cursor: pointer;
         }
 
         .primary-button:hover {
@@ -201,6 +205,34 @@
         .lang-ur .login-marketing-area {
             text-align: right;
         }
+
+        /* --- Custom Loader Styles --- */
+        #login-loader {
+            display: none;
+            /* Initially hidden */
+            margin-top: 1rem;
+            justify-content: center;
+            align-items: center;
+            height: 2.5rem;
+            /* Match button height */
+        }
+
+        .loader-spinner {
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(0, 166, 147, 0.3);
+            /* Lighter border for background */
+            border-top-color: var(--color-primary);
+            /* Primary color for spinning part */
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
     </style>
 </head>
 
@@ -226,7 +258,8 @@
                 'marketing_title': 'Excellence in Islamic Education Management',
                 'marketing_text': 'Our integrated digital solution empowers Madrasa administration, ensuring streamlined academic, financial, and hostel management with secure, modern technology.',
                 'marketing_quote': '"Verily, with hardship comes ease."',
-                'marketing_source': 'Al-Inshirah (94:6)'
+                'marketing_source': 'Al-Inshirah (94:6)',
+                'loading': 'Logging in...'
             },
             'hi': {
                 'login_title': 'आपका स्वागत है',
@@ -245,7 +278,8 @@
                 'marketing_title': 'इस्लामी शिक्षा प्रबंधन में उत्कृष्टता',
                 'marketing_text': 'हमारा एकीकृत डिजिटल समाधान मदरसा प्रशासन को सशक्त बनाता है, सुरक्षित और आधुनिक तकनीक के साथ सुव्यवस्थित शैक्षणिक, वित्तीय और छात्रावास प्रबंधन सुनिश्चित करता है।',
                 'marketing_quote': '"निस्संदेह, कठिनाई के साथ आसानी है।"',
-                'marketing_source': 'अल-इंशिरह (94:6)'
+                'marketing_source': 'अल-इंशिरह (94:6)',
+                'loading': 'लॉग इन हो रहा है...'
             },
             'ur': {
                 'login_title': 'خوش آمدید',
@@ -264,7 +298,8 @@
                 'marketing_title': 'اسلامی تعلیم کے انتظام میں فضیلت',
                 'marketing_text': 'ہمارا مربوط ڈیجیٹل حل مدرسہ انتظامیہ کو بااختیار بناتا ہے، جو محفوظ، جدید ٹیکنالوجی کے ساتھ منظم تعلیمی، مالیاتی اور ہاسٹل کے انتظام کو یقینی بناتا ہے۔',
                 'marketing_quote': '"یقیناً، مشکل کے ساتھ آسانی ہے۔"',
-                'marketing_source': 'الانشراح (94:6)'
+                'marketing_source': 'الانشراح (94:6)',
+                'loading': 'لاگ اِن ہو رہا ہے...'
             }
         };
 
@@ -288,6 +323,7 @@
             // Handle placeholder updates
             document.getElementById('user-id-input').placeholder = getTranslation('user_id');
             document.getElementById('password-input').placeholder = getTranslation('password');
+            document.getElementById('loader-text').textContent = getTranslation('loading');
 
             // Adjust form alignment for RTL
             document.querySelectorAll('.form-group').forEach(group => {
@@ -341,24 +377,57 @@
             }, 300);
         }
 
-        // Dummy Login Function (for demonstration)
+        // Helper to manage UI state (button/loader)
+        function setLoginState(isLoading) {
+            const buttonContainer = document.getElementById('login-button-container');
+            const loader = document.getElementById('login-loader');
+            const button = document.getElementById('login-btn');
+
+            if (isLoading) {
+                buttonContainer.classList.add('hidden');
+                loader.style.display = 'flex';
+                button.disabled = true;
+            } else {
+                buttonContainer.classList.remove('hidden');
+                loader.style.display = 'none';
+                button.disabled = false;
+            }
+        }
+
+        // --- UPDATED: Dummy Login Function with Local Storage and Loader ---
         function handleLogin(event) {
             event.preventDefault();
             const userId = document.getElementById('user-id-input').value;
             const password = document.getElementById('password-input').value;
 
-            // In a real app, you would send this to a server for authentication
-            if (userId && password) {
-                console.log('Login attempt with:', { userId, password });
-                // Replace alert with a custom message box in production
-                const message = `${getTranslation('login_title')}! Login attempt successful. (Dummy Login)`;
-                console.log(message);
-                alert(message);
-                // Redirect to dashboard on successful login
-                // window.location.href = 'index.html'; 
-            } else {
-                alert('Please enter both User ID and Password.');
-            }
+            // Show loader and disable button immediately
+            setLoginState(true);
+
+            // Demo Credentials
+            const DEMO_USER = 'demo';
+            const DEMO_PASS = '12345';
+
+            // Simulate Network delay (2 seconds)
+            setTimeout(() => {
+                if (userId === DEMO_USER && password === DEMO_PASS) {
+                    // Success
+                    localStorage.setItem('isUserLoggedIn', 'true');
+                    console.log('Login successful. Redirecting to Home.');
+
+                    // Redirect to the home page (index.html)
+                    window.location.href = 'index.html';
+
+                } else if (userId && password) {
+                    // Failure
+                    setLoginState(false); // Hide loader, enable button
+                    console.warn('Authentication failed. Use demo/12345 for testing.');
+                    alert('Invalid credentials. Please use "demo" and "12345" for the demo.');
+                } else {
+                    // Failure (Missing input)
+                    setLoginState(false); // Hide loader, enable button
+                    alert('Please enter both User ID and Password.');
+                }
+            }, 2000); // 2 second delay for realistic loading effect
         }
 
         // --- THREE.JS PARTICLE ANIMATION SETUP ---
@@ -379,7 +448,7 @@
             renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
             renderer.setSize(window.innerWidth, window.innerHeight);
             renderer.setPixelRatio(window.devicePixelRatio);
-            renderer.setClearColor(0x0b151f, 1); // Background color set in CSS, but explicit clear ensures consistency
+            renderer.setClearColor(0x0b151f, 1);
 
             // Create a canvas element and append it
             const canvasElement = renderer.domElement;
@@ -395,7 +464,7 @@
             const positions = [];
             const colors = [];
 
-            const color = new THREE.Color(varValue('--color-primary')); // Base color from theme
+            const color = new THREE.Color(varValue('--color-primary'));
 
             for (let i = 0; i < particleCount; i++) {
                 // Random position within a cube
@@ -408,16 +477,16 @@
                 colors.push(color.r, color.g, color.b);
             }
 
-            // FIX: Changed THREE.Float39Array to THREE.Float32Array
+            // Corrected array type to Float32Array
             geometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(positions), 3));
             geometry.setAttribute('color', new THREE.BufferAttribute(new Float32Array(colors), 3));
 
             const material = new THREE.PointsMaterial({
-                size: 0.2, // Small, fine particles
+                size: 0.2,
                 vertexColors: true,
                 transparent: true,
                 opacity: 0.7,
-                blending: THREE.AdditiveBlending, // Glow effect
+                blending: THREE.AdditiveBlending,
             });
 
             particles = new THREE.Points(geometry, material);
@@ -434,7 +503,6 @@
         }
 
         function varValue(cssVar) {
-            // Helper function to get CSS variable color and convert to hex int
             const style = getComputedStyle(document.body);
             const colorHex = style.getPropertyValue(cssVar).trim().replace('#', '0x');
             return parseInt(colorHex, 16);
@@ -443,12 +511,12 @@
         function animate() {
             requestAnimationFrame(animate);
 
-            // Subtle animation: Rotate the entire particle cloud slowly
+            // Subtle animation
             particles.rotation.x += 0.0001;
             particles.rotation.y += 0.0002;
             particles.rotation.z += 0.0003;
 
-            // Subtle camera movement for depth effect
+            // Subtle camera movement
             camera.position.x = Math.sin(Date.now() * 0.00005) * 0.5;
             camera.position.y = Math.cos(Date.now() * 0.00005) * 0.5;
 
@@ -457,6 +525,16 @@
 
         // Initialize function
         window.onload = function () {
+            // === NEW: Auto-login check (State Check) ===
+            const isLoggedIn = localStorage.getItem('isUserLoggedIn');
+            if (isLoggedIn === 'true') {
+                console.log('User already logged in. Redirecting to Home (index.html).');
+                // Ensure index.html exists in your project structure
+                window.location.href = 'index.html';
+                return;
+            }
+            // ============================================
+
             dialogContentElement = document.getElementById('dialog-content');
             const storedLang = localStorage.getItem('madarsaSystemLang');
             currentLang = (storedLang && storedLang in langData) ? storedLang : 'en';
@@ -485,9 +563,6 @@
             updateContent();
         };
     </script>
-
-    <!-- 3D CANVAS ELEMENT (Placed here but positioned fixed in CSS) -->
-    <!-- The actual canvas element is created and injected by initThreeJS() -->
 
     <!-- HEADER/LANGUAGE SELECTOR ICON -->
     <header
@@ -571,10 +646,20 @@
                         style="color: var(--color-accent);" data-lang-key="forgot_password">Forgot Password?</a>
                 </div>
 
-                <!-- Login Button -->
-                <div class="mt-8">
-                    <button type="submit" class="primary-button" data-lang-key="login_button">Log In</button>
+                <!-- Login Button Container -->
+                <div id="login-button-container" class="mt-8">
+                    <button type="submit" id="login-btn" class="primary-button" data-lang-key="login_button">Log
+                        In</button>
                 </div>
+
+                <!-- NEW: Loader -->
+                <div id="login-loader"
+                    class="mt-8 flex flex-row items-center justify-center space-x-3 bg-gray-100 rounded-xl px-4 py-2 opacity-90">
+                    <div class="loader-spinner"></div>
+                    <span id="loader-text" class="text-sm font-medium" style="color: var(--color-text-dark);">Logging
+                        in...</span>
+                </div>
+
             </form>
 
             <!-- Separator -->
@@ -632,6 +717,5 @@
     </footer>
 
 </body>
-
 
 </html>
