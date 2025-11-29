@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Return Items - Library System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        :root {
+            --color-primary: #00A693;
+            --color-background: #F2F3F4;
+            --color-accent: #E08A27;
+            --color-text-dark: #1A1A1A;
+            --color-text-light: #FFFFFF;
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;700&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap');
+
+        /* Language Styles */
+        body,
+        .lang-en {
+            font-family: 'Poppins', sans-serif;
+            direction: ltr;
+            background-color: var(--color-background);
+        }
+
+        .lang-hi {
+            font-family: 'Noto Sans Devanagari', sans-serif;
+            direction: ltr;
+        }
+
+        .lang-ur {
+            font-family: 'Noto Nastaliq Urdu', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+            direction: rtl;
+            line-height: 1.8;
+            text-align: right;
+        }
+
+        /* Form & Table Inputs */
+        .form-input,
+        select,
+        .form-textarea {
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid #ccc;
+            width: 100%;
+            font-family: inherit;
+        }
+
+        .form-input:focus,
+        select:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(0, 166, 147, 0.2);
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            font-size: 0.875rem;
+        }
+
+        /* Buttons */
+        .primary-button {
+            padding: 0.8rem 1.5rem;
+            background-color: var(--color-primary);
+            color: var(--color-text-light);
+            font-weight: 600;
+            border-radius: 0.75rem;
+            transition: background-color 0.3s, transform 0.1s;
+            box-shadow: 0 4px 10px rgba(0, 166, 147, 0.4);
+            cursor: pointer;
+        }
+
+        .primary-button:hover {
+            background-color: #008f7d;
+            transform: translateY(-1px);
+        }
+
+        .action-button {
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            transition: background-color 0.2s;
+        }
+
+        /* Fixed Header */
+        header {
+            background-color: var(--color-text-light);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            width: 100%;
+            z-index: 10;
+            padding: 1rem 2rem;
+        }
+
+        /* Table Styling */
+        .admin-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 10px;
+        }
+
+        .admin-table th {
+            text-align: left;
+            padding: 1rem 1.5rem;
+            font-size: 0.875rem;
+            color: gray;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        .lang-ur .admin-table th {
+            text-align: right;
+        }
+
+        .admin-table td {
+            padding: 1rem 1.5rem;
+            background-color: white;
+            border-top: 1px solid #eee;
+            border-bottom: 1px solid #eee;
+            font-size: 0.8775rem;
+            font-weight: 500;
+        }
+
+        .admin-table tr td:first-child {
+            border-top-left-radius: 0.75rem;
+            border-bottom-left-radius: 0.75rem;
+        }
+
+        .admin-table tr td:last-child {
+            border-top-right-radius: 0.75rem;
+            border-bottom-right-radius: 0.75rem;
+        }
+
+        .lang-ur .admin-table tr td:first-child {
+            border-radius: 0;
+            border-top-right-radius: 0.75rem;
+            border-bottom-right-radius: 0.75rem;
+        }
+
+        .lang-ur .admin-table tr td:last-child {
+            border-radius: 0;
+            border-top-left-radius: 0.75rem;
+            border-bottom-left-radius: 0.75rem;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .table-container table {
+            min-width: 900px;
+        }
+    </style>
+</head>
+
+<body class="lang-en">
+
+    <script>
+        // Helper to format date YYYY-MM-DD
+        function formatDate(date) {
+            const d = new Date(date);
+            let month = '' + (d.getMonth() + 1);
+            let day = '' + d.getDate();
+            const year = d.getFullYear();
+
+            if (month.length < 2) month = '0' + month;
+            if (day.length < 2) day = '0' + day;
+
+            return [year, month, day].join('-');
+        }
+
+        // --- Dummy Data (Shared Across Library Modules) ---
+        const DUMMY_STUDENTS = [
+            { id: '101', name: 'Ahmed Faraz' },
+            { id: '102', name: 'Ali Raza' },
+            { id: '103', name: 'Sana Fatima' },
+        ];
+
+        // Items currently assigned to students (Simulated data)
+        const DUMMY_ASSIGNED_ITEMS = [
+            { studentId: '101', studentName: 'Ahmed Faraz', itemId: 1, itemName: 'Tafsir Ibn Kathir', quantityAssigned: 1 },
+            { studentId: '102', studentName: 'Ali Raza', itemId: 2, itemName: 'Sahih Bukhari Vol 1', quantityAssigned: 2 },
+            { studentId: '103', studentName: 'Sana Fatima', itemId: 3, itemName: 'Madarsa Monthly Magazine', quantityAssigned: 1 },
+        ];
+
+        let returnHistory = [
+            // Example return record
+            { returnId: 1, studentId: '101', studentName: 'Ahmed Faraz', itemName: 'Tafsir Ibn Kathir', quantity: 1, returnDate: '2025-11-25', condition: 'Good', remarks: 'Returned on time.' },
+        ];
+
+        const RETURN_STORAGE_KEY = 'madarsaLibraryReturns';
+
+        // Initialize/Load Return History
+        function loadHistory() {
+            const storedHistory = localStorage.getItem(RETURN_STORAGE_KEY);
+            if (storedHistory) {
+                try {
+                    returnHistory = JSON.parse(storedHistory);
+                } catch (e) {
+                    console.error("Error loading return history:", e);
+                }
+            } else {
+                saveHistory();
+            }
+        }
+
+        // Save Return History
+        function saveHistory() {
+            localStorage.setItem(RETURN_STORAGE_KEY, JSON.stringify(returnHistory));
+        }
+
+
+        // --- Multilingual Data ---
+        const langData = {
+            'en': {
+                'library_system': 'Library System',
+                'page_title': 'Return Items Form',
+                'back_to_library': 'Back to Library',
+                'logout': 'Logout',
+                'select_student': 'Select Student',
+                'select_item': 'Select Item',
+                'quantity': 'Quantity',
+                'return_date': 'Return Date',
+                'condition': 'Condition',
+                'remarks': 'Remarks',
+                'record_return': 'Record Return',
+                'recent_returns': 'Recent Returns',
+
+                // Table Headers
+                'return_id': 'Return ID',
+                'student_name': 'Student Name',
+                'item_name': 'Item Name',
+                'quantity_returned': 'Quantity Returned',
+                'return_date_table': 'Return Date',
+                'condition_table': 'Condition',
+                'no_records': 'No records found.',
+
+                // Dropdown Options
+                'select_student_placeholder': '-- Select Student --',
+                'select_item_placeholder': '-- Select Item --',
+                'select_condition': '-- Select Condition --',
+                'condition_good': 'Good',
+                'condition_damaged': 'Damaged',
+                'condition_lost': 'Lost/Missing',
+
+                'form_success': 'Item return successfully recorded!',
+                'form_error': 'Please fill all required fields (Student, Item, Quantity, Date, Condition).'
+            },
+            'hi': {
+                'library_system': 'पुस्तकालय प्रणाली',
+                'page_title': 'आइटम वापसी फॉर्म',
+                'back_to_library': 'पुस्तकालय पर वापस',
+                'logout': 'लॉगआउट',
+                'select_student': 'छात्र चुनें',
+                'select_item': 'आइटम चुनें',
+                'quantity': 'मात्रा',
+                'return_date': 'वापसी की तारीख',
+                'condition': 'स्थिति',
+                'remarks': 'टिप्पणियाँ',
+                'record_return': 'वापसी रिकॉर्ड करें',
+                'recent_returns': 'हाल की वापसियां',
+
+                // Table Headers
+                'return_id': 'वापसी आईडी',
+                'student_name': 'छात्र का नाम',
+                'item_name': 'आइटम का नाम',
+                'quantity_returned': 'वापस की गई मात्रा',
+                'return_date_table': 'वापसी की तिथि',
+                'condition_table': 'स्थिति',
+                'no_records': 'कोई रिकॉर्ड नहीं मिला।',
+
+                // Dropdown Options
+                'select_student_placeholder': '-- छात्र चुनें --',
+                'select_item_placeholder': '-- आइटम चुनें --',
+                'select_condition': '-- स्थिति चुनें --',
+                'condition_good': 'अच्छा',
+                'condition_damaged': 'क्षतिग्रस्त',
+                'condition_lost': 'खो गया/लापता',
+
+                'form_success': 'आइटम वापसी सफलतापूर्वक दर्ज की गई!',
+                'form_error': 'कृपया सभी आवश्यक फ़ील्ड (छात्र, आइटम, मात्रा, तिथि, स्थिति) भरें।'
+            },
+            'ur': {
+                'library_system': 'لائبریری نظام',
+                'page_title': 'آئٹم واپسی فارم',
+                'back_to_library': 'لائبریری پر واپس جائیں',
+                'logout': 'لاگ آؤٹ',
+                'select_student': 'طالب علم منتخب کریں',
+                'select_item': 'آئٹم منتخب کریں',
+                'quantity': 'مقدار',
+                'return_date': 'واپسی کی تاریخ',
+                'condition': 'حالت',
+                'remarks': 'ریمارکس',
+                'record_return': 'واپسی ریکارڈ کریں',
+                'recent_returns': 'حالیہ واپسیاں',
+
+                // Table Headers
+                'return_id': 'واپسی آئی ڈی',
+                'student_name': 'طالب علم کا نام',
+                'item_name': 'آئٹم کا نام',
+                'quantity_returned': 'واپس کی گئی مقدار',
+                'return_date_table': 'واپسی کی تاریخ',
+                'condition_table': 'حالت',
+                'no_records': 'کوئی ریکارڈ نہیں ملا۔',
+
+                // Dropdown Options
+                'select_student_placeholder': '-- طالب علم منتخب کریں --',
+                'select_item_placeholder': '-- آئٹم منتخب کریں --',
+                'select_condition': '-- حالت منتخب کریں --',
+                'condition_good': 'اچھی',
+                'condition_damaged': 'خراب',
+                'condition_lost': 'گم/لاپتہ',
+
+                'form_success': 'آئٹم کی واپسی کامیابی سے ریکارڈ ہو گئی!',
+                'form_error': 'براہ کرم تمام مطلوبہ خانے (طالب علم، آئٹم، مقدار، تاریخ، حالت) پُر کریں۔'
+            }
+        };
+
+        let currentLang = 'en';
+
+        function getTranslation(key) {
+            return langData[currentLang][key] || langData['en'][key] || key;
+        }
+
+        // --- Core UI Update Functions ---
+        function updateContent() {
+            document.body.className = 'lang-' + currentLang;
+            const isRtl = currentLang === 'ur';
+
+            document.querySelectorAll('[data-lang-key]').forEach(el => {
+                const key = el.getAttribute('data-lang-key');
+                el.textContent = getTranslation(key);
+            });
+
+            // Apply RTL alignment to form groups
+            document.querySelectorAll('.form-group').forEach(group => {
+                group.style.textAlign = isRtl ? 'right' : 'left';
+            });
+            document.querySelectorAll('.form-input, select, .form-textarea').forEach(input => {
+                input.style.direction = isRtl ? 'rtl' : 'ltr';
+            });
+
+            // Re-populate dropdowns and render table
+            populateDropdowns();
+            renderHistoryTable();
+        }
+
+        function changeLanguage(lang) {
+            if (lang in langData) {
+                currentLang = lang;
+                localStorage.setItem('madarsaSystemLang', lang);
+                updateContent();
+            }
+        }
+
+        function populateDropdowns() {
+            const studentDropdown = document.getElementById('select-student');
+            const itemDropdown = document.getElementById('select-item');
+
+            const selectedStudent = studentDropdown.value;
+            const selectedItem = itemDropdown.value;
+
+            // Student Dropdown
+            studentDropdown.innerHTML = `<option value="" disabled ${!selectedStudent ? 'selected' : ''} data-lang-key="select_student_placeholder">${getTranslation('select_student_placeholder')}</option>`;
+            DUMMY_STUDENTS.forEach(student => {
+                let option = document.createElement('option');
+                option.value = student.id;
+                option.textContent = `${student.id} - ${student.name}`;
+                option.selected = selectedStudent == student.id;
+                studentDropdown.appendChild(option);
+            });
+
+            // Item Dropdown (Dependent on Student Selection)
+            itemDropdown.innerHTML = `<option value="" disabled selected data-lang-key="select_item_placeholder">${getTranslation('select_item_placeholder')}</option>`;
+            if (selectedStudent) {
+                const assignedItems = DUMMY_ASSIGNED_ITEMS.filter(item => item.studentId === selectedStudent);
+                assignedItems.forEach(item => {
+                    let option = document.createElement('option');
+                    option.value = item.itemId;
+                    option.textContent = item.itemName;
+                    option.selected = selectedItem == item.itemId;
+                    itemDropdown.appendChild(option);
+                });
+            }
+        }
+
+        // --- History Table Rendering ---
+        function renderHistoryTable() {
+            const tbody = document.getElementById('recent-returns-body');
+            if (!tbody) return;
+
+            // Reverse order to show latest first (top 5)
+            const history = [...returnHistory].reverse().slice(0, 5);
+            tbody.innerHTML = '';
+
+            if (history.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="text-center text-gray-500">${getTranslation('no_records')}</td></tr>`;
+                return;
+            }
+
+            history.forEach(record => {
+                const tr = document.createElement('tr');
+
+                tr.innerHTML = `
+                    <td>${record.returnId}</td>
+                    <td class="font-bold text-gray-800">${record.studentName}</td>
+                    <td>${record.itemName}</td>
+                    <td>${record.quantity}</td>
+                    <td>${record.returnDate}</td>
+                    <td>${getTranslation(record.condition.toLowerCase()) || record.condition}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // --- Form Submission Logic ---
+        function recordReturn(event) {
+            event.preventDefault();
+            const form = event.target;
+
+            const studentId = form.querySelector('#select-student').value;
+            const itemId = form.querySelector('#select-item').value;
+            const quantity = parseInt(form.querySelector('#quantity').value);
+            const returnDate = form.querySelector('#return-date').value;
+            const condition = form.querySelector('#item-condition').value;
+            const remarks = form.querySelector('#item-remarks').value;
+
+            if (!studentId || !itemId || !quantity || !returnDate || !condition) {
+                alert(getTranslation('form_error'));
+                return false;
+            }
+
+            if (quantity <= 0) {
+                alert("Quantity must be a positive number.");
+                return false;
+            }
+
+            const student = DUMMY_STUDENTS.find(s => s.id === studentId);
+            const assignedItem = DUMMY_ASSIGNED_ITEMS.find(a => a.studentId === studentId && a.itemId == itemId);
+
+
+            // Basic Quantity Validation (Checking against assigned quantity)
+            if (!assignedItem || quantity > assignedItem.quantityAssigned) {
+                alert(`Error: Quantity exceeds the amount assigned to this student (${assignedItem ? assignedItem.quantityAssigned : 0}).`);
+                return false;
+            }
+
+
+            // Create new record
+            const newReturnId = returnHistory.length > 0 ? Math.max(...returnHistory.map(r => r.returnId)) + 1 : 1;
+
+            const newRecord = {
+                returnId: newReturnId,
+                studentId,
+                studentName: student.name,
+                itemName: assignedItem.itemName,
+                quantity,
+                returnDate,
+                condition,
+                remarks
+            };
+
+            // Add to history and save
+            returnHistory.push(newRecord);
+            saveHistory();
+
+            console.log('Item Returned (Dummy Save):', newRecord);
+            alert(getTranslation('form_success'));
+
+            // Reset form fields
+            form.reset();
+            form.querySelector('#return-date').value = formatDate(new Date());
+
+            // Refresh table and dropdowns
+            updateContent();
+            return false;
+        }
+
+
+        // Initialize content and language
+        window.onload = function () {
+            loadHistory(); // Load data
+            const storedLang = localStorage.getItem('madarsaSystemLang');
+            currentLang = (storedLang && storedLang in langData) ? storedLang : 'en';
+
+            // Set default date to today
+            document.getElementById('return-date').value = formatDate(new Date());
+
+            // Initial content update (includes populating dropdown)
+            updateContent();
+
+            // Attach form listener
+            document.getElementById('return-form').addEventListener('submit', recordReturn);
+
+            // Attach dynamic listener for student dropdown change
+            document.getElementById('select-student').addEventListener('change', updateContent);
+        };
+    </script>
+
+    <!-- HEADER -->
+    <header>
+        <div class="max-w-7xl mx-auto w-full flex justify-between items-center">
+            <!-- Left: Back Button & Title -->
+            <div class="flex items-center space-x-4">
+                <a href="library_system.html" class="action-button bg-gray-100 text-gray-700 hover:bg-gray-200"
+                    data-lang-key="back_to_library">Back to Library</a>
+                <h1 class="text-xl font-bold" data-lang-key="page_title" style="color: var(--color-primary);">Return
+                    Items Form</h1>
+            </div>
+
+            <!-- Right: Language Switch -->
+            <div class="flex items-center space-x-2">
+                <select onchange="changeLanguage(this.value)" class="bg-gray-100 rounded-lg p-1 text-sm">
+                    <option value="en" selected>English</option>
+                    <option value="hi">हिन्दी</option>
+                    <option value="ur">اردو</option>
+                </select>
+                <button onclick="window.location.href='login.html'"
+                    class="text-sm font-semibold text-red-600 hover:text-red-800 transition-colors ml-4"
+                    data-lang-key="logout">Logout</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="max-w-4xl mx-auto w-full p-4 md:p-8">
+
+        <!-- Return Item Form -->
+        <div class="bg-white p-6 md:p-10 rounded-xl shadow-2xl mb-8">
+
+            <h2 class="text-xl font-bold mb-6" data-lang-key="page_title" style="color: var(--color-primary);">Return
+                Items Form</h2>
+
+            <form id="return-form">
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+
+                    <!-- Select Student -->
+                    <div class="form-group md:col-span-2">
+                        <label for="select-student" class="form-label"><span class="text-red-500">*</span> <span
+                                data-lang-key="select_student">Select Student</span></label>
+                        <select id="select-student" class="form-input" required>
+                            <!-- Options injected by JS -->
+                        </select>
+                    </div>
+
+                    <!-- Select Item (Dependent on Student) -->
+                    <div class="form-group md:col-span-2">
+                        <label for="select-item" class="form-label"><span class="text-red-500">*</span> <span
+                                data-lang-key="select_item">Select Item</span></label>
+                        <select id="select-item" class="form-input" required>
+                            <!-- Options injected by JS -->
+                        </select>
+                    </div>
+
+                    <!-- Quantity -->
+                    <div class="form-group">
+                        <label for="quantity" class="form-label"><span class="text-red-500">*</span> <span
+                                data-lang-key="quantity">Quantity</span></label>
+                        <input type="number" id="quantity" class="form-input" min="1" step="1" value="1" required>
+                    </div>
+
+                    <!-- Return Date -->
+                    <div class="form-group">
+                        <label for="return-date" class="form-label"><span class="text-red-500">*</span> <span
+                                data-lang-key="return_date">Return Date</span></label>
+                        <input type="date" id="return-date" class="form-input" required>
+                    </div>
+
+                    <!-- Condition -->
+                    <div class="form-group md:col-span-2">
+                        <label for="item-condition" class="form-label"><span class="text-red-500">*</span> <span
+                                data-lang-key="condition">Condition</span></label>
+                        <select id="item-condition" class="form-input" required>
+                            <option value="" disabled selected data-lang-key="select_condition">-- Select Condition --
+                            </option>
+                            <option value="Good" data-lang-key="condition_good">Good</option>
+                            <option value="Damaged" data-lang-key="condition_damaged">Damaged</option>
+                            <option value="Lost" data-lang-key="condition_lost">Lost/Missing</option>
+                        </select>
+                    </div>
+
+                    <!-- Remarks (Full Width) -->
+                    <div class="form-group md:col-span-2">
+                        <label for="item-remarks" class="form-label"><span
+                                data-lang-key="remarks">Remarks</span></label>
+                        <textarea id="item-remarks" class="form-textarea h-16"></textarea>
+                    </div>
+
+                </div>
+
+                <!-- Record Return Button -->
+                <div class="flex justify-start mt-8">
+                    <button type="submit" class="primary-button" data-lang-key="record_return">Record Return</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Recent Returns History Table -->
+        <div class="bg-white p-6 md:p-8 rounded-xl shadow-2xl">
+            <h2 class="text-xl font-bold mb-6" data-lang-key="recent_returns" style="color: var(--color-primary);">
+                Recent Returns</h2>
+
+            <div class="table-container">
+                <table class="admin-table">
+                    <thead>
+                        <tr class="bg-gray-100 rounded-lg">
+                            <th data-lang-key="return_id">Return ID</th>
+                            <th data-lang-key="student_name">Student Name</th>
+                            <th data-lang-key="item_name">Item Name</th>
+                            <th data-lang-key="quantity_returned">Quantity Returned</th>
+                            <th data-lang-key="return_date_table">Return Date</th>
+                            <th data-lang-key="condition_table">Condition</th>
+                        </tr>
+                    </thead>
+                    <tbody id="recent-returns-body">
+                        <!-- History data will be injected here by JS -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="text-center text-sm text-gray-500 mt-6">
+                <!-- Footer Info -->
+            </div>
+
+        </div>
+    </main>
+</body>
+
+</html>

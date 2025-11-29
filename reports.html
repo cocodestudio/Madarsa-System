@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports Management - Hostel System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+    <style>
+        :root {
+            --color-primary: #00A693;
+            --color-background: #F2F3F4;
+            --color-accent: #E08A27;
+            --color-text-dark: #1A1A1A;
+            --color-text-light: #FFFFFF;
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;700&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap');
+
+        /* Language Styles */
+        body,
+        .lang-en {
+            font-family: 'Poppins', sans-serif;
+            direction: ltr;
+            background-color: var(--color-background);
+        }
+
+        .lang-hi {
+            font-family: 'Noto Sans Devanagari', sans-serif;
+            direction: ltr;
+        }
+
+        .lang-ur {
+            font-family: 'Noto Nastaliq Urdu', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+            direction: rtl;
+            line-height: 1.8;
+            text-align: right;
+        }
+
+        /* Form & Inputs */
+        .form-input,
+        select {
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid #ccc;
+            width: 100%;
+            font-family: inherit;
+        }
+
+        .form-input:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(0, 166, 147, 0.2);
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            font-size: 0.875rem;
+        }
+
+        /* Buttons */
+        .primary-button {
+            padding: 0.8rem 1.5rem;
+            background-color: var(--color-primary);
+            color: var(--color-text-light);
+            font-weight: 600;
+            border-radius: 0.75rem;
+            transition: background-color 0.3s, transform 0.1s;
+            box-shadow: 0 4px 10px rgba(0, 166, 147, 0.4);
+            cursor: pointer;
+        }
+
+        .primary-button:hover {
+            background-color: #008f7d;
+            transform: translateY(-1px);
+        }
+
+        .action-button {
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            transition: background-color 0.2s;
+        }
+
+        /* Fixed Header */
+        header {
+            background-color: var(--color-text-light);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            width: 100%;
+            z-index: 10;
+            padding: 1rem 2rem;
+        }
+
+        /* Report Card Styling */
+        .report-card {
+            background-color: white;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s;
+        }
+
+        .report-card:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Data Visualization Area */
+        #report-display-area {
+            min-height: 400px;
+            background-color: white;
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+    </style>
+</head>
+
+<body class="lang-en">
+
+    <script>
+        // Helper function to format date YYYY-MM-DD (FIXED: Added this function)
+        function formatDate(date) {
+            const d = new Date(date);
+            let month = '' + (d.getMonth() + 1);
+            let day = '' + d.getDate();
+            const year = d.getFullYear();
+
+            if (month.length < 2) month = '0' + month;
+            if (day.length < 2) day = '0' + day;
+
+            return [year, month, day].join('-');
+        }
+
+        // --- Dummy Data ---
+        // Dummy function to simulate fetching structured data
+        function getDummyReportData(reportType, filters) {
+            const date = filters.endDate || new Date().getFullYear();
+
+            switch (reportType) {
+                case 'occupancy':
+                    return {
+                        title: getTranslation('occupancy_title'),
+                        type: 'Doughnut',
+                        data: {
+                            labels: [getTranslation('checked_in'), getTranslation('available'), getTranslation('checked_out')],
+                            datasets: [{
+                                data: [35, 15, 10], // Sample data
+                                backgroundColor: ['#00A693', '#ffc107', '#dc3545'],
+                                hoverOffset: 4
+                            }]
+                        }
+                    };
+                case 'complaint_summary':
+                    return {
+                        title: getTranslation('complaint_title'),
+                        type: 'Bar',
+                        data: {
+                            labels: [getTranslation('Maintenance'), getTranslation('Discipline'), getTranslation('Kitchen/Food')],
+                            datasets: [{
+                                label: getTranslation('resolved'),
+                                data: [5, 2, 1],
+                                backgroundColor: '#00A693'
+                            }, {
+                                label: getTranslation('pending_or_new'),
+                                data: [3, 1, 2],
+                                backgroundColor: '#ffc107'
+                            }]
+                        }
+                    };
+                case 'attendance_summary':
+                    return {
+                        title: getTranslation('attendance_title'),
+                        type: 'Line',
+                        data: {
+                            labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+                            datasets: [{
+                                label: getTranslation('attendance_rate'),
+                                data: [95, 98, 92, 99, 97],
+                                borderColor: '#E08A27',
+                                tension: 0.3
+                            }]
+                        }
+                    };
+                default:
+                    return { title: 'Select a Report', data: null, type: 'Placeholder' };
+            }
+        }
+
+        // --- Multilingual Data ---
+        const langData = {
+            'en': {
+                'hostel_system': 'Hostel System',
+                'page_title': 'Hostel Reports',
+                'description': 'Generate statistical reports, charts, and data summaries for informed decision-making.',
+                'back_to_hostel': 'Back to Hostel',
+                'logout': 'Logout',
+                'filter_options': 'Report Filters',
+                'start_date': 'Start Date',
+                'end_date': 'End Date',
+                'room_type': 'Room Type',
+                'all_types': 'All Types',
+                'standard': 'Standard',
+                'premium': 'Premium',
+                'generate_report': 'Generate Report',
+                'data_visualization': 'Report Visualization',
+
+                // Report Types
+                'occupancy_title': 'Occupancy Status',
+                'attendance_title': 'Attendance Summary',
+                'complaint_title': 'Complaint Status Summary',
+
+                // Labels
+                'checked_in': 'Checked-In',
+                'available': 'Available Beds',
+                'checked_out': 'Checked-Out',
+                'resolved': 'Resolved',
+                'pending_or_new': 'Pending/New',
+                'Maintenance': 'Maintenance',
+                'Discipline': 'Discipline',
+                'Kitchen/Food': 'Kitchen/Food',
+                'attendance_rate': 'Attendance Rate (%)',
+                'select_report_prompt': 'Select a report card above to generate data.'
+            },
+            'hi': {
+                'hostel_system': 'छात्रावास प्रणाली',
+                'page_title': 'छात्रावास रिपोर्ट्स',
+                'description': 'सूचित निर्णय लेने के लिए सांख्यिकीय रिपोर्ट, चार्ट और डेटा सारांश बनाएं।',
+                'back_to_hostel': 'छात्रावास पर वापस',
+                'logout': 'लॉगआउट',
+                'filter_options': 'रिपोर्ट फ़िल्टर',
+                'start_date': 'प्रारंभ तिथि',
+                'end_date': 'समाप्ति तिथि',
+                'room_type': 'कमरे का प्रकार',
+                'all_types': 'सभी प्रकार',
+                'standard': 'मानक',
+                'premium': 'प्रीमियम',
+                'generate_report': 'रिपोर्ट बनाएं',
+                'data_visualization': 'रिपोर्ट विज़ुअलाइज़ेशन',
+
+                // Report Types
+                'occupancy_title': 'उपयोग की स्थिति',
+                'attendance_title': 'उपस्थिति सारांश',
+                'complaint_title': 'शिकायत स्थिति सारांश',
+
+                // Labels
+                'checked_in': 'चेक-इन',
+                'available': 'उपलब्ध बेड',
+                'checked_out': 'चेक-आउट',
+                'resolved': 'हल किया गया',
+                'pending_or_new': 'विचाराधीन/नया',
+                'Maintenance': 'रखरखाव',
+                'Discipline': 'अनुशासन',
+                'Kitchen/Food': 'रसोई/भोजन',
+                'attendance_rate': 'उपस्थिति दर (%)',
+                'select_report_prompt': 'डेटा बनाने के लिए ऊपर एक रिपोर्ट कार्ड चुनें।'
+            },
+            'ur': {
+                'hostel_system': 'ہاسٹل نظام',
+                'page_title': 'ہاسٹل رپورٹس',
+                'description': 'باخبر فیصلہ سازی کے لیے شماریاتی رپورٹس، چارٹس، اور ڈیٹا خلاصے بنائیں۔',
+                'back_to_hostel': 'ہاسٹل پر واپس جائیں',
+                'logout': 'لاگ آؤٹ',
+                'filter_options': 'رپورٹ فلٹرز',
+                'start_date': 'شروع کی تاریخ',
+                'end_date': 'آخری تاریخ',
+                'room_type': 'کمرے کی قسم',
+                'all_types': 'تمام اقسام',
+                'standard': 'معیاری',
+                'premium': 'پریمیم',
+                'generate_report': 'رپورٹ بنائیں',
+                'data_visualization': 'رپورٹ کا تصور',
+
+                // Report Types
+                'occupancy_title': 'استعمال کی حیثیت',
+                'attendance_title': 'حاضری کا خلاصہ',
+                'complaint_title': 'شکایت کی حیثیت کا خلاصہ',
+
+                // Labels
+                'checked_in': 'چیک اِن',
+                'available': 'دستیاب بیڈ',
+                'checked_out': 'چیک آؤٹ',
+                'resolved': 'حل شدہ',
+                'pending_or_new': 'زیر التوا/نیا',
+                'Maintenance': 'دیکھ بھال',
+                'Discipline': 'نظم و ضبط',
+                'Kitchen/Food': 'باورچی خانہ/کھانا',
+                'attendance_rate': 'حاضری کی شرح (%)',
+                'select_report_prompt': 'ڈیٹا تیار کرنے کے لیے اوپر ایک رپورٹ کارڈ منتخب کریں۔'
+            }
+        };
+
+        let currentLang = 'en';
+        let currentChart = null;
+        let selectedReport = null;
+
+        function getTranslation(key) {
+            return langData[currentLang][key] || langData['en'][key] || key;
+        }
+
+        // --- Core UI Update Functions ---
+        function updateContent() {
+            document.body.className = 'lang-' + currentLang;
+
+            document.querySelectorAll('[data-lang-key]').forEach(el => {
+                const key = el.getAttribute('data-lang-key');
+                el.textContent = getTranslation(key);
+            });
+
+            // Re-generate the report if one is selected
+            if (selectedReport) {
+                generateReport(selectedReport);
+            } else {
+                renderPlaceholder();
+            }
+        }
+
+        function changeLanguage(lang) {
+            if (lang in langData) {
+                currentLang = lang;
+                localStorage.setItem('madarsaSystemLang', lang);
+                updateContent();
+            }
+        }
+
+        // --- Report Generation Logic ---
+        function selectReportCard(type) {
+            selectedReport = type;
+            // Highlight the selected card
+            document.querySelectorAll('.report-card').forEach(card => {
+                card.classList.remove('ring-4', 'ring-primary', 'ring-opacity-50');
+                card.classList.remove('ring-4', 'ring-[#00A693]', 'ring-opacity-50');
+            });
+            const selectedCardElement = document.getElementById(`card-${type}`);
+            if (selectedCardElement) {
+                selectedCardElement.classList.add('ring-4', 'ring-[#00A693]', 'ring-opacity-50');
+            }
+
+            // Force report generation on selection
+            generateReport(type);
+        }
+
+        function renderPlaceholder() {
+            const displayArea = document.getElementById('report-display-area');
+            const isRtl = currentLang === 'ur';
+            const alignment = isRtl ? 'text-right' : 'text-left';
+
+            displayArea.innerHTML = `
+                <div class="h-full flex items-center justify-center">
+                    <div class="text-center p-8 bg-gray-50 rounded-lg ${alignment}">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-12 h-12 mx-auto mb-4 text-gray-400">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m5.25 5.625h-1.5m1.5 0H21m0 0v-5.25m0 5.25v2.25" />
+                        </svg>
+                        <h3 class="text-lg font-semibold text-gray-700">${getTranslation('data_visualization')}</h3>
+                        <p class="text-sm text-gray-500" data-lang-key="select_report_prompt">${getTranslation('select_report_prompt')}</p>
+                    </div>
+                </div>
+            `;
+            if (currentChart) {
+                currentChart.destroy();
+                currentChart = null;
+            }
+        }
+
+        function generateReport(reportType) {
+            const filters = {
+                startDate: document.getElementById('start-date').value,
+                endDate: document.getElementById('end-date').value,
+                roomType: document.getElementById('room-type-filter').value
+            };
+
+            const reportData = getDummyReportData(reportType, filters);
+            const displayArea = document.getElementById('report-display-area');
+            const isRtl = currentLang === 'ur';
+            const alignment = isRtl ? 'text-right' : 'text-left';
+
+            displayArea.innerHTML = `
+                <h3 class="text-2xl font-bold mb-6 ${alignment}" style="color: var(--color-text-dark);">${reportData.title}</h3>
+                <div class="w-full mx-auto md:w-3/4">
+                    <canvas id="report-chart"></canvas>
+                </div>
+                <div class="mt-6 text-sm text-gray-600 ${alignment}">
+                    <p>Report Generated: ${new Date().toLocaleDateString()}</p>
+                    <p>Filters: ${filters.startDate || 'All Dates'} to ${filters.endDate || 'Current Date'}</p>
+                </div>
+            `;
+
+            // Destroy previous chart instance
+            if (currentChart) {
+                currentChart.destroy();
+            }
+
+            // Render Chart
+            const ctx = document.getElementById('report-chart').getContext('2d');
+
+            // Chart.js requires datasets to be correctly structured for the chart type
+            const config = {
+                type: reportData.type.toLowerCase(),
+                data: reportData.data,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                usePointStyle: true,
+                                font: {
+                                    family: 'Poppins'
+                                }
+                            }
+                        },
+                        title: {
+                            display: false,
+                        }
+                    },
+                    scales: reportData.type !== 'Doughnut' ? {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    } : {}
+                }
+            };
+
+            currentChart = new Chart(ctx, config);
+        }
+
+        // Initialize content and language
+        window.onload = function () {
+            const storedLang = localStorage.getItem('madarsaSystemLang');
+            currentLang = (storedLang && storedLang in langData) ? storedLang : 'en';
+
+            // Set default dates
+            const today = formatDate(new Date());
+            document.getElementById('end-date').value = today;
+
+            // Initial content update (will render placeholder)
+            updateContent();
+            renderPlaceholder();
+
+            // Attach event listener to generate button
+            document.getElementById('generate-btn').addEventListener('click', () => {
+                if (selectedReport) {
+                    generateReport(selectedReport);
+                } else {
+                    alert(getTranslation('select_report_prompt'));
+                }
+            });
+        };
+    </script>
+
+    <!-- HEADER -->
+    <header>
+        <div class="max-w-7xl mx-auto w-full flex justify-between items-center">
+            <!-- Left: Back Button & Title -->
+            <div class="flex items-center space-x-4">
+                <a href="hostel_system.html" class="action-button bg-gray-100 text-gray-700 hover:bg-gray-200"
+                    data-lang-key="back_to_hostel">Back to Hostel</a>
+                <h1 class="text-xl font-bold" data-lang-key="page_title" style="color: var(--color-primary);">Hostel
+                    Reports</h1>
+            </div>
+
+            <!-- Right: Language Switch -->
+            <div class="flex items-center space-x-2">
+                <select onchange="changeLanguage(this.value)" class="bg-gray-100 rounded-lg p-1 text-sm">
+                    <option value="en" selected>English</option>
+                    <option value="hi">हिन्दी</option>
+                    <option value="ur">اردو</option>
+                </select>
+                <button onclick="window.location.href='login.html'"
+                    class="text-sm font-semibold text-red-600 hover:text-red-800 transition-colors ml-4"
+                    data-lang-key="logout">Logout</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="max-w-7xl mx-auto w-full p-4 md:p-8">
+
+        <!-- Report Filters -->
+        <div class="bg-white p-6 md:p-8 rounded-xl shadow-2xl mb-8">
+            <h3 class="text-lg font-bold mb-4" data-lang-key="filter_options">Report Filters</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
+
+                <!-- Start Date -->
+                <div class="form-group">
+                    <label for="start-date" class="form-label" data-lang-key="start_date">Start Date</label>
+                    <input type="date" id="start-date" class="form-input">
+                </div>
+
+                <!-- End Date -->
+                <div class="form-group">
+                    <label for="end-date" class="form-label" data-lang-key="end_date">End Date</label>
+                    <input type="date" id="end-date" class="form-input">
+                </div>
+
+                <!-- Room Type Filter -->
+                <div class="form-group">
+                    <label for="room-type-filter" class="form-label" data-lang-key="room_type">Room Type</label>
+                    <select id="room-type-filter" class="form-input">
+                        <option value="" data-lang-key="all_types">All Types</option>
+                        <option value="standard" data-lang-key="standard">Standard</option>
+                        <option value="premium" data-lang-key="premium">Premium</option>
+                    </select>
+                </div>
+
+                <!-- Generate Button -->
+                <div class="flex items-end form-group">
+                    <button id="generate-btn" class="primary-button w-full" data-lang-key="generate_report">Generate
+                        Report</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Report Cards (Selection) -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+
+            <!-- Occupancy Report Card -->
+            <div id="card-occupancy" class="report-card cursor-pointer" onclick="selectReportCard('occupancy')">
+                <h4 class="text-xl font-semibold mb-2" data-lang-key="occupancy_title">Occupancy Status</h4>
+                <p class="text-sm text-gray-500">Total beds, current check-ins, and availability.</p>
+            </div>
+
+            <!-- Attendance Summary Report Card -->
+            <div id="card-attendance_summary" class="report-card cursor-pointer"
+                onclick="selectReportCard('attendance_summary')">
+                <h4 class="text-xl font-semibold mb-2" data-lang-key="attendance_title">Attendance Summary</h4>
+                <p class="text-sm text-gray-500">Daily presence rates and absence history trends.</p>
+            </div>
+
+            <!-- Complaint Summary Report Card -->
+            <div id="card-complaint_summary" class="report-card cursor-pointer"
+                onclick="selectReportCard('complaint_summary')">
+                <h4 class="text-xl font-semibold mb-2" data-lang-key="complaint_title">Complaint Status Summary</h4>
+                <p class="text-sm text-gray-500">Resolved vs. pending complaints categorized by type.</p>
+            </div>
+        </div>
+
+        <!-- Report Display Area -->
+        <div id="report-display-area" class="h-full">
+            <!-- Dynamic Chart/Data Visualization will be rendered here -->
+        </div>
+
+    </main>
+
+</body>
+
+</html>

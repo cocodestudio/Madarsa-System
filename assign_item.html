@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assign Item - Library System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        :root {
+            --color-primary: #00A693;
+            --color-background: #F2F3F4;
+            --color-accent: #E08A27;
+            --color-text-dark: #1A1A1A;
+            --color-text-light: #FFFFFF;
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;700&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap');
+
+        /* Language Styles */
+        body,
+        .lang-en {
+            font-family: 'Poppins', sans-serif;
+            direction: ltr;
+            background-color: var(--color-background);
+        }
+
+        .lang-hi {
+            font-family: 'Noto Sans Devanagari', sans-serif;
+            direction: ltr;
+        }
+
+        .lang-ur {
+            font-family: 'Noto Nastaliq Urdu', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+            direction: rtl;
+            line-height: 1.8;
+            text-align: right;
+        }
+
+        /* Form & Table Inputs */
+        .form-input,
+        select,
+        .form-textarea {
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid #ccc;
+            width: 100%;
+            font-family: inherit;
+        }
+
+        .form-input:focus,
+        select:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(0, 166, 147, 0.2);
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            font-size: 0.875rem;
+        }
+
+        /* Buttons */
+        .primary-button {
+            padding: 0.8rem 1.5rem;
+            background-color: var(--color-primary);
+            color: var(--color-text-light);
+            font-weight: 600;
+            border-radius: 0.75rem;
+            transition: background-color 0.3s, transform 0.1s;
+            box-shadow: 0 4px 10px rgba(0, 166, 147, 0.4);
+            cursor: pointer;
+        }
+
+        .primary-button:hover {
+            background-color: #008f7d;
+            transform: translateY(-1px);
+        }
+
+        .action-button {
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            transition: background-color 0.2s;
+        }
+
+        /* Fixed Header */
+        header {
+            background-color: var(--color-text-light);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            width: 100%;
+            z-index: 10;
+            padding: 1rem 2rem;
+        }
+
+        /* Table Styling */
+        .admin-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 10px;
+        }
+
+        .admin-table th {
+            text-align: left;
+            padding: 1rem 1.5rem;
+            font-size: 0.875rem;
+            color: gray;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        .lang-ur .admin-table th {
+            text-align: right;
+        }
+
+        .admin-table td {
+            padding: 1rem 1.5rem;
+            background-color: white;
+            border-top: 1px solid #eee;
+            border-bottom: 1px solid #eee;
+            font-size: 0.8775rem;
+            font-weight: 500;
+        }
+
+        .admin-table tr td:first-child {
+            border-top-left-radius: 0.75rem;
+            border-bottom-left-radius: 0.75rem;
+        }
+
+        .admin-table tr td:last-child {
+            border-top-right-radius: 0.75rem;
+            border-bottom-right-radius: 0.75rem;
+        }
+
+        .lang-ur .admin-table tr td:first-child {
+            border-radius: 0;
+            border-top-right-radius: 0.75rem;
+            border-bottom-right-radius: 0.75rem;
+        }
+
+        .lang-ur .admin-table tr td:last-child {
+            border-radius: 0;
+            border-top-left-radius: 0.75rem;
+            border-bottom-left-radius: 0.75rem;
+        }
+    </style>
+</head>
+
+<body class="lang-en">
+
+    <script>
+        // Helper to format date YYYY-MM-DD
+        function formatDate(date) {
+            const d = new Date(date);
+            let month = '' + (d.getMonth() + 1);
+            let day = '' + d.getDate();
+            const year = d.getFullYear();
+
+            if (month.length < 2) month = '0' + month;
+            if (day.length < 2) day = '0' + day;
+
+            return [year, month, day].join('-');
+        }
+
+        // --- Dummy Data ---
+        const DUMMY_STUDENTS = [
+            { id: '101', name: 'Ahmed Faraz' },
+            { id: '102', name: 'Ali Raza' },
+            { id: '103', name: 'Sana Fatima' },
+        ];
+
+        const DUMMY_ITEMS = [
+            { id: 1, name: "Tafsir Ibn Kathir" },
+            { id: 2, name: "Sahih Bukhari Vol 1" },
+            { id: 3, name: "Madarsa Monthly Magazine" },
+        ];
+
+        let assignmentHistory = [
+            { studentId: '101', studentName: 'Ahmed Faraz', itemId: 2, itemName: 'Sahih Bukhari Vol 1', quantity: 1, dateAssigned: '2025-08-18' },
+            { studentId: '102', studentName: 'Ali Raza', itemId: 3, itemName: 'Madarsa Monthly Magazine', quantity: 1, dateAssigned: '2025-08-09' },
+        ];
+
+        const ASSIGNMENT_STORAGE_KEY = 'madarsaLibraryAssignments';
+
+        // Initialize/Load Assignment History
+        function loadHistory() {
+            const storedHistory = localStorage.getItem(ASSIGNMENT_STORAGE_KEY);
+            if (storedHistory) {
+                try {
+                    assignmentHistory = JSON.parse(storedHistory);
+                } catch (e) {
+                    console.error("Error loading assignment history:", e);
+                }
+            } else {
+                saveHistory();
+            }
+        }
+
+        // Save Assignment History
+        function saveHistory() {
+            localStorage.setItem(ASSIGNMENT_STORAGE_KEY, JSON.stringify(assignmentHistory));
+        }
+
+
+        // --- Multilingual Data ---
+        const langData = {
+            'en': {
+                'library_system': 'Library System',
+                'page_title': 'Assign Item to Student',
+                'back_to_library': 'Back to Library',
+                'logout': 'Logout',
+                'dakhila_no': 'Dakhila No.',
+                'item': 'Item',
+                'quantity': 'Quantity',
+                'date': 'Date',
+                'assign_item': 'Assign Item',
+                'history_title': 'Assign Item to Student - History',
+
+                // Table Headers
+                'student_name': 'Student Name',
+                'item_name': 'Item Name',
+                'quantity_short': 'Quantity',
+                'date_assigned': 'Date Assigned',
+
+                // Dropdown Options
+                'select_dakhila': 'Select Dakhila No',
+                'select_item_placeholder': 'Select Item',
+
+                'form_success': 'Item successfully assigned to student!',
+                'form_error': 'Please fill all required fields.'
+            },
+            'hi': {
+                'library_system': 'पुस्तकालय प्रणाली',
+                'page_title': 'छात्र को आइटम असाइन करें',
+                'back_to_library': 'पुस्तकालय पर वापस',
+                'logout': 'लॉगआउट',
+                'dakhila_no': 'दाखिला संख्या',
+                'item': 'आइटम',
+                'quantity': 'मात्रा',
+                'date': 'तिथि',
+                'assign_item': 'आइटम असाइन करें',
+                'history_title': 'छात्र को आइटम असाइन करें - इतिहास',
+
+                // Table Headers
+                'student_name': 'छात्र का नाम',
+                'item_name': 'आइटम का नाम',
+                'quantity_short': 'मात्रा',
+                'date_assigned': 'असाइन करने की तिथि',
+
+                // Dropdown Options
+                'select_dakhila': 'दाखिला संख्या चुनें',
+                'select_item_placeholder': 'आइटम चुनें',
+
+                'form_success': 'आइटम सफलतापूर्वक छात्र को असाइन किया गया!',
+                'form_error': 'कृपया सभी आवश्यक फ़ील्ड भरें।'
+            },
+            'ur': {
+                'library_system': 'لائبریری نظام',
+                'page_title': 'آئٹم طالب علم کو تفویض کریں',
+                'back_to_library': 'لائبریری پر واپس جائیں',
+                'logout': 'لاگ آؤٹ',
+                'dakhila_no': 'داخلہ نمبر',
+                'item': 'آئٹم',
+                'quantity': 'مقدار',
+                'date': 'تاریخ',
+                'assign_item': 'آئٹم تفویض کریں',
+                'history_title': 'آئٹم طالب علم کو تفویض کریں - تاریخ',
+
+                // Table Headers
+                'student_name': 'طالب علم کا نام',
+                'item_name': 'آئٹم کا نام',
+                'quantity_short': 'مقدار',
+                'date_assigned': 'تفویض کی تاریخ',
+
+                // Dropdown Options
+                'select_dakhila': 'داخلہ نمبر منتخب کریں',
+                'select_item_placeholder': 'آئٹم منتخب کریں',
+
+                'form_success': 'آئٹم کامیابی سے طالب علم کو تفویض کر دیا گیا!',
+                'form_error': 'براہ کرم تمام مطلوبہ خانے پُر کریں۔'
+            }
+        };
+
+        let currentLang = 'en';
+
+        function getTranslation(key) {
+            return langData[currentLang][key] || langData['en'][key] || key;
+        }
+
+        // --- Core UI Update Functions ---
+        function updateContent() {
+            document.body.className = 'lang-' + currentLang;
+            const isRtl = currentLang === 'ur';
+
+            document.querySelectorAll('[data-lang-key]').forEach(el => {
+                const key = el.getAttribute('data-lang-key');
+                el.textContent = getTranslation(key);
+            });
+
+            // Apply RTL alignment to form groups
+            document.querySelectorAll('.form-group').forEach(group => {
+                group.style.textAlign = isRtl ? 'right' : 'left';
+            });
+            document.querySelectorAll('.form-input, select, .form-textarea').forEach(input => {
+                input.style.direction = isRtl ? 'rtl' : 'ltr';
+            });
+
+            // Re-populate dropdowns and render table
+            populateDropdowns();
+            renderHistoryTable();
+        }
+
+        function changeLanguage(lang) {
+            if (lang in langData) {
+                currentLang = lang;
+                localStorage.setItem('madarsaSystemLang', lang);
+                updateContent();
+            }
+        }
+
+        function populateDropdowns() {
+            const dakhilaDropdown = document.getElementById('select-dakhila');
+            const itemDropdown = document.getElementById('select-item');
+
+            const selectedDakhila = dakhilaDropdown.value;
+            const selectedItem = itemDropdown.value;
+
+            // Dakhila Dropdown
+            dakhilaDropdown.innerHTML = `<option value="" disabled ${!selectedDakhila ? 'selected' : ''} data-lang-key="select_dakhila">${getTranslation('select_dakhila')}</option>`;
+            DUMMY_STUDENTS.forEach(student => {
+                let option = document.createElement('option');
+                option.value = student.id;
+                option.textContent = `${student.id} - ${student.name}`;
+                option.selected = selectedDakhila == student.id;
+                dakhilaDropdown.appendChild(option);
+            });
+
+            // Item Dropdown
+            itemDropdown.innerHTML = `<option value="" disabled ${!selectedItem ? 'selected' : ''} data-lang-key="select_item_placeholder">${getTranslation('select_item_placeholder')}</option>`;
+            DUMMY_ITEMS.forEach(item => {
+                let option = document.createElement('option');
+                option.value = item.id;
+                option.textContent = item.name;
+                option.selected = selectedItem == item.id;
+                itemDropdown.appendChild(option);
+            });
+        }
+
+        // --- History Table Rendering ---
+        function renderHistoryTable() {
+            const tbody = document.getElementById('history-table-body');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+
+            // Reverse order to show latest first
+            const history = [...assignmentHistory].reverse();
+
+            history.forEach(record => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="font-bold text-gray-800">${record.studentName}</td>
+                    <td>${record.itemName}</td>
+                    <td>${record.quantity}</td>
+                    <td>${record.dateAssigned}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // --- Form Submission Logic ---
+        function assignItem(event) {
+            event.preventDefault();
+            const form = event.target;
+
+            const studentId = form.querySelector('#select-dakhila').value;
+            const itemId = form.querySelector('#select-item').value;
+            const quantity = parseInt(form.querySelector('#quantity').value);
+            const dateAssigned = form.querySelector('#assign-date').value;
+
+            if (!studentId || !itemId || !quantity || !dateAssigned) {
+                alert(getTranslation('form_error'));
+                return false;
+            }
+
+            if (quantity <= 0) {
+                alert("Quantity must be a positive number.");
+                return false;
+            }
+
+            const student = DUMMY_STUDENTS.find(s => s.id === studentId);
+            const item = DUMMY_ITEMS.find(i => i.id == itemId);
+
+            if (!student || !item) {
+                alert("Error: Invalid Student or Item selected.");
+                return false;
+            }
+
+            // Create new record
+            const newRecord = {
+                studentId,
+                studentName: student.name,
+                itemId: item.id,
+                itemName: item.name,
+                quantity,
+                dateAssigned
+            };
+
+            // Add to history and save
+            assignmentHistory.push(newRecord);
+            saveHistory();
+
+            console.log('Item Assigned (Dummy Save):', newRecord);
+            alert(getTranslation('form_success'));
+
+            // Reset form fields
+            form.querySelector('#quantity').value = '';
+            form.querySelector('#select-dakhila').value = '';
+            form.querySelector('#select-item').value = '';
+            form.querySelector('#assign-date').value = formatDate(new Date());
+
+            // Refresh table
+            renderHistoryTable();
+            return false;
+        }
+
+
+        // Initialize content and language
+        window.onload = function () {
+            loadHistory(); // Load data
+            const storedLang = localStorage.getItem('madarsaSystemLang');
+            currentLang = (storedLang && storedLang in langData) ? storedLang : 'en';
+
+            // Set default date to today
+            document.getElementById('assign-date').value = formatDate(new Date());
+
+            // Initial content update (includes populating dropdown)
+            updateContent();
+
+            // Attach form listener
+            document.getElementById('assign-form').addEventListener('submit', assignItem);
+        };
+    </script>
+
+    <!-- HEADER -->
+    <header>
+        <div class="max-w-7xl mx-auto w-full flex justify-between items-center">
+            <!-- Left: Back Button & Title -->
+            <div class="flex items-center space-x-4">
+                <a href="library_system.html" class="action-button bg-gray-100 text-gray-700 hover:bg-gray-200"
+                    data-lang-key="back_to_library">Back to Library</a>
+                <h1 class="text-xl font-bold" data-lang-key="page_title" style="color: var(--color-primary);">Assign
+                    Item to Student</h1>
+            </div>
+
+            <!-- Right: Language Switch -->
+            <div class="flex items-center space-x-2">
+                <select onchange="changeLanguage(this.value)" class="bg-gray-100 rounded-lg p-1 text-sm">
+                    <option value="en" selected>English</option>
+                    <option value="hi">हिन्दी</option>
+                    <option value="ur">اردو</option>
+                </select>
+                <button onclick="window.location.href='login.html'"
+                    class="text-sm font-semibold text-red-600 hover:text-red-800 transition-colors ml-4"
+                    data-lang-key="logout">Logout</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="max-w-4xl mx-auto w-full p-4 md:p-8">
+
+        <!-- Assign Item Form -->
+        <div class="bg-white p-6 md:p-10 rounded-xl shadow-2xl mb-8">
+
+            <h2 class="text-xl font-bold mb-6" data-lang-key="page_title" style="color: var(--color-primary);">Assign
+                Item to Student</h2>
+
+            <form id="assign-form">
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+
+                    <!-- Dakhila No. -->
+                    <div class="form-group md:col-span-1">
+                        <label for="select-dakhila" class="form-label"><span class="text-red-500">*</span> <span
+                                data-lang-key="dakhila_no">Dakhila No.</span></label>
+                        <select id="select-dakhila" class="form-input" required>
+                            <!-- Options injected by JS -->
+                        </select>
+                    </div>
+
+                    <!-- Item -->
+                    <div class="form-group md:col-span-1">
+                        <label for="select-item" class="form-label"><span class="text-red-500">*</span> <span
+                                data-lang-key="item">Item</span></label>
+                        <select id="select-item" class="form-input" required>
+                            <!-- Options injected by JS -->
+                        </select>
+                    </div>
+
+                    <!-- Quantity -->
+                    <div class="form-group">
+                        <label for="quantity" class="form-label"><span class="text-red-500">*</span> <span
+                                data-lang-key="quantity">Quantity</span></label>
+                        <input type="number" id="quantity" class="form-input" min="1" step="1" value="1" required>
+                    </div>
+
+                    <!-- Date -->
+                    <div class="form-group">
+                        <label for="assign-date" class="form-label"><span class="text-red-500">*</span> <span
+                                data-lang-key="date">Date</span></label>
+                        <input type="date" id="assign-date" class="form-input" required>
+                    </div>
+                </div>
+
+                <!-- Assign Button -->
+                <div class="flex justify-end mt-8">
+                    <button type="submit" class="primary-button" data-lang-key="assign_item">Assign Item</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Assignment History Table -->
+        <div class="bg-white p-6 md:p-8 rounded-xl shadow-2xl">
+            <h2 class="text-xl font-bold mb-6" data-lang-key="history_title" style="color: var(--color-primary);">Assign
+                Item to Student - History</h2>
+
+            <div class="table-container">
+                <table class="admin-table">
+                    <thead>
+                        <tr class="bg-gray-100 rounded-lg">
+                            <th data-lang-key="student_name">Student Name</th>
+                            <th data-lang-key="item_name">Item Name</th>
+                            <th data-lang-key="quantity_short">Quantity</th>
+                            <th data-lang-key="date_assigned">Date Assigned</th>
+                        </tr>
+                    </thead>
+                    <tbody id="history-table-body">
+                        <!-- History data will be injected here by JS -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="text-center text-sm text-gray-500 mt-6">
+                <!-- Footer Info -->
+            </div>
+
+        </div>
+    </main>
+</body>
+
+</html>

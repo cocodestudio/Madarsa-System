@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Summary Report - Academic</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        :root {
+            --color-primary: #00A693;
+            --color-background: #F2F3F4;
+            --color-accent: #E08A27;
+            --color-text-dark: #1A1A1A;
+            --color-text-light: #FFFFFF;
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;700&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap');
+
+        /* Language Styles */
+        body,
+        .lang-en {
+            font-family: 'Poppins', sans-serif;
+            direction: ltr;
+            background-color: var(--color-background);
+        }
+
+        .lang-hi {
+            font-family: 'Noto Sans Devanagari', sans-serif;
+            direction: ltr;
+        }
+
+        .lang-ur {
+            font-family: 'Noto Nastaliq Urdu', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+            direction: rtl;
+            line-height: 1.8;
+            text-align: right;
+        }
+
+        /* Form & Inputs */
+        .form-input,
+        select {
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid #ccc;
+            width: 100%;
+            font-family: inherit;
+        }
+
+        .form-input:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(0, 166, 147, 0.2);
+        }
+
+        /* Buttons */
+        .primary-button {
+            padding: 0.5rem 1rem;
+            background-color: #3b82f6;
+            color: white;
+            font-weight: 600;
+            border-radius: 0.25rem;
+            cursor: pointer;
+        }
+
+        /* Fixed Header */
+        header {
+            background-color: var(--color-text-light);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            width: 100%;
+            z-index: 10;
+            padding: 1rem 2rem;
+        }
+
+        /* --- Report Table Styling --- */
+        .report-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .report-table th,
+        .report-table td {
+            padding: 0.75rem 1rem;
+            font-size: 0.85rem;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+
+        /* Header Styling (Blue/White as in image) */
+        .report-table th {
+            background-color: #3b82f6;
+            color: white;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        /* Body Styling (Alternating light colors) */
+        .report-table tbody tr:nth-child(even) {
+            background-color: #f7f7f7;
+        }
+
+        .report-table tbody tr:hover {
+            background-color: #e9f5ff;
+        }
+
+        /* Total Row Styling (Grey/Darker background) */
+        .total-row td {
+            background-color: #e5e7eb !important;
+            font-weight: 700;
+            border-top: 3px solid #ccc !important;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .table-container table {
+            min-width: 1100px;
+        }
+
+        /* RTL Adjustments */
+        .lang-ur .report-table th,
+        .lang-ur .report-table td {
+            text-align: center;
+        }
+
+        .lang-ur .report-table th:first-child,
+        .lang-ur .report-table td:first-child {
+            text-align: right;
+        }
+    </style>
+</head>
+
+<body class="lang-en">
+
+    <script>
+        // --- Dummy Data (Simulating aggregated student data) ---
+        // The structure of the data mimics the report's rows (grouped by Status/Grade)
+        let DUMMY_REPORT_DATA = [
+            // Added studentStatus key
+            { grade: 'Test Urdu', studentStatus: 'Active', tomorrow: 1, unaided: 0, halfAssist: 0, relief: 1, modern: 0, ancient: 1, nonResident: 0, resident: 1, count: 1 },
+            { grade: 'First', studentStatus: 'Active', tomorrow: 2, unaided: 0, halfAssist: 0, relief: 2, modern: 1, ancient: 1, nonResident: 1, resident: 1, count: 2 },
+            { grade: 'Arbitration', studentStatus: 'Left', tomorrow: 1, unaided: 1, halfAssist: 0, relief: 0, modern: 1, ancient: 0, nonResident: 1, resident: 0, count: 3 },
+            { grade: 'Sania', studentStatus: 'Active', tomorrow: 2, unaided: 0, halfAssist: 0, relief: 2, modern: 1, ancient: 1, nonResident: 1, resident: 1, count: 4 },
+            { grade: 'Fifth', studentStatus: 'Active', tomorrow: 3, unaided: 0, halfAssist: 0, relief: 1, modern: 1, ancient: 2, nonResident: 1, resident: 2, count: 5 },
+            { grade: 'Rabiha', studentStatus: 'Active', tomorrow: 1, unaided: 1, halfAssist: 0, relief: 0, modern: 1, ancient: 0, nonResident: 1, resident: 0, count: 6 },
+        ];
+
+
+        // --- Multilingual Data ---
+        const langData = {
+            'en': {
+                'academic_system': 'Academic System',
+                'page_title': 'Student Summary Report',
+                'back_to_academic': 'Back to Academic',
+                'logout': 'Logout',
+
+                // Table Headers (Matching Image)
+                'tomorrow': 'Tomorrow',
+                'unaided': 'Unaided',
+                'half_assist': 'Half-assist',
+                'relief': 'Relief',
+                'modern': 'Modern',
+                'ancient': 'Ancient',
+                'non_resident': 'Non-resident',
+                'residential': 'Residential',
+                'student_status': 'Student Status', // NEW COLUMN
+                'status_grade': 'Status / Grade',
+                'count': 'Count',
+                'report_by_grade': 'Report by Grade',
+                'find_status': 'Find status',
+                'total': 'Total',
+                'search': 'Search'
+            },
+            'hi': {
+                'academic_system': 'शैक्षणिक प्रणाली',
+                'page_title': 'छात्र सारांश रिपोर्ट',
+                'back_to_academic': 'शैक्षणिक पर वापस',
+                'logout': 'लॉगआउट',
+
+                // Table Headers (Matching Image)
+                'tomorrow': 'कल',
+                'unaided': 'गैर-सहायता प्राप्त',
+                'half_assist': 'आधी सहायता',
+                'relief': 'राहत',
+                'modern': 'आधुनिक',
+                'ancient': 'प्राचीन',
+                'non_resident': 'गैर-आवासीय',
+                'residential': 'आवासीय',
+                'student_status': 'छात्र स्थिति', // NEW COLUMN
+                'status_grade': 'स्थिति / ग्रेड',
+                'count': 'गिनती',
+                'report_by_grade': 'ग्रेड के अनुसार रिपोर्ट',
+                'find_status': 'स्थिति खोजें',
+                'total': 'कुल',
+                'search': 'खोजें'
+            },
+            'ur': {
+                'academic_system': 'تعلیمی نظام',
+                'page_title': 'طالب علم کا گوشوارہ',
+                'back_to_academic': 'اکیڈمک پر واپس جائیں',
+                'logout': 'لاگ آؤٹ',
+
+                // Table Headers (Matching Image)
+                'tomorrow': 'کل',
+                'unaided': 'غیر معاونت یافتہ',
+                'half_assist': 'نصف معاونت',
+                'relief': 'ریلیف',
+                'modern': 'جدید',
+                'ancient': 'قدیم',
+                'non_resident': 'غیر رہائشی',
+                'residential': 'رہائشی',
+                'student_status': 'طالب علم کی حیثیت', // NEW COLUMN
+                'status_grade': 'حالت / گریڈ',
+                'count': 'گنتی',
+                'report_by_grade': 'گریڈ کے لحاظ سے رپورٹ',
+                'find_status': 'حالت تلاش کریں',
+                'total': 'کل',
+                'search': 'تلاش'
+            }
+        };
+
+        let currentLang = 'en';
+
+        function getTranslation(key) {
+            return langData[currentLang][key] || langData['en'][key] || key;
+        }
+
+        // --- Core UI Update Functions ---
+        function updateContent() {
+            document.body.className = 'lang-' + currentLang;
+
+            document.querySelectorAll('[data-lang-key]').forEach(el => {
+                const key = el.getAttribute('data-lang-key');
+                el.textContent = getTranslation(key);
+            });
+
+            renderReportTable(filterReport());
+        }
+
+        function changeLanguage(lang) {
+            if (lang in langData) {
+                currentLang = lang;
+                localStorage.setItem('madarsaSystemLang', lang);
+                updateContent();
+            }
+        }
+
+        // --- Table Rendering ---
+        function renderReportTable(dataList) {
+            const tbody = document.getElementById('report-table-body');
+            const theadRow = document.getElementById('report-table-head');
+            if (!tbody || !theadRow) return;
+
+            tbody.innerHTML = '';
+
+            // Define header keys in the order shown in the image
+            const headerKeys = ['tomorrow', 'unaided', 'half_assist', 'relief', 'modern', 'ancient', 'non_resident', 'residential', 'student_status', 'status_grade', 'count']; // Added 'student_status'
+
+            // Build Headers (RTL/LTL aware)
+            theadRow.innerHTML = '';
+            headerKeys.forEach(key => {
+                const th = document.createElement('th');
+                th.setAttribute('data-lang-key', key);
+                th.textContent = getTranslation(key);
+                // Center align all columns except the Status/Grade column
+                if (key !== 'status_grade') th.style.textAlign = 'center';
+                theadRow.appendChild(th);
+            });
+
+            // --- Calculate Totals ---
+            const totals = headerKeys.reduce((acc, key) => {
+                if (key !== 'status_grade' && key !== 'student_status') {
+                    acc[key] = dataList.reduce((sum, item) => sum + (item[key] || 0), 0);
+                }
+                return acc;
+            }, {});
+
+            if (dataList.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="${headerKeys.length}" class="text-center text-gray-500 p-4">${getTranslation('no_data') || 'No data found.'}</td></tr>`;
+                return;
+            }
+
+            // --- Render Data Rows ---
+            dataList.forEach(item => {
+                const tr = document.createElement('tr');
+                let rowHtml = '';
+
+                headerKeys.forEach(key => {
+                    const value = item[key] !== undefined ? item[key] : '-';
+                    const isStatus = key === 'status_grade' || key === 'student_status';
+                    const textAlignment = (key === 'status_grade' || key === 'student_status') ? 'left' : 'center'; // Align status/grade text left
+
+                    rowHtml += `<td class="text-${textAlignment}" ${isStatus ? 'style="font-weight: 600;"' : ''}>${value}</td>`;
+                });
+                tr.innerHTML = rowHtml;
+                tbody.appendChild(tr);
+            });
+
+            // --- Render Total Row ---
+            const totalTr = document.createElement('tr');
+            totalTr.className = 'total-row';
+            let totalHtml = '';
+
+            let statusGradeColumnSpan = 0;
+            headerKeys.forEach((key, index) => {
+                if (key === 'status_grade') {
+                    totalHtml += `<td class="text-left font-bold" style="text-align: left !important;" data-lang-key="total">${getTranslation('total')}</td>`;
+                } else if (key === 'student_status') {
+                    // Skip this column when rendering totals
+                } else if (key === 'tomorrow') {
+                    totalHtml += `<td class="text-center font-bold">${totals[key]}</td>`;
+                } else if (key !== 'count' && key !== 'status_grade') {
+                    totalHtml += `<td class="text-center font-bold">${totals[key]}</td>`;
+                } else if (key === 'count') {
+                    totalHtml += `<td class="text-center font-bold">${totals[key]}</td>`;
+                }
+            });
+            // Since we skipped one column (student_status), we adjust the colspan of the TOTAL cell
+
+            // Re-render total row correcting the columns count
+            let columnsCount = headerKeys.length;
+            let totalColumns = 0;
+            let htmlTotalRow = '';
+
+            headerKeys.forEach((key, index) => {
+                const value = totals[key] !== undefined ? totals[key] : '-';
+
+                if (key === 'status_grade') {
+                    // This is the status/grade cell, which will contain the word "Total"
+                    const statusGradeIndex = headerKeys.indexOf('status_grade');
+                    const studentStatusIndex = headerKeys.indexOf('student_status');
+
+                    // Count how many columns before the status/grade we have to sum up
+                    const dataColumnsBeforeStatus = statusGradeIndex - 1;
+
+                    // Calculate colspan for 'Total' word. It spans status_grade and student_status and all columns before them.
+                    const colspan = (statusGradeIndex - headerKeys.indexOf('tomorrow')) + 1; // 8 data columns + 1 (for total word) - 1 (to exclude tomorrow as total)
+
+                    // We need the TOTAL word to span across 9 data columns (tomorrow to resident)
+                    // The 'Total' word should replace all cells from the first column until the 'Status/Grade' column.
+
+                    // Simple approach: Display total on the rightmost column (Count)
+                    htmlTotalRow += `<td colspan="${columnsCount - 1}" class="text-right font-bold pr-10">${getTranslation('total')}</td>`;
+                    htmlTotalRow += `<td class="text-center font-bold">${totals['count']}</td>`;
+
+                } else if (key === 'count') {
+                    // Skip the count column, it is already added
+                } else if (key === 'student_status') {
+                    // Skip this column entirely, as it should be merged into the 'Total' column
+                } else if (key !== 'status_grade') {
+                    // Skip data columns to ensure 'Total' word spans correctly
+                }
+            });
+
+            // Simpler rendering of Total Row, calculating column indices manually:
+
+            const totalDataColumns = 8; // tomorrow to residential
+            const columnsBeforeGrade = 9; // Number columns before Status/Grade
+
+            let totalRowCells = '';
+            let currentColumn = 0;
+
+            headerKeys.forEach((key, index) => {
+                if (key === 'status_grade') {
+                    // Total cell starts here, spanning 2 columns
+                    totalRowCells += `<td colspan="2" class="text-left font-bold pl-4">${getTranslation('total')}</td>`;
+                } else if (key === 'student_status') {
+                    // Skip the cell after total
+                } else if (key === 'count') {
+                    // Last column shows grand total of count
+                    totalRowCells += `<td class="text-center font-bold">${totals['count']}</td>`;
+                } else {
+                    // Display numeric totals (tomorrow, unaided, etc.)
+                    const value = totals[key] !== undefined ? totals[key] : '-';
+                    totalRowCells += `<td class="text-center font-bold">${value}</td>`;
+                }
+            });
+
+            // Re-adjusting the total row to match the desired visual merge and place the TOTAL word on the left of Count
+            // This requires adding the total word to the STATUS/GRADE column (index 8)
+            totalTr.innerHTML = `
+                 ${headerKeys.map(key => {
+                const value = totals[key] !== undefined ? totals[key] : '-';
+
+                if (key === 'student_status') {
+                    return `<td class="text-center font-bold total-data">${value}</td>`;
+                } else if (key === 'status_grade') {
+                    return `<td class="text-right font-bold total-label">${getTranslation('total')}</td>`;
+                } else if (key === 'count') {
+                    return `<td class="text-center font-bold">${value}</td>`;
+                } else {
+                    return `<td class="text-center font-bold">${value}</td>`;
+                }
+            }).join('')}
+             `;
+
+            // Final fix for total row structure to match image aesthetics:
+            const totalRowContent = `
+                 <td class="text-center font-bold">${totals['tomorrow']}</td>
+                 <td class="text-center font-bold">${totals['unaided']}</td>
+                 <td class="text-center font-bold">${totals['half_assist']}</td>
+                 <td class="text-center font-bold">${totals['relief']}</td>
+                 <td class="text-center font-bold">${totals['modern']}</td>
+                 <td class="text-center font-bold">${totals['ancient']}</td>
+                 <td class="text-center font-bold">${totals['non_resident']}</td>
+                 <td class="text-center font-bold">${totals['residential']}</td>
+                 <td colspan="2" class="text-right font-bold pr-4">${getTranslation('total')}</td>
+                 <td class="text-center font-bold">${totals['count']}</td>
+             `;
+
+
+            totalTr.innerHTML = `
+                <td class="text-center font-bold">${totals['tomorrow']}</td>
+                <td class="text-center font-bold">${totals['unaided']}</td>
+                <td class="text-center font-bold">${totals['half_assist']}</td>
+                <td class="text-center font-bold">${totals['relief']}</td>
+                <td class="text-center font-bold">${totals['modern']}</td>
+                <td class="text-center font-bold">${totals['ancient']}</td>
+                <td class="text-center font-bold">${totals['non_resident']}</td>
+                <td class="text-center font-bold">${totals['residential']}</td>
+                <td class="text-right font-bold total-label pl-4">${getTranslation('total')}</td>
+                <td class="text-center font-bold">${totals['count']}</td>
+            `;
+
+            tbody.appendChild(totalTr);
+        }
+
+        // --- Filter Logic ---
+        function filterReport() {
+            const searchInput = document.getElementById('search-input').value.toLowerCase();
+
+            if (!searchInput) {
+                return DUMMY_REPORT_DATA;
+            }
+
+            return DUMMY_REPORT_DATA.filter(item => {
+                // Search by Grade/Status
+                return item.grade.toLowerCase().includes(searchInput);
+            });
+        }
+
+        function handleFilter() {
+            renderReportTable(filterReport());
+        }
+
+
+        // Initialize content and language
+        window.onload = function () {
+            const storedLang = localStorage.getItem('madarsaSystemLang');
+            currentLang = (storedLang && storedLang in langData) ? storedLang : 'en';
+
+            // Initial content update and table render
+            updateContent();
+
+            // Attach filter listeners
+            document.getElementById('search-input').addEventListener('input', handleFilter);
+            document.getElementById('search-button').addEventListener('click', handleFilter);
+        };
+    </script>
+
+    <!-- HEADER -->
+    <header>
+        <div class="max-w-7xl mx-auto w-full flex justify-between items-center">
+            <!-- Left: Back Button & Title -->
+            <div class="flex items-center space-x-4">
+                <a href="academic_system.html" class="action-button bg-gray-100 text-gray-700 hover:bg-gray-200"
+                    data-lang-key="back_to_academic">Back to Academic</a>
+                <h1 class="text-xl font-bold" data-lang-key="page_title" style="color: var(--color-primary);">Student
+                    Summary Report</h1>
+            </div>
+
+            <!-- Right: Language Switch -->
+            <div class="flex items-center space-x-2">
+                <select onchange="changeLanguage(this.value)" class="bg-gray-100 rounded-lg p-1 text-sm">
+                    <option value="en" selected>English</option>
+                    <option value="hi">हिन्दी</option>
+                    <option value="ur">اردو</option>
+                </select>
+                <button onclick="window.location.href='login.html'"
+                    class="text-sm font-semibold text-red-600 hover:text-red-800 transition-colors ml-4"
+                    data-lang-key="logout">Logout</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="max-w-7xl mx-auto w-full p-4 md:p-8">
+
+        <!-- Page Header and Search -->
+        <div class="mb-6 flex justify-between items-center">
+            <h2 class="text-3xl font-bold text-gray-800" data-lang-key="report_by_grade">Report by Grade</h2>
+
+            <!-- Search/Filter Group (Matching Image Style) -->
+            <div class="flex space-x-2 items-center">
+                <input type="text" id="search-input" class="form-input w-40" placeholder="Find status">
+                <button id="search-button" class="primary-button text-sm px-4" data-lang-key="search">Search</button>
+            </div>
+        </div>
+
+        <!-- Student Summary Table -->
+        <div class="bg-white p-6 md:p-8 rounded-xl shadow-2xl">
+            <div class="table-container">
+                <table class="report-table">
+                    <thead>
+                        <tr id="report-table-head">
+                            <!-- Headers injected by JS -->
+                        </tr>
+                    </thead>
+                    <tbody id="report-table-body">
+                        <!-- Student Summary data will be injected here by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+</body>
+
+</html>

@@ -6,75 +6,79 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Academic System - Madarsa System</title>
     <script src="https://cdn.tailwindcss.com"></script>
+
     <style>
-        /* Define the color variables based on user-provided images */
+        /* ----------------------- COLORS ----------------------- */
         :root {
             --color-primary: #00A693;
-            /* Green/Teal */
             --color-background: #F2F3F4;
-            /* Titanium/Platinum */
             --color-accent: #E08A27;
-            /* Gold/Orange for luxury feel */
             --color-text-dark: #1A1A1A;
-            /* Soft Black */
             --color-text-light: #FFFFFF;
-            /* White */
             --color-module-bg: #EBEBEB;
-            /* Light Grey for Module Boxes */
         }
 
-        /* --- Global Styles: User-Select and Fonts (Consistency) --- */
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Noto+Sans+Devanagari:wght@100..900&family=Jameel+Noori+Nastaleeq&display=swap');
+        /* ----------------------- GLOBAL FONTS ----------------------- */
+
+        /* Using Inter for English/LTR modules (consistent with original file) */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Noto+Sans+Devanagari:wght@300;400;500;600;700;800;900&display=swap');
+
+        /* Load LOCAL Urdu Font (Placeholder path kept) */
+        @font-face {
+            font-family: 'UrduFont';
+            src: url('assets/urdu.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
 
         body {
             font-family: 'Inter', sans-serif;
             background-color: var(--color-background);
             color: var(--color-text-dark);
             transition: all 0.3s ease;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
             user-select: none;
             overflow-x: hidden;
         }
 
+        /* ----------------------- LANGUAGE CLASSES ----------------------- */
+
         .lang-en {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Inter', sans-serif !important;
+            direction: ltr;
         }
 
         .lang-hi {
-            font-family: 'Noto Sans Devangari', sans-serif;
+            font-family: 'Noto Sans Devanagari', sans-serif !important;
             direction: ltr;
         }
 
         .lang-ur {
-            font-family: "Jameel Noori Nastaleeq", "Urdu Typesetting", "Nastaliq", 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            direction: rtl;
-        }
-
-        /* Ensure specific fonts are applied correctly to the main text */
-        .page-main-title,
-        .module-grid * {
-            transition: all 0.3s ease;
+            font-family: 'UrduFont', serif !important;
+            direction: rtl !important;
         }
 
         .lang-ur .page-main-title,
-        .lang-ur .module-grid * {
-            font-family: "Jameel Noori Nastaleeq", "Urdu Typesetting", "Nastaliq", 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+        .lang-ur .module-grid *,
+        .lang-ur .sub-module-button {
+            font-family: 'UrduFont', serif !important;
         }
 
         .lang-hi .page-main-title,
         .lang-hi .module-grid * {
-            font-family: 'Noto Sans Devangari', sans-serif !important;
+            font-family: 'Noto Sans Devanagari', sans-serif !important;
         }
 
-        /* --- Header Styling (Consistency) --- */
+        /* ----------------------- HEADER STYLE ----------------------- */
         header {
             background-color: var(--color-text-light);
             border-bottom: 2px solid rgba(0, 0, 0, 0.05);
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            z-index: 20;
         }
 
+        /* Small screens */
         @media (max-width: 767px) {
             header nav {
                 white-space: nowrap;
@@ -86,14 +90,11 @@
             }
         }
 
-        /* --- Main Content Area (Full width dashboard style) --- */
-        .main-content-area {
-            flex-grow: 1;
-            padding: 2rem;
-        }
-
-        /* --- Page Title Styling (Left-aligned, capitalized) --- */
+        /* ----------------------- PAGE TITLE ----------------------- */
         .page-main-title {
+            /* FIX 1: Add space above the title for separation from header */
+            margin-top: 2.5rem;
+
             font-size: 3rem;
             font-weight: 800;
             margin-bottom: 2.5rem;
@@ -109,10 +110,12 @@
                 font-size: 2rem;
                 text-align: center;
                 padding-left: 0;
+                margin-top: 1.5rem;
             }
         }
 
-        /* --- Module Buttons: Unique Ultra-Rounded UI --- */
+        /* ----------------------- MODULE GRID ----------------------- */
+
         .module-grid {
             display: grid;
             gap: 2rem;
@@ -121,21 +124,18 @@
             margin: 0 auto;
         }
 
-        /* Desktop Layout (1280px+): 4 columns */
         @media (min-width: 1280px) {
             .module-grid {
                 grid-template-columns: repeat(4, 1fr);
             }
         }
 
-        /* Large Tablet/Small Desktop (1024px to 1279px): 3 columns */
         @media (min-width: 1024px) and (max-width: 1279px) {
             .module-grid {
                 grid-template-columns: repeat(3, 1fr);
             }
         }
 
-        /* Small Tablet/Large Mobile (640px to 1023px): 2 columns */
         @media (min-width: 640px) and (max-width: 1023px) {
             .module-grid {
                 grid-template-columns: repeat(2, 1fr);
@@ -143,7 +143,6 @@
             }
         }
 
-        /* Mobile Layout (Below 640px): 1 column (FIXED) */
         @media (max-width: 639px) {
             .module-grid {
                 grid-template-columns: 1fr;
@@ -152,55 +151,56 @@
             }
         }
 
-
+        /* ----------------------- MODULE BUTTON ----------------------- */
         .module-button {
-            /* 1. Background: Subtle Gradient */
-            background: linear-gradient(145deg, rgba(255, 255, 255, 1) 0%, var(--color-module-bg) 100%);
+            background: linear-gradient(145deg, white 0%, var(--color-module-bg) 100%);
             color: var(--color-text-dark);
-
-            /* 2. Shape: Ultra Rounded (25% equivalent) */
             border-radius: 2rem;
-
-            /* 3. Shadow (Default Look) */
             box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
             border: none;
-
             transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
             cursor: pointer;
             position: relative;
             overflow: hidden;
             z-index: 1;
-
             aspect-ratio: 1.3 / 1;
             padding: 1.5rem;
 
-            /* Align text to Left Top Side */
             display: flex;
             flex-direction: column;
             justify-content: flex-start;
+            /* LTR Default */
             align-items: flex-start;
-            text-align: left;
         }
 
-        /* Hover Effect: Running Black Outline */
+        /* FIX 2: Consistency for RTL module alignment */
+        .lang-ur .module-button {
+            text-align: right !important;
+            align-items: flex-end !important;
+        }
+
+
         .module-button:hover {
             transform: translateY(-5px);
-            /* Running/Dynamic Black Outline using layered box-shadow */
-            box-shadow:
-                0 0 0 3px var(--color-text-dark),
+            box-shadow: 0 0 0 3px var(--color-text-dark),
                 0 10px 25px rgba(0, 0, 0, 0.25);
         }
 
-        /* Icon Styling (Fixed to bottom-right) */
         .module-icon {
             position: absolute;
             bottom: 1.5rem;
             right: 1.5rem;
             opacity: 0.2;
-            transition: opacity 0.3s ease, transform 0.3s ease;
+            transition: 0.3s ease;
             color: var(--color-text-dark);
             width: 3rem;
             height: 3rem;
+        }
+
+        /* FIX 2: Consistency for RTL icon position */
+        .lang-ur .module-icon {
+            right: auto;
+            left: 1.5rem;
         }
 
         @media (min-width: 768px) {
@@ -219,9 +219,12 @@
             opacity: 1;
             font-size: 0.875rem;
             font-weight: 500;
+            /* FIX 2: Ensure subtitle respects the module button's alignment (start of container) */
+            text-align: initial;
         }
 
-        /* --- Language Dialog: Animation Styles (Consistency) --- */
+        /* ----------------------- DIALOG ----------------------- */
+
         .dialog-backdrop {
             background-color: rgba(0, 0, 0, 0.7);
             transition: opacity 0.3s ease;
@@ -232,6 +235,32 @@
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
             border: 3px solid var(--color-primary);
             transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        .sub-dialog-content {
+            background-color: #FFFBEB;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            border: 3px solid var(--color-accent);
+            max-width: 420px;
+            width: 90%;
+            padding: 2rem;
+            transition: 0.3s ease;
+        }
+
+        .sub-module-button {
+            background-color: var(--color-text-light);
+            border-radius: 1rem;
+            padding: 1rem 1.5rem;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--color-text-dark);
+            transition: 0.2s;
+        }
+
+        .sub-module-button:hover {
+            background-color: var(--color-module-bg);
+            transform: scale(1.02);
         }
 
         .rtl-text-right {
@@ -255,6 +284,9 @@
                 'en_option': 'English',
                 'hi_option': 'हिन्दी (Hindi)',
                 'ur_option': 'اردو (Urdu)',
+                'logout': 'Logout',
+                'edit_profile': 'Edit Profile',
+                'admin_panel': 'Admin Panel',
 
                 // Academic System Specific
                 'academic_title': 'Academic System',
@@ -270,6 +302,12 @@
                 'student_id_cards': 'Student ID Cards',
                 'attendance_register': 'Attendance Register',
                 'module_subtitle': 'Access detailed management features.', // Generic subtitle
+
+                // Admission Sub-Menu Options (New)
+                'all_admitted_students': 'All Admitted Students',
+                'old_student_admission': 'Old Student Admission',
+                'new_student_admission': 'New Student Admission',
+                'student_summary': 'Student Summary',
             },
             'hi': {
                 'madarsa_system': 'मदरसा प्रणाली',
@@ -281,6 +319,9 @@
                 'en_option': 'English',
                 'hi_option': 'हिन्दी (Hindi)',
                 'ur_option': 'اردو (Urdu)',
+                'logout': 'लॉगआउट',
+                'edit_profile': 'प्रोफ़ाइल संपादित करें',
+                'admin_panel': 'एडमिन पैनल',
 
                 // Academic System Specific
                 'academic_title': 'शैक्षणिक प्रणाली',
@@ -296,6 +337,12 @@
                 'student_id_cards': 'छात्र आईडी कार्ड',
                 'attendance_register': 'उपस्थिति रजिस्टर',
                 'module_subtitle': 'विस्तृत प्रबंधन सुविधाओं तक पहुँचें।',
+
+                // Admission Sub-Menu Options (New)
+                'all_admitted_students': 'सभी प्रवेशित छात्र',
+                'old_student_admission': 'पुराने छात्र का प्रवेश',
+                'new_student_admission': 'नए छात्र का प्रवेश',
+                'student_summary': 'छात्र सारांश',
             },
             'ur': {
                 'madarsa_system': 'مدرسہ نظام',
@@ -307,6 +354,9 @@
                 'en_option': 'English',
                 'hi_option': 'ہندی (Hindi)',
                 'ur_option': 'اردو (Urdu)',
+                'logout': 'لاگ آؤٹ',
+                'edit_profile': 'پروفائل میں ترمیم کریں',
+                'admin_panel': 'ایڈمن پینل',
 
                 // Academic System Specific
                 'academic_title': 'تعلیمی نظام',
@@ -322,13 +372,20 @@
                 'student_id_cards': 'طالب علم کے شناختی کارڈ',
                 'attendance_register': 'حاضری رجسٹر',
                 'module_subtitle': 'تفصیلی انتظامی خصوصیات تک رسائی حاصل کریں۔',
+
+                // Admission Sub-Menu Options (New) - Matched to the image content
+                'all_admitted_students': 'تمام داخل شدہ طلباء',
+                'old_student_admission': 'داخلہ قدیم طلباء',
+                'new_student_admission': 'داخلہ طالب علم',
+                'student_summary': 'گوشوارہ طلباء',
             }
         };
 
-        // --- Core Application Logic (Copied and adapted from index.html) ---
+        // --- Core Application Logic ---
 
         let currentLang = 'en';
         let dialogContentElement;
+        let admissionDialogContentElement;
 
         function getTranslation(key) {
             return langData[currentLang][key] || langData['en'][key] || key;
@@ -351,25 +408,37 @@
 
             document.getElementById('current-lang-display').textContent = getTranslation(currentLang + '_option');
 
+            // Apply directionality to the main content wrapper
             document.getElementById('main-content-wrapper').style.direction = isRtl ? 'rtl' : 'ltr';
+
+            // Apply directionality to the admission sub-menu container
+            const admissionMenu = document.getElementById('admission-menu-container');
+            if (admissionMenu) {
+                admissionMenu.style.direction = isRtl ? 'rtl' : 'ltr';
+                // Also update the alignment of the Urdu title inside the dialog
+                const admissionTitle = document.getElementById('admission-dialog-title');
+                if (admissionTitle) {
+                    admissionTitle.classList.toggle('rtl-text-right', isRtl);
+                }
+            }
         }
 
         function changeLanguage(lang) {
             if (lang in langData) {
                 currentLang = lang;
-                localStorage.setItem('madarsaSystemLang', lang);
                 updateContent();
                 closeLanguageDialog();
             }
         }
 
+        /* --- Language Dialog Functions --- */
         function openLanguageDialog() {
             const dialog = document.getElementById('language-dialog');
-            if (dialog) { // Added check
+            if (dialog) {
                 dialog.classList.remove('hidden');
                 setTimeout(() => {
                     dialog.classList.remove('opacity-0');
-                    if (dialogContentElement) { // Added check
+                    if (dialogContentElement) {
                         dialogContentElement.classList.remove('scale-95');
                         dialogContentElement.classList.add('scale-100');
                     }
@@ -379,9 +448,9 @@
 
         function closeLanguageDialog() {
             const dialog = document.getElementById('language-dialog');
-            if (dialog) { // Added check
+            if (dialog) {
                 dialog.classList.add('opacity-0');
-                if (dialogContentElement) { // Added check
+                if (dialogContentElement) {
                     dialogContentElement.classList.remove('scale-100');
                     dialogContentElement.classList.add('scale-95');
                 }
@@ -391,35 +460,129 @@
             }
         }
 
-        window.onload = function () {
-            dialogContentElement = document.getElementById('dialog-content');
+        /* --- Admission Dialog Functions (New) --- */
+        function openAdmissionDialog() {
+            const dialog = document.getElementById('admission-sub-dialog');
+            if (dialog) {
+                dialog.classList.remove('hidden');
+                setTimeout(() => {
+                    dialog.classList.remove('opacity-0');
+                    if (admissionDialogContentElement) {
+                        admissionDialogContentElement.classList.remove('scale-95');
+                        admissionDialogContentElement.classList.add('scale-100');
+                    }
+                }, 10);
+            }
+        }
 
-            const storedLang = localStorage.getItem('madarsaSystemLang');
-            currentLang = (storedLang && storedLang in langData) ? storedLang : 'en';
-
-            // Safely attaching event listeners to prevent 'addEventListener' error
-            const langEnBtn = document.getElementById('lang-en-btn');
-            if (langEnBtn) { langEnBtn.addEventListener('click', () => changeLanguage('en')); } else { console.error("Error: lang-en-btn not found."); }
-
-            const langHiBtn = document.getElementById('lang-hi-btn');
-            if (langHiBtn) { langHiBtn.addEventListener('click', () => changeLanguage('hi')); } else { console.error("Error: lang-hi-btn not found."); }
-
-            const langUrBtn = document.getElementById('lang-ur-btn');
-            if (langUrBtn) { langUrBtn.addEventListener('click', () => changeLanguage('ur')); } else { console.error("Error: lang-ur-btn not found."); }
-
-            const langToggle = document.getElementById('language-toggle');
-            if (langToggle) { langToggle.addEventListener('click', openLanguageDialog); } else { console.error("Error: language-toggle not found."); }
-
-            const dialogCloseBtn = document.getElementById('dialog-close-btn');
-            if (dialogCloseBtn) { dialogCloseBtn.addEventListener('click', closeLanguageDialog); } else { console.error("Error: dialog-close-btn not found."); }
-
-            updateContent();
-        };
+        function closeAdmissionDialog() {
+            const dialog = document.getElementById('admission-sub-dialog');
+            if (dialog) {
+                dialog.classList.add('opacity-0');
+                if (admissionDialogContentElement) {
+                    admissionDialogContentElement.classList.remove('scale-100');
+                    admissionDialogContentElement.classList.add('scale-95');
+                }
+                setTimeout(() => {
+                    dialog.classList.add('hidden');
+                }, 300);
+            }
+        }
 
         function handleModuleClick(moduleName) {
-            console.log(`Clicked on submodule: ${moduleName}. Implementation will be added later.`);
-            // In a real application, you would navigate to a new page or load content dynamically here
+            if (moduleName === 'Admission Register') {
+                openAdmissionDialog();
+            } else {
+                console.log(`Clicked on submodule: ${moduleName}. Implementation will be added later.`);
+            }
         }
+
+        function handleAdmissionSubmenuClick(optionKey) {
+            let url = '';
+
+            switch (optionKey) {
+                case 'all_admitted_students':
+                    url = 'admitted_students_list.html';
+                    break;
+                case 'old_student_admission':
+                    url = 'old_student_admission.html';
+                    break;
+                case 'new_student_admission':
+                    url = 'new_student_admission.html';
+                    break;
+                case 'student_summary':
+                    url = 'student_summary_report.html';
+                    break;
+            }
+
+            window.location.href = url;
+        }
+
+        // --- Consistency functions for User Profile ---
+        function handleUserAction(action) {
+            console.log(`User action: ${action}. (In a real app, this would navigate or process the request)`);
+            document.getElementById('user-dropdown-menu').classList.add('hidden');
+        }
+
+        function getUserDisplayData() {
+            return { initial: 'A', photo: null, name: 'Admin User' };
+        }
+
+        function updateUserNameDisplay() {
+            const userData = getUserDisplayData();
+            const desktopUserLink = document.getElementById('desktop-user-link');
+            if (desktopUserLink) {
+                desktopUserLink.innerHTML = `<div class="w-6 h-6 rounded-full flex items-center justify-center bg-gray-200 text-xs font-semibold" style="color: var(--color-primary);">${userData.initial}</div>`;
+            }
+            // Add name display to dropdown if needed, though this basic template omits it
+        }
+
+        window.onload = function () {
+            dialogContentElement = document.getElementById('dialog-content');
+            admissionDialogContentElement = document.getElementById('admission-dialog-content');
+
+            currentLang = 'en'; // Defaulting to 'en'
+
+            // --- Language Dialog Setup ---
+            const langEnBtn = document.getElementById('lang-en-btn');
+            if (langEnBtn) { langEnBtn.addEventListener('click', () => changeLanguage('en')); }
+
+            const langHiBtn = document.getElementById('lang-hi-btn');
+            if (langHiBtn) { langHiBtn.addEventListener('click', () => changeLanguage('hi')); }
+
+            const langUrBtn = document.getElementById('lang-ur-btn');
+            if (langUrBtn) { langUrBtn.addEventListener('click', () => changeLanguage('ur')); }
+
+            const langToggle = document.getElementById('language-toggle');
+            if (langToggle) { langToggle.addEventListener('click', openLanguageDialog); }
+
+            const dialogCloseBtn = document.getElementById('dialog-close-btn');
+            if (dialogCloseBtn) { dialogCloseBtn.addEventListener('click', closeLanguageDialog); }
+
+            // --- Admission Dialog Setup ---
+            const admissionCloseBtn = document.getElementById('admission-dialog-close-btn');
+            if (admissionCloseBtn) { admissionCloseBtn.addEventListener('click', closeAdmissionDialog); }
+
+            // Attach click handler to Admission Register main button
+            const admissionRegisterBtn = document.getElementById('admission-register-btn');
+            if (admissionRegisterBtn) { admissionRegisterBtn.addEventListener('click', () => handleModuleClick('Admission Register')); }
+
+            // Dropdown Toggle Setup (Ensures consistency with previous pattern)
+            document.getElementById('user-menu-toggle').addEventListener('click', (event) => {
+                document.getElementById('user-dropdown-menu').classList.toggle('hidden');
+                event.stopPropagation();
+            });
+            document.addEventListener('click', () => {
+                const userDropdown = document.getElementById('user-dropdown-menu');
+                if (userDropdown && !userDropdown.classList.contains('hidden')) {
+                    userDropdown.classList.add('hidden');
+                }
+            });
+
+
+            updateContent();
+            updateUserNameDisplay();
+        };
     </script>
 
 
@@ -501,6 +664,24 @@
         </div>
     </header>
 
+    <!-- Mobile Dropdown Menu (Consistent) -->
+    <div id="mobile-dropdown-menu"
+        class="hidden md:hidden absolute right-0 mt-0 w-full bg-white border-t border-gray-200 shadow-lg z-10">
+        <a href="#" onclick="console.log('Navigating to About')" data-lang-key="about"
+            class="block px-4 py-3 text-base text-gray-700 hover:bg-gray-100">About</a>
+        <a href="#" onclick="console.log('Navigating to Privacy')" data-lang-key="privacy"
+            class="block px-4 py-3 text-base text-gray-700 hover:bg-gray-100">Privacy</a>
+        <button onclick="openLanguageDialog()"
+            class="w-full text-left px-4 py-3 text-base text-gray-700 hover:bg-gray-100 flex justify-between items-center">
+            <span data-lang-key="select_language">Select Language</span>
+            <span id="current-lang-display-mobile" class="font-semibold" style="color: var(--color-primary);"></span>
+        </button>
+        <a href="#" onclick="handleUserAction('Edit Profile')" data-lang-key="edit_profile"
+            class="block px-4 py-3 text-base text-gray-700 hover:bg-gray-100">Edit Profile</a>
+        <a href="#" onclick="handleUserAction('Logout')" data-lang-key="logout"
+            class="block px-4 py-3 text-base text-red-600 hover:bg-red-50">Logout</a>
+    </div>
+
     <!-- MAIN CONTENT AREA -->
     <main id="main-content-wrapper" class="main-content-area min-h-[calc(100vh-70px)]">
 
@@ -511,8 +692,8 @@
         <section class="module-section">
             <div class="module-grid">
 
-                <!-- ADMISSION REGISTER -->
-                <button class="module-button" onclick="handleModuleClick('Admission Register')">
+                <!-- ADMISSION REGISTER (ID added for easy JS access) -->
+                <button class="module-button" id="admission-register-btn">
                     <h3 data-lang-key="admission_register" class="text-xl md:text-2xl font-bold mb-1">Admission Register
                     </h3>
                     <p data-lang-key="module_subtitle" class="subtitle-text">Access detailed management features.</p>
@@ -678,6 +859,51 @@
         </div>
     </div>
 
+
+    <!-- ADMISSION REGISTER SUB-MENU DIALOG (NEW) -->
+    <div id="admission-sub-dialog"
+        class="hidden opacity-0 fixed inset-0 z-40 flex items-center justify-center dialog-backdrop">
+        <div id="admission-dialog-content"
+            class="sub-dialog-content p-6 rounded-3xl w-11/12 transform scale-95 transition-all duration-300">
+
+            <div class="flex items-center" id="admission-menu-container">
+                <!-- Close Button -->
+                <button id="admission-dialog-close-btn"
+                    class="text-red-500 hover:text-red-700 transition-colors p-1 absolute top-4 left-4"
+                    style="font-size: 2rem; line-height: 1;">
+                    &times;
+                </button>
+                <!-- Title (Centered) -->
+                <h3 id="admission-dialog-title" data-lang-key="admission_register"
+                    class="text-xl md:text-2xl font-bold flex-grow text-center mb-6">
+                    Admission Register
+                </h3>
+            </div>
+
+
+            <div class="space-y-4">
+                <!-- 1. All Admitted Students -->
+                <button class="sub-module-button w-full" onclick="handleAdmissionSubmenuClick('all_admitted_students')">
+                    <span data-lang-key="all_admitted_students">All Admitted Students</span>
+                </button>
+
+                <!-- 2. Old Student Admission -->
+                <button class="sub-module-button w-full" onclick="handleAdmissionSubmenuClick('old_student_admission')">
+                    <span data-lang-key="old_student_admission">Old Student Admission</span>
+                </button>
+
+                <!-- 3. New Student Admission -->
+                <button class="sub-module-button w-full" onclick="handleAdmissionSubmenuClick('new_student_admission')">
+                    <span data-lang-key="new_student_admission">New Student Admission</span>
+                </button>
+
+                <!-- 4. Student Summary -->
+                <button class="sub-module-button w-full" onclick="handleAdmissionSubmenuClick('student_summary')">
+                    <span data-lang-key="student_summary">Student Summary</span>
+                </button>
+            </div>
+        </div>
+    </div>
 
 </body>
 

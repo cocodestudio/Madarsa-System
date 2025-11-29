@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Overview - Library System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        :root {
+            --color-primary: #00A693;
+            --color-background: #F2F3F4;
+            --color-accent: #E08A27;
+            --color-text-dark: #1A1A1A;
+            --color-text-light: #FFFFFF;
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;700&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap');
+
+        /* Language Styles */
+        body,
+        .lang-en {
+            font-family: 'Poppins', sans-serif;
+            direction: ltr;
+            background-color: var(--color-background);
+        }
+
+        .lang-hi {
+            font-family: 'Noto Sans Devanagari', sans-serif;
+            direction: ltr;
+        }
+
+        .lang-ur {
+            font-family: 'Noto Nastaliq Urdu', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+            direction: rtl;
+            line-height: 1.8;
+            text-align: right;
+        }
+
+        /* Form & Table Inputs */
+        .form-input,
+        select {
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid #ccc;
+            width: 100%;
+            font-family: inherit;
+        }
+
+        .form-input:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(0, 166, 147, 0.2);
+        }
+
+        /* Buttons */
+        .action-button {
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            transition: background-color 0.2s;
+        }
+
+        /* Fixed Header */
+        header {
+            background-color: var(--color-text-light);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            width: 100%;
+            z-index: 10;
+            padding: 1rem 2rem;
+        }
+
+        /* Table Styling */
+        .admin-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 10px;
+        }
+
+        .admin-table th {
+            text-align: left;
+            padding: 1rem 1.5rem;
+            font-size: 0.875rem;
+            color: gray;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        .lang-ur .admin-table th {
+            text-align: right;
+        }
+
+        .admin-table td {
+            padding: 1rem 1.5rem;
+            background-color: white;
+            border-top: 1px solid #eee;
+            border-bottom: 1px solid #eee;
+            font-size: 0.8775rem;
+            font-weight: 500;
+        }
+
+        .admin-table tr td:first-child {
+            border-top-left-radius: 0.75rem;
+            border-bottom-left-radius: 0.75rem;
+        }
+
+        .admin-table tr td:last-child {
+            border-top-right-radius: 0.75rem;
+            border-bottom-right-radius: 0.75rem;
+        }
+
+        .lang-ur .admin-table tr td:first-child {
+            border-radius: 0;
+            border-top-right-radius: 0.75rem;
+            border-bottom-right-radius: 0.75rem;
+        }
+
+        .lang-ur .admin-table tr td:last-child {
+            border-radius: 0;
+            border-top-left-radius: 0.75rem;
+            border-bottom-left-radius: 0.75rem;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .table-container table {
+            min-width: 900px;
+        }
+
+        .page-header {
+            color: #00A693;
+            /* Primary color used in image */
+            font-size: 2.25rem;
+            font-weight: 700;
+        }
+    </style>
+</head>
+
+<body class="lang-en">
+
+    <script>
+        // --- Dummy Data (Shared across Library pages for calculation) ---
+        const DUMMY_ITEMS = [
+            { id: 1, name: "Hamid e Bari" }, // 0 Assigned, 0 Purchased in dummy data
+            { id: 2, name: "Test" },
+            { id: 3, name: "Tafsir Ibn Kathir" },
+            { id: 4, name: "Madarsa Monthly Magazine" },
+        ];
+
+        // Simulating data from Add Purchase
+        const DUMMY_PURCHASES = [
+            { itemId: 2, quantity: 100, date: '2025-09-08' },
+            { itemId: 3, quantity: 50, date: '2025-05-15' },
+        ];
+
+        // Simulating data from Assign Item
+        const DUMMY_ASSIGNMENTS = [
+            { itemId: 2, quantity: 30, date: '2025-08-18' },
+            { itemId: 4, quantity: 5, date: '2025-10-01' },
+            { itemId: 3, quantity: 10, date: '2025-11-20' },
+        ];
+
+
+        // --- Multilingual Data ---
+        const langData = {
+            'en': {
+                'library_system': 'Library System',
+                'page_title': 'Library Stock Overview',
+                'back_to_library': 'Back to Library',
+                'logout': 'Logout',
+
+                // Table Headers
+                's_no': 'S.No.',
+                'item_name': 'Item Name',
+                'total_purchased_qty': 'Total Purchased Qty',
+                'total_assigned_qty': 'Total Assigned Qty',
+                'available_qty': 'Available Qty',
+                'last_purchase_date': 'Last Purchase Date',
+                'no_data': 'No items found in stock.',
+                'not_purchased': '-'
+            },
+            'hi': {
+                'library_system': 'पुस्तकालय प्रणाली',
+                'page_title': 'पुस्तकालय स्टॉक अवलोकन',
+                'back_to_library': 'पुस्तकालय पर वापस',
+                'logout': 'लॉगआउट',
+
+                // Table Headers
+                's_no': 'क्रमांक',
+                'item_name': 'आइटम का नाम',
+                'total_purchased_qty': 'कुल खरीदी गई मात्रा',
+                'total_assigned_qty': 'कुल असाइन की गई मात्रा',
+                'available_qty': 'उपलब्ध मात्रा',
+                'last_purchase_date': 'अंतिम खरीद की तारीख',
+                'no_data': 'स्टॉक में कोई आइटम नहीं मिला।',
+                'not_purchased': '-'
+            },
+            'ur': {
+                'library_system': 'لائبریری نظام',
+                'page_title': 'لائبریری اسٹاک کا جائزہ',
+                'back_to_library': 'لائبریری پر واپس جائیں',
+                'logout': 'لاگ آؤٹ',
+
+                // Table Headers
+                's_no': 'سیریل نمبر',
+                'item_name': 'آئٹم کا نام',
+                'total_purchased_qty': 'کل خریدی گئی مقدار',
+                'total_assigned_qty': 'کل تفویض کردہ مقدار',
+                'available_qty': 'دستیاب مقدار',
+                'last_purchase_date': 'آخری خریداری کی تاریخ',
+                'no_data': 'اسٹاک میں کوئی آئٹم نہیں ملا۔',
+                'not_purchased': '-'
+            }
+        };
+
+        let currentLang = 'en';
+
+        function getTranslation(key) {
+            return langData[currentLang][key] || langData['en'][key] || key;
+        }
+
+        // --- Core UI Update Functions ---
+        function updateContent() {
+            document.body.className = 'lang-' + currentLang;
+
+            document.querySelectorAll('[data-lang-key]').forEach(el => {
+                const key = el.getAttribute('data-lang-key');
+                el.textContent = getTranslation(key);
+            });
+
+            // Render the stock table
+            renderStockTable();
+        }
+
+        function changeLanguage(lang) {
+            if (lang in langData) {
+                currentLang = lang;
+                localStorage.setItem('madarsaSystemLang', lang);
+                updateContent();
+            }
+        }
+
+        // --- Data Calculation and Table Rendering ---
+        function calculateStockSummary() {
+            const summary = [];
+
+            DUMMY_ITEMS.forEach(item => {
+                const itemId = item.id;
+
+                // 1. Calculate Total Purchased Quantity
+                const totalPurchased = DUMMY_PURCHASES
+                    .filter(p => p.itemId === itemId)
+                    .reduce((sum, p) => sum + p.quantity, 0);
+
+                // 2. Calculate Total Assigned Quantity
+                const totalAssigned = DUMMY_ASSIGNMENTS
+                    .filter(a => a.itemId === itemId)
+                    .reduce((sum, a) => sum + a.quantity, 0);
+
+                // 3. Find Last Purchase Date
+                const lastPurchase = DUMMY_PURCHASES
+                    .filter(p => p.itemId === itemId)
+                    .sort((a, b) => new Date(b.date) - new Date(a.date))[0];
+
+                const lastPurchaseDate = lastPurchase ? lastPurchase.date : getTranslation('not_purchased');
+
+                // 4. Calculate Available Quantity
+                const availableQty = totalPurchased - totalAssigned;
+
+                summary.push({
+                    sNo: item.id,
+                    itemName: item.name,
+                    totalPurchased,
+                    totalAssigned,
+                    availableQty,
+                    lastPurchaseDate
+                });
+            });
+
+            return summary;
+        }
+
+        function renderStockTable() {
+            const tbody = document.getElementById('stock-table-body');
+            if (!tbody) return;
+
+            const summaryData = calculateStockSummary();
+            tbody.innerHTML = '';
+
+            if (summaryData.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="text-center text-gray-500">${getTranslation('no_data')}</td></tr>`;
+                return;
+            }
+
+            summaryData.forEach((item, index) => {
+                const tr = document.createElement('tr');
+
+                // Determine styling for Available Qty (Red if low, Green if high)
+                let availableColor = 'text-gray-800';
+                if (item.availableQty <= 0 && item.totalPurchased > 0) {
+                    availableColor = 'text-red-600 font-semibold';
+                } else if (item.availableQty > 0) {
+                    availableColor = 'text-green-600 font-semibold';
+                }
+
+                tr.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td class="font-bold text-gray-800">${item.itemName}</td>
+                    <td>${item.totalPurchased}</td>
+                    <td>${item.totalAssigned}</td>
+                    <td class="${availableColor}">${item.availableQty}</td>
+                    <td>${item.lastPurchaseDate}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+
+        // Initialize content and language
+        window.onload = function () {
+            const storedLang = localStorage.getItem('madarsaSystemLang');
+            currentLang = (storedLang && storedLang in langData) ? storedLang : 'en';
+
+            // Initial content update
+            updateContent();
+        };
+    </script>
+
+    <!-- HEADER -->
+    <header>
+        <div class="max-w-7xl mx-auto w-full flex justify-between items-center">
+            <!-- Left: Back Button & Title -->
+            <div class="flex items-center space-x-4">
+                <a href="library_system.html" class="action-button bg-gray-100 text-gray-700 hover:bg-gray-200"
+                    data-lang-key="back_to_library">Back to Library</a>
+                <h1 class="text-xl font-bold" data-lang-key="page_title" style="color: var(--color-primary);">Library
+                    Stock Overview</h1>
+            </div>
+
+            <!-- Right: Language Switch -->
+            <div class="flex items-center space-x-2">
+                <select onchange="changeLanguage(this.value)" class="bg-gray-100 rounded-lg p-1 text-sm">
+                    <option value="en" selected>English</option>
+                    <option value="hi">हिन्दी</option>
+                    <option value="ur">اردو</option>
+                </select>
+                <button onclick="window.location.href='login.html'"
+                    class="text-sm font-semibold text-red-600 hover:text-red-800 transition-colors ml-4"
+                    data-lang-key="logout">Logout</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="max-w-7xl mx-auto w-full p-4 md:p-8">
+        <div class="bg-white p-6 md:p-10 rounded-xl shadow-2xl">
+
+            <!-- Page Title -->
+            <h2 class="page-header text-3xl font-bold mb-8 text-center" data-lang-key="page_title">Library Stock
+                Overview</h2>
+
+            <!-- Stock Table -->
+            <div class="table-container">
+                <table class="admin-table">
+                    <thead>
+                        <tr class="bg-gray-100 rounded-lg">
+                            <th data-lang-key="s_no">S.No.</th>
+                            <th data-lang-key="item_name">Item Name</th>
+                            <th data-lang-key="total_purchased_qty">Total Purchased Qty</th>
+                            <th data-lang-key="total_assigned_qty">Total Assigned Qty</th>
+                            <th data-lang-key="available_qty">Available Qty</th>
+                            <th data-lang-key="last_purchase_date">Last Purchase Date</th>
+                        </tr>
+                    </thead>
+                    <tbody id="stock-table-body">
+                        <!-- Stock data will be injected here by JS -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="text-center text-sm text-gray-500 mt-6">
+                <!-- Footer Info -->
+            </div>
+
+        </div>
+    </main>
+</body>
+
+</html>

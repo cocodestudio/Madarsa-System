@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Student Admission - Academic System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        :root {
+            --color-primary: #00A693;
+            --color-background: #F2F3F4;
+            --color-accent: #E08A27;
+            --color-text-dark: #1A1A1A;
+            --color-text-light: #FFFFFF;
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;700&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap');
+
+        /* Language Styles */
+        body,
+        .lang-en {
+            font-family: 'Poppins', sans-serif;
+            direction: ltr;
+            background-color: var(--color-background);
+        }
+
+        .lang-hi {
+            font-family: 'Noto Sans Devanagari', sans-serif;
+            direction: ltr;
+        }
+
+        .lang-ur {
+            font-family: 'Noto Nastaliq Urdu', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+            direction: rtl;
+            line-height: 1.8;
+            text-align: right;
+        }
+
+        /* Form & Inputs */
+        .form-input,
+        select,
+        .form-textarea {
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid #ccc;
+            width: 100%;
+            font-family: inherit;
+        }
+
+        .form-input:focus,
+        select:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(0, 166, 147, 0.2);
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            font-size: 0.875rem;
+            color: var(--color-text-dark);
+        }
+
+        /* Buttons & Header */
+        .primary-button {
+            padding: 0.8rem 1.5rem;
+            background-color: var(--color-primary);
+            color: white;
+            font-weight: 600;
+            border-radius: 0.5rem;
+            transition: background-color 0.2s;
+            cursor: pointer;
+        }
+
+        .action-button {
+            background-color: #f3f4f6;
+            color: var(--color-text-dark);
+        }
+
+        /* Save Entry Button (Matching Image Yellow Style) */
+        .save-entry-button {
+            padding: 1rem 3rem;
+            background-color: #FBBF24;
+            /* Amber 400 */
+            color: var(--color-text-dark);
+            font-size: 1.125rem;
+            font-weight: 700;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 10px rgba(251, 191, 36, 0.4);
+            transition: background-color 0.2s;
+        }
+
+        .save-entry-button:hover {
+            background-color: #f59e0b;
+        }
+
+        /* Card Structure */
+        .centered-card {
+            background-color: white;
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            max-width: 1000px;
+            width: 100%;
+            margin: 2rem auto;
+        }
+
+        .section-title {
+            color: var(--color-primary);
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+
+        /* RTL Fixes */
+        .lang-ur .form-label {
+            text-align: right;
+        }
+
+        .lang-ur .form-group {
+            text-align: right;
+        }
+
+        .lang-ur .input-group-label {
+            text-align: right;
+        }
+
+        .lang-ur .multi-lang-label-group {
+            justify-content: space-between;
+        }
+
+        .lang-ur .text-right {
+            text-align: right;
+        }
+    </style>
+</head>
+
+<body class="lang-en">
+
+    <script>
+        // Helper to format date YYYY-MM-DD
+        function formatDate(date) {
+            const d = new Date(date);
+            let month = '' + (d.getMonth() + 1);
+            let day = '' + d.getDate();
+            const year = d.getFullYear();
+
+            if (month.length < 2) month = '0' + month;
+            if (day.length < 2) day = '0' + day;
+
+            return [year, month, day].join('-');
+        }
+
+        // --- Dummy Data ---
+        const DUMMY_CLASSES = ['First', 'Fifth', 'Hifz', 'Takhassus'];
+        const DUMMY_SECTIONS = ['A', 'B', 'C', 'Sania'];
+
+        // --- Multilingual Data ---
+        const langData = {
+            'en': {
+                'academic_system': 'Academic System',
+                'page_title': 'New Student Admission',
+                'back_to_academic': 'Back to Academic',
+                'logout': 'Logout',
+
+                // Fields
+                'entry_number': 'Entry Number',
+                'admission_date': 'Admission Date',
+                'status': 'Status',
+                'section': 'Section',
+                'ancient_modern': 'Ancient / Modern',
+                'residential_non': 'Residential / Non-residential',
+                'aided_unaided': 'Aided / Unaided',
+                'name_of_residence': 'Name of residence',
+                'room_number': 'Room number',
+                'monthly_fee': 'Monthly fee',
+                'modern_sciences': 'Modern sciences',
+                'seat_number': 'Seat number',
+                'first_academic_year': 'First academic year',
+                'student_name_en': 'Student Name (English)',
+                'student_name_ur': 'Student Name (Urdu)',
+                'fathers_name_en': "Father's Name (English)",
+                'parenthood_ur': 'Parenthood (Urdu)',
+                'address_en': 'Address (English)',
+                'address_ur': 'Address (Urdu)',
+                'guardian_name_en': 'Guardian Name (English)',
+                'guardian_name_ur': "Guardian's name (Urdu)",
+                'save_entry': 'Save Entry',
+
+                // Field Options
+                'modern': 'Modern', 'ancient': 'Ancient',
+                'residential': 'Residential', 'non_residential': 'Non-residential',
+                'aided': 'Aided', 'unaided': 'Unaided',
+                'relief': 'Relief',
+
+                // Messages
+                'admission_success': 'New student admitted successfully!',
+                'fill_required': 'Please fill all required fields.',
+                'example_entry_no': 'E.g., DAKH001',
+                'example_name': 'For example, Ali Raza',
+                'example_father': 'For example, Mohammad Raza',
+                'example_address': 'For example, House No 12, Lahore',
+                'example_year': 'For example, 2025',
+                'example_ms': 'For example, Arabic, jurisprudence, etc',
+                'if_so': 'If so',
+            },
+            'ur': {
+                'academic_system': 'تعلیمی نظام',
+                'page_title': 'داخلہ طالب علم',
+                'back_to_academic': 'اکیڈمک پر واپس جائیں',
+                'logout': 'لاگ آؤٹ',
+
+                // Fields
+                'entry_number': 'انٹری نمبر',
+                'admission_date': 'داخلہ کی تاریخ',
+                'status': 'حالت',
+                'section': 'سیکشن',
+                'ancient_modern': 'قدیم / جدید',
+                'residential_non': 'رہائشی / غیر رہائشی',
+                'aided_unaided': 'معاونت یافتہ / غیر معاونت یافتہ',
+                'name_of_residence': 'رہائش کا نام',
+                'room_number': 'کمرہ نمبر',
+                'monthly_fee': 'ماہانہ فیس',
+                'modern_sciences': 'جدید علوم',
+                'seat_number': 'سیٹ نمبر',
+                'first_academic_year': 'پہلا تعلیمی سال',
+                'student_name_en': 'طالب علم کا نام (انگریزی)',
+                'student_name_ur': 'طالب علم کا نام (اردو)',
+                'fathers_name_en': 'والد کا نام (انگریزی)',
+                'parenthood_ur': 'سرپرست (اردو)',
+                'address_en': 'پتہ (انگریزی)',
+                'address_ur': 'پتہ (اردو)',
+                'guardian_name_en': 'سرپرست کا نام (انگریزی)',
+                'guardian_name_ur': 'سرپرست کا نام (اردو)',
+                'save_entry': 'انٹری محفوظ کریں',
+
+                // Field Options
+                'modern': 'جدید', 'ancient': 'قدیم',
+                'residential': 'رہائشی', 'non_residential': 'غیر رہائشی',
+                'aided': 'معاونت یافتہ', 'unaided': 'غیر معاونت یافتہ',
+                'relief': 'ریلیف',
+
+                // Messages
+                'admission_success': 'نیا طالب علم کامیابی سے داخل کیا گیا!',
+                'fill_required': 'براہ کرم تمام مطلوبہ خانے پُر کریں۔',
+                'example_entry_no': 'مثلاً، DAKH001',
+                'example_name': 'مثلاً، علی رضا',
+                'example_father': 'مثلاً، محمد رضا',
+                'example_address': 'مثلاً، ہاؤس نمبر 12، لاہور',
+                'example_year': 'مثلاً، 2025',
+                'example_ms': 'مثلاً، عربی، فقہ، وغیرہ',
+                'if_so': 'اگر ایسا ہے',
+            }
+        };
+
+        let currentLang = 'en';
+
+        function getTranslation(key) {
+            return langData[currentLang][key] || langData['en'][key] || key;
+        }
+
+        // --- Core UI Update Functions ---
+        function updateContent() {
+            document.body.className = 'lang-' + currentLang;
+            const isRtl = currentLang === 'ur';
+
+            document.querySelectorAll('[data-lang-key]').forEach(el => {
+                const key = el.getAttribute('data-lang-key');
+                el.textContent = getTranslation(key);
+            });
+
+            // Set placeholders/titles
+            document.getElementById('save-entry-btn').textContent = getTranslation('save_entry');
+
+            // Set Form Placeholder text dynamically
+            document.getElementById('entry-number').placeholder = getTranslation('example_entry_no');
+            document.getElementById('student-name-en').placeholder = getTranslation('example_name');
+            document.getElementById('student-name-ur').placeholder = getTranslation('example_name');
+            document.getElementById('fathers-name-en').placeholder = getTranslation('example_father');
+            document.getElementById('parenthood-ur').placeholder = getTranslation('example_father');
+            document.getElementById('address-en').placeholder = getTranslation('example_address');
+            document.getElementById('address-ur').placeholder = getTranslation('example_address');
+            document.getElementById('guardian-name-en').placeholder = getTranslation('example_father');
+            document.getElementById('guardian-name-ur').placeholder = getTranslation('example_father');
+            document.getElementById('residence-name').placeholder = getTranslation('if_so');
+            document.getElementById('modern-sciences').placeholder = getTranslation('example_ms');
+            document.getElementById('first-academic-year').placeholder = getTranslation('example_year');
+
+            // Populate dynamic dropdowns
+            populateDropdown('status-select', ['First', 'Fifth', 'Hifz', 'Takhassus']);
+            populateDropdown('section-select', ['A', 'B', 'C', 'Sania']);
+            populateDropdown('edu-type-select', ['Ancient', 'Modern']);
+            populateDropdown('res-type-select', ['Residential', 'Non-residential']);
+            populateDropdown('aid-type-select', ['Aided', 'Unaided', 'Relief']);
+        }
+
+        function populateDropdown(id, options) {
+            const select = document.getElementById(id);
+            const selectedValue = select.value;
+            select.innerHTML = `<option value="" disabled selected>-- Select --</option>`;
+            options.forEach(opt => {
+                const optKey = opt.toLowerCase().replace(/[^a-z]/g, '');
+                select.innerHTML += `<option value="${opt}" ${opt === selectedValue ? 'selected' : ''}>${getTranslation(optKey) || opt}</option>`;
+            });
+        }
+
+
+        function changeLanguage(lang) {
+            if (lang in langData) {
+                currentLang = lang;
+                localStorage.setItem('madarsaSystemLang', lang);
+                updateContent();
+            }
+        }
+
+        // --- Form Submission Logic ---
+        function saveStudentAdmission(event) {
+            event.preventDefault();
+            const form = event.target;
+
+            const requiredFields = [
+                '#entry-number', '#admission-date', '#status-select', '#section-select',
+                '#edu-type-select', '#res-type-select', '#aid-type-select', '#student-name-en',
+                '#student-name-ur', '#fathers-name-en', '#parenthood-ur', '#address-en',
+                '#address-ur', '#guardian-name-en', '#guardian-name-ur'
+            ];
+
+            let allFilled = true;
+            requiredFields.forEach(selector => {
+                const input = form.querySelector(selector);
+                if (input && !input.value) {
+                    allFilled = false;
+                    input.classList.add('border-red-500');
+                } else if (input) {
+                    input.classList.remove('border-red-500');
+                }
+            });
+
+            if (!allFilled) {
+                alert(getTranslation('fill_required'));
+                return false;
+            }
+
+            // Collect Data (Dummy Save)
+            const formData = {
+                entryNumber: form.querySelector('#entry-number').value,
+                admissionDate: form.querySelector('#admission-date').value,
+                status: form.querySelector('#status-select').value,
+                section: form.querySelector('#section-select').value,
+                eduType: form.querySelector('#edu-type-select').value,
+                resType: form.querySelector('#res-type-select').value,
+                aidType: form.querySelector('#aid-type-select').value,
+                residenceName: form.querySelector('#residence-name').value,
+                roomNumber: form.querySelector('#room-number').value,
+                monthlyFee: parseFloat(form.querySelector('#monthly-fee').value) || 0,
+                modernSciences: form.querySelector('#modern-sciences').value,
+                seatNumber: form.querySelector('#seat-number').value,
+                firstYear: form.querySelector('#first-academic-year').value,
+                studentNameEn: form.querySelector('#student-name-en').value,
+                studentNameUr: form.querySelector('#student-name-ur').value,
+                fathersNameEn: form.querySelector('#fathers-name-en').value,
+                parenthoodUr: form.querySelector('#parenthood-ur').value,
+                addressEn: form.querySelector('#address-en').value,
+                addressUr: form.querySelector('#address-ur').value,
+                guardianNameEn: form.querySelector('#guardian-name-en').value,
+                guardianNameUr: form.querySelector('#guardian-name-ur').value,
+            };
+
+            console.log('New Student Admission (Dummy Save):', formData);
+            alert(getTranslation('admission_success'));
+
+            // Reset form
+            form.reset();
+            document.getElementById('admission-date').value = formatDate(new Date());
+            updateContent(); // Refresh dropdowns
+
+            return false;
+        }
+
+
+        // Initialize content and language
+        window.onload = function () {
+            const storedLang = localStorage.getItem('madarsaSystemLang');
+            currentLang = (storedLang && storedLang in langData) ? storedLang : 'en';
+
+            // Set default date
+            document.getElementById('admission-date').value = formatDate(new Date());
+
+            // Initial content update
+            updateContent();
+
+            // Attach form listener
+            document.getElementById('admission-form').addEventListener('submit', saveStudentAdmission);
+        };
+    </script>
+
+    <!-- HEADER -->
+    <header>
+        <div class="max-w-7xl mx-auto w-full flex justify-between items-center">
+            <!-- Left: Back Button & Title -->
+            <div class="flex items-center space-x-4">
+                <a href="academic_system.html" class="action-button bg-gray-100 text-gray-700 hover:bg-gray-200"
+                    data-lang-key="back_to_academic">Back to Academic</a>
+                <h1 class="text-xl font-bold" data-lang-key="page_title" style="color: var(--color-primary);">New
+                    Student Admission</h1>
+            </div>
+
+            <!-- Right: Language Switch (Simplified) -->
+            <div class="flex items-center space-x-2">
+                <select onchange="changeLanguage(this.value)" class="bg-gray-100 rounded-lg p-1 text-sm">
+                    <option value="en" selected>English</option>
+                    <option value="hi">हिन्दी</option>
+                    <option value="ur">اردو</option>
+                </select>
+                <button onclick="window.location.href='login.html'"
+                    class="text-sm font-semibold text-red-600 hover:text-red-800 transition-colors ml-4 action-button px-3 py-1">Logout</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="w-full p-4 md:p-8">
+
+        <!-- Admission Form Card -->
+        <div class="centered-card">
+            <h2 class="section-title text-center mb-8" data-lang-key="page_title">New Student Admission</h2>
+
+            <!-- Admission Form -->
+            <form id="admission-form">
+
+                <!-- Section 1: Academic & Status Details -->
+                <div class="border-b pb-6 mb-6">
+                    <h3 class="section-title mb-4" style="color: #059669;">Academic & Status</h3>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+
+                        <!-- Entry Number -->
+                        <div class="form-group">
+                            <label for="entry-number" class="form-label text-right" data-lang-key="entry_number">Entry
+                                Number</label>
+                            <input type="text" id="entry-number" class="form-input text-right" placeholder="DEMO123"
+                                required>
+                        </div>
+
+                        <!-- Admission Date -->
+                        <div class="form-group">
+                            <label for="admission-date" class="form-label" data-lang-key="admission_date">Admission
+                                Date</label>
+                            <input type="date" id="admission-date" class="form-input" required>
+                        </div>
+
+                        <!-- Status -->
+                        <div class="form-group">
+                            <label for="status-select" class="form-label" data-lang-key="status">Status</label>
+                            <select id="status-select" class="form-input" required>
+                                <option value="" disabled selected>-- Select Status --</option>
+                                <option>First</option>
+                                <option>Fifth</option>
+                                <option>Hifz</option>
+                            </select>
+                        </div>
+
+                        <!-- Section -->
+                        <div class="form-group">
+                            <label for="section-select" class="form-label" data-lang-key="section">Section</label>
+                            <select id="section-select" class="form-input" required>
+                                <option value="" disabled selected>-- Select Section --</option>
+                                <option>A</option>
+                                <option>B</option>
+                                <option>C</option>
+                            </select>
+                        </div>
+
+                        <!-- Ancient / Modern -->
+                        <div class="form-group">
+                            <label for="edu-type-select" class="form-label" data-lang-key="ancient_modern">Ancient /
+                                Modern</label>
+                            <select id="edu-type-select" class="form-input" required>
+                                <option value="" disabled selected>-- Select Type --</option>
+                                <option value="Ancient" data-lang-key="ancient">Ancient</option>
+                                <option value="Modern" data-lang-key="modern">Modern</option>
+                            </select>
+                        </div>
+
+                        <!-- Residential / Non-residential -->
+                        <div class="form-group">
+                            <label for="res-type-select" class="form-label" data-lang-key="residential_non">Residential
+                                / Non-residential</label>
+                            <select id="res-type-select" class="form-input" required>
+                                <option value="" disabled selected>-- Select Residence Status --</option>
+                                <option value="Residential" data-lang-key="residential">Residential</option>
+                                <option value="Non-residential" data-lang-key="non_residential">Non-residential</option>
+                            </select>
+                        </div>
+
+                        <!-- Aided / Unaided -->
+                        <div class="form-group">
+                            <label for="aid-type-select" class="form-label" data-lang-key="aided_unaided">Aided /
+                                Unaided</label>
+                            <select id="aid-type-select" class="form-input" required>
+                                <option value="" disabled selected>-- Select Aid Status --</option>
+                                <option value="Relief" data-lang-key="relief">Relief</option>
+                                <option value="Unaided" data-lang-key="unaided">Unaided</option>
+                            </select>
+                        </div>
+
+                        <!-- Name of Residence -->
+                        <div class="form-group">
+                            <label for="residence-name" class="form-label" data-lang-key="name_of_residence">Name of
+                                residence</label>
+                            <input type="text" id="residence-name" class="form-input" placeholder="If so">
+                        </div>
+
+                        <!-- Room Number -->
+                        <div class="form-group">
+                            <label for="room-number" class="form-label" data-lang-key="room_number">Room number</label>
+                            <input type="text" id="room-number" class="form-input" placeholder="If so">
+                        </div>
+
+                        <!-- Monthly Fee -->
+                        <div class="form-group">
+                            <label for="monthly-fee" class="form-label" data-lang-key="monthly_fee">Monthly fee</label>
+                            <input type="number" id="monthly-fee" class="form-input" value="1000" min="0" step="0.01">
+                        </div>
+
+                        <!-- Modern Sciences -->
+                        <div class="form-group">
+                            <label for="modern-sciences" class="form-label" data-lang-key="modern_sciences">Modern
+                                sciences</label>
+                            <input type="text" id="modern-sciences" class="form-input"
+                                placeholder="For example, Arabic, jurisprudence, etc">
+                        </div>
+
+                        <!-- Seat Number -->
+                        <div class="form-group">
+                            <label for="seat-number" class="form-label" data-lang-key="seat_number">Seat number</label>
+                            <input type="text" id="seat-number" class="form-input">
+                        </div>
+
+                        <!-- First Academic Year -->
+                        <div class="form-group">
+                            <label for="first-academic-year" class="form-label"
+                                data-lang-key="first_academic_year">First academic year</label>
+                            <input type="number" id="first-academic-year" class="form-input" value="2025" min="2000"
+                                step="1">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 2: Student & Parent Details -->
+                <div class="border-b pb-6 mb-6 pt-4">
+                    <h3 class="section-title mb-4" style="color: #059669;">Student & Parent Details</h3>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+
+                        <!-- Student Name (English) -->
+                        <div class="form-group">
+                            <label for="student-name-en" class="form-label" data-lang-key="student_name_en">Student Name
+                                (English)</label>
+                            <input type="text" id="student-name-en" class="form-input"
+                                placeholder="For example, Ali Raza" required>
+                        </div>
+
+                        <!-- Student Name (Urdu) -->
+                        <div class="form-group">
+                            <label for="student-name-ur" class="form-label" data-lang-key="student_name_ur">Student Name
+                                (Urdu)</label>
+                            <input type="text" id="student-name-ur" class="form-input"
+                                placeholder="For example, Ali Raza" required>
+                        </div>
+
+                        <!-- Father's Name (English) -->
+                        <div class="form-group">
+                            <label for="fathers-name-en" class="form-label" data-lang-key="fathers_name_en">Father's
+                                Name (English)</label>
+                            <input type="text" id="fathers-name-en" class="form-input"
+                                placeholder="For example, Mohammad Raza" required>
+                        </div>
+
+                        <!-- Parenthood (Urdu) -->
+                        <div class="form-group">
+                            <label for="parenthood-ur" class="form-label" data-lang-key="parenthood_ur">Parenthood
+                                (Urdu)</label>
+                            <input type="text" id="parenthood-ur" class="form-input"
+                                placeholder="For example, Mohammad Reza" required>
+                        </div>
+
+                        <!-- Address (English) -->
+                        <div class="form-group">
+                            <label for="address-en" class="form-label" data-lang-key="address_en">Address
+                                (English)</label>
+                            <input type="text" id="address-en" class="form-input"
+                                placeholder="For example, House No 12, Lahore" required>
+                        </div>
+
+                        <!-- Address (Urdu) -->
+                        <div class="form-group">
+                            <label for="address-ur" class="form-label" data-lang-key="address_ur">Address (Urdu)</label>
+                            <input type="text" id="address-ur" class="form-input"
+                                placeholder="For example, house number 12, Lahore" required>
+                        </div>
+
+                        <!-- Guardian Name (English) -->
+                        <div class="form-group">
+                            <label for="guardian-name-en" class="form-label" data-lang-key="guardian_name_en">Guardian
+                                Name (English)</label>
+                            <input type="text" id="guardian-name-en" class="form-input"
+                                placeholder="For example, Mohammad Raza" required>
+                        </div>
+
+                        <!-- Guardian Name (Urdu) -->
+                        <div class="form-group">
+                            <label for="guardian-name-ur" class="form-label" data-lang-key="guardian_name_ur">Guardian's
+                                name (Urdu)</label>
+                            <input type="text" id="guardian-name-ur" class="form-input"
+                                placeholder="For example, Mohammad Raza" required>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- Save Entry Button -->
+                <div class="flex justify-center mt-10">
+                    <button type="submit" id="save-entry-btn" class="save-entry-button" data-lang-key="save_entry">Save
+                        entry</button>
+                </div>
+            </form>
+
+        </div>
+    </main>
+</body>
+
+</html>

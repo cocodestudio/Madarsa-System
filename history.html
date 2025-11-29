@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library History - Library System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        :root {
+            --color-primary: #00A693;
+            --color-background: #F2F3F4;
+            --color-accent: #E08A27;
+            --color-text-dark: #1A1A1A;
+            --color-text-light: #FFFFFF;
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;700&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap');
+
+        /* Language Styles */
+        body,
+        .lang-en {
+            font-family: 'Poppins', sans-serif;
+            direction: ltr;
+            background-color: var(--color-background);
+        }
+
+        .lang-hi {
+            font-family: 'Noto Sans Devanagari', sans-serif;
+            direction: ltr;
+        }
+
+        .lang-ur {
+            font-family: 'Noto Nastaliq Urdu', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+            direction: rtl;
+            line-height: 1.8;
+            text-align: right;
+        }
+
+        /* Form & Table Inputs */
+        .form-input,
+        select {
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid #ccc;
+            width: 100%;
+            font-family: inherit;
+        }
+
+        /* Buttons */
+        .action-button {
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            transition: background-color 0.2s;
+        }
+
+        /* Fixed Header */
+        header {
+            background-color: var(--color-text-light);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            width: 100%;
+            z-index: 10;
+            padding: 1rem 2rem;
+        }
+
+        /* Tabs Styling */
+        .tab-button {
+            padding: 0.75rem 1.25rem;
+            font-weight: 600;
+            border-radius: 0.5rem 0.5rem 0 0;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+            color: gray;
+        }
+
+        .tab-button.active {
+            color: var(--color-primary);
+            border-bottom-color: var(--color-primary);
+            background-color: white;
+        }
+
+        /* Table Styling */
+        .admin-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 10px;
+        }
+
+        .admin-table th {
+            text-align: left;
+            padding: 1rem 1.5rem;
+            font-size: 0.875rem;
+            color: gray;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        .lang-ur .admin-table th {
+            text-align: right;
+        }
+
+        .admin-table td {
+            padding: 1rem 1.5rem;
+            background-color: white;
+            border-top: 1px solid #eee;
+            border-bottom: 1px solid #eee;
+            font-size: 0.8775rem;
+            font-weight: 500;
+        }
+
+        .admin-table tr td:first-child {
+            border-top-left-radius: 0.75rem;
+            border-bottom-left-radius: 0.75rem;
+        }
+
+        .admin-table tr td:last-child {
+            border-top-right-radius: 0.75rem;
+            border-bottom-right-radius: 0.75rem;
+        }
+
+        .lang-ur .admin-table tr td:first-child {
+            border-radius: 0;
+            border-top-right-radius: 0.75rem;
+            border-bottom-right-radius: 0.75rem;
+        }
+
+        .lang-ur .admin-table tr td:last-child {
+            border-radius: 0;
+            border-top-left-radius: 0.75rem;
+            border-bottom-left-radius: 0.75rem;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .table-container table {
+            min-width: 800px;
+        }
+
+        .page-header {
+            color: #00A693;
+            font-size: 2.25rem;
+            font-weight: 700;
+        }
+    </style>
+</head>
+
+<body class="lang-en">
+
+    <script>
+        // --- Dummy Data ---
+        const DUMMY_ITEMS_ADDED = [
+            { id: 1, itemName: "Tafsir Ibn Kathir", status: "Active", dateAdded: '2025-08-18' },
+            { id: 2, itemName: "Hamid e Bari", status: "Active", dateAdded: '2025-09-08' },
+            { id: 3, itemName: "Madarsa Monthly Magazine", status: "Damage/Repair", dateAdded: '2025-11-01' },
+            { id: 4, itemName: "Fiqh Us Sunnah Vol 2", status: "Active", dateAdded: '2025-11-20' },
+        ];
+
+        const DUMMY_PURCHASES = [
+            { id: 101, itemName: "Tafsir Ibn Kathir", quantity: 10, cost: 500, source: "Vendor A", date: '2025-08-15' },
+            { id: 102, itemName: "Hamid e Bari", quantity: 20, cost: 300, source: "Vendor B", date: '2025-09-05' },
+        ];
+
+        const DUMMY_ASSIGNMENTS = [
+            { id: 201, studentName: 'Ahmed Faraz', itemName: 'Tafsir Ibn Kathir', quantity: 1, dateAssigned: '2025-08-18' },
+            { id: 202, studentName: 'Ali Raza', itemName: 'Hamid e Bari', quantity: 1, dateAssigned: '2025-09-09' },
+            { id: 203, studentName: 'Sana Fatima', itemName: 'Madarsa Monthly Magazine', quantity: 1, dateAssigned: '2025-11-05' },
+        ];
+
+        const DUMMY_RETURNS = [
+            { id: 301, studentName: 'Ahmed Faraz', itemName: 'Tafsir Ibn Kathir', dateReturned: '2025-09-10', condition: 'Good' },
+            { id: 302, studentName: 'Sana Fatima', itemName: 'Madarsa Monthly Magazine', dateReturned: '2025-11-20', condition: 'Slightly Damaged' },
+        ];
+
+
+        let currentTab = 'items_added';
+
+        // --- Multilingual Data ---
+        const langData = {
+            'en': {
+                'library_system': 'Library System',
+                'page_title': 'Library History',
+                'back_to_library': 'Back to Library',
+                'logout': 'Logout',
+
+                // Tabs
+                'items_added': 'Items Added History',
+                'purchases': 'Purchases History',
+                'assignments': 'Assignments History',
+                'returns': 'Returns History',
+
+                // Table Headers - Items Added
+                'item_id': 'Item ID',
+                'item_name': 'Name',
+                'status': 'Status',
+                'date_added': 'Date Added',
+                'view_details': 'View Details',
+
+                // Table Headers - Purchases
+                'purchase_id': 'Purchase ID',
+                'item_name_p': 'Item Name',
+                'quantity': 'Quantity',
+                'cost': 'Cost',
+                'source': 'Source',
+                'date_purchased': 'Date Purchased',
+
+                // Table Headers - Assignments
+                'assignment_id': 'Assignment ID',
+                'student_name': 'Student Name',
+                'item_name_a': 'Item Name',
+                'quantity_a': 'Quantity',
+                'date_assigned': 'Date Assigned',
+
+                // Table Headers - Returns
+                'return_id': 'Return ID',
+                'student_name_r': 'Student Name',
+                'item_name_r': 'Item Name',
+                'date_returned': 'Date Returned',
+                'condition': 'Condition',
+
+                'no_data': 'No records found for this history type.',
+                'modal_item_title': 'Item Details',
+                'modal_purchase_title': 'Purchase Details'
+            },
+            'hi': {
+                'library_system': 'पुस्तकालय प्रणाली',
+                'page_title': 'पुस्तकालय इतिहास',
+                'back_to_library': 'पुस्तकालय पर वापस',
+                'logout': 'लॉगआउट',
+
+                // Tabs
+                'items_added': 'जोड़े गए आइटम का इतिहास',
+                'purchases': 'खरीद इतिहास',
+                'assignments': 'असाइनमेंट इतिहास',
+                'returns': 'वापसी इतिहास',
+
+                // Table Headers - Items Added
+                'item_id': 'आइटम आईडी',
+                'item_name': 'नाम',
+                'status': 'स्थिति',
+                'date_added': 'जोड़ने की तिथि',
+                'view_details': 'विवरण देखें',
+
+                // Table Headers - Purchases
+                'purchase_id': 'खरीद आईडी',
+                'item_name_p': 'आइटम का नाम',
+                'quantity': 'मात्रा',
+                'cost': 'लागत',
+                'source': 'स्रोत',
+                'date_purchased': 'खरीद की तिथि',
+
+                // Table Headers - Assignments
+                'assignment_id': 'असाइनमेंट आईडी',
+                'student_name': 'छात्र का नाम',
+                'item_name_a': 'आइटम का नाम',
+                'quantity_a': 'मात्रा',
+                'date_assigned': 'असाइन करने की तिथि',
+
+                // Table Headers - Returns
+                'return_id': 'वापसी आईडी',
+                'student_name_r': 'छात्र का नाम',
+                'item_name_r': 'आइटम का नाम',
+                'date_returned': 'वापसी की तिथि',
+                'condition': 'स्थिति',
+
+                'no_data': 'इस इतिहास प्रकार के लिए कोई रिकॉर्ड नहीं मिला।',
+                'modal_item_title': 'आइटम विवरण',
+                'modal_purchase_title': 'खरीद विवरण'
+            },
+            'ur': {
+                'library_system': 'لائبریری نظام',
+                'page_title': 'لائبریری تاریخ',
+                'back_to_library': 'لائبریری پر واپس جائیں',
+                'logout': 'لاگ آؤٹ',
+
+                // Tabs
+                'items_added': 'شامل کردہ آئٹمز کی تاریخ',
+                'purchases': 'خریداریوں کی تاریخ',
+                'assignments': 'تفویض کی تاریخ',
+                'returns': 'واپسی کی تاریخ',
+
+                // Table Headers - Items Added
+                'item_id': 'آئٹم آئی ڈی',
+                'item_name': 'نام',
+                'status': 'حالت',
+                'date_added': 'شامل کرنے کی تاریخ',
+                'view_details': 'تفصیلات دیکھیں',
+
+                // Table Headers - Purchases
+                'purchase_id': 'خریداری آئی ڈی',
+                'item_name_p': 'آئٹم کا نام',
+                'quantity': 'مقدار',
+                'cost': 'لاگت',
+                'source': 'ذریعہ',
+                'date_purchased': 'خریداری کی تاریخ',
+
+                // Table Headers - Assignments
+                'assignment_id': 'تفویض آئی ڈی',
+                'student_name': 'طالب علم کا نام',
+                'item_name_a': 'آئٹم کا نام',
+                'quantity_a': 'مقدار',
+                'date_assigned': 'تفویض کی تاریخ',
+
+                // Table Headers - Returns
+                'return_id': 'واپسی آئی ڈی',
+                'student_name_r': 'طالب علم کا نام',
+                'item_name_r': 'آئٹم کا نام',
+                'date_returned': 'واپسی کی تاریخ',
+                'condition': 'حالت',
+
+                'no_data': 'اس تاریخ کی قسم کے لیے کوئی ریکارڈ نہیں ملا۔',
+                'modal_item_title': 'آئٹم کی تفصیلات',
+                'modal_purchase_title': 'خریداری کی تفصیلات'
+            }
+        };
+
+        let currentLang = 'en';
+
+        function getTranslation(key) {
+            return langData[currentLang][key] || langData['en'][key] || key;
+        }
+
+        // --- Core UI Update Functions ---
+        function updateContent() {
+            document.body.className = 'lang-' + currentLang;
+
+            document.querySelectorAll('[data-lang-key]').forEach(el => {
+                const key = el.getAttribute('data-lang-key');
+                el.textContent = getTranslation(key);
+            });
+
+            // Re-render table based on current tab
+            renderTable(currentTab);
+        }
+
+        function changeLanguage(lang) {
+            if (lang in langData) {
+                currentLang = lang;
+                localStorage.setItem('madarsaSystemLang', lang);
+                updateContent();
+            }
+        }
+
+        function switchTab(tabKey) {
+            currentTab = tabKey;
+
+            // Update active button state
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.tab === tabKey) {
+                    btn.classList.add('active');
+                }
+            });
+
+            renderTable(tabKey);
+        }
+
+        // --- Table Rendering ---
+        function renderTable(tabKey) {
+            const container = document.getElementById('table-content-container');
+            if (!container) return;
+
+            // Determine which data and headers to use
+            let data = [];
+            let headers = [];
+
+            switch (tabKey) {
+                case 'items_added':
+                    data = DUMMY_ITEMS_ADDED;
+                    headers = ['item_id', 'item_name', 'status', 'date_added', 'view_details'];
+                    break;
+                case 'purchases':
+                    data = DUMMY_PURCHASES;
+                    headers = ['purchase_id', 'item_name_p', 'quantity', 'cost', 'source', 'date_purchased', 'view_details'];
+                    break;
+                case 'assignments':
+                    data = DUMMY_ASSIGNMENTS;
+                    headers = ['assignment_id', 'student_name', 'item_name_a', 'quantity_a', 'date_assigned'];
+                    break;
+                case 'returns':
+                    data = DUMMY_RETURNS;
+                    headers = ['return_id', 'student_name_r', 'item_name_r', 'date_returned', 'condition'];
+                    break;
+                default:
+                    container.innerHTML = `<p class="text-center text-gray-500 p-8">${getTranslation('no_data')}</p>`;
+                    return;
+            }
+
+            // --- Build Table Structure ---
+            let tableHtml = `<div class="table-container">
+                                <table class="admin-table">
+                                    <thead>
+                                        <tr class="bg-gray-100 rounded-lg">`;
+
+            // Add Headers
+            headers.forEach(key => {
+                tableHtml += `<th data-lang-key="${key}">${getTranslation(key)}</th>`;
+            });
+
+            tableHtml += `</tr></thead><tbody id="history-table-body">`;
+
+            // Add Data Rows
+            if (data.length === 0) {
+                tableHtml += `<tr><td colspan="${headers.length}" class="text-center text-gray-500">${getTranslation('no_data')}</td></tr>`;
+            } else {
+                data.forEach((record, index) => {
+                    tableHtml += '<tr>';
+
+                    switch (tabKey) {
+                        case 'items_added':
+                            tableHtml += `
+                                <td>${record.id}</td>
+                                <td class="font-bold text-gray-800">${record.itemName}</td>
+                                <td>${record.status}</td>
+                                <td>${record.dateAdded}</td>
+                                <td><button onclick="handleViewDetails('item', ${record.id})" class="action-button bg-blue-100 text-blue-700 hover:bg-blue-200">${getTranslation('view_details')}</button></td>
+                            `;
+                            break;
+                        case 'purchases':
+                            tableHtml += `
+                                <td>${record.id}</td>
+                                <td class="font-bold text-gray-800">${record.itemName}</td>
+                                <td>${record.quantity}</td>
+                                <td>$${record.cost}</td>
+                                <td>${record.source}</td>
+                                <td>${record.date}</td>
+                                <td><button onclick="handleViewDetails('purchase', ${record.id})" class="action-button bg-blue-100 text-blue-700 hover:bg-blue-200">${getTranslation('view_details')}</button></td>
+                            `;
+                            break;
+                        case 'assignments':
+                            tableHtml += `
+                                <td>${record.id || index + 1}</td>
+                                <td class="font-bold text-gray-800">${record.studentName}</td>
+                                <td>${record.itemName}</td>
+                                <td>${record.quantity}</td>
+                                <td>${record.dateAssigned}</td>
+                            `;
+                            break;
+                        case 'returns':
+                            tableHtml += `
+                                <td>${record.id || index + 1}</td>
+                                <td class="font-bold text-gray-800">${record.studentName}</td>
+                                <td>${record.itemName}</td>
+                                <td>${record.dateReturned}</td>
+                                <td>${record.condition}</td>
+                            `;
+                            break;
+                    }
+
+                    tableHtml += '</tr>';
+                });
+            }
+
+            tableHtml += `</tbody></table></div>`;
+            container.innerHTML = tableHtml;
+
+            // Reapply translations to dynamic elements
+            // **REMOVE THIS CALL TO FIX THE INFINITE LOOP**
+            // updateContent();
+        }
+
+        // --- View Details Modal (Dummy Implementation) ---
+        function handleViewDetails(type, id) {
+            const record = type === 'item' ? DUMMY_ITEMS_ADDED.find(r => r.id === id) : DUMMY_PURCHASES.find(r => r.id === id);
+
+            if (!record) return;
+
+            let titleKey = type === 'item' ? 'modal_item_title' : 'modal_purchase_title';
+            let content = '';
+
+            if (type === 'item') {
+                content = `<p class="text-gray-700"><span class="font-semibold">${getTranslation('item_name')}:</span> ${record.itemName}</p>
+                           <p class="text-gray-700"><span class="font-semibold">${getTranslation('status')}:</span> ${record.status}</p>
+                           <p class="text-gray-700"><span class="font-semibold">${getTranslation('date_added')}:</span> ${record.dateAdded}</p>`;
+            } else if (type === 'purchase') {
+                content = `<p class="text-gray-700"><span class="font-semibold">${getTranslation('item_name_p')}:</span> ${record.itemName}</p>
+                            <p class="text-gray-700"><span class="font-semibold">${getTranslation('quantity')}:</span> ${record.quantity}</p>
+                            <p class="text-gray-700"><span class="font-semibold">${getTranslation('cost')}:</span> $${record.cost}</p>
+                            <p class="text-gray-700"><span class="font-semibold">${getTranslation('source')}:</span> ${record.source}</p>
+                            <p class="text-gray-700"><span class="font-semibold">${getTranslation('date_purchased')}:</span> ${record.date}</p>`;
+            }
+
+            const modalBody = document.getElementById('history-modal-body');
+            modalBody.innerHTML = content;
+            document.getElementById('history-modal-title').textContent = getTranslation(titleKey);
+
+            document.getElementById('history-modal').classList.remove('hidden', 'opacity-0');
+        }
+
+        function closeHistoryModal() {
+            document.getElementById('history-modal').classList.add('opacity-0');
+            setTimeout(() => { document.getElementById('history-modal').classList.add('hidden'); }, 300);
+        }
+
+        // Initialize content and language
+        window.onload = function () {
+            const storedLang = localStorage.getItem('madarsaSystemLang');
+            currentLang = (storedLang && storedLang in langData) ? storedLang : 'en';
+
+            // Initial content update and render first tab
+            updateContent();
+            switchTab('items_added');
+
+            // Attach modal close listener
+            document.getElementById('modal-close-btn').addEventListener('click', closeHistoryModal);
+        };
+    </script>
+
+    <!-- HEADER -->
+    <header>
+        <div class="max-w-7xl mx-auto w-full flex justify-between items-center">
+            <!-- Left: Back Button & Title -->
+            <div class="flex items-center space-x-4">
+                <a href="library_system.html" class="action-button bg-gray-100 text-gray-700 hover:bg-gray-200"
+                    data-lang-key="back_to_library">Back to Library</a>
+                <h1 class="text-xl font-bold" data-lang-key="page_title" style="color: var(--color-primary);">Library
+                    History</h1>
+            </div>
+
+            <!-- Right: Language Switch -->
+            <div class="flex items-center space-x-2">
+                <select onchange="changeLanguage(this.value)" class="bg-gray-100 rounded-lg p-1 text-sm">
+                    <option value="en" selected>English</option>
+                    <option value="hi">हिन्दी</option>
+                    <option value="ur">اردو</option>
+                </select>
+                <button onclick="window.location.href='login.html'"
+                    class="text-sm font-semibold text-red-600 hover:text-red-800 transition-colors ml-4"
+                    data-lang-key="logout">Logout</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="max-w-7xl mx-auto w-full p-4 md:p-8">
+        <div class="bg-white p-6 md:p-8 rounded-xl shadow-2xl">
+
+            <!-- Page Header -->
+            <h2 class="page-header text-3xl font-bold mb-6" data-lang-key="page_title"
+                style="color: var(--color-primary);">Library History</h2>
+
+            <!-- Tab Buttons -->
+            <div class="flex border-b border-gray-200 mb-6 -mx-2">
+                <button data-tab="items_added" onclick="switchTab('items_added')" class="tab-button active"
+                    data-lang-key="items_added">Items Added History</button>
+                <button data-tab="purchases" onclick="switchTab('purchases')" class="tab-button"
+                    data-lang-key="purchases">Purchases History</button>
+                <button data-tab="assignments" onclick="switchTab('assignments')" class="tab-button"
+                    data-lang-key="assignments">Assignments History</button>
+                <button data-tab="returns" onclick="switchTab('returns')" class="tab-button"
+                    data-lang-key="returns">Returns History</button>
+            </div>
+
+            <!-- Dynamic Table Content -->
+            <div id="table-content-container" class="mt-8">
+                <!-- Table will be rendered here -->
+            </div>
+
+        </div>
+    </main>
+
+    <!-- HISTORY VIEW MODAL -->
+    <div id="history-modal"
+        class="hidden opacity-0 fixed inset-0 z-50 flex items-center justify-center modal-backdrop transition-opacity duration-300">
+        <div class="modal-content p-6 md:p-8 transform scale-100 transition-transform duration-300"
+            style="border: 3px solid var(--color-primary);">
+            <div class="flex justify-between items-start pb-4 border-b mb-6">
+                <h3 id="history-modal-title" class="text-xl font-bold text-gray-700">Details</h3>
+                <button id="modal-close-btn" onclick="closeHistoryModal()"
+                    class="text-gray-500 hover:text-gray-900 transition-colors p-1" aria-label="Close">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                        stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            <div id="history-modal-body">
+                <!-- Dynamic content (Item/Purchase Details) goes here -->
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

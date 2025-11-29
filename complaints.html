@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complaints Management - Hostel System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        :root {
+            --color-primary: #00A693;
+            --color-background: #F2F3F4;
+            --color-accent: #E08A27;
+            --color-text-dark: #1A1A1A;
+            --color-text-light: #FFFFFF;
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;700&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap');
+
+        /* Language Styles */
+        body,
+        .lang-en {
+            font-family: 'Poppins', sans-serif;
+            direction: ltr;
+            background-color: var(--color-background);
+        }
+
+        .lang-hi {
+            font-family: 'Noto Sans Devanagari', sans-serif;
+            direction: ltr;
+        }
+
+        .lang-ur {
+            font-family: 'Noto Nastaliq Urdu', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+            direction: rtl;
+            line-height: 1.8;
+            text-align: right;
+        }
+
+        /* Form & Table Inputs */
+        .form-input,
+        select,
+        .form-textarea {
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid #ccc;
+            width: 100%;
+            font-family: inherit;
+        }
+
+        .form-input:focus,
+        select:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(0, 166, 147, 0.2);
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            font-size: 0.875rem;
+        }
+
+        /* Buttons */
+        .primary-button {
+            padding: 0.8rem 1.5rem;
+            background-color: var(--color-primary);
+            color: var(--color-text-light);
+            font-weight: 600;
+            border-radius: 0.75rem;
+            transition: background-color 0.3s, transform 0.1s;
+            box-shadow: 0 4px 10px rgba(0, 166, 147, 0.4);
+            cursor: pointer;
+        }
+
+        .primary-button:hover {
+            background-color: #008f7d;
+            transform: translateY(-1px);
+        }
+
+        .action-button {
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            transition: background-color 0.2s;
+        }
+
+        .delete-button {
+            background-color: #fce8e8;
+            color: #cc0000;
+        }
+
+        .delete-button:hover {
+            background-color: #fcc;
+        }
+
+        /* Table Styling */
+        .admin-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 10px;
+        }
+
+        .admin-table th {
+            text-align: left;
+            padding: 1rem 1.5rem;
+            font-size: 0.875rem;
+            color: gray;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        .lang-ur .admin-table th {
+            text-align: right;
+        }
+
+        .admin-table td {
+            padding: 1rem 1.5rem;
+            background-color: white;
+            border-top: 1px solid #eee;
+            border-bottom: 1px solid #eee;
+            font-size: 0.8775rem;
+            font-weight: 500;
+        }
+
+        .admin-table tr td:first-child {
+            border-top-left-radius: 0.75rem;
+            border-bottom-left-radius: 0.75rem;
+        }
+
+        .admin-table tr td:last-child {
+            border-top-right-radius: 0.75rem;
+            border-bottom-right-radius: 0.75rem;
+        }
+
+        .lang-ur .admin-table tr td:first-child {
+            border-radius: 0;
+            border-top-right-radius: 0.75rem;
+            border-bottom-right-radius: 0.75rem;
+        }
+
+        .lang-ur .admin-table tr td:last-child {
+            border-radius: 0;
+            border-top-left-radius: 0.75rem;
+            border-bottom-left-radius: 0.75rem;
+        }
+
+        .status-pill {
+            display: inline-block;
+            padding: 0.3rem 0.7rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        /* Modal Styles */
+        .modal-backdrop {
+            background-color: rgba(0, 0, 0, 0.6);
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-content {
+            background-color: var(--color-background);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            border-radius: 1rem;
+            max-width: 95%;
+            width: 750px;
+            max-height: 90vh;
+            overflow-y: auto;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        /* Fixed Header */
+        header {
+            background-color: var(--color-text-light);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            width: 100%;
+            z-index: 10;
+            padding: 1rem 2rem;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .table-container table {
+            min-width: 1000px;
+        }
+
+        .view-field {
+            font-size: 0.875rem;
+        }
+
+        .view-label {
+            font-weight: 700;
+            color: var(--color-text-dark);
+            margin-bottom: 0.2rem;
+            display: block;
+        }
+
+        .view-value {
+            color: #555;
+            margin-bottom: 0.8rem;
+        }
+    </style>
+</head>
+
+<body class="lang-en">
+
+    <script>
+        // --- Dummy Data ---
+        let dummyComplaints = [
+            { id: 'C001', studentId: 'S101', raisedBy: 'Ahmed Khan', subject: 'Leaky faucet in Room B-101', category: 'Maintenance', date: '2025-11-20', status: 'Pending', description: 'The faucet in the attached washroom of Room B-101 has been leaking for two days. Needs urgent repair.', adminNotes: [] },
+            { id: 'C002', studentId: 'S103', raisedBy: 'Omar Farooq', subject: 'Noise after 10 PM', category: 'Discipline', date: '2025-11-18', status: 'Resolved', description: 'Students in the next room (B-102) are consistently loud after study hours, causing disturbance.', adminNotes: ['Spoke to students in B-102. Issued a formal warning.', 'Follow-up check completed on 2025-11-20.'] },
+            { id: 'C003', studentId: 'S104', raisedBy: 'Hafsa Bint', subject: 'Mess food quality issue', category: 'Kitchen/Food', date: '2025-11-22', status: 'InProgress', description: 'Yesterday\'s dinner (dal) was undercooked and caused stomach issues.', adminNotes: ['Forwarded complaint to Kitchen Manager.', 'Kitchen Manager confirmed ingredient change.'] },
+        ];
+
+        const COMPLAINT_STORAGE_KEY = 'madarsaHostelComplaints';
+
+        // Initialize/Load Complaints from localStorage
+        function loadComplaints() {
+            const storedComplaints = localStorage.getItem(COMPLAINT_STORAGE_KEY);
+            if (storedComplaints) {
+                try {
+                    dummyComplaints = JSON.parse(storedComplaints);
+                } catch (e) {
+                    console.error("Error loading complaints:", e);
+                }
+            } else {
+                saveComplaints();
+            }
+        }
+
+        // Save Complaints to localStorage
+        function saveComplaints() {
+            localStorage.setItem(COMPLAINT_STORAGE_KEY, JSON.stringify(dummyComplaints));
+        }
+
+        // --- Multilingual Data ---
+        const langData = {
+            'en': {
+                'hostel_system': 'Hostel System',
+                'page_title': 'Complaints Management',
+                'description': 'Track and manage all student complaints regarding maintenance, discipline, and services.',
+                'back_to_hostel': 'Back to Hostel',
+                'logout': 'Logout',
+                'search_placeholder': 'Search by ID, Subject, or Name...',
+
+                // Table Headers
+                'complaint_id': 'ID',
+                'subject': 'Subject',
+                'raised_by': 'Raised By',
+                'category': 'Category',
+                'date_raised': 'Date Raised',
+                'status': 'Status',
+                'actions': 'Actions',
+                'view_details': 'View/Update',
+                'view': 'View',
+
+                // Status/Filters
+                'New': 'New',
+                'Pending': 'Pending',
+                'InProgress': 'In Progress',
+                'Resolved': 'Resolved',
+                'all_status': 'All Status',
+                'Maintenance': 'Maintenance',
+                'Discipline': 'Discipline',
+                'Kitchen/Food': 'Kitchen/Food',
+                'General': 'General',
+                'all_categories': 'All Categories',
+
+                // Modal
+                'modal_view_title': 'Complaint Details',
+                'modal_update_title': 'Update Complaint Status',
+                'student_id': 'Student ID',
+                'complaint_category': 'Category',
+                'complaint_details': 'Details',
+                'status_history': 'Status History / Admin Notes',
+                'add_note': 'Add New Note',
+                'current_status': 'Current Status',
+                'update_status': 'Update Status',
+                'save': 'Save Changes',
+                'cancel': 'Cancel',
+                'note_placeholder': 'Enter observation or action taken...',
+                'update_success': 'Complaint updated successfully!'
+            },
+            'hi': {
+                'hostel_system': 'छात्रावास प्रणाली',
+                'page_title': 'शिकायत प्रबंधन',
+                'description': 'रखरखाव, अनुशासन और सेवाओं से संबंधित सभी छात्र शिकायतों को ट्रैक और प्रबंधित करें।',
+                'back_to_hostel': 'छात्रावास पर वापस',
+                'logout': 'लॉगआउट',
+                'search_placeholder': 'आईडी, विषय, या नाम से खोजें...',
+
+                // Table Headers
+                'complaint_id': 'आईडी',
+                'subject': 'विषय',
+                'raised_by': 'शिकायतकर्ता',
+                'category': 'श्रेणी',
+                'date_raised': 'दर्ज तिथि',
+                'status': 'स्थिति',
+                'actions': 'कार्यवाही',
+                'view_details': 'देखें/अपडेट करें',
+                'view': 'देखें',
+
+                // Status/Filters
+                'New': 'नया',
+                'Pending': 'विचाराधीन',
+                'InProgress': 'प्रगति पर',
+                'Resolved': 'हल किया गया',
+                'all_status': 'सभी स्थिति',
+                'Maintenance': 'रखरखाव',
+                'Discipline': 'अनुशासन',
+                'Kitchen/Food': 'रसोई/भोजन',
+                'General': 'सामान्य',
+                'all_categories': 'सभी श्रेणियां',
+
+                // Modal
+                'modal_view_title': 'शिकायत विवरण',
+                'modal_update_title': 'शिकायत की स्थिति अपडेट करें',
+                'student_id': 'छात्र आईडी',
+                'complaint_category': 'श्रेणी',
+                'complaint_details': 'विवरण',
+                'status_history': 'स्थिति इतिहास / एडमिन नोट्स',
+                'add_note': 'नया नोट जोड़ें',
+                'current_status': 'वर्तमान स्थिति',
+                'update_status': 'स्थिति अपडेट करें',
+                'save': 'परिवर्तन सहेजें',
+                'cancel': 'रद्द करें',
+                'note_placeholder': 'अवलोकन या की गई कार्रवाई दर्ज करें...',
+                'update_success': 'शिकायत सफलतापूर्वक अपडेट की गई!'
+            },
+            'ur': {
+                'hostel_system': 'ہاسٹل نظام',
+                'page_title': 'شکایات کا انتظام',
+                'description': 'دیکھ بھال، نظم و ضبط، اور خدمات کے حوالے سے تمام طلباء کی شکایات کو ٹریک اور ان کا نظم کریں۔',
+                'back_to_hostel': 'ہاسٹل پر واپس جائیں',
+                'logout': 'لاگ آؤٹ',
+                'search_placeholder': 'آئی ڈی، موضوع، یا نام سے تلاش کریں...',
+
+                // Table Headers
+                'complaint_id': 'آئی ڈی',
+                'subject': 'موضوع',
+                'raised_by': 'شکایت کنندہ',
+                'category': 'زمرہ',
+                'date_raised': 'درج کی تاریخ',
+                'status': 'حیثیت',
+                'actions': 'عمل',
+                'view_details': 'دیکھیں/اپ ڈیٹ کریں',
+                'view': 'دیکھیں',
+
+                // Status/Filters
+                'New': 'نیا',
+                'Pending': 'زیر التوا',
+                'InProgress': 'جاری ہے',
+                'Resolved': 'حل شدہ',
+                'all_status': 'تمام حالتیں',
+                'Maintenance': 'دیکھ بھال',
+                'Discipline': 'نظم و ضبط',
+                'Kitchen/Food': 'باورچی خانہ/کھانا',
+                'General': 'عام',
+                'all_categories': 'تمام زمرے',
+
+                // Modal
+                'modal_view_title': 'شکایت کی تفصیلات',
+                'modal_update_title': 'شکایت کی حیثیت اپ ڈیٹ کریں',
+                'student_id': 'طالب علم کی آئی ڈی',
+                'complaint_category': 'زمرہ',
+                'complaint_details': 'تفصیلات',
+                'status_history': 'حیثیت کی تاریخ / ایڈمن نوٹس',
+                'add_note': 'نیا نوٹ شامل کریں',
+                'current_status': 'موجودہ حیثیت',
+                'update_status': 'حیثیت اپ ڈیٹ کریں',
+                'save': 'تبدیلیاں محفوظ کریں',
+                'cancel': 'منسوخ کریں',
+                'note_placeholder': 'مشاہدہ یا کی گئی کارروائی درج کریں...',
+                'update_success': 'شکایت کامیابی سے اپ ڈیٹ ہو گئی!'
+            }
+        };
+
+        let currentLang = 'en';
+
+        function getTranslation(key) {
+            return langData[currentLang][key] || langData['en'][key] || key;
+        }
+
+        // Helper to get complaint by ID
+        function getComplaintById(id) {
+            return dummyComplaints.find(c => c.id === id);
+        }
+
+        // --- Core UI Update Functions ---
+        function updateContent() {
+            document.body.className = 'lang-' + currentLang;
+
+            document.querySelectorAll('[data-lang-key]').forEach(el => {
+                const key = el.getAttribute('data-lang-key');
+                el.textContent = getTranslation(key);
+            });
+
+            document.getElementById('search-input').placeholder = getTranslation('search_placeholder');
+
+            // Re-render table and filters
+            renderTable(filterComplaints());
+            updateFilterOptions();
+        }
+
+        function changeLanguage(lang) {
+            if (lang in langData) {
+                currentLang = lang;
+                localStorage.setItem('madarsaSystemLang', lang);
+                updateContent();
+            }
+        }
+
+        function updateFilterOptions() {
+            const statusFilter = document.getElementById('status-filter');
+            const categoryFilter = document.getElementById('category-filter');
+
+            const selectedStatus = statusFilter.value;
+            const selectedCategory = categoryFilter.value;
+
+            const statuses = ['New', 'Pending', 'InProgress', 'Resolved'];
+            const categories = ['Maintenance', 'Discipline', 'Kitchen/Food', 'General'];
+
+            // Status Filter
+            statusFilter.innerHTML = `<option value="" data-lang-key="all_status">${getTranslation('all_status')}</option>`;
+            statuses.forEach(status => {
+                const option = document.createElement('option');
+                option.value = status;
+                option.textContent = getTranslation(status);
+                statusFilter.appendChild(option);
+            });
+            statusFilter.value = selectedStatus;
+
+            // Category Filter
+            categoryFilter.innerHTML = `<option value="" data-lang-key="all_categories">${getTranslation('all_categories')}</option>`;
+            categories.forEach(category => {
+                const option = document.createElement('option');
+                option.value = category;
+                option.textContent = getTranslation(category);
+                categoryFilter.appendChild(option);
+            });
+            categoryFilter.value = selectedCategory;
+        }
+
+        // --- Table Rendering ---
+        function renderTable(complaintList) {
+            const tbody = document.getElementById('complaints-table-body');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+
+            complaintList.forEach(complaint => {
+                const tr = document.createElement('tr');
+
+                let statusColor;
+                switch (complaint.status) {
+                    case 'Resolved': statusColor = 'bg-green-100 text-green-700'; break;
+                    case 'InProgress': statusColor = 'bg-blue-100 text-blue-700'; break;
+                    case 'Pending': statusColor = 'bg-yellow-100 text-yellow-700'; break;
+                    case 'New': default: statusColor = 'bg-red-100 text-red-700'; break;
+                }
+
+                const translatedStatus = getTranslation(complaint.status);
+
+                tr.innerHTML = `
+                    <td>${complaint.id}</td>
+                    <td class="font-bold text-gray-800">${complaint.subject}</td>
+                    <td>${complaint.raisedBy} (${complaint.studentId})</td>
+                    <td>${getTranslation(complaint.category)}</td>
+                    <td>${complaint.date}</td>
+                    <td><span class="status-pill ${statusColor}">${translatedStatus}</span></td>
+                    <td>
+                        <button onclick="handleAction('view', '${complaint.id}')" class="action-button bg-blue-100 text-blue-700 hover:bg-blue-200">${getTranslation('view_details')}</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // --- Filter Logic ---
+        function filterComplaints() {
+            const search = document.getElementById('search-input').value.toLowerCase();
+            const status = document.getElementById('status-filter').value;
+            const category = document.getElementById('category-filter').value;
+
+            return dummyComplaints.filter(complaint => {
+                const matchesSearch = complaint.subject.toLowerCase().includes(search) ||
+                    complaint.raisedBy.toLowerCase().includes(search) ||
+                    complaint.studentId.toLowerCase().includes(search) ||
+                    complaint.description.toLowerCase().includes(search);
+
+                const matchesStatus = !status || complaint.status === status;
+                const matchesCategory = !category || complaint.category === category;
+
+                return matchesSearch && matchesStatus && matchesCategory;
+            });
+        }
+
+        function handleFilter() {
+            renderTable(filterComplaints());
+        }
+
+        // --- Modal Handling ---
+        function openComplaintModal(titleKey, contentHtml) {
+            const modal = document.getElementById('complaint-modal');
+            const modalTitle = document.getElementById('modal-title');
+            const modalBody = document.getElementById('modal-body');
+
+            modalTitle.textContent = getTranslation(titleKey);
+            modalBody.innerHTML = contentHtml;
+
+            modal.classList.remove('hidden');
+            setTimeout(() => { modal.classList.remove('opacity-0'); }, 10);
+        }
+
+        function closeComplaintModal() {
+            const modal = document.getElementById('complaint-modal');
+            modal.classList.add('opacity-0');
+            setTimeout(() => { modal.classList.add('hidden'); }, 300);
+        }
+
+        // --- Content Creators ---
+        function createViewContent(complaint) {
+            const isRtl = currentLang === 'ur';
+            const alignment = isRtl ? 'text-right' : 'text-left';
+            const translatedStatus = getTranslation(complaint.status);
+            const translatedCategory = getTranslation(complaint.category);
+            const statuses = ['New', 'Pending', 'InProgress', 'Resolved'];
+
+            let statusOptions = statuses.map(s => `<option value="${s}" ${complaint.status === s ? 'selected' : ''}>${getTranslation(s)}</option>`).join('');
+
+            let notesHtml = complaint.adminNotes.map((note, index) =>
+                `<div class="border-b pb-2 mb-2 view-field">
+                    <p class="font-medium text-gray-800">${note}</p>
+                    <p class="text-xs text-gray-500">${new Date().toLocaleDateString()}</p>
+                </div>`).join('');
+
+            if (notesHtml === '') {
+                notesHtml = `<p class="text-gray-500 italic">${getTranslation('no_notes_yet') || 'No notes added yet.'}</p>`;
+            }
+
+            return `
+                <div class="space-y-4 ${alignment}">
+                    <h2 class="text-xl font-bold text-gray-800">${complaint.subject}</h2>
+                    <p class="text-sm text-gray-500">${getTranslation('complaint_id')}: ${complaint.id} | ${getTranslation('date_raised')}: ${complaint.date}</p>
+
+                    <div class="grid grid-cols-2 gap-4 border-t pt-4">
+                        <div class="view-field">
+                            <span class="view-label">${getTranslation('raised_by')}</span>
+                            <span class="view-value">${complaint.raisedBy} (${complaint.studentId})</span>
+                        </div>
+                        <div class="view-field">
+                            <span class="view-label">${getTranslation('complaint_category')}</span>
+                            <span class="view-value">${translatedCategory}</span>
+                        </div>
+                        <div class="view-field col-span-2">
+                            <span class="view-label">${getTranslation('complaint_details')}</span>
+                            <span class="view-value">${complaint.description}</span>
+                        </div>
+                    </div>
+
+                    <h3 class="text-lg font-bold text-gray-700 pt-4 mt-4 border-t" data-lang-key="status_history">${getTranslation('status_history')}</h3>
+                    <div id="notes-container" class="bg-gray-100 p-4 rounded-lg max-h-48 overflow-y-auto ${alignment}">
+                        ${notesHtml}
+                    </div>
+
+                    <!-- Update Section -->
+                    <form id="update-form" onsubmit="return updateComplaint(event, '${complaint.id}')">
+                        <div class="pt-4 border-t mt-4 space-y-4">
+                            <h3 class="text-lg font-bold text-gray-700" data-lang-key="update_status">${getTranslation('update_status')}</h3>
+
+                            <div class="grid grid-cols-2 gap-4">
+                                <!-- Status Dropdown -->
+                                <div class="form-group">
+                                    <label for="new-status" class="form-label">${getTranslation('current_status')}</label>
+                                    <select id="new-status" class="form-input" required>${statusOptions}</select>
+                                </div>
+                                <!-- Empty column for spacing -->
+                                <div></div> 
+                            </div>
+
+                            <!-- Note Textarea -->
+                            <div class="form-group">
+                                <label for="admin-note" class="form-label">${getTranslation('add_note')}</label>
+                                <textarea id="admin-note" class="form-textarea h-16" placeholder="${getTranslation('note_placeholder')}"></textarea>
+                            </div>
+                            
+                            <div class="flex justify-end space-x-4">
+                                <button type="button" onclick="closeComplaintModal()" class="action-button bg-gray-200 text-gray-700 hover:bg-gray-300">${getTranslation('cancel')}</button>
+                                <button type="submit" class="primary-button">${getTranslation('save')}</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            `;
+        }
+
+        // --- Update Logic ---
+        function updateComplaint(event, id) {
+            event.preventDefault();
+            const form = event.target;
+            const newStatus = form.querySelector('#new-status').value;
+            const newNote = form.querySelector('#admin-note').value.trim();
+
+            const complaintIndex = dummyComplaints.findIndex(c => c.id === id);
+
+            if (complaintIndex !== -1) {
+                const currentComplaint = dummyComplaints[complaintIndex];
+
+                // 1. Update Status
+                currentComplaint.status = newStatus;
+
+                // 2. Add Note if provided
+                if (newNote) {
+                    const noteWithDate = `[${new Date().toLocaleDateString()}] ${newNote}`;
+                    if (!currentComplaint.adminNotes) {
+                        currentComplaint.adminNotes = [];
+                    }
+                    currentComplaint.adminNotes.unshift(noteWithDate);
+                }
+
+                saveComplaints();
+                closeComplaintModal();
+                updateContent();
+                alert(getTranslation('update_success'));
+            } else {
+                alert("Error: Complaint not found.");
+            }
+            return false;
+        }
+
+
+        // --- Action Dispatcher (View/Update) ---
+        function handleAction(action, id) {
+            const complaint = getComplaintById(id);
+
+            if (action === 'view') {
+                openComplaintModal('modal_view_title', createViewContent(complaint));
+            }
+        }
+
+        // Initialize content and language
+        window.onload = function () {
+            loadComplaints(); // Load data
+            const storedLang = localStorage.getItem('madarsaSystemLang');
+            currentLang = (storedLang && storedLang in langData) ? storedLang : 'en';
+
+            // Initial content update and table render
+            updateContent();
+
+            // Attach event listeners to filters
+            document.getElementById('search-input').addEventListener('input', handleFilter);
+            document.getElementById('status-filter').addEventListener('change', handleFilter);
+            document.getElementById('category-filter').addEventListener('change', handleFilter);
+        };
+    </script>
+
+    <!-- HEADER -->
+    <header>
+        <div class="max-w-7xl mx-auto w-full flex justify-between items-center">
+            <!-- Left: Back Button & Title -->
+            <div class="flex items-center space-x-4">
+                <a href="hostel_system.html" class="action-button bg-gray-100 text-gray-700 hover:bg-gray-200"
+                    data-lang-key="back_to_hostel">Back to Hostel</a>
+                <h1 class="text-xl font-bold" data-lang-key="page_title" style="color: var(--color-primary);">Complaints
+                    Management</h1>
+            </div>
+
+            <!-- Right: Language Switch -->
+            <div class="flex items-center space-x-2">
+                <select onchange="changeLanguage(this.value)" class="bg-gray-100 rounded-lg p-1 text-sm">
+                    <option value="en" selected>English</option>
+                    <option value="hi">हिन्दी</option>
+                    <option value="ur">اردو</option>
+                </select>
+                <button onclick="window.location.href='login.html'"
+                    class="text-sm font-semibold text-red-600 hover:text-red-800 transition-colors ml-4"
+                    data-lang-key="logout">Logout</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="max-w-7xl mx-auto w-full p-4 md:p-8">
+        <div class="bg-white p-6 md:p-8 rounded-xl shadow-2xl">
+
+            <!-- Description -->
+            <div class="mb-8">
+                <h2 class="text-2xl font-bold text-gray-700" data-lang-key="page_title">Complaints Management</h2>
+                <p class="text-gray-500 mt-1 text-sm" data-lang-key="description">Track and manage all student
+                    complaints regarding maintenance, discipline, and services.</p>
+            </div>
+
+            <!-- Filter and Search Controls -->
+            <div class="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-8">
+
+                <!-- Search -->
+                <div class="sm:col-span-2 relative">
+                    <input type="text" id="search-input" class="form-input pl-10"
+                        placeholder="Search by ID, Subject, or Name...">
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                        class="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                </div>
+
+                <!-- Category Filter -->
+                <div class="sm:col-span-1">
+                    <select id="category-filter" class="form-input">
+                        <option value="" data-lang-key="all_categories">All Categories</option>
+                        <!-- Options injected by JS -->
+                    </select>
+                </div>
+
+                <!-- Status Filter -->
+                <div class="sm:col-span-1">
+                    <select id="status-filter" class="form-input">
+                        <option value="" data-lang-key="all_status">All Status</option>
+                        <!-- Options injected by JS -->
+                    </select>
+                </div>
+            </div>
+
+            <!-- Complaints Table -->
+            <div class="table-container">
+                <table class="admin-table">
+                    <thead>
+                        <tr class="bg-gray-100 rounded-lg">
+                            <th data-lang-key="complaint_id">ID</th>
+                            <th data-lang-key="subject">Subject</th>
+                            <th data-lang-key="raised_by">Raised By</th>
+                            <th data-lang-key="category">Category</th>
+                            <th data-lang-key="date_raised">Date Raised</th>
+                            <th data-lang-key="status">Status</th>
+                            <th data-lang-key="actions">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="complaints-table-body">
+                        <!-- Complaint data will be injected here by JS -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="text-center text-sm text-gray-500 mt-6">
+                Showing ${dummyComplaints.length} entries
+            </div>
+
+        </div>
+    </main>
+
+    <!-- COMPLAINT VIEW/UPDATE MODAL -->
+    <div id="complaint-modal"
+        class="hidden opacity-0 fixed inset-0 z-50 flex items-center justify-center modal-backdrop transition-opacity duration-300">
+        <div class="modal-content p-6 md:p-8 transform scale-100 transition-transform duration-300"
+            style="border: 3px solid var(--color-primary);">
+            <div class="flex justify-between items-start pb-4 border-b mb-6">
+                <h3 id="modal-title" class="text-xl font-bold text-gray-700">Complaint Details</h3>
+                <button onclick="closeComplaintModal()" class="text-gray-500 hover:text-gray-900 transition-colors p-1"
+                    aria-label="Close">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                        stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            <div id="modal-body">
+                <!-- Dynamic content (View/Update Form) goes here -->
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

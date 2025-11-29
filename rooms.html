@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rooms Management - Hostel System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        :root {
+            --color-primary: #00A693;
+            --color-background: #F2F3F4;
+            --color-accent: #E08A27;
+            --color-text-dark: #1A1A1A;
+            --color-text-light: #FFFFFF;
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;700&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap');
+
+        /* Language Styles */
+        body,
+        .lang-en {
+            font-family: 'Poppins', sans-serif;
+            direction: ltr;
+            background-color: var(--color-background);
+        }
+
+        .lang-hi {
+            font-family: 'Noto Sans Devanagari', sans-serif;
+            direction: ltr;
+        }
+
+        .lang-ur {
+            font-family: 'Noto Nastaliq Urdu', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+            direction: rtl;
+            line-height: 1.8;
+            text-align: right;
+        }
+
+        /* Form & Table Inputs */
+        .form-input,
+        select,
+        .form-textarea {
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid #ccc;
+            width: 100%;
+            font-family: inherit;
+        }
+
+        .form-input:focus,
+        select:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(0, 166, 147, 0.2);
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            font-size: 0.875rem;
+        }
+
+        /* Buttons */
+        .primary-button {
+            padding: 0.8rem 1.5rem;
+            background-color: var(--color-primary);
+            color: var(--color-text-light);
+            font-weight: 600;
+            border-radius: 0.75rem;
+            transition: background-color 0.3s, transform 0.1s;
+            box-shadow: 0 4px 10px rgba(0, 166, 147, 0.4);
+            cursor: pointer;
+        }
+
+        .primary-button:hover {
+            background-color: #008f7d;
+            transform: translateY(-1px);
+        }
+
+        .action-button {
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            transition: background-color 0.2s;
+        }
+
+        .delete-button {
+            background-color: #fce8e8;
+            color: #cc0000;
+        }
+
+        .delete-button:hover {
+            background-color: #fcc;
+        }
+
+        /* Table Styling */
+        .admin-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 10px;
+        }
+
+        .admin-table th {
+            text-align: left;
+            padding: 1rem 1.5rem;
+            font-size: 0.875rem;
+            color: gray;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        .lang-ur .admin-table th {
+            text-align: right;
+        }
+
+        .admin-table td {
+            padding: 1rem 1.5rem;
+            background-color: white;
+            border-top: 1px solid #eee;
+            border-bottom: 1px solid #eee;
+            font-size: 0.8775rem;
+            font-weight: 500;
+        }
+
+        .admin-table tr td:first-child {
+            border-top-left-radius: 0.75rem;
+            border-bottom-left-radius: 0.75rem;
+        }
+
+        .admin-table tr td:last-child {
+            border-top-right-radius: 0.75rem;
+            border-bottom-right-radius: 0.75rem;
+        }
+
+        .lang-ur .admin-table tr td:first-child {
+            border-radius: 0;
+            border-top-right-radius: 0.75rem;
+            border-bottom-right-radius: 0.75rem;
+        }
+
+        .lang-ur .admin-table tr td:last-child {
+            border-radius: 0;
+            border-top-left-radius: 0.75rem;
+            border-bottom-left-radius: 0.75rem;
+        }
+
+        .status-pill {
+            display: inline-block;
+            padding: 0.3rem 0.7rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        /* Modal Styles */
+        .modal-backdrop {
+            background-color: rgba(0, 0, 0, 0.6);
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-content {
+            background-color: var(--color-background);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            border-radius: 1rem;
+            max-width: 95%;
+            width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        /* Fixed Header */
+        header {
+            background-color: var(--color-text-light);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            width: 100%;
+            z-index: 10;
+            padding: 1rem 2rem;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .table-container table {
+            min-width: 900px;
+        }
+    </style>
+</head>
+
+<body class="lang-en">
+
+    <script>
+        // --- Dummy Data ---
+        let dummyRooms = [
+            { id: 1, roomNo: 'B-101', capacity: 4, occupancy: 3, type: 'standard', floor: 1, isAvailable: false },
+            { id: 2, roomNo: 'B-102', capacity: 2, occupancy: 2, type: 'premium', floor: 1, isAvailable: false },
+            { id: 3, roomNo: 'L-201', capacity: 6, occupancy: 4, type: 'standard', floor: 2, isAvailable: true },
+            { id: 4, roomNo: 'L-205', capacity: 3, occupancy: 3, type: 'standard', floor: 2, isAvailable: false },
+        ];
+
+        const ROOMS_STORAGE_KEY = 'madarsaHostelRooms';
+
+        // Initialize/Load Rooms from localStorage
+        function loadRooms() {
+            const storedRooms = localStorage.getItem(ROOMS_STORAGE_KEY);
+            if (storedRooms) {
+                try {
+                    dummyRooms = JSON.parse(storedRooms);
+                } catch (e) {
+                    console.error("Error loading rooms:", e);
+                }
+            } else {
+                saveRooms();
+            }
+        }
+
+        // Save Rooms to localStorage
+        function saveRooms() {
+            localStorage.setItem(ROOMS_STORAGE_KEY, JSON.stringify(dummyRooms));
+        }
+
+        // --- Multilingual Data ---
+        const langData = {
+            'en': {
+                'hostel_system': 'Hostel System',
+                'page_title': 'Rooms Management',
+                'description': 'Manage room details, capacity, and current occupancy levels.',
+                'back_to_hostel': 'Back to Hostel',
+                'logout': 'Logout',
+                'search_placeholder': 'Search by Room No. or Type...',
+                'add_new': 'Add New Room',
+
+                // Table Headers
+                'room_no': 'Room No.',
+                'capacity': 'Capacity',
+                'occupancy': 'Occupancy',
+                'availability': 'Availability',
+                'type': 'Type',
+                'floor': 'Floor',
+                'actions': 'Actions',
+                'edit': 'Edit',
+                'delete': 'Delete',
+
+                // Filters/Status
+                'all_types': 'All Types',
+                'all_floors': 'All Floors',
+                'available': 'Available',
+                'full': 'Full',
+                'standard': 'Standard',
+                'premium': 'Premium',
+
+                // Modal
+                'modal_add_title': 'Add New Room',
+                'modal_edit_title': 'Edit Room Details',
+                'save': 'Save Changes',
+                'cancel': 'Cancel',
+                'room_capacity': 'Total Beds/Capacity',
+                'room_floor': 'Floor/Block',
+                'room_type_form': 'Room Type',
+                'is_available': 'Is Currently Available?',
+                'form_success_add': 'New Room added successfully!',
+                'form_success_edit': 'Room details updated!',
+                'confirm_delete': 'Are you sure you want to delete this room? Only empty rooms can be deleted.'
+            },
+            'hi': {
+                'hostel_system': 'छात्रावास प्रणाली',
+                'page_title': 'कमरे प्रबंधन',
+                'description': 'कमरे के विवरण, क्षमता और वर्तमान उपयोग के स्तरों का प्रबंधन करें।',
+                'back_to_hostel': 'छात्रावास पर वापस',
+                'logout': 'लॉगआउट',
+                'search_placeholder': 'कमरा संख्या या प्रकार से खोजें...',
+                'add_new': 'नया कमरा जोड़ें',
+
+                // Table Headers
+                'room_no': 'कमरा नं.',
+                'capacity': 'क्षमता',
+                'occupancy': 'उपयोग',
+                'availability': 'उपलब्धता',
+                'type': 'प्रकार',
+                'floor': 'मंज़िल',
+                'actions': 'कार्यवाही',
+                'edit': 'संपादित करें',
+                'delete': 'हटाएँ',
+
+                // Filters/Status
+                'all_types': 'सभी प्रकार',
+                'all_floors': 'सभी मंज़िलें',
+                'available': 'उपलब्ध',
+                'full': 'पूर्ण',
+                'standard': 'मानक',
+                'premium': 'प्रीमियम',
+
+                // Modal
+                'modal_add_title': 'नया कमरा जोड़ें',
+                'modal_edit_title': 'कमरे के विवरण संपादित करें',
+                'save': 'परिवर्तन सहेजें',
+                'cancel': 'रद्द करें',
+                'room_capacity': 'कुल बेड/क्षमता',
+                'room_floor': 'मंज़िल/ब्लॉक',
+                'room_type_form': 'कमरे का प्रकार',
+                'is_available': 'क्या वर्तमान में उपलब्ध है?',
+                'form_success_add': 'नया कमरा सफलतापूर्वक जोड़ा गया!',
+                'form_success_edit': 'कमरे के विवरण अपडेट किए गए!',
+                'confirm_delete': 'क्या आप निश्चित रूप से इस कमरे को हटाना चाहते हैं? केवल खाली कमरे ही हटाए जा सकते हैं।'
+            },
+            'ur': {
+                'hostel_system': 'ہاسٹل نظام',
+                'page_title': 'کمروں کا انتظام',
+                'description': 'کمرے کی تفصیلات، گنجائش، اور موجودہ استعمال کی سطح کا نظم کریں۔',
+                'back_to_hostel': 'ہاسٹل پر واپس جائیں',
+                'logout': 'لاگ آؤٹ',
+                'search_placeholder': 'کمرہ نمبر یا قسم کے ذریعے تلاش کریں...',
+                'add_new': 'نیا کمرہ شامل کریں',
+
+                // Table Headers
+                'room_no': 'کمرہ نمبر',
+                'capacity': 'گنجائش',
+                'occupancy': 'استعمال',
+                'availability': 'دستیابی',
+                'type': 'قسم',
+                'floor': 'منزل',
+                'actions': 'عمل',
+                'edit': 'ترمیم کریں',
+                'delete': 'حذف کریں',
+
+                // Filters/Status
+                'all_types': 'تمام اقسام',
+                'all_floors': 'تمام منزلیں',
+                'available': 'دستیاب',
+                'full': 'بھرا ہوا',
+                'standard': 'معیاری',
+                'premium': 'پریمیم',
+
+                // Modal
+                'modal_add_title': 'نیا کمرہ شامل کریں',
+                'modal_edit_title': 'کمرے کی تفصیلات میں ترمیم کریں',
+                'save': 'تبدیلیاں محفوظ کریں',
+                'cancel': 'منسوخ کریں',
+                'room_capacity': 'کل بیڈ/گنجائش',
+                'room_floor': 'منزل/بلاک',
+                'room_type_form': 'کمرے کی قسم',
+                'is_available': 'کیا فی الحال دستیاب ہے؟',
+                'form_success_add': 'نیا کمرہ کامیابی سے شامل کیا گیا!',
+                'form_success_edit': 'کمرے کی تفصیلات اپ ڈیٹ ہو گئیں!',
+                'confirm_delete': 'کیا آپ واقعی اس کمرے کو حذف کرنا چاہتے ہیں؟ صرف خالی کمرے ہی حذف کیے جا سکتے ہیں۔'
+            }
+        };
+
+        let currentLang = 'en';
+
+        function getTranslation(key) {
+            return langData[currentLang][key] || langData['en'][key] || key;
+        }
+
+        // Helper to get room by Room No.
+        function getRoomByNo(roomNo) {
+            return dummyRooms.find(room => room.roomNo === roomNo);
+        }
+
+        // --- Core UI Update Functions ---
+        function updateContent() {
+            document.body.className = 'lang-' + currentLang;
+
+            document.querySelectorAll('[data-lang-key]').forEach(el => {
+                const key = el.getAttribute('data-lang-key');
+                el.textContent = getTranslation(key);
+            });
+
+            document.getElementById('search-input').placeholder = getTranslation('search_placeholder');
+
+            // Re-render table and filters
+            renderTable(filterRooms());
+            updateFilterOptions();
+        }
+
+        function changeLanguage(lang) {
+            if (lang in langData) {
+                currentLang = lang;
+                localStorage.setItem('madarsaSystemLang', lang);
+                updateContent();
+            }
+        }
+
+        function updateFilterOptions() {
+            const floorFilter = document.getElementById('floor-filter');
+            const typeFilter = document.getElementById('type-filter');
+
+            // Collect unique floors and types
+            const uniqueFloors = [...new Set(dummyRooms.map(r => r.floor))].sort((a, b) => a - b);
+            const uniqueTypes = [...new Set(dummyRooms.map(r => r.type))].sort();
+
+            // Floor Filter
+            const selectedFloor = floorFilter.value;
+            floorFilter.innerHTML = `<option value="" data-lang-key="all_floors">${getTranslation('all_floors')}</option>`;
+            uniqueFloors.forEach(floor => {
+                const option = document.createElement('option');
+                option.value = floor;
+                option.textContent = getTranslation('floor') + ' ' + floor;
+                floorFilter.appendChild(option);
+            });
+            floorFilter.value = selectedFloor;
+
+            // Type Filter
+            const selectedType = typeFilter.value;
+            typeFilter.innerHTML = `<option value="" data-lang-key="all_types">${getTranslation('all_types')}</option>`;
+            uniqueTypes.forEach(type => {
+                const option = document.createElement('option');
+                option.value = type;
+                option.textContent = getTranslation(type);
+                typeFilter.appendChild(option);
+            });
+            typeFilter.value = selectedType;
+        }
+
+        // --- Table Rendering ---
+        function renderTable(roomList) {
+            const tbody = document.getElementById('rooms-table-body');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+
+            roomList.forEach(room => {
+                const tr = document.createElement('tr');
+
+                // Determine availability status
+                let availabilityKey;
+                let availabilityColor;
+
+                if (room.capacity === room.occupancy) {
+                    availabilityKey = 'full';
+                    availabilityColor = 'bg-red-100 text-red-700';
+                } else if (room.isAvailable) {
+                    availabilityKey = 'available';
+                    availabilityColor = 'bg-green-100 text-green-700';
+                } else {
+                    availabilityKey = 'available'; // Default to available if not full
+                    availabilityColor = 'bg-green-100 text-green-700';
+                }
+
+                const translatedType = getTranslation(room.type);
+                const translatedAvailability = getTranslation(availabilityKey);
+
+                tr.innerHTML = `
+                    <td>${room.roomNo}</td>
+                    <td>${room.capacity}</td>
+                    <td>${room.occupancy}</td>
+                    <td><span class="status-pill ${availabilityColor}">${translatedAvailability}</span></td>
+                    <td>${translatedType}</td>
+                    <td>${room.floor}</td>
+                    <td>
+                        <button onclick="handleAction('edit', '${room.roomNo}')" class="action-button bg-yellow-100 text-yellow-700 hover:bg-yellow-200">${getTranslation('edit')}</button>
+                        <button onclick="handleAction('delete', '${room.roomNo}')" class="action-button delete-button hover:bg-red-200 ml-2">${getTranslation('delete')}</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // --- Filter Logic ---
+        function filterRooms() {
+            const search = document.getElementById('search-input').value.toLowerCase();
+            const floor = document.getElementById('floor-filter').value;
+            const type = document.getElementById('type-filter').value;
+
+            return dummyRooms.filter(room => {
+                const matchesSearch = room.roomNo.toLowerCase().includes(search) ||
+                    room.type.toLowerCase().includes(search);
+
+                const matchesFloor = !floor || room.floor.toString() === floor;
+                const matchesType = !type || room.type === type;
+
+                return matchesSearch && matchesFloor && matchesType;
+            });
+        }
+
+        function handleFilter() {
+            renderTable(filterRooms());
+        }
+
+        // --- Modal Handling ---
+        function openRoomModal(titleKey, contentHtml) {
+            const modal = document.getElementById('room-modal');
+            const modalTitle = document.getElementById('modal-title');
+            const modalBody = document.getElementById('modal-body');
+
+            modalTitle.textContent = getTranslation(titleKey);
+            modalBody.innerHTML = contentHtml;
+
+            modal.classList.remove('hidden');
+            setTimeout(() => { modal.classList.remove('opacity-0'); }, 10);
+        }
+
+        function closeRoomModal() {
+            const modal = document.getElementById('room-modal');
+            modal.classList.add('opacity-0');
+            setTimeout(() => { modal.classList.add('hidden'); }, 300);
+        }
+
+        // --- Content Creators ---
+        function createRoomForm(room = null) {
+            const isEdit = room !== null;
+            const isRtl = currentLang === 'ur';
+            const alignment = isRtl ? 'text-right' : 'text-left';
+            const types = ['standard', 'premium'];
+
+            let typeOptions = '';
+            types.forEach(type => {
+                const selected = isEdit && room.type === type ? 'selected' : '';
+                typeOptions += `<option value="${type}" ${selected}>${getTranslation(type)}</option>`;
+            });
+
+            const availabilityChecked = isEdit && room.isAvailable ? 'checked' : '';
+
+            return `
+                <form id="room-form" onsubmit="return saveRoomDetails(event, ${isEdit ? `'${room.roomNo}'` : 'null'})" class="${alignment}">
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                        
+                        <!-- Room No. -->
+                        <div class="form-group">
+                            <label for="room-no" class="form-label">${getTranslation('room_no')}</label>
+                            <input type="text" id="room-no" class="form-input" value="${isEdit ? room.roomNo : ''}" required ${isEdit ? 'disabled' : ''}>
+                        </div>
+                        
+                        <!-- Capacity -->
+                        <div class="form-group">
+                            <label for="room-capacity" class="form-label">${getTranslation('room_capacity')}</label>
+                            <input type="number" id="room-capacity" class="form-input" value="${isEdit ? room.capacity : ''}" min="1" required>
+                        </div>
+
+                        <!-- Type -->
+                        <div class="form-group">
+                            <label for="room-type" class="form-label">${getTranslation('room_type_form')}</label>
+                            <select id="room-type" class="form-input" required>${typeOptions}</select>
+                        </div>
+
+                        <!-- Floor -->
+                        <div class="form-group">
+                            <label for="room-floor" class="form-label">${getTranslation('room_floor')}</label>
+                            <input type="number" id="room-floor" class="form-input" value="${isEdit ? room.floor : ''}" required>
+                        </div>
+                        
+                        <!-- Availability Checkbox -->
+                        <div class="form-group md:col-span-2 flex items-center ${isRtl ? 'justify-end' : 'justify-start'} mt-4">
+                            <label class="inline-flex items-center space-x-3 cursor-pointer">
+                                <input type="checkbox" id="is-available" class="form-checkbox h-5 w-5" ${availabilityChecked} style="color: var(--color-primary);">
+                                <span class="text-sm font-medium" data-lang-key="is_available">${getTranslation('is_available')}</span>
+                            </label>
+                        </div>
+
+                        <!-- Occupancy (Read-Only on Edit) -->
+                        ${isEdit ? `
+                        <div class="form-group md:col-span-2">
+                            <label class="form-label">${getTranslation('occupancy')}</label>
+                            <input type="text" class="form-input bg-gray-100" value="${room.occupancy}" disabled>
+                            <p class="text-xs text-gray-500 mt-1">${getTranslation('occupancy')} cannot be changed here.</p>
+                        </div>
+                        ` : ''}
+
+                    </div>
+
+                    <div class="flex justify-end space-x-4 mt-6">
+                        <button type="button" onclick="closeRoomModal()" class="action-button bg-gray-200 text-gray-700 hover:bg-gray-300">${getTranslation('cancel')}</button>
+                        <button type="submit" class="primary-button">${getTranslation('save')}</button>
+                    </div>
+                </form>
+            `;
+        }
+
+        // --- Action Dispatcher (Add/Edit/Delete) ---
+        function handleAction(action, roomNo) {
+            const room = roomNo ? getRoomByNo(roomNo) : null;
+
+            if (action === 'add') {
+                openRoomModal('modal_add_title', createRoomForm(null));
+            } else if (!room && action !== 'add') {
+                console.error(`Room not found with Room No: ${roomNo}`);
+                return;
+            } else if (action === 'edit') {
+                openRoomModal('modal_edit_title', createRoomForm(room));
+            } else if (action === 'delete') {
+                if (room.occupancy > 0) {
+                    alert(getTranslation('confirm_delete')); // Shows warning if room is not empty
+                    return;
+                }
+                if (confirm(getTranslation('confirm_delete'))) {
+                    deleteRoom(roomNo);
+                }
+            }
+        }
+
+        // --- Delete Logic ---
+        function deleteRoom(roomNo) {
+            dummyRooms = dummyRooms.filter(r => r.roomNo !== roomNo);
+            saveRooms();
+            handleFilter();
+            alert(`Room ${roomNo} deleted successfully.`);
+        }
+
+        // --- Save Logic (Add/Edit) ---
+        function saveRoomDetails(event, roomNo) {
+            event.preventDefault();
+
+            const form = event.target;
+            const newRoomNo = form.querySelector('#room-no').value;
+            const capacity = parseInt(form.querySelector('#room-capacity').value);
+            const type = form.querySelector('#room-type').value;
+            const floor = parseInt(form.querySelector('#room-floor').value);
+            const isAvailable = form.querySelector('#is-available')?.checked || (capacity > 0);
+
+            if (capacity <= 0 || floor <= 0) {
+                alert("Capacity and Floor must be positive numbers.");
+                return false;
+            }
+
+            if (roomNo) {
+                // EDIT LOGIC
+                const roomIndex = dummyRooms.findIndex(r => r.roomNo === roomNo);
+                if (roomIndex !== -1) {
+                    const currentRoom = dummyRooms[roomIndex];
+                    if (capacity < currentRoom.occupancy) {
+                        alert(`Capacity cannot be lower than current occupancy (${currentRoom.occupancy}).`);
+                        return false;
+                    }
+
+                    dummyRooms[roomIndex] = {
+                        ...currentRoom,
+                        capacity, type, floor, isAvailable
+                    };
+                    alert(getTranslation('form_success_edit'));
+                }
+            } else {
+                // ADD LOGIC
+                if (getRoomByNo(newRoomNo)) {
+                    alert(`Room ${newRoomNo} already exists!`);
+                    return false;
+                }
+
+                const newRoom = {
+                    id: Math.max(...dummyRooms.map(r => r.id)) + 1,
+                    roomNo: newRoomNo,
+                    capacity, occupancy: 0, type, floor, isAvailable
+                };
+                dummyRooms.unshift(newRoom);
+                alert(getTranslation('form_success_add'));
+            }
+
+            saveRooms();
+            closeRoomModal();
+            updateContent();
+            return false;
+        }
+
+        // Initialize content and language
+        window.onload = function () {
+            loadRooms(); // Load data
+            const storedLang = localStorage.getItem('madarsaSystemLang');
+            currentLang = (storedLang && storedLang in langData) ? storedLang : 'en';
+
+            // Initial content update and table render
+            updateContent();
+
+            // Attach event listeners to filters
+            document.getElementById('search-input').addEventListener('input', handleFilter);
+            document.getElementById('floor-filter').addEventListener('change', handleFilter);
+            document.getElementById('type-filter').addEventListener('change', handleFilter);
+        };
+    </script>
+
+    <!-- HEADER -->
+    <header>
+        <div class="max-w-7xl mx-auto w-full flex justify-between items-center">
+            <!-- Left: Back Button & Title -->
+            <div class="flex items-center space-x-4">
+                <a href="hostel_system.html" class="action-button bg-gray-100 text-gray-700 hover:bg-gray-200"
+                    data-lang-key="back_to_hostel">Back to Hostel</a>
+                <h1 class="text-xl font-bold" data-lang-key="page_title" style="color: var(--color-primary);">Rooms
+                    Management</h1>
+            </div>
+
+            <!-- Right: Language Switch -->
+            <div class="flex items-center space-x-2">
+                <select onchange="changeLanguage(this.value)" class="bg-gray-100 rounded-lg p-1 text-sm">
+                    <option value="en" selected>English</option>
+                    <option value="hi">हिन्दी</option>
+                    <option value="ur">اردو</option>
+                </select>
+                <button onclick="window.location.href='login.html'"
+                    class="text-sm font-semibold text-red-600 hover:text-red-800 transition-colors ml-4"
+                    data-lang-key="logout">Logout</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="max-w-7xl mx-auto w-full p-4 md:p-8">
+        <div class="bg-white p-6 md:p-8 rounded-xl shadow-2xl">
+
+            <!-- Description and Action Button -->
+            <div
+                class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 space-y-4 md:space-y-0">
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-700" data-lang-key="page_title">Rooms Management</h2>
+                    <p class="text-gray-500 mt-1 text-sm" data-lang-key="description">Manage room details, capacity, and
+                        current occupancy levels.</p>
+                </div>
+
+                <!-- Add New Button - Opens Modal -->
+                <button onclick="handleAction('add', null)" class="primary-button flex items-center space-x-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                    </svg>
+                    <span data-lang-key="add_new">Add New Room</span>
+                </button>
+            </div>
+
+            <!-- Filter and Search Controls -->
+            <div class="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-8">
+
+                <!-- Search -->
+                <div class="sm:col-span-1 relative">
+                    <input type="text" id="search-input" class="form-input pl-10"
+                        placeholder="Search by Room No. or Type...">
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                        class="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                </div>
+
+                <!-- Floor Filter -->
+                <div class="sm:col-span-1">
+                    <select id="floor-filter" class="form-input">
+                        <option value="" data-lang-key="all_floors">All Floors</option>
+                        <!-- Options injected by JS -->
+                    </select>
+                </div>
+
+                <!-- Type Filter -->
+                <div class="sm:col-span-1">
+                    <select id="type-filter" class="form-input">
+                        <option value="" data-lang-key="all_types">All Types</option>
+                        <!-- Options injected by JS -->
+                    </select>
+                </div>
+
+                <!-- Availability Filter -->
+                <div class="sm:col-span-1">
+                    <select id="availability-filter" class="form-input" onchange="handleFilter()">
+                        <option value="">Availability</option>
+                        <option value="available" data-lang-key="available">Available</option>
+                        <option value="full" data-lang-key="full">Full</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Rooms Table -->
+            <div class="table-container">
+                <table class="admin-table">
+                    <thead>
+                        <tr class="bg-gray-100 rounded-lg">
+                            <th data-lang-key="room_no">Room No.</th>
+                            <th data-lang-key="capacity">Capacity</th>
+                            <th data-lang-key="occupancy">Occupancy</th>
+                            <th data-lang-key="availability">Availability</th>
+                            <th data-lang-key="type">Type</th>
+                            <th data-lang-key="floor">Floor</th>
+                            <th data-lang-key="actions">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="rooms-table-body">
+                        <!-- Room data will be injected here by JS -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="text-center text-sm text-gray-500 mt-6">
+                Showing ${dummyRooms.length} entries
+            </div>
+
+        </div>
+    </main>
+
+    <!-- ROOM VIEW/EDIT/ADD MODAL -->
+    <div id="room-modal"
+        class="hidden opacity-0 fixed inset-0 z-50 flex items-center justify-center modal-backdrop transition-opacity duration-300">
+        <div class="modal-content p-6 md:p-8 transform scale-100 transition-transform duration-300"
+            style="border: 3px solid var(--color-primary);">
+            <div class="flex justify-between items-start pb-4 border-b mb-6">
+                <h3 id="modal-title" class="text-xl font-bold text-gray-700">Room Details</h3>
+                <button onclick="closeRoomModal()" class="text-gray-500 hover:text-gray-900 transition-colors p-1"
+                    aria-label="Close">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                        stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            <div id="modal-body">
+                <!-- Dynamic content (Edit/Add Form) goes here -->
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

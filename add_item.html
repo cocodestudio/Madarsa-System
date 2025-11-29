@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Item - Library System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        :root {
+            --color-primary: #00A693;
+            --color-background: #F2F3F4;
+            --color-accent: #E08A27;
+            --color-text-dark: #1A1A1A;
+            --color-text-light: #FFFFFF;
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;700&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap');
+
+        /* Language Styles */
+        body,
+        .lang-en {
+            font-family: 'Poppins', sans-serif;
+            direction: ltr;
+            background-color: var(--color-background);
+        }
+
+        .lang-hi {
+            font-family: 'Noto Sans Devanagari', sans-serif;
+            direction: ltr;
+        }
+
+        .lang-ur {
+            font-family: 'Noto Nastaliq Urdu', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+            direction: rtl;
+            line-height: 1.8;
+            text-align: right;
+        }
+
+        /* Form & Inputs */
+        .form-input,
+        select,
+        .form-textarea {
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid #ccc;
+            width: 100%;
+            font-family: inherit;
+        }
+
+        .form-input:focus,
+        select:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(0, 166, 147, 0.2);
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            font-size: 0.875rem;
+        }
+
+        /* Buttons */
+        .primary-button {
+            padding: 0.8rem 1.5rem;
+            background-color: var(--color-primary);
+            color: var(--color-text-light);
+            font-weight: 600;
+            border-radius: 0.75rem;
+            transition: background-color 0.3s, transform 0.1s;
+            box-shadow: 0 4px 10px rgba(0, 166, 147, 0.4);
+            cursor: pointer;
+        }
+
+        .primary-button:hover {
+            background-color: #008f7d;
+            transform: translateY(-1px);
+        }
+
+        .action-button {
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            transition: background-color 0.2s;
+        }
+
+        /* Fixed Header */
+        header {
+            background-color: var(--color-text-light);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            width: 100%;
+            z-index: 10;
+            padding: 1rem 2rem;
+        }
+    </style>
+</head>
+
+<body class="lang-en">
+
+    <script>
+        // --- Multilingual Data ---
+        const langData = {
+            'en': {
+                'library_system': 'Library System',
+                'page_title': 'Add Item',
+                'back_to_library': 'Back to Library',
+                'logout': 'Logout',
+                'item_name_en': 'Item Name (English)',
+                'item_name_ur': 'Item Name (Urdu)',
+                'item_type': 'Item Type',
+                'category': 'Category',
+                'author': 'Author',
+                'isbn': 'ISBN',
+                'publisher': 'Publisher',
+                'edition': 'Edition',
+                'pub_year': 'Publication Year',
+                'language': 'Language',
+                'status': 'Status',
+                'save_item': 'Save Item',
+
+                // Dropdown Options
+                'select_type': '-- Select Type --',
+                'select_category': '-- Select Category --',
+                'select_language': '-- Select Language --',
+                'status_active': 'Active',
+                'status_damage': 'Damage/Repair',
+                'type_book': 'Book',
+                'type_periodical': 'Periodical',
+                'type_digital': 'Digital Media',
+                'cat_islamic': 'Islamic Studies',
+                'cat_fiction': 'Fiction',
+                'cat_history': 'History',
+                'lang_ur': 'Urdu',
+                'lang_en': 'English',
+                'lang_ar': 'Arabic',
+
+                'form_success': 'Item successfully added to the catalog!',
+                'form_error': 'Please fill all required fields.'
+            },
+            'hi': {
+                'library_system': 'पुस्तकालय प्रणाली',
+                'page_title': 'आइटम जोड़ें',
+                'back_to_library': 'पुस्तकालय पर वापस',
+                'logout': 'लॉगआउट',
+                'item_name_en': 'आइटम का नाम (अंग्रेजी)',
+                'item_name_ur': 'آئٹم کا نام (اردو)',
+                'item_type': 'आइटम का प्रकार',
+                'category': 'श्रेणी',
+                'author': 'लेखक',
+                'isbn': 'आई एस बी एन',
+                'publisher': 'प्रकाशक',
+                'edition': 'संस्करण',
+                'pub_year': 'प्रकाशन वर्ष',
+                'language': 'भाषा',
+                'status': 'स्थिति',
+                'save_item': 'आइटम सहेजें',
+
+                // Dropdown Options
+                'select_type': '-- प्रकार चुनें --',
+                'select_category': '-- श्रेणी चुनें --',
+                'select_language': '-- भाषा चुनें --',
+                'status_active': 'सक्रिय',
+                'status_damage': 'क्षति/मरम्मत',
+                'type_book': 'पुस्तक',
+                'type_periodical': 'पत्रिका',
+                'type_digital': 'डिजिटल मीडिया',
+                'cat_islamic': 'इस्लामी अध्ययन',
+                'cat_fiction': 'कल्पना',
+                'cat_history': 'इतिहास',
+                'lang_ur': 'اردو',
+                'lang_en': 'अंग्रेजी',
+                'lang_ar': 'अरबी',
+
+                'form_success': 'आइटम सफलतापूर्वक कैटलॉग में जोड़ा गया!',
+                'form_error': 'कृपया सभी आवश्यक फ़ील्ड भरें।'
+            },
+            'ur': {
+                'library_system': 'لائبریری نظام',
+                'page_title': 'آئٹم شامل کریں',
+                'back_to_library': 'لائبریری پر واپس جائیں',
+                'logout': 'لاگ آؤٹ',
+                'item_name_en': 'آئٹم کا نام (انگریزی)',
+                'item_name_ur': 'آئٹم کا نام (اردو)',
+                'item_type': 'آئٹم کی قسم',
+                'category': 'زمرہ',
+                'author': 'مصنف',
+                'isbn': 'آئی ایس بی این',
+                'publisher': 'ناشر',
+                'edition': 'ایڈیشن',
+                'pub_year': 'اشاعت کا سال',
+                'language': 'زبان',
+                'status': 'حالت',
+                'save_item': 'آئٹم محفوظ کریں',
+
+                // Dropdown Options
+                'select_type': '-- قسم منتخب کریں --',
+                'select_category': '-- زمرہ منتخب کریں --',
+                'select_language': '-- زبان منتخب کریں --',
+                'status_active': 'فعال',
+                'status_damage': 'نقصان/مرمت',
+                'type_book': 'کتاب',
+                'type_periodical': 'رسالہ',
+                'type_digital': 'ڈیجیٹل میڈیا',
+                'cat_islamic': 'اسلامی مطالعہ',
+                'cat_fiction': 'افسانہ',
+                'cat_history': 'تاریخ',
+                'lang_ur': 'اردو',
+                'lang_en': 'انگریزی',
+                'lang_ar': 'عربی',
+
+                'form_success': 'آئٹم کامیابی سے کیٹلاگ میں شامل کر دیا گیا!',
+                'form_error': 'براہ کرم تمام مطلوبہ خانے پُر کریں۔'
+            }
+        };
+
+        let currentLang = 'en';
+
+        function getTranslation(key) {
+            return langData[currentLang][key] || langData['en'][key] || key;
+        }
+
+        // --- Core UI Update Functions ---
+        function updateContent() {
+            document.body.className = 'lang-' + currentLang;
+            const isRtl = currentLang === 'ur';
+
+            document.querySelectorAll('[data-lang-key]').forEach(el => {
+                const key = el.getAttribute('data-lang-key');
+                el.textContent = getTranslation(key);
+            });
+
+            // Apply RTL alignment to form groups
+            document.querySelectorAll('.form-group').forEach(group => {
+                group.style.textAlign = isRtl ? 'right' : 'left';
+            });
+            document.querySelectorAll('.form-input, select').forEach(input => {
+                input.style.direction = isRtl ? 'rtl' : 'ltr';
+            });
+        }
+
+        function changeLanguage(lang) {
+            if (lang in langData) {
+                currentLang = lang;
+                localStorage.setItem('madarsaSystemLang', lang);
+                updateContent();
+            }
+        }
+
+        // --- Form Submission Logic ---
+        function saveItem(event) {
+            event.preventDefault();
+            const form = event.target;
+
+            // Simple validation check for required fields (marked with *)
+            const requiredInputs = form.querySelectorAll('[required]');
+            let allFilled = true;
+            requiredInputs.forEach(input => {
+                if (!input.value) {
+                    allFilled = false;
+                    input.classList.add('border-red-500');
+                } else {
+                    input.classList.remove('border-red-500');
+                }
+            });
+
+            if (!allFilled) {
+                alert(getTranslation('form_error'));
+                return false;
+            }
+
+            // Collect Data (Dummy Save)
+            const formData = {
+                nameEn: form.querySelector('#item-name-en').value,
+                nameUr: form.querySelector('#item-name-ur').value,
+                type: form.querySelector('#item-type').value,
+                category: form.querySelector('#item-category').value,
+                author: form.querySelector('#item-author').value,
+                isbn: form.querySelector('#item-isbn').value,
+                publisher: form.querySelector('#item-publisher').value,
+                edition: form.querySelector('#item-edition').value,
+                pubYear: form.querySelector('#item-pub-year').value,
+                language: form.querySelector('#item-language').value,
+                status: form.querySelector('#item-status').value,
+            };
+
+            console.log('New Library Item Captured (Dummy Save):', formData);
+            alert(getTranslation('form_success'));
+
+            // Reset form after successful submission
+            form.reset();
+            return false;
+        }
+
+
+        // Initialize content and language
+        window.onload = function () {
+            const storedLang = localStorage.getItem('madarsaSystemLang');
+            currentLang = (storedLang && storedLang in langData) ? storedLang : 'en';
+
+            // Initial content update
+            updateContent();
+
+            // Attach form listener
+            document.getElementById('item-form').addEventListener('submit', saveItem);
+        };
+    </script>
+
+    <!-- HEADER -->
+    <header>
+        <div class="max-w-7xl mx-auto w-full flex justify-between items-center">
+            <!-- Left: Back Button & Title -->
+            <div class="flex items-center space-x-4">
+                <a href="library_system.html" class="action-button bg-gray-100 text-gray-700 hover:bg-gray-200"
+                    data-lang-key="back_to_library">Back to Library</a>
+                <h1 class="text-xl font-bold" data-lang-key="page_title" style="color: var(--color-primary);">Add Item
+                </h1>
+            </div>
+
+            <!-- Right: Language Switch -->
+            <div class="flex items-center space-x-2">
+                <select onchange="changeLanguage(this.value)" class="bg-gray-100 rounded-lg p-1 text-sm">
+                    <option value="en" selected>English</option>
+                    <option value="hi">हिन्दी</option>
+                    <option value="ur">اردو</option>
+                </select>
+                <button onclick="window.location.href='login.html'"
+                    class="text-sm font-semibold text-red-600 hover:text-red-800 transition-colors ml-4"
+                    data-lang-key="logout">Logout</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="max-w-7xl mx-auto w-full p-4 md:p-8">
+        <div class="bg-white p-6 md:p-10 rounded-xl shadow-2xl">
+
+            <!-- Page Title -->
+            <h2 class="text-3xl font-bold mb-8" data-lang-key="page_title" style="color: var(--color-primary);">Add Item
+            </h2>
+
+            <!-- Item Registration Form -->
+            <form id="item-form">
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+
+                    <!-- Item Name (English) -->
+                    <div class="form-group">
+                        <label for="item-name-en" class="form-label"><span class="text-red-500">*</span> <span
+                                data-lang-key="item_name_en">Item Name (English)</span></label>
+                        <input type="text" id="item-name-en" class="form-input" required>
+                    </div>
+
+                    <!-- Item Name (Urdu) -->
+                    <div class="form-group">
+                        <label for="item-name-ur" class="form-label"><span class="text-red-500">*</span> <span
+                                data-lang-key="item_name_ur">Item Name (Urdu)</span></label>
+                        <input type="text" id="item-name-ur" class="form-input" required>
+                    </div>
+
+                    <!-- Item Type -->
+                    <div class="form-group">
+                        <label for="item-type" class="form-label"><span class="text-red-500">*</span> <span
+                                data-lang-key="item_type">Item Type</span></label>
+                        <select id="item-type" class="form-input" required>
+                            <option value="" disabled selected data-lang-key="select_type">-- Select Type --</option>
+                            <option value="book" data-lang-key="type_book">Book</option>
+                            <option value="periodical" data-lang-key="type_periodical">Periodical</option>
+                            <option value="digital" data-lang-key="type_digital">Digital Media</option>
+                        </select>
+                    </div>
+
+                    <!-- Category -->
+                    <div class="form-group">
+                        <label for="item-category" class="form-label"><span class="text-red-500">*</span> <span
+                                data-lang-key="category">Category</span></label>
+                        <select id="item-category" class="form-input" required>
+                            <option value="" disabled selected data-lang-key="select_category">-- Select Category --
+                            </option>
+                            <option value="islamic" data-lang-key="cat_islamic">Islamic Studies</option>
+                            <option value="fiction" data-lang-key="cat_fiction">Fiction</option>
+                            <option value="history" data-lang-key="cat_history">History</option>
+                        </select>
+                    </div>
+
+                    <!-- Author -->
+                    <div class="form-group">
+                        <label for="item-author" class="form-label"><span data-lang-key="author">Author</span></label>
+                        <input type="text" id="item-author" class="form-input">
+                    </div>
+
+                    <!-- ISBN -->
+                    <div class="form-group">
+                        <label for="item-isbn" class="form-label"><span data-lang-key="isbn">ISBN</span></label>
+                        <input type="text" id="item-isbn" class="form-input">
+                    </div>
+
+                    <!-- Publisher -->
+                    <div class="form-group">
+                        <label for="item-publisher" class="form-label"><span
+                                data-lang-key="publisher">Publisher</span></label>
+                        <input type="text" id="item-publisher" class="form-input">
+                    </div>
+
+                    <!-- Edition -->
+                    <div class="form-group">
+                        <label for="item-edition" class="form-label"><span
+                                data-lang-key="edition">Edition</span></label>
+                        <input type="text" id="item-edition" class="form-input">
+                    </div>
+
+                    <!-- Publication Year -->
+                    <div class="form-group">
+                        <label for="item-pub-year" class="form-label"><span data-lang-key="pub_year">Publication
+                                Year</span></label>
+                        <input type="number" id="item-pub-year" class="form-input" min="1900" max="2099" step="1">
+                    </div>
+
+                    <!-- Language -->
+                    <div class="form-group">
+                        <label for="item-language" class="form-label"><span
+                                data-lang-key="language">Language</span></label>
+                        <select id="item-language" class="form-input">
+                            <option value="" disabled selected data-lang-key="select_language">-- Select Language --
+                            </option>
+                            <option value="ur" data-lang-key="lang_ur">Urdu</option>
+                            <option value="en" data-lang-key="lang_en">English</option>
+                            <option value="ar" data-lang-key="lang_ar">Arabic</option>
+                        </select>
+                    </div>
+
+                    <!-- Status -->
+                    <div class="form-group">
+                        <label for="item-status" class="form-label"><span class="text-red-500">*</span> <span
+                                data-lang-key="status">Status</span></label>
+                        <select id="item-status" class="form-input" required>
+                            <option value="active" selected data-lang-key="status_active">Active</option>
+                            <option value="damage" data-lang-key="status_damage">Damage/Repair</option>
+                        </select>
+                    </div>
+
+                    <!-- Empty placeholder to push button -->
+                    <div class="hidden md:block"></div>
+
+                </div>
+
+                <!-- Save Button -->
+                <div class="flex justify-end mt-10">
+                    <button type="submit" class="primary-button" data-lang-key="save_item">Save Item</button>
+                </div>
+            </form>
+
+        </div>
+    </main>
+</body>
+
+</html>

@@ -6,69 +6,59 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>About Us - Madarsa System</title>
     <script src="https://cdn.tailwindcss.com"></script>
+
     <style>
-        /* Define the color variables based on user-provided images */
-        :root {
-            --color-primary: #00A693;
-            /* Green/Teal */
-            --color-background: #F2F3F4;
-            /* Titanium/Platinum */
-            --color-accent: #E08A27;
-            /* Gold/Orange for luxury feel */
-            --color-text-dark: #1A1A1A;
-            /* Soft Black */
-            --color-text-light: #FFFFFF;
-            /* White */
-            --color-module-bg: #EBEBEB;
-            /* Light Grey for Module Boxes */
+        /* ------------ Local Urdu Font Load ------------- */
+        @font-face {
+            font-family: 'UrduFont';
+            src: url('assets/urdu.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
         }
 
-        /* --- Global Styles: User-Select and Fonts (Consistency) --- */
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Noto+Sans+Devanagari:wght@100..900&family=Jameel+Noori+Nastaleeq&display=swap');
+        /* ------------ Color Variables ------------- */
+        :root {
+            --color-primary: #00A693;
+            --color-background: #F2F3F4;
+            --color-accent: #E08A27;
+            --color-text-dark: #1A1A1A;
+            --color-text-light: #FFFFFF;
+            --color-module-bg: #EBEBEB;
+        }
 
+        /* ------------ Global Fonts ------------- */
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'sans-serif';
             background-color: var(--color-background);
             color: var(--color-text-dark);
-            transition: all 0.3s ease;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
+            transition: 0.3s;
             user-select: none;
             overflow-x: hidden;
         }
 
         .lang-en {
-            font-family: 'Inter', sans-serif;
+            font-family: sans-serif;
         }
 
         .lang-hi {
-            font-family: 'Noto Sans Devangari', sans-serif;
+            font-family: sans-serif;
             direction: ltr;
         }
 
+        /* ------------ Urdu Apply via Local Font ------------- */
         .lang-ur {
-            font-family: "Jameel Noori Nastaleeq", "Urdu Typesetting", "Nastaliq", 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'UrduFont' !important;
             direction: rtl;
         }
 
-        /* Ensure specific fonts are applied correctly to the main text */
-        .page-main-title,
-        .content-container * {
-            transition: all 0.3s ease;
-        }
-
         .lang-ur .page-main-title,
-        .lang-ur .content-container * {
-            font-family: "Jameel Noori Nastaleeq", "Urdu Typesetting", "Nastaliq", 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+        .lang-ur .content-container *,
+        .lang-ur .info-card,
+        .lang-ur .info-card h3 {
+            font-family: 'UrduFont' !important;
         }
 
-        .lang-hi .page-main-title,
-        .lang-hi .content-container * {
-            font-family: 'Noto Sans Devangari', sans-serif !important;
-        }
-
-        /* --- Header Styling (Consistency) --- */
+        /* ------------ Header ------------ */
         header {
             background-color: var(--color-text-light);
             border-bottom: 2px solid rgba(0, 0, 0, 0.05);
@@ -86,13 +76,7 @@
             }
         }
 
-        /* --- Main Content Area (Full width) --- */
-        .main-content-area {
-            flex-grow: 1;
-            padding: 2rem;
-        }
-
-        /* --- Page Title Styling (Left-aligned, capitalized) --- */
+        /* ------------ Page Title ------------ */
         .page-main-title {
             font-size: 3rem;
             font-weight: 800;
@@ -112,7 +96,7 @@
             }
         }
 
-        /* --- Content Cards for Mission/Vision --- */
+        /* ------------ Content Cards for Mission/Vision ------------ */
         .info-card {
             background: linear-gradient(145deg, rgba(255, 255, 255, 1) 0%, var(--color-module-bg) 100%);
             border-radius: 1.5rem;
@@ -129,23 +113,23 @@
             align-items: center;
         }
 
-        /* Footer Styling (Copied from index.html) */
+        /* Footer Styling */
         footer {
             background-color: var(--color-text-dark);
             color: var(--color-background);
         }
 
-        /* --- Language Dialog: Animation Styles (Consistency) --- */
+        /* ------------ Language Dialog ------------ */
         .dialog-backdrop {
             background-color: rgba(0, 0, 0, 0.7);
-            transition: opacity 0.3s ease;
+            transition: 0.3s;
         }
 
         .dialog-content {
             background-color: var(--color-background);
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
             border: 3px solid var(--color-primary);
-            transition: transform 0.3s ease, opacity 0.3s ease;
+            transition: 0.3s;
         }
 
         .rtl-text-right {

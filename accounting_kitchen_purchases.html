@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kitchen Financial Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js for data visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+    <style>
+        :root {
+            --color-primary: #00A693;
+            --color-background: #F2F3F4;
+            --color-accent: #E08A27;
+            --color-text-dark: #1A1A1A;
+            --color-text-light: #FFFFFF;
+            --color-blue: #3b82f6;
+            /* Used for header/main elements in the image */
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;700&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap');
+
+        /* Language Styles */
+        body,
+        .lang-en {
+            font-family: 'Poppins', sans-serif;
+            direction: ltr;
+            background-color: var(--color-background);
+        }
+
+        .lang-hi {
+            font-family: 'Noto Sans Devanagari', sans-serif;
+            direction: ltr;
+        }
+
+        .lang-ur {
+            font-family: 'Noto Nastaliq Urdu', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+            direction: rtl;
+            line-height: 1.8;
+            text-align: right;
+        }
+
+        /* Form & Inputs */
+        .form-input {
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.25rem;
+            border: 1px solid #ccc;
+            font-family: inherit;
+        }
+
+        .filter-group input,
+        .filter-group select {
+            width: auto;
+            flex-grow: 1;
+        }
+
+        /* Buttons */
+        .primary-button {
+            padding: 0.5rem 1rem;
+            background-color: var(--color-primary);
+            color: var(--color-text-light);
+            font-weight: 600;
+            border-radius: 0.25rem;
+            cursor: pointer;
+        }
+
+        /* Fixed Header */
+        header {
+            background-color: var(--color-text-light);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            width: 100%;
+            z-index: 10;
+            padding: 1rem 2rem;
+        }
+
+        /* Dashboard Metrics */
+        .metric-card {
+            background-color: white;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            text-align: center;
+        }
+
+        .metric-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--color-blue);
+            margin-top: 0.5rem;
+        }
+
+        /* Chart/Report Box */
+        .report-box {
+            background-color: white;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Table Styling */
+        .admin-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 8px;
+        }
+
+        .admin-table th {
+            background-color: var(--color-blue);
+            color: white;
+            text-align: left;
+            padding: 0.75rem 1rem;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        .lang-ur .admin-table th {
+            text-align: right;
+        }
+
+        .admin-table td {
+            padding: 0.75rem 1rem;
+            background-color: white;
+            border-top: 1px solid #eee;
+            border-bottom: 1px solid #eee;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .admin-table tr:last-child td {
+            border-bottom-left-radius: 0.75rem;
+            border-bottom-right-radius: 0.75rem;
+        }
+    </style>
+</head>
+
+<body class="lang-en">
+
+    <script>
+        // Helper to format date YYYY-MM-DD
+        function formatDate(date) {
+            const d = new Date(date);
+            let month = '' + (d.getMonth() + 1);
+            let day = '' + d.getDate();
+            const year = d.getFullYear();
+
+            if (month.length < 2) month = '0' + month;
+            if (day.length < 2) day = '0' + day;
+
+            return [year, month, day].join('-');
+        }
+
+        const ITEM_COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#6366f1', '#00A693'];
+
+        // --- Dummy Data (Consolidated Purchase and Waste for financial calc) ---
+        // Note: Real-world data would be merged from separate purchase/waste storage
+        let DUMMY_TRANSACTIONS = [
+            { date: '2025-10-15', itemId: 1, itemName: 'Aaloo', unit: 'kg', price: 10000.00, quantity: 100, type: 'Purchase' },
+            { date: '2025-10-20', itemId: 2, itemName: 'Aata', unit: 'kg', price: 25000.00, quantity: 500, type: 'Purchase' },
+            { date: '2025-11-05', itemId: 1, itemName: 'Aaloo', unit: 'kg', price: 5500.00, quantity: 50, type: 'Purchase' },
+            { date: '2025-11-10', itemId: 3, itemName: 'Chawal', unit: 'kg', price: 24000.00, quantity: 200, type: 'Purchase' },
+            { date: '2025-11-25', itemId: 4, itemName: 'Dal', unit: 'kg', price: 15000.00, quantity: 100, type: 'Purchase' },
+            { date: '2025-11-29', itemId: 5, itemName: 'Doodh', unit: 'liter', price: 660.00, quantity: 10, type: 'Waste' }, // Negative value in cost analysis
+        ];
+
+        // --- Multilingual Data ---
+        const langData = {
+            'en': {
+                'accounting_system': 'Accounting System',
+                'page_title': 'Kitchen Financial Dashboard',
+                'back_to_accounting': 'Back to Accounting',
+                'logout': 'Logout',
+
+                // Filters
+                'from': 'From:',
+                'to': 'To:',
+                'apply': 'Apply',
+
+                // Metrics
+                'total_expense': 'Total Expense',
+                'purchases': 'Purchases',
+                'waste': 'Waste',
+                'year_wise': 'Year-wise',
+                'month_wise': 'Month-wise',
+                'recent_transactions': 'Recent Transactions',
+
+                // Table Headers
+                'date': 'Date',
+                'item_name': 'Item',
+                'quantity': 'Quantity',
+                'price': 'Price',
+                'type': 'Type',
+
+                // Charts
+                'monthly_expense_trend': 'Monthly Expense Trend',
+                'item_contribution': 'Item Cost Contribution',
+                'INR_symbol': '₹',
+                'no_data': 'No data found for the selected period.',
+                'Purchase': 'Purchase',
+                'Waste': 'Waste'
+            },
+            'hi': {
+                'accounting_system': 'लेखांकन प्रणाली',
+                'page_title': 'रसोई वित्तीय डैशबोर्ड',
+                'back_to_accounting': 'लेखांकन पर वापस',
+                'logout': 'लॉगआउट',
+
+                // Filters
+                'from': 'से:',
+                'to': 'तक:',
+                'apply': 'लागू करें',
+
+                // Metrics
+                'total_expense': 'कुल व्यय',
+                'purchases': 'खरीद',
+                'waste': 'अपशिष्ट',
+                'year_wise': 'वर्षानुसार',
+                'month_wise': 'मासिक',
+                'recent_transactions': 'हाल के लेनदेन',
+
+                // Table Headers
+                'date': 'तिथि',
+                'item_name': 'आइटम',
+                'quantity': 'मात्रा',
+                'price': 'मूल्य',
+                'type': 'प्रकार',
+
+                // Charts
+                'monthly_expense_trend': 'मासिक व्यय प्रवृत्ति',
+                'item_contribution': 'आइटम लागत योगदान',
+                'INR_symbol': '₹',
+                'no_data': 'चयनित अवधि के लिए कोई डेटा नहीं मिला।',
+                'Purchase': 'खरीद',
+                'Waste': 'अपशिष्ट'
+            },
+            'ur': {
+                'accounting_system': 'اکاؤنٹنگ نظام',
+                'page_title': 'باورچی خانے کا مالیاتی ڈیش بورڈ',
+                'back_to_accounting': 'اکاؤنٹنگ پر واپس جائیں',
+                'logout': 'لاگ آؤٹ',
+
+                // Filters
+                'from': 'سے:',
+                'to': 'تک:',
+                'apply': 'لاگو کریں',
+
+                // Metrics
+                'total_expense': 'کل اخراجات',
+                'purchases': 'خریداری',
+                'waste': 'فضلہ',
+                'year_wise': 'سال کے لحاظ سے',
+                'month_wise': 'ماہ کے لحاظ سے',
+                'recent_transactions': 'حالیہ لین دین',
+
+                // Table Headers
+                'date': 'تاریخ',
+                'item_name': 'آئٹم',
+                'quantity': 'مقدار',
+                'price': 'قیمت',
+                'type': 'قسم',
+
+                // Charts
+                'monthly_expense_trend': 'ماہانہ اخراجات کا رجحان',
+                'item_contribution': 'آئٹم لاگت کا حصہ',
+                'INR_symbol': '₹',
+                'no_data': 'منتخب مدت کے لیے کوئی ڈیٹا نہیں ملا۔',
+                'Purchase': 'خریداری',
+                'Waste': 'فضلہ'
+            }
+        };
+
+        let currentLang = 'en';
+        let lineChartInstance = null;
+        let donutChartInstance = null;
+        let currentYear = new Date().getFullYear();
+
+        function getTranslation(key) {
+            return langData[currentLang][key] || langData['en'][key] || key;
+        }
+
+        // --- Core UI Update Functions (FIXED: Moved updateContent definition up) ---
+        function updateContent() {
+            document.body.className = 'lang-' + currentLang;
+
+            document.querySelectorAll('[data-lang-key]').forEach(el => {
+                const key = el.getAttribute('data-lang-key');
+                el.textContent = getTranslation(key);
+            });
+
+            // Re-run filter and charts to apply new language translations
+            handleFilter();
+        }
+
+        function changeLanguage(lang) {
+            if (lang in langData) {
+                currentLang = lang;
+                localStorage.setItem('madarsaSystemLang', lang);
+                updateContent();
+            }
+        }
+
+        // --- Data Processing ---
+        function processDataForDashboard(transactions) {
+            let totalExpense = 0;
+            let totalPurchases = 0;
+            let totalWasteCost = 0;
+            let currentMonth = new Date().toISOString().substring(0, 7); // YYYY-MM
+
+            const monthlyData = {};
+            const itemCost = {};
+
+            transactions.forEach(t => {
+                // Use safe parsing for calculation robustness
+                const transactionPrice = parseFloat(t.price) || 0;
+
+                const cost = t.type === 'Purchase' ? transactionPrice : transactionPrice * -1; // Cost is negative for waste in total expense
+                const monthYear = t.date.substring(0, 7);
+
+                totalExpense += cost;
+
+                if (t.type === 'Purchase') {
+                    totalPurchases += transactionPrice;
+                } else {
+                    totalWasteCost += transactionPrice; // Display total waste cost as positive
+                }
+
+                // For Line Chart (Monthly Trend)
+                if (!monthlyData[monthYear]) monthlyData[monthYear] = 0;
+                monthlyData[monthYear] += cost;
+
+                // For Donut Chart (Item Contribution) - only for purchases
+                if (t.type === 'Purchase') {
+                    itemCost[t.itemName] = (itemCost[t.itemName] || 0) + transactionPrice;
+                }
+            });
+
+            // Format Monthly Trend
+            const sortedMonths = Object.keys(monthlyData).sort();
+            const trendData = {
+                labels: sortedMonths.map(m => new Date(m).toLocaleString('default', { month: 'short', year: 'numeric' })),
+                costs: sortedMonths.map(m => monthlyData[m])
+            };
+
+            // Format Item Contribution (Top 6)
+            const itemContribution = Object.entries(itemCost)
+                .sort(([, a], [, b]) => b - a)
+                .slice(0, 6);
+
+            return {
+                totalExpense: totalExpense,
+                totalPurchases: totalPurchases,
+                totalWasteCost: totalWasteCost,
+                monthlyTotal: monthlyData[currentMonth] || 0,
+                yearlyTotal: transactions.filter(t => t.date.startsWith(currentYear)).reduce((sum, t) => sum + (t.type === 'Purchase' ? (parseFloat(t.price) || 0) : 0), 0),
+                trendData: trendData,
+                itemContribution: itemContribution
+            };
+        }
+
+        // --- Chart Rendering ---
+        function renderCharts(data, itemContribution) {
+            // Destroy previous charts
+            if (lineChartInstance) lineChartInstance.destroy();
+            if (donutChartInstance) donutChartInstance.destroy();
+
+            // --- 1. Monthly Expense Trend (Line Chart) ---
+            const trendCtx = document.getElementById('monthly-trend-chart').getContext('2d');
+            lineChartInstance = new Chart(trendCtx, {
+                type: 'line',
+                data: {
+                    labels: data.trendData.labels,
+                    datasets: [{
+                        label: getTranslation('total_expense'),
+                        data: data.trendData.costs,
+                        borderColor: '#3b82f6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.2)',
+                        fill: true,
+                        tension: 0.3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    aspectRatio: 2.5,
+                    plugins: { legend: { display: false } },
+                    scales: { y: { beginAtZero: true } }
+                }
+            });
+
+            // --- 2. Item Cost Contribution (Donut Chart) ---
+            const donutCtx = document.getElementById('item-contribution-chart').getContext('2d');
+            donutChartInstance = new Chart(donutCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: itemContribution.map(([name]) => name),
+                    datasets: [{
+                        data: itemContribution.map(([, cost]) => cost),
+                        backgroundColor: ITEM_COLORS.slice(0, itemContribution.length),
+                        hoverOffset: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    aspectRatio: 1,
+                    plugins: { legend: { position: 'right' } }
+                }
+            });
+        }
+
+        // --- Table Rendering ---
+        function renderTransactionsTable(transactions) {
+            const tbody = document.getElementById('transactions-table-body');
+            if (!tbody) return;
+
+            tbody.innerHTML = '';
+
+            if (transactions.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="text-center text-gray-500 p-4">${getTranslation('no_data')}</td></tr>`;
+                return;
+            }
+
+            // Show latest 10 transactions
+            transactions.slice(0, 10).forEach(t => {
+                const tr = document.createElement('tr');
+
+                // Use safe parsing
+                const safePrice = parseFloat(t.price) || 0;
+                const safeQuantity = parseFloat(t.quantity) || 0;
+
+                const isPurchase = t.type === 'Purchase';
+                const priceDisplayValue = isPurchase ? safePrice : safePrice * -1;
+
+                const priceDisplay = priceDisplayValue.toFixed(2);
+                const typeText = getTranslation(t.type);
+
+                tr.innerHTML = `
+                    <td>${t.date}</td>
+                    <td>${t.itemName} (${t.unit})</td>
+                    <td>${safeQuantity.toFixed(2)}</td>
+                    <td class="font-bold ${isPurchase ? 'text-green-600' : 'text-red-600'}">${getTranslation('INR_symbol')} ${priceDisplay}</td>
+                    <td>${typeText}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // --- Main Filter Logic ---
+        function handleFilter() {
+            const fromDate = document.getElementById('from-date').value;
+            const toDate = document.getElementById('to-date').value;
+
+            // Apply filter to DUMMY_TRANSACTIONS
+            const filteredTransactions = DUMMY_TRANSACTIONS.filter(t => {
+                const matchesFromDate = !fromDate || new Date(t.date) >= new Date(fromDate);
+                const matchesToDate = !toDate || new Date(t.date) <= new Date(toDate);
+
+                return matchesFromDate && matchesToDate;
+            });
+
+            // Sort by date descending for table display
+            filteredTransactions.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            const dashboardData = processDataForDashboard(filteredTransactions);
+
+            // Update Metrics
+            document.getElementById('total-expense-value').textContent = getTranslation('INR_symbol') + ' ' + dashboardData.totalExpense.toFixed(2);
+            document.getElementById('total-purchases-value').textContent = getTranslation('INR_symbol') + ' ' + dashboardData.totalPurchases.toFixed(2);
+            document.getElementById('total-waste-value').textContent = getTranslation('INR_symbol') + ' ' + dashboardData.totalWasteCost.toFixed(2);
+            document.getElementById('month-wise-value').textContent = getTranslation('INR_symbol') + ' ' + dashboardData.monthlyTotal.toFixed(2);
+            document.getElementById('year-wise-value').textContent = getTranslation('INR_symbol') + ' ' + dashboardData.yearlyTotal.toFixed(2);
+
+            // Render Charts and Table
+            renderCharts(dashboardData, dashboardData.itemContribution);
+            renderTransactionsTable(filteredTransactions);
+        }
+
+        // --- Initialization ---
+        window.onload = function () {
+            const storedLang = localStorage.getItem('madarsaSystemLang');
+            currentLang = (storedLang && storedLang in langData) ? storedLang : 'en';
+
+            // Set default date range (e.g., this month)
+            const today = formatDate(new Date());
+            const firstDayOfMonth = today.substring(0, 8) + '01';
+
+            document.getElementById('from-date').value = firstDayOfMonth;
+            document.getElementById('to-date').value = today;
+
+            // Initial content update and data render
+            updateContent();
+
+            // Attach filter listeners
+            document.getElementById('apply-filter-btn').addEventListener('click', handleFilter);
+
+            // Run initial filter to display all data (Called inside updateContent now)
+        };
+    </script>
+
+    <!-- HEADER -->
+    <header>
+        <div class="max-w-7xl mx-auto w-full flex justify-between items-center">
+            <!-- Left: Back Button & Title -->
+            <div class="flex items-center space-x-4">
+                <a href="accounting_system.html" class="action-button bg-gray-100 text-gray-700 hover:bg-gray-200"
+                    data-lang-key="back_to_accounting">Back to Accounting</a>
+                <h1 class="text-xl font-bold" data-lang-key="page_title" style="color: var(--color-primary);">Kitchen
+                    Financial Dashboard</h1>
+            </div>
+
+            <!-- Right: Language Switch -->
+            <div class="flex items-center space-x-2">
+                <select onchange="changeLanguage(this.value)" class="bg-gray-100 rounded-lg p-1 text-sm">
+                    <option value="en" selected>English</option>
+                    <option value="hi">हिन्दी</option>
+                    <option value="ur">اردو</option>
+                </select>
+                <button onclick="window.location.href='login.html'"
+                    class="text-sm font-semibold text-red-600 hover:text-red-800 transition-colors ml-4"
+                    data-lang-key="logout">Logout</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="max-w-7xl mx-auto w-full p-4 md:p-8">
+
+        <!-- Page Title -->
+        <h2 class="text-3xl font-bold text-gray-800 mb-6" data-lang-key="page_title">Kitchen Financial Dashboard</h2>
+
+        <!-- Filter Options (Matches Image Layout) -->
+        <div class="flex items-center space-x-3 mb-8">
+            <h4 class="text-sm font-semibold text-gray-700" data-lang-key="from">From:</h4>
+            <input type="date" id="from-date" class="form-input text-sm">
+
+            <h4 class="text-sm font-semibold text-gray-700" data-lang-key="to">To:</h4>
+            <input type="date" id="to-date" class="form-input text-sm">
+
+            <button id="apply-filter-btn" class="primary-button text-sm" data-lang-key="apply">Apply</button>
+        </div>
+
+
+        <!-- Summary Metrics Cards (Matches Image Layout) -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
+
+            <!-- Total Expense -->
+            <div class="metric-card">
+                <p class="text-xs uppercase text-gray-500" data-lang-key="total_expense">Total Expense</p>
+                <h3 id="total-expense-value" class="metric-value text-red-600">₹ 0.00</h3>
+            </div>
+
+            <!-- Total Purchases (Total Cost) -->
+            <div class="metric-card">
+                <p class="text-xs uppercase text-gray-500" data-lang-key="purchases">Purchases</p>
+                <h3 id="total-purchases-value" class="metric-value text-green-600">₹ 0.00</h3>
+            </div>
+
+            <!-- Total Waste Cost -->
+            <div class="metric-card">
+                <p class="text-xs uppercase text-gray-500" data-lang-key="waste">Waste</p>
+                <h3 id="total-waste-value" class="metric-value">₹ 0.00</h3>
+            </div>
+
+            <!-- Year-wise -->
+            <div class="metric-card">
+                <p class="text-xs uppercase text-gray-500" data-lang-key="year_wise">Year-wise</p>
+                <h3 id="year-wise-value" class="metric-value">₹ 0.00</h3>
+            </div>
+
+            <!-- Month-wise -->
+            <div class="metric-card">
+                <p class="text-xs uppercase text-gray-500" data-lang-key="month_wise">Month-wise</p>
+                <h3 id="month-wise-value" class="metric-value">₹ 0.00</h3>
+            </div>
+        </div>
+
+        <!-- Charts Section -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+
+            <!-- Monthly Trend (Line Chart) - Span 2 -->
+            <div class="report-box lg:col-span-2">
+                <h3 class="text-lg font-semibold text-gray-700 mb-4" data-lang-key="monthly_expense_trend">Monthly
+                    Expense Trend</h3>
+                <div class="h-80 flex justify-center items-center">
+                    <canvas id="monthly-trend-chart"></canvas>
+                </div>
+            </div>
+
+            <!-- Item Contribution (Donut Chart) -->
+            <div class="report-box">
+                <h3 class="text-lg font-semibold text-gray-700 mb-4" data-lang-key="item_contribution">Item Cost
+                    Contribution</h3>
+                <div class="h-80 flex justify-center items-center">
+                    <canvas id="item-contribution-chart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Transactions Table -->
+        <div class="bg-white p-6 md:p-8 rounded-xl shadow-2xl">
+            <h3 class="text-lg font-semibold text-gray-700 mb-6" data-lang-key="recent_transactions">Recent Transactions
+            </h3>
+
+            <div class="table-container">
+                <table class="admin-table">
+                    <thead>
+                        <tr class="bg-blue-600 rounded-lg">
+                            <th data-lang-key="date">Date</th>
+                            <th data-lang-key="item_name">Item</th>
+                            <th data-lang-key="quantity">Qty</th>
+                            <th data-lang-key="price">Price</th>
+                            <th data-lang-key="type">Type</th>
+                        </tr>
+                    </thead>
+                    <tbody id="transactions-table-body">
+                        <!-- Transactions data will be injected here by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+</body>
+
+</html>

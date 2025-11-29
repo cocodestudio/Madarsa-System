@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kitchen Waste Management</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        :root {
+            --color-primary: #00A693;
+            --color-background: #F2F3F4;
+            --color-accent: #E08A27;
+            --color-text-dark: #1A1A1A;
+            --color-text-light: #FFFFFF;
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;700&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap');
+
+        /* Language Styles */
+        body,
+        .lang-en {
+            font-family: 'Poppins', sans-serif;
+            direction: ltr;
+            background-color: var(--color-background);
+        }
+
+        .lang-hi {
+            font-family: 'Noto Sans Devanagari', sans-serif;
+            direction: ltr;
+        }
+
+        .lang-ur {
+            font-family: 'Noto Nastaliq Urdu', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+            direction: rtl;
+            line-height: 1.8;
+            text-align: right;
+        }
+
+        /* Form & Inputs */
+        .form-input,
+        select,
+        .form-textarea {
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid #ccc;
+            width: 100%;
+            font-family: inherit;
+        }
+
+        .form-input:focus,
+        select:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(0, 166, 147, 0.2);
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            font-size: 0.875rem;
+        }
+
+        /* Buttons */
+        .primary-button {
+            padding: 0.8rem 1.5rem;
+            background-color: #3b82f6;
+            color: var(--color-text-light);
+            font-weight: 600;
+            border-radius: 0.5rem;
+            transition: background-color 0.3s, transform 0.1s;
+            cursor: pointer;
+        }
+
+        .primary-button:hover {
+            background-color: #2563eb;
+            transform: translateY(-1px);
+        }
+
+        .action-button {
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            transition: background-color 0.2s;
+        }
+
+        /* Fixed Header */
+        header {
+            background-color: var(--color-text-light);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            width: 100%;
+            z-index: 10;
+            padding: 1rem 2rem;
+        }
+
+        /* History/Table Styling */
+        .admin-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 10px;
+        }
+
+        .admin-table th {
+            text-align: left;
+            padding: 0.75rem 1rem;
+            font-size: 0.8rem;
+            color: gray;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        .lang-ur .admin-table th {
+            text-align: right;
+        }
+
+        .admin-table td {
+            padding: 0.75rem 1rem;
+            background-color: white;
+            border-top: 1px solid #eee;
+            border-bottom: 1px solid #eee;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .admin-table tr td:first-child {
+            border-top-left-radius: 0.75rem;
+            border-bottom-left-radius: 0.75rem;
+        }
+
+        .admin-table tr td:last-child {
+            border-top-right-radius: 0.75rem;
+            border-bottom-right-radius: 0.75rem;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .table-container table {
+            min-width: 800px;
+        }
+
+        /* Info/Error Box */
+        .info-box {
+            background-color: #fef2f2;
+            color: #ef4444;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+        }
+
+        /* Modal Styles */
+        #entry-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 50;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(0, 0, 0, 0.6);
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-content {
+            background-color: var(--color-background);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            border-radius: 1rem;
+            max-width: 95%;
+            width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            border: 3px solid var(--color-primary);
+        }
+    </style>
+</head>
+
+<body class="lang-en">
+
+    <script>
+        // Helper to format date YYYY-MM-DD
+        function formatDate(date) {
+            const d = new Date(date);
+            let month = '' + (d.getMonth() + 1);
+            let day = '' + d.getDate();
+            const year = d.getFullYear();
+
+            if (month.length < 2) month = '0' + month;
+            if (day.length < 2) day = '0' + day;
+
+            return [year, month, day].join('-');
+        }
+
+        // --- Dummy Item Data (from Manage Items) ---
+        const DUMMY_KITCHEN_ITEMS = [
+            { id: 1, name: 'Aaloo', unit: 'kg', currentStock: 50.00 },
+            { id: 2, name: 'Chawal', unit: 'kg', currentStock: 345.00 },
+            { id: 3, name: 'Dal', unit: 'kg', currentStock: 984.00 },
+            { id: 4, name: 'Doodh', unit: 'liter', currentStock: 66.00 },
+        ];
+
+        // --- Dummy Waste Entries Data ---
+        const WASTE_STORAGE_KEY = 'madarsaKitchenWaste';
+        let wasteEntries = {
+            '2025-11-29': [
+                { id: 1, date: '2025-11-29', itemId: 1, itemName: 'Aaloo', unit: 'kg', quantity: 5.00, reason: 'Spoiled due to improper storage.' },
+            ],
+            '2025-11-28': [
+                { id: 2, date: '2025-11-28', itemId: 3, itemName: 'Dal', unit: 'kg', quantity: 2.50, reason: 'Excessive boiling wastage.' }
+            ]
+        };
+
+        // Initialize/Load Waste Entries from localStorage
+        function loadWasteEntries() {
+            const storedEntries = localStorage.getItem(WASTE_STORAGE_KEY);
+            if (storedEntries) {
+                try {
+                    wasteEntries = JSON.parse(storedEntries);
+                } catch (e) {
+                    console.error("Error loading waste entries:", e);
+                }
+            } else {
+                saveWasteEntries();
+            }
+        }
+
+        // Save Waste Entries to localStorage
+        function saveWasteEntries() {
+            localStorage.setItem(WASTE_STORAGE_KEY, JSON.stringify(wasteEntries));
+        }
+
+        // --- Multilingual Data ---
+        const langData = {
+            'en': {
+                'kitchen_system': 'Kitchen System',
+                'page_title': 'Kitchen Waste Management',
+                'back_to_kitchen': 'Back to Kitchen',
+                'logout': 'Logout',
+
+                // Form/Display
+                'select_date': 'Select Date:',
+                'add_waste_entry': 'Add Waste Entry',
+                'waste_date': 'Waste Date:',
+                'item': 'Item:',
+                'quantity_wasted': 'Quantity Wasted:',
+                'reason': 'Reason (optional):',
+                'add_entry': 'Add Entry',
+                'no_records_found': 'No waste records found for',
+                'select_item_placeholder': '-- Select item --',
+
+                // Table Headers
+                'date_wasted': 'Waste Date',
+                'item_name': 'Item',
+                'quantity': 'Quantity',
+                'reason_table': 'Reason',
+                'actions': 'Actions',
+                'delete': 'Delete',
+                'edit': 'Edit',
+
+                // Modal
+                'modal_edit_title': 'Edit Waste Entry',
+                'save': 'Save Changes',
+                'cancel': 'Cancel',
+
+                // Messages
+                'validation_error': 'Please select Date, Item, and valid Quantity (> 0).',
+                'entry_added': 'Waste entry successfully added!',
+                'entry_deleted': 'Entry deleted.',
+                'entry_updated': 'Entry updated.'
+            },
+            'hi': {
+                'kitchen_system': 'रसोई प्रणाली',
+                'page_title': 'रसोई अपशिष्ट प्रबंधन',
+                'back_to_kitchen': 'रसोई पर वापस',
+                'logout': 'लॉगआउट',
+
+                // Form/Display
+                'select_date': 'तिथि चुनें:',
+                'add_waste_entry': 'अपशिष्ट एंट्री जोड़ें',
+                'waste_date': 'अपशिष्ट तिथि:',
+                'item': 'आइटम:',
+                'quantity_wasted': 'बर्बाद मात्रा:',
+                'reason': 'कारण (वैकल्पिक):',
+                'add_entry': 'एंट्री जोड़ें',
+                'no_records_found': 'के लिए कोई अपशिष्ट रिकॉर्ड नहीं मिला',
+                'select_item_placeholder': '-- आइटम चुनें --',
+
+                // Table Headers
+                'date_wasted': 'अपशिष्ट तिथि',
+                'item_name': 'आइटम',
+                'quantity': 'मात्रा',
+                'reason_table': 'कारण',
+                'actions': 'कार्यवाही',
+                'delete': 'हटाएँ',
+                'edit': 'संपादित करें',
+
+                // Modal
+                'modal_edit_title': 'अपशिष्ट एंट्री संपादित करें',
+                'save': 'परिवर्तन सहेजें',
+                'cancel': 'रद्द करें',
+
+                // Messages
+                'validation_error': 'कृपया तिथि, आइटम, और वैध मात्रा (> 0) चुनें।',
+                'entry_added': 'अपशिष्ट एंट्री सफलतापूर्वक जोड़ी गई!',
+                'entry_deleted': 'एंट्री हटा दी गई।',
+                'entry_updated': 'एंट्री अपडेट की गई।'
+            },
+            'ur': {
+                'kitchen_system': 'باورچی خانہ نظام',
+                'page_title': 'باورچی خانے کے فضلے کا انتظام',
+                'back_to_kitchen': 'باورچی خانے پر واپس جائیں',
+                'logout': 'لاگ آؤٹ',
+
+                // Form/Display
+                'select_date': 'تاریخ منتخب کریں:',
+                'add_waste_entry': 'فضلے کی انٹری شامل کریں',
+                'waste_date': 'فضلے کی تاریخ:',
+                'item': 'آئٹم:',
+                'quantity_wasted': 'ضائع شدہ مقدار:',
+                'reason': 'وجہ (اختیاری):',
+                'add_entry': 'انٹری شامل کریں',
+                'no_records_found': 'کے لیے فضلے کا کوئی ریکارڈ نہیں ملا',
+                'select_item_placeholder': '-- آئٹم منتخب کریں --',
+
+                // Table Headers
+                'date_wasted': 'فضلے کی تاریخ',
+                'item_name': 'آئٹم',
+                'quantity': 'مقدار',
+                'reason_table': 'وجہ',
+                'actions': 'عمل',
+                'delete': 'حذف کریں',
+                'edit': 'ترمیم کریں',
+
+                // Modal
+                'modal_edit_title': 'فضلے کی انٹری میں ترمیم کریں',
+                'save': 'تبدیلیاں محفوظ کریں',
+                'cancel': 'منسوخ کریں',
+
+                // Messages
+                'validation_error': 'براہ کرم تاریخ، آئटم، اور درست مقدار (> 0) منتخب کریں۔',
+                'entry_added': 'فضلے کی انٹری کامیابی سے شامل ہو گئی!',
+                'entry_deleted': 'انٹری حذف کر دی گئی۔',
+                'entry_updated': 'انٹری اپ ڈیٹ کر دی گئی۔'
+            }
+        };
+
+        let currentLang = 'en';
+
+        function getTranslation(key) {
+            return langData[currentLang][key] || langData['en'][key] || key;
+        }
+
+        // --- Core UI Update Functions ---
+        function updateContent() {
+            document.body.className = 'lang-' + currentLang;
+
+            document.querySelectorAll('[data-lang-key]').forEach(el => {
+                const key = el.getAttribute('data-lang-key');
+                el.textContent = getTranslation(key);
+            });
+
+            // Sync read-only date field with selector date
+            const selectedDate = document.getElementById('waste-date-select').value;
+            document.getElementById('waste-date-form').value = selectedDate;
+
+            populateItemDropdowns();
+            renderDailyEntries();
+        }
+
+        function changeLanguage(lang) {
+            if (lang in langData) {
+                currentLang = lang;
+                localStorage.setItem('madarsaSystemLang', lang);
+                updateContent();
+            }
+        }
+
+        function populateItemDropdowns() {
+            const itemDropdown = document.getElementById('item-select-add');
+
+            // Populate Item Dropdown
+            itemDropdown.innerHTML = `<option value="" disabled selected data-lang-key="select_item_placeholder">${getTranslation('select_item_placeholder')}</option>`;
+            DUMMY_KITCHEN_ITEMS.forEach(item => {
+                let option = document.createElement('option');
+                option.value = item.id;
+                option.textContent = `${item.name} (${item.unit})`;
+                itemDropdown.appendChild(option);
+            });
+
+            // Re-populate modal item dropdown if open
+            const modalItemDropdown = document.getElementById('edit-item-select');
+            if (modalItemDropdown) {
+                modalItemDropdown.innerHTML = itemDropdown.innerHTML;
+            }
+        }
+
+        // --- Table Rendering (Daily Entries) ---
+        function renderDailyEntries() {
+            const tbody = document.getElementById('entries-table-body');
+            const selectedDate = document.getElementById('waste-date-select').value;
+            const entries = wasteEntries[selectedDate] || [];
+
+            const infoBox = document.getElementById('entries-info-box');
+            const historyTitleSpan = document.getElementById('current-entry-date');
+
+            tbody.innerHTML = '';
+            historyTitleSpan.textContent = selectedDate; // Update table title date
+
+            if (entries.length === 0) {
+                infoBox.classList.remove('hidden');
+                infoBox.innerHTML = `
+                    <p class="text-center">
+                        ${getTranslation('no_records_found')} ${selectedDate}.
+                    </p>
+                `;
+                return;
+            }
+
+            infoBox.classList.add('hidden');
+
+            entries.forEach(entry => {
+                const tr = document.createElement('tr');
+
+                tr.innerHTML = `
+                    <td class="font-bold text-gray-800">${entry.date}</td>
+                    <td>${entry.itemName}</td>
+                    <td>${entry.quantity.toFixed(2)} ${entry.unit}</td>
+                    <td>${entry.reason || '-'}</td>
+                    <td class="flex space-x-3">
+                        <a href="#" onclick="handleAction('edit', '${selectedDate}', ${entry.id})" class="text-blue-600 hover:underline" data-lang-key="edit">${getTranslation('edit')}</a>
+                        <a href="#" onclick="handleAction('delete', '${selectedDate}', ${entry.id})" class="text-red-600 hover:underline" data-lang-key="delete">${getTranslation('delete')}</a>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // --- Add/Edit/Delete Logic ---
+        function saveWasteEntry(event, isEdit = false, id = null) {
+            event.preventDefault();
+            const form = event.target;
+
+            const selectedDate = form.querySelector('#waste-date-form').value;
+            const itemSelect = form.querySelector('#item-select-add');
+            const itemId = parseInt(itemSelect.value);
+            const quantity = parseFloat(form.querySelector('#quantity-wasted-add').value);
+            const reason = form.querySelector('#reason-add').value.trim();
+
+            if (!selectedDate || !itemId || isNaN(quantity) || quantity <= 0) {
+                alert(getTranslation('validation_error'));
+                return false;
+            }
+
+            const itemDetails = DUMMY_KITCHEN_ITEMS.find(item => item.id === itemId);
+            if (!itemDetails) return false;
+
+            const newEntry = {
+                date: selectedDate,
+                itemId: itemId,
+                itemName: itemDetails.name,
+                unit: itemDetails.unit,
+                quantity: quantity,
+                reason: reason
+            };
+
+            // Ensure the date entry exists in storage
+            if (!wasteEntries[selectedDate]) {
+                wasteEntries[selectedDate] = [];
+            }
+
+            if (isEdit) {
+                // EDIT LOGIC
+                const index = wasteEntries[selectedDate].findIndex(e => e.id === id);
+                if (index !== -1) {
+                    wasteEntries[selectedDate][index] = { ...wasteEntries[selectedDate][index], ...newEntry, id: id };
+                    alert(getTranslation('entry_updated'));
+                }
+            } else {
+                // ADD LOGIC
+                const maxId = wasteEntries[selectedDate].length > 0 ? Math.max(...wasteEntries[selectedDate].map(e => e.id || 0)) : 0;
+                newEntry.id = maxId + 1;
+                wasteEntries[selectedDate].push(newEntry);
+                alert(getTranslation('entry_added'));
+            }
+
+            saveWasteEntries();
+
+            if (!isEdit) {
+                // Keep date fields synced, but reset others
+                form.querySelector('#item-select-add').value = '';
+                form.querySelector('#quantity-wasted-add').value = '';
+                form.querySelector('#reason-add').value = '';
+            } else {
+                closeEntryModal();
+            }
+
+            updateContent();
+            return false;
+        }
+
+        function deleteEntry(date, id) {
+            if (!wasteEntries[date]) return;
+
+            wasteEntries[date] = wasteEntries[date].filter(entry => entry.id !== id);
+            saveWasteEntries();
+            updateContent();
+            alert(getTranslation('entry_deleted'));
+        }
+
+        // --- Action Dispatcher (Delete/Edit) ---
+        function handleAction(action, date, id) {
+            const entry = wasteEntries[date]?.find(e => e.id === id);
+
+            if (action === 'delete') {
+                if (confirm(getTranslation('confirm_delete') || 'Confirm delete?')) {
+                    deleteEntry(date, id);
+                }
+            } else if (action === 'edit') {
+                if (entry) {
+                    openEntryModal(entry);
+                }
+            }
+        }
+
+        // --- Modal Handling for Edit ---
+        function openEntryModal(entry) {
+            const modal = document.getElementById('entry-modal');
+            const isRtl = currentLang === 'ur';
+
+            document.getElementById('modal-title').textContent = getTranslation('modal_edit_title');
+
+            // Set the correct date string for the form submission handler
+            const dateString = entry.date;
+
+            const formHtml = `
+                <form id="edit-waste-form" onsubmit="return saveEditedWaste(event, '${dateString}', ${entry.id})">
+                    <input type="hidden" id="edit-date-hidden" value="${entry.date}">
+
+                    <div class="form-group mb-4">
+                        <label class="form-label">${getTranslation('item')}</label>
+                        <select id="edit-item-select" class="form-input" required></select>
+                    </div>
+                    
+                    <div class="form-group mb-4">
+                        <label for="edit-quantity-wasted" class="form-label">${getTranslation('quantity_wasted')} (${entry.unit})</label>
+                        <input type="number" id="edit-quantity-wasted" class="form-input" value="${entry.quantity}" step="0.01" min="0.01" required>
+                    </div>
+                    
+                    <div class="form-group mb-4">
+                        <label for="edit-reason" class="form-label">${getTranslation('reason')}</label>
+                        <textarea id="edit-reason" class="form-textarea h-16">${entry.reason || ''}</textarea>
+                    </div>
+                    
+                    <div class="flex justify-end space-x-4 mt-8">
+                        <button type="button" onclick="closeEntryModal()" class="action-button bg-gray-200 text-gray-700 hover:bg-gray-300">${getTranslation('cancel')}</button>
+                        <button type="submit" class="primary-button">${getTranslation('save')}</button>
+                    </div>
+                </form>
+            `;
+
+            document.getElementById('modal-body').innerHTML = formHtml;
+
+            // Repopulate item dropdown and set value
+            populateDropdowns();
+            document.getElementById('edit-item-select').value = entry.itemId;
+
+            document.getElementById('edit-waste-form').style.textAlign = isRtl ? 'right' : 'left';
+
+
+            modal.classList.remove('hidden', 'opacity-0');
+        }
+
+        function saveEditedWaste(event, date, id) {
+            event.preventDefault();
+            const form = event.target;
+
+            const dateString = date;
+
+            const newItemId = parseInt(form.querySelector('#edit-item-select').value);
+            const newQuantity = parseFloat(form.querySelector('#edit-quantity-wasted').value);
+            const newReason = form.querySelector('#edit-reason').value.trim();
+
+            if (!newItemId || isNaN(newQuantity) || newQuantity <= 0) {
+                alert(getTranslation('validation_error'));
+                return false;
+            }
+
+            const itemDetails = DUMMY_KITCHEN_ITEMS.find(item => item.id === newItemId);
+
+            const entryIndex = wasteEntries[dateString].findIndex(e => e.id === id);
+
+            if (entryIndex !== -1) {
+                wasteEntries[dateString][entryIndex] = {
+                    ...wasteEntries[dateString][entryIndex], // Keep date/id
+                    itemId: newItemId,
+                    itemName: itemDetails.name,
+                    unit: itemDetails.unit,
+                    quantity: newQuantity,
+                    reason: newReason
+                };
+
+                saveWasteEntries();
+                closeEntryModal();
+                updateContent();
+                alert(getTranslation('entry_updated'));
+            }
+
+            return false;
+        }
+
+        function closeEntryModal() {
+            document.getElementById('entry-modal').classList.add('opacity-0');
+            setTimeout(() => { document.getElementById('entry-modal').classList.add('hidden'); }, 300);
+        }
+
+
+        // Initialize content and language
+        window.onload = function () {
+            loadWasteEntries(); // Load data
+            const storedLang = localStorage.getItem('madarsaSystemLang');
+            currentLang = (storedLang && storedLang in langData) ? storedLang : 'en';
+
+            // Set default date to today for both fields
+            const today = formatDate(new Date());
+            document.getElementById('waste-date-select').value = today;
+            document.getElementById('waste-date-form').value = today;
+
+            // Initial content update and table render
+            updateContent();
+
+            // Attach listeners
+            document.getElementById('waste-date-select').addEventListener('change', updateContent);
+            document.getElementById('add-waste-form').addEventListener('submit', (e) => saveWasteEntry(e, false, null));
+        };
+    </script>
+
+    <!-- HEADER -->
+    <header>
+        <div class="max-w-7xl mx-auto w-full flex justify-between items-center">
+            <!-- Left: Back Button & Title -->
+            <div class="flex items-center space-x-4">
+                <a href="kitchen_system.html" class="action-button bg-gray-100 text-gray-700 hover:bg-gray-200"
+                    data-lang-key="back_to_kitchen">Back to Kitchen</a>
+                <h1 class="text-xl font-bold" data-lang-key="page_title" style="color: var(--color-primary);">Kitchen
+                    Waste Management</h1>
+            </div>
+
+            <!-- Right: Language Switch -->
+            <div class="flex items-center space-x-2">
+                <select onchange="changeLanguage(this.value)" class="bg-gray-100 rounded-lg p-1 text-sm">
+                    <option value="en" selected>English</option>
+                    <option value="hi">हिन्दी</option>
+                    <option value="ur">اردو</option>
+                </select>
+                <button onclick="window.location.href='login.html'"
+                    class="text-sm font-semibold text-red-600 hover:text-red-800 transition-colors ml-4"
+                    data-lang-key="logout">Logout</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="max-w-4xl mx-auto w-full p-4 md:p-8">
+
+        <!-- Select Date for Viewing Entries -->
+        <div class="bg-white p-6 md:p-8 rounded-xl shadow-2xl mb-8">
+            <h2 class="text-2xl font-bold text-gray-700 mb-6" data-lang-key="page_title">Kitchen Waste Management</h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-end">
+                <div class="form-group">
+                    <label for="waste-date-select" class="form-label" data-lang-key="select_date">Select Date:</label>
+                    <input type="date" id="waste-date-select" class="form-input" required>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add Entry Form (Always visible for the selected date) -->
+        <div class="bg-white p-6 md:p-8 rounded-xl shadow-2xl mb-8">
+            <h3 class="text-lg font-semibold text-gray-700 mb-6" data-lang-key="add_waste_entry">Add Waste Entry</h3>
+
+            <form id="add-waste-form">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-end">
+
+                    <!-- Date (Read Only - Linked to Select Date) -->
+                    <div class="form-group">
+                        <label for="waste-date-form" class="form-label" data-lang-key="waste_date">Waste Date:</label>
+                        <input type="date" id="waste-date-form" class="form-input bg-gray-100" required disabled>
+                    </div>
+
+                    <!-- Item Selection -->
+                    <div class="form-group">
+                        <label for="item-select-add" class="form-label" data-lang-key="item">Item:</label>
+                        <select id="item-select-add" class="form-input" required></select>
+                    </div>
+
+                    <!-- Quantity Wasted -->
+                    <div class="form-group">
+                        <label for="quantity-wasted-add" class="form-label" data-lang-key="quantity_wasted">Quantity
+                            Wasted:</label>
+                        <input type="number" id="quantity-wasted-add" class="form-input" min="0.01" step="0.01"
+                            required>
+                    </div>
+
+                    <!-- Reason -->
+                    <div class="form-group">
+                        <label for="reason-add" class="form-label" data-lang-key="reason">Reason (optional):</label>
+                        <textarea id="reason-add" class="form-textarea h-10"></textarea>
+                    </div>
+
+                    <!-- Add Button -->
+                    <div class="form-group md:col-span-2 flex justify-start">
+                        <button type="submit" class="primary-button w-auto" data-lang-key="add_entry">Add Entry</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+
+        <!-- History Table -->
+        <div class="bg-white p-6 md:p-8 rounded-xl shadow-2xl">
+            <h3 class="text-lg font-semibold text-gray-700 mb-6">Waste Records for <span
+                    id="current-entry-date">${document.getElementById('waste-date-select')?.value || '...'}</span></h3>
+
+            <!-- Info box when no entries are found -->
+            <div id="entries-info-box" class="info-box mb-6 hidden"></div>
+
+            <div class="table-container">
+                <table class="admin-table">
+                    <thead>
+                        <tr class="bg-gray-100 rounded-lg">
+                            <th data-lang-key="date_wasted">Waste Date</th>
+                            <th data-lang-key="item_name">Item</th>
+                            <th data-lang-key="quantity">Quantity</th>
+                            <th data-lang-key="reason_table">Reason</th>
+                            <th data-lang-key="actions">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="entries-table-body">
+                        <!-- Entries will be injected here by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <!-- ENTRY EDIT MODAL -->
+    <div id="entry-modal"
+        class="hidden opacity-0 fixed inset-0 z-50 flex items-center justify-center modal-backdrop transition-opacity duration-300">
+        <div class="modal-content p-6 md:p-8 transform scale-100 transition-transform duration-300">
+            <div class="flex justify-between items-start pb-4 border-b mb-6">
+                <h3 id="modal-title" class="text-xl font-bold text-gray-700">Edit Consumption</h3>
+                <button onclick="closeEntryModal()" class="text-gray-500 hover:text-gray-900 transition-colors p-1"
+                    aria-label="Close">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                        stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            <div id="modal-body">
+                <!-- Dynamic form content goes here -->
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

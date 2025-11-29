@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Cooking Management</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        :root {
+            --color-primary: #00A693;
+            --color-background: #F2F3F4;
+            --color-accent: #E08A27;
+            --color-text-dark: #1A1A1A;
+            --color-text-light: #FFFFFF;
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;700&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap');
+
+        /* Language Styles */
+        body,
+        .lang-en {
+            font-family: 'Poppins', sans-serif;
+            direction: ltr;
+            background-color: var(--color-background);
+        }
+
+        .lang-hi {
+            font-family: 'Noto Sans Devanagari', sans-serif;
+            direction: ltr;
+        }
+
+        .lang-ur {
+            font-family: 'Noto Nastaliq Urdu', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+            direction: rtl;
+            line-height: 1.8;
+            text-align: right;
+        }
+
+        /* Form & Inputs */
+        .form-input,
+        select,
+        .form-textarea {
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid #ccc;
+            width: 100%;
+            font-family: inherit;
+        }
+
+        .form-input:focus,
+        select:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(0, 166, 147, 0.2);
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            font-size: 0.875rem;
+        }
+
+        /* Buttons */
+        .primary-button {
+            padding: 0.8rem 1.5rem;
+            background-color: #3b82f6;
+            color: var(--color-text-light);
+            font-weight: 600;
+            border-radius: 0.5rem;
+            transition: background-color 0.3s, transform 0.1s;
+            cursor: pointer;
+        }
+
+        .primary-button:hover {
+            background-color: #2563eb;
+            transform: translateY(-1px);
+        }
+
+        .action-button {
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            transition: background-color 0.2s;
+        }
+
+        /* Fixed Header */
+        header {
+            background-color: var(--color-text-light);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            width: 100%;
+            z-index: 10;
+            padding: 1rem 2rem;
+        }
+
+        /* History Message Box */
+        .info-box {
+            background-color: #e0f2f1;
+            color: #00A693;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+        }
+
+        /* Table Styling */
+        .admin-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 10px;
+        }
+
+        .admin-table th {
+            text-align: left;
+            padding: 0.75rem 1rem;
+            font-size: 0.8rem;
+            color: gray;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        .lang-ur .admin-table th {
+            text-align: right;
+        }
+
+        .admin-table td {
+            padding: 0.75rem 1rem;
+            background-color: white;
+            border-top: 1px solid #eee;
+            border-bottom: 1px solid #eee;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .admin-table tr td:first-child {
+            border-top-left-radius: 0.75rem;
+            border-bottom-left-radius: 0.75rem;
+        }
+
+        .admin-table tr td:last-child {
+            border-top-right-radius: 0.75rem;
+            border-bottom-right-radius: 0.75rem;
+        }
+
+        .lang-ur .admin-table tr td:first-child {
+            border-radius: 0;
+            border-top-right-radius: 0.75rem;
+            border-bottom-right-radius: 0.75rem;
+        }
+
+        .lang-ur .admin-table tr td:last-child {
+            border-radius: 0;
+            border-top-left-radius: 0.75rem;
+            border-bottom-left-radius: 0.75rem;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .table-container table {
+            min-width: 700px;
+        }
+    </style>
+</head>
+
+<body class="lang-en">
+
+    <script>
+        // Helper to format date YYYY-MM-DD
+        function formatDate(date) {
+            const d = new Date(date);
+            let month = '' + (d.getMonth() + 1);
+            let day = '' + d.getDate();
+            const year = d.getFullYear();
+
+            if (month.length < 2) month = '0' + month;
+            if (day.length < 2) day = '0' + day;
+
+            return [year, month, day].join('-');
+        }
+
+        const TIME_SLOTS = ['Nashta', 'Lunch', 'Dinner'];
+
+        // --- Dummy Item Data (from Manage Items) ---
+        const DUMMY_KITCHEN_ITEMS = [
+            { id: 1, name: 'Aaloo', unit: 'kg', currentStock: 50.00 },
+            { id: 2, name: 'Chawal', unit: 'kg', currentStock: 345.00 },
+            { id: 3, name: 'Dal', unit: 'kg', currentStock: 984.00 },
+            { id: 4, name: 'Doodh', unit: 'liter', currentStock: 66.00 },
+        ];
+
+        // --- Dummy Cooking Entries Data ---
+        const COOKING_STORAGE_KEY = 'madarsaKitchenConsumption';
+        let cookingEntries = {}; // Key: YYYY-MM-DD, Value: [{id, date, slot, itemId, itemName, qty}]
+
+        // Initialize/Load Cooking Entries from localStorage
+        function loadCookingEntries() {
+            const storedEntries = localStorage.getItem(COOKING_STORAGE_KEY);
+            if (storedEntries) {
+                try {
+                    cookingEntries = JSON.parse(storedEntries);
+                } catch (e) {
+                    console.error("Error loading cooking entries:", e);
+                }
+            }
+        }
+
+        // Save Cooking Entries to localStorage
+        function saveCookingEntries() {
+            localStorage.setItem(COOKING_STORAGE_KEY, JSON.stringify(cookingEntries));
+        }
+
+        // --- Multilingual Data ---
+        const langData = {
+            'en': {
+                'kitchen_system': 'Kitchen System',
+                'page_title': 'Daily Cooking Management',
+                'back_to_kitchen': 'Back to Kitchen',
+                'logout': 'Logout',
+
+                // Form/Display
+                'select_cooking_date': 'Select Cooking Date',
+                'cooking_date_form': 'Cooking Date:',
+                'time_slot': 'Time Slot:',
+                'item': 'Item:',
+                'quantity_cooked': 'Quantity Cooked:',
+                'add_entry': 'Add Entry',
+                'no_entries_found': 'No cooking entries found for',
+                'select_item_placeholder': '-- Select item --',
+
+                // Slots
+                'Nashta': 'Breakfast',
+                'Lunch': 'Lunch',
+                'Dinner': 'Dinner',
+
+                // Table Headers
+                'time_slot_table': 'Time Slot',
+                'item_name': 'Item',
+                'quantity_used': 'Quantity Used',
+                'actions': 'Actions',
+                'delete': 'Delete',
+
+                // Modal
+                'modal_edit_title': 'Edit Consumption',
+                'save': 'Save Changes',
+                'cancel': 'Cancel',
+
+                // Messages
+                'validation_error': 'Please select Date, Slot, Item, and Quantity.',
+                'entry_added': 'Cooking entry successfully added!',
+                'entry_deleted': 'Entry deleted.',
+                'entry_updated': 'Entry updated.'
+            },
+            'hi': {
+                'kitchen_system': 'रसोई प्रणाली',
+                'page_title': 'दैनिक खाना पकाने का प्रबंधन',
+                'back_to_kitchen': 'रसोई पर वापस',
+                'logout': 'लॉगआउट',
+
+                // Form/Display
+                'select_cooking_date': 'खाना पकाने की तिथि चुनें',
+                'cooking_date_form': 'खाना पकाने की तिथि:',
+                'time_slot': 'समय स्लॉट:',
+                'item': 'आइटम:',
+                'quantity_cooked': 'पकाई गई मात्रा:',
+                'add_entry': 'एंट्री जोड़ें',
+                'no_entries_found': 'के लिए कोई खाना पकाने की एंट्री नहीं मिली',
+                'select_item_placeholder': '-- आइटम चुनें --',
+
+                // Slots
+                'Nashta': 'नाश्ता',
+                'Lunch': 'दोपहर का भोजन',
+                'Dinner': 'रात का भोजन',
+
+                // Table Headers
+                'time_slot_table': 'समय स्लॉट',
+                'item_name': 'आइटम',
+                'quantity_used': 'उपयोग की गई मात्रा',
+                'actions': 'कार्यवाही',
+                'delete': 'हटाएँ',
+
+                // Modal
+                'modal_edit_title': 'खपत संपादित करें',
+                'save': 'परिवर्तन सहेजें',
+                'cancel': 'रद्द करें',
+
+                // Messages
+                'validation_error': 'कृपया तिथि, स्लॉट, आइटम और मात्रा चुनें।',
+                'entry_added': 'खाना पकाने की एंट्री सफलतापूर्वक जोड़ी गई!',
+                'entry_deleted': 'एंट्री हटा दी गई।',
+                'entry_updated': 'एंट्री अपडेट की गई।'
+            },
+            'ur': {
+                'kitchen_system': 'باورچی خانہ نظام',
+                'page_title': 'روزانہ کھانا پکانے کا انتظام',
+                'back_to_kitchen': 'باورچی خانے پر واپس جائیں',
+                'logout': 'لاگ آؤٹ',
+
+                // Form/Display
+                'select_cooking_date': 'کھانا پکانے کی تاریخ منتخب کریں',
+                'cooking_date_form': 'کھانا پکانے کی تاریخ:',
+                'time_slot': 'وقت سلاٹ:',
+                'item': 'آئٹم:',
+                'quantity_cooked': 'پکائی گئی مقدار:',
+                'add_entry': 'انٹری شامل کریں',
+                'no_entries_found': 'کے لیے کھانا پکانے کی کوئی انٹری نہیں ملی',
+                'select_item_placeholder': '-- آئٹم منتخب کریں --',
+
+                // Slots
+                'Nashta': 'ناشتہ',
+                'Lunch': 'لنچ',
+                'Dinner': 'ڈنر',
+
+                // Table Headers
+                'time_slot_table': 'وقت سلاٹ',
+                'item_name': 'آئٹم',
+                'quantity_used': 'استعمال شدہ مقدار',
+                'actions': 'عمل',
+                'delete': 'حذف کریں',
+
+                // Modal
+                'modal_edit_title': 'کھپت میں ترمیم کریں',
+                'save': 'تبدیلیاں محفوظ کریں',
+                'cancel': 'منسوخ کریں',
+
+                // Messages
+                'validation_error': 'براہ کرم تاریخ، سلاٹ، آئٹم، اور مقدار منتخب کریں۔',
+                'entry_added': 'کھانا پکانے کی انٹری کامیابی سے شامل ہو گئی!',
+                'entry_deleted': 'انٹری حذف کر دی گئی۔',
+                'entry_updated': 'انٹری اپ ڈیٹ کر دی گئی۔'
+            }
+        };
+
+        let currentLang = 'en';
+
+        function getTranslation(key) {
+            return langData[currentLang][key] || langData['en'][key] || key;
+        }
+
+        // --- Core UI Update Functions ---
+        function updateContent() {
+            document.body.className = 'lang-' + currentLang;
+
+            document.querySelectorAll('[data-lang-key]').forEach(el => {
+                const key = el.getAttribute('data-lang-key');
+                el.textContent = getTranslation(key);
+            });
+
+            populateDropdowns();
+            renderDailyEntries();
+        }
+
+        function changeLanguage(lang) {
+            if (lang in langData) {
+                currentLang = lang;
+                localStorage.setItem('madarsaSystemLang', lang);
+                updateContent();
+            }
+        }
+
+        function populateDropdowns() {
+            const itemDropdown = document.getElementById('item-select-add');
+            const slotDropdown = document.getElementById('slot-select-add');
+
+            // Populate Item Dropdown
+            itemDropdown.innerHTML = `<option value="" disabled selected data-lang-key="select_item_placeholder">${getTranslation('select_item_placeholder')}</option>`;
+            DUMMY_KITCHEN_ITEMS.forEach(item => {
+                let option = document.createElement('option');
+                option.value = item.id;
+                option.textContent = `${item.name} (${item.unit})`;
+                itemDropdown.appendChild(option);
+            });
+
+            // Populate Time Slot Dropdown
+            slotDropdown.innerHTML = `<option value="" disabled selected data-lang-key="time_slot_table">-- ${getTranslation('time_slot_table')} --</option>`;
+            TIME_SLOTS.forEach(slot => {
+                let option = document.createElement('option');
+                option.value = slot;
+                option.textContent = getTranslation(slot);
+                slotDropdown.appendChild(option);
+            });
+
+            // Re-populate modal item dropdown if open
+            const modalItemDropdown = document.getElementById('edit-item-select');
+            if (modalItemDropdown) {
+                modalItemDropdown.innerHTML = itemDropdown.innerHTML;
+            }
+            const modalSlotDropdown = document.getElementById('edit-slot-select');
+            if (modalSlotDropdown) {
+                modalSlotDropdown.innerHTML = slotDropdown.innerHTML;
+            }
+        }
+
+        // --- Table Rendering (Daily Entries) ---
+        function renderDailyEntries() {
+            const tbody = document.getElementById('entries-table-body');
+            const selectedDate = document.getElementById('cooking-date-select').value;
+            const entries = cookingEntries[selectedDate] || [];
+
+            const infoBox = document.getElementById('entries-info-box');
+
+            tbody.innerHTML = '';
+
+            if (entries.length === 0) {
+                infoBox.classList.remove('hidden');
+                infoBox.innerHTML = `
+                    <p class="text-center">
+                        ${getTranslation('no_entries_found')} ${selectedDate}.
+                    </p>
+                `;
+                return;
+            }
+
+            infoBox.classList.add('hidden');
+
+            // Sort by time slot (simplistic sort based on TIME_SLOTS order)
+            entries.sort((a, b) => TIME_SLOTS.indexOf(a.slot) - TIME_SLOTS.indexOf(b.slot));
+
+            entries.forEach(entry => {
+                const tr = document.createElement('tr');
+                const itemDetails = DUMMY_KITCHEN_ITEMS.find(item => item.id === entry.itemId);
+                const unit = itemDetails ? itemDetails.unit : 'unit';
+
+                tr.innerHTML = `
+                    <td class="font-bold text-gray-800">${getTranslation(entry.slot)}</td>
+                    <td>${entry.itemName}</td>
+                    <td>${entry.quantity.toFixed(2)} ${unit}</td>
+                    <td class="flex space-x-3">
+                        <a href="#" onclick="handleAction('edit', '${selectedDate}', ${entry.id})" class="text-blue-600 hover:underline" data-lang-key="edit">${getTranslation('edit')}</a>
+                        <a href="#" onclick="handleAction('delete', '${selectedDate}', ${entry.id})" class="text-red-600 hover:underline" data-lang-key="delete">${getTranslation('delete')}</a>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // --- Add/Edit/Delete Logic ---
+        function saveCookingEntry(event, isEdit = false, id = null) {
+            event.preventDefault();
+            const form = event.target;
+
+            const selectedDate = form.querySelector('#cooking-date-form').value;
+            const slot = form.querySelector('#slot-select-add').value;
+            const itemId = parseInt(form.querySelector('#item-select-add').value);
+            const quantity = parseFloat(form.querySelector('#quantity-cooked-add').value);
+
+            if (!selectedDate || !slot || !itemId || isNaN(quantity) || quantity <= 0) {
+                alert(getTranslation('validation_error'));
+                return false;
+            }
+
+            const itemDetails = DUMMY_KITCHEN_ITEMS.find(item => item.id === itemId);
+            if (!itemDetails) return false;
+
+            const newEntry = {
+                date: selectedDate,
+                slot: slot,
+                itemId: itemId,
+                itemName: itemDetails.name,
+                quantity: quantity
+            };
+
+            // Ensure the date entry exists in storage
+            if (!cookingEntries[selectedDate]) {
+                cookingEntries[selectedDate] = [];
+            }
+
+            if (isEdit) {
+                // EDIT LOGIC
+                const index = cookingEntries[selectedDate].findIndex(e => e.id === id);
+                if (index !== -1) {
+                    cookingEntries[selectedDate][index] = { ...cookingEntries[selectedDate][index], ...newEntry, id: id };
+                    alert(getTranslation('entry_updated'));
+                }
+            } else {
+                // ADD LOGIC
+                const maxId = cookingEntries[selectedDate].length > 0 ? Math.max(...cookingEntries[selectedDate].map(e => e.id || 0)) : 0;
+                newEntry.id = maxId + 1;
+                cookingEntries[selectedDate].push(newEntry);
+                alert(getTranslation('entry_added'));
+            }
+
+            saveCookingEntries();
+
+            if (!isEdit) {
+                form.reset();
+                document.getElementById('cooking-date-form').value = selectedDate; // Keep date selected
+            } else {
+                closeEntryModal();
+            }
+
+            updateContent();
+            return false;
+        }
+
+        function deleteEntry(date, id) {
+            if (!cookingEntries[date]) return;
+
+            cookingEntries[date] = cookingEntries[date].filter(entry => entry.id !== id);
+            saveCookingEntries();
+            updateContent();
+            alert(getTranslation('entry_deleted'));
+        }
+
+        // --- Action Dispatcher (Delete/Edit) ---
+        function handleAction(action, date, id) {
+            const entry = cookingEntries[date]?.find(e => e.id === id);
+
+            if (action === 'delete') {
+                if (confirm(getTranslation('confirm_delete') || 'Confirm delete?')) {
+                    deleteEntry(date, id);
+                }
+            } else if (action === 'edit') {
+                if (entry) {
+                    openEntryModal(entry);
+                }
+            }
+        }
+
+        // --- Modal Handling for Edit ---
+        function openEntryModal(entry) {
+            const modal = document.getElementById('entry-modal');
+            const isRtl = currentLang === 'ur';
+
+            document.getElementById('modal-title').textContent = getTranslation('modal_edit_title');
+
+            const formHtml = `
+                <form id="edit-entry-form" onsubmit="return saveEditedEntry(event, ${entry.date}, ${entry.id})">
+                    <input type="hidden" id="edit-date-hidden" value="${entry.date}">
+
+                    <div class="form-group mb-4">
+                        <label class="form-label">${getTranslation('time_slot')}</label>
+                        <select id="edit-slot-select" class="form-input" required></select>
+                    </div>
+
+                    <div class="form-group mb-4">
+                        <label class="form-label">${getTranslation('item')}</label>
+                        <select id="edit-item-select" class="form-input" required></select>
+                    </div>
+                    
+                    <div class="form-group mb-4">
+                        <label for="edit-quantity-cooked" class="form-label">${getTranslation('quantity_cooked')}</label>
+                        <input type="number" id="edit-quantity-cooked" class="form-input" value="${entry.quantity}" step="0.01" min="0.01" required>
+                    </div>
+                    
+                    <div class="flex justify-end space-x-4 mt-8">
+                        <button type="button" onclick="closeEntryModal()" class="action-button bg-gray-200 text-gray-700 hover:bg-gray-300">${getTranslation('cancel')}</button>
+                        <button type="submit" class="primary-button">${getTranslation('save')}</button>
+                    </div>
+                </form>
+            `;
+
+            document.getElementById('modal-body').innerHTML = formHtml;
+
+            // Repopulate dropdowns inside modal and set values
+            populateDropdowns();
+            document.getElementById('edit-slot-select').value = entry.slot;
+            document.getElementById('edit-item-select').value = entry.itemId;
+
+            document.getElementById('edit-entry-form').style.textAlign = isRtl ? 'right' : 'left';
+
+
+            modal.classList.remove('hidden', 'opacity-0');
+        }
+
+        function saveEditedEntry(event, date, id) {
+            event.preventDefault();
+            const form = event.target;
+
+            const newSlot = form.querySelector('#edit-slot-select').value;
+            const newItemId = parseInt(form.querySelector('#edit-item-select').value);
+            const newQuantity = parseFloat(form.querySelector('#edit-quantity-cooked').value);
+
+            if (!newSlot || !newItemId || isNaN(newQuantity) || newQuantity <= 0) {
+                alert(getTranslation('validation_error'));
+                return false;
+            }
+
+            const itemDetails = DUMMY_KITCHEN_ITEMS.find(item => item.id === newItemId);
+
+            const entryIndex = cookingEntries[date].findIndex(e => e.id === id);
+
+            if (entryIndex !== -1) {
+                cookingEntries[date][entryIndex] = {
+                    id: id,
+                    date: date,
+                    slot: newSlot,
+                    itemId: newItemId,
+                    itemName: itemDetails.name,
+                    quantity: newQuantity
+                };
+
+                saveCookingEntries();
+                closeEntryModal();
+                updateContent();
+                alert(getTranslation('entry_updated'));
+            }
+
+            return false;
+        }
+
+        function closeEntryModal() {
+            document.getElementById('entry-modal').classList.add('opacity-0');
+            setTimeout(() => { document.getElementById('entry-modal').classList.add('hidden'); }, 300);
+        }
+
+
+        // Initialize content and language
+        window.onload = function () {
+            loadCookingEntries(); // Load data
+            const storedLang = localStorage.getItem('madarsaSystemLang');
+            currentLang = (storedLang && storedLang in langData) ? storedLang : 'en';
+
+            // Set default date to today for the selector
+            const today = formatDate(new Date());
+            document.getElementById('cooking-date-select').value = today;
+            document.getElementById('cooking-date-form').value = today;
+
+            // Initial content update and table render
+            updateContent();
+
+            // Attach listeners
+            document.getElementById('cooking-date-select').addEventListener('change', updateContent);
+            document.getElementById('add-entry-form').addEventListener('submit', (e) => saveCookingEntry(e, false, null));
+        };
+    </script>
+
+    <!-- HEADER -->
+    <header>
+        <div class="max-w-7xl mx-auto w-full flex justify-between items-center">
+            <!-- Left: Back Button & Title -->
+            <div class="flex items-center space-x-4">
+                <a href="kitchen_system.html" class="action-button bg-gray-100 text-gray-700 hover:bg-gray-200"
+                    data-lang-key="back_to_kitchen">Back to Kitchen</a>
+                <h1 class="text-xl font-bold" data-lang-key="page_title" style="color: var(--color-primary);">Daily
+                    Cooking Management</h1>
+            </div>
+
+            <!-- Right: Language Switch -->
+            <div class="flex items-center space-x-2">
+                <select onchange="changeLanguage(this.value)" class="bg-gray-100 rounded-lg p-1 text-sm">
+                    <option value="en" selected>English</option>
+                    <option value="hi">हिन्दी</option>
+                    <option value="ur">اردو</option>
+                </select>
+                <button onclick="window.location.href='login.html'"
+                    class="text-sm font-semibold text-red-600 hover:text-red-800 transition-colors ml-4"
+                    data-lang-key="logout">Logout</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="max-w-4xl mx-auto w-full p-4 md:p-8">
+
+        <!-- Select Date for Viewing Entries -->
+        <div class="bg-white p-6 md:p-8 rounded-xl shadow-2xl mb-8">
+            <h2 class="text-2xl font-bold text-gray-700 mb-6" data-lang-key="page_title">Daily Cooking Management</h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-end">
+                <div class="form-group">
+                    <label for="cooking-date-select" class="form-label" data-lang-key="select_cooking_date">Select
+                        Cooking Date</label>
+                    <input type="date" id="cooking-date-select" class="form-input" required>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add Entry Form (Always visible for the selected date) -->
+        <div class="bg-white p-6 md:p-8 rounded-xl shadow-2xl mb-8">
+            <h3 class="text-lg font-semibold text-gray-700 mb-6" data-lang-key="add_entry">Add Entry</h3>
+
+            <form id="add-entry-form">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+
+                    <!-- Date (Read Only - Linked to Select Date) -->
+                    <div class="form-group">
+                        <label for="cooking-date-form" class="form-label" data-lang-key="cooking_date_form">Cooking
+                            Date:</label>
+                        <input type="date" id="cooking-date-form" class="form-input bg-gray-100" required disabled>
+                    </div>
+
+                    <!-- Time Slot -->
+                    <div class="form-group">
+                        <label for="slot-select-add" class="form-label" data-lang-key="time_slot">Time Slot:</label>
+                        <select id="slot-select-add" class="form-input" required></select>
+                    </div>
+
+                    <!-- Item Selection -->
+                    <div class="form-group">
+                        <label for="item-select-add" class="form-label" data-lang-key="item">Item:</label>
+                        <select id="item-select-add" class="form-input" required></select>
+                    </div>
+
+                    <!-- Quantity Cooked -->
+                    <div class="form-group">
+                        <label for="quantity-cooked-add" class="form-label" data-lang-key="quantity_cooked">Quantity
+                            Cooked:</label>
+                        <input type="number" id="quantity-cooked-add" class="form-input" min="0.01" step="0.01"
+                            required>
+                    </div>
+
+                    <!-- Add Button -->
+                    <div class="form-group md:col-span-4 flex justify-start">
+                        <button type="submit" class="primary-button w-auto" data-lang-key="add_entry">Add Entry</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+
+        <!-- History Table -->
+        <div class="bg-white p-6 md:p-8 rounded-xl shadow-2xl">
+            <h3 class="text-lg font-semibold text-gray-700 mb-6">Entries for <span
+                    id="current-entry-date">${document.getElementById('cooking-date-select')?.value || '...'}</span>
+            </h3>
+
+            <!-- Info box when no entries are found -->
+            <div id="entries-info-box" class="info-box mb-6 hidden"></div>
+
+            <div class="table-container">
+                <table class="admin-table">
+                    <thead>
+                        <tr class="bg-gray-100 rounded-lg">
+                            <th data-lang-key="time_slot_table">Time Slot</th>
+                            <th data-lang-key="item_name">Item</th>
+                            <th data-lang-key="quantity_used">Quantity Used</th>
+                            <th data-lang-key="actions">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="entries-table-body">
+                        <!-- Entries will be injected here by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <!-- ENTRY EDIT MODAL -->
+    <div id="entry-modal"
+        class="hidden opacity-0 fixed inset-0 z-50 flex items-center justify-center modal-backdrop transition-opacity duration-300">
+        <div class="modal-content p-6 md:p-8 transform scale-100 transition-transform duration-300"
+            style="border: 3px solid var(--color-primary);">
+            <div class="flex justify-between items-start pb-4 border-b mb-6">
+                <h3 id="modal-title" class="text-xl font-bold text-gray-700">Edit Consumption</h3>
+                <button onclick="closeEntryModal()" class="text-gray-500 hover:text-gray-900 transition-colors p-1"
+                    aria-label="Close">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                        stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            <div id="modal-body">
+                <!-- Dynamic form content goes here -->
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

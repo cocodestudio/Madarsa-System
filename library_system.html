@@ -6,93 +6,61 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Library System - Madarsa System</title>
     <script src="https://cdn.tailwindcss.com"></script>
+
     <style>
-        /* Define the color variables based on user-provided images */
-        :root {
-            --color-primary: #00A693;
-            /* Green/Teal */
-            --color-background: #F2F3F4;
-            /* Titanium/Platinum */
-            --color-accent: #E08A27;
-            /* Gold/Orange for luxury feel */
-            --color-text-dark: #1A1A1A;
-            /* Soft Black */
-            --color-text-light: #FFFFFF;
-            /* White */
-            --color-module-bg: #EBEBEB;
-            /* Light Grey for Module Boxes */
+        /* ------------ Local Urdu Font Load ------------- */
+        @font-face {
+            font-family: 'UrduFont';
+            src: url('assets/urdu.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
         }
 
-        /* --- Global Styles: User-Select and Fonts (Consistency) --- */
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Noto+Sans+Devanagari:wght@100..900&family=Jameel+Noori+Nastaleeq&display=swap');
+        /* ------------ Color Variables ------------- */
+        :root {
+            --color-primary: #00A693;
+            --color-background: #F2F3F4;
+            --color-accent: #E08A27;
+            --color-text-dark: #1A1A1A;
+            --color-text-light: #FFFFFF;
+            --color-module-bg: #EBEBEB;
+        }
+
+        /* ------------ Global Fonts ------------- */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&family=Noto+Sans+Devanagari:wght@400;700&display=swap');
 
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Poppins', sans-serif;
             background-color: var(--color-background);
             color: var(--color-text-dark);
             transition: all 0.3s ease;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
             user-select: none;
             overflow-x: hidden;
         }
 
         .lang-en {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Poppins', sans-serif;
         }
 
         .lang-hi {
-            font-family: 'Noto Sans Devangari', sans-serif;
+            font-family: 'Noto Sans Devanagari', sans-serif;
             direction: ltr;
         }
 
+        /* ------------ Urdu Font Apply (Local Font) ------------- */
         .lang-ur {
-            font-family: "Jameel Noori Nastaleeq", "Urdu Typesetting", "Nastaliq", 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'UrduFont' !important;
             direction: rtl;
         }
 
-        /* Ensure specific fonts are applied correctly to the main text */
-        .page-main-title,
-        .module-grid * {
-            transition: all 0.3s ease;
-        }
-
         .lang-ur .page-main-title,
-        .lang-ur .module-grid * {
-            font-family: "Jameel Noori Nastaleeq", "Urdu Typesetting", "Nastaliq", 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+        .lang-ur .module-grid *,
+        .lang-ur .module-button,
+        .lang-ur .subtitle-text {
+            font-family: 'UrduFont' !important;
         }
 
-        .lang-hi .page-main-title,
-        .lang-hi .module-grid * {
-            font-family: 'Noto Sans Devangari', sans-serif !important;
-        }
-
-        /* --- Header Styling (Consistency) --- */
-        header {
-            background-color: var(--color-text-light);
-            border-bottom: 2px solid rgba(0, 0, 0, 0.05);
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-        }
-
-        @media (max-width: 767px) {
-            header nav {
-                white-space: nowrap;
-                flex-shrink: 0;
-            }
-
-            header nav a {
-                font-size: 0.75rem;
-            }
-        }
-
-        /* --- Main Content Area (Full width dashboard style) --- */
-        .main-content-area {
-            flex-grow: 1;
-            padding: 2rem;
-        }
-
-        /* --- Page Title Styling (Left-aligned, capitalized) --- */
+        /* ------------ Page Title ------------ */
         .page-main-title {
             font-size: 3rem;
             font-weight: 800;
@@ -112,7 +80,7 @@
             }
         }
 
-        /* --- Module Buttons: Unique Ultra-Rounded UI --- */
+        /* ------------ Module Grid ------------ */
         .module-grid {
             display: grid;
             gap: 2rem;
@@ -121,21 +89,18 @@
             margin: 0 auto;
         }
 
-        /* Desktop Layout (1280px+): 4 columns (Consistency) */
         @media (min-width: 1280px) {
             .module-grid {
                 grid-template-columns: repeat(4, 1fr);
             }
         }
 
-        /* Large Tablet/Small Desktop (1024px to 1279px): 3 columns */
         @media (min-width: 1024px) and (max-width: 1279px) {
             .module-grid {
                 grid-template-columns: repeat(3, 1fr);
             }
         }
 
-        /* Small Tablet/Large Mobile (640px to 1023px): 2 columns */
         @media (min-width: 640px) and (max-width: 1023px) {
             .module-grid {
                 grid-template-columns: repeat(2, 1fr);
@@ -143,7 +108,6 @@
             }
         }
 
-        /* Mobile Layout (Below 640px): 1 column (Consistency) */
         @media (max-width: 639px) {
             .module-grid {
                 grid-template-columns: 1fr;
@@ -152,30 +116,15 @@
             }
         }
 
-
         .module-button {
-            /* 1. Background: Subtle Gradient */
-            background: linear-gradient(145deg, rgba(255, 255, 255, 1) 0%, var(--color-module-bg) 100%);
-            color: var(--color-text-dark);
-
-            /* 2. Shape: Ultra Rounded (Consistency) */
+            background: linear-gradient(145deg, #fff, var(--color-module-bg));
             border-radius: 2rem;
-
-            /* 3. Shadow (Default Look) */
             box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
-            border: none;
-
-            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-            z-index: 1;
-
-            /* Aspect Ratio Matching Academic System */
-            aspect-ratio: 1.3 / 1;
             padding: 1.5rem;
-
-            /* Align text to Left Top Side */
+            aspect-ratio: 1.3/1;
+            position: relative;
+            cursor: pointer;
+            transition: 0.3s;
             display: flex;
             flex-direction: column;
             justify-content: flex-start;
@@ -183,7 +132,11 @@
             text-align: left;
         }
 
-        /* Hover Effect: Running Black Outline (Consistency) */
+        .lang-ur .module-button {
+            text-align: right;
+            align-items: flex-end;
+        }
+
         .module-button:hover {
             transform: translateY(-5px);
             box-shadow:
@@ -191,23 +144,19 @@
                 0 10px 25px rgba(0, 0, 0, 0.25);
         }
 
-        /* Icon Styling (Fixed to bottom-right - Consistency) */
         .module-icon {
             position: absolute;
             bottom: 1.5rem;
             right: 1.5rem;
             opacity: 0.2;
-            transition: opacity 0.3s ease, transform 0.3s ease;
-            color: var(--color-text-dark);
             width: 3rem;
             height: 3rem;
+            transition: 0.3s;
         }
 
-        @media (min-width: 768px) {
-            .module-icon {
-                width: 4rem;
-                height: 4rem;
-            }
+        .lang-ur .module-icon {
+            right: auto;
+            left: 1.5rem;
         }
 
         .module-button:hover .module-icon {
@@ -216,26 +165,32 @@
         }
 
         .subtitle-text {
-            opacity: 1;
             font-size: 0.875rem;
             font-weight: 500;
         }
 
-        /* --- Language Dialog: Animation Styles (Consistency) --- */
+        /* ------------ Dialog ------------- */
         .dialog-backdrop {
-            background-color: rgba(0, 0, 0, 0.7);
-            transition: opacity 0.3s ease;
+            background: rgba(0, 0, 0, 0.7);
+            transition: 0.3s;
         }
 
         .dialog-content {
             background-color: var(--color-background);
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
             border: 3px solid var(--color-primary);
-            transition: transform 0.3s ease, opacity 0.3s ease;
+            transition: 0.3s;
         }
 
         .rtl-text-right {
             text-align: right;
+        }
+
+        .action-button {
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 600;
         }
     </style>
 </head>
@@ -255,16 +210,29 @@
                 'en_option': 'English',
                 'hi_option': 'हिन्दी (Hindi)',
                 'ur_option': 'اردو (Urdu)',
+                'logout': 'Logout',
+                'edit_profile': 'Edit Profile',
+                'admin_panel': 'Admin Panel',
 
                 // Library System Specific
                 'library_title': 'Library System',
                 'module_subtitle': 'Access detailed book cataloging and circulation features.',
-                'book_catalog': 'Book Catalog',
-                'issue_return': 'Issue & Return Books',
-                'member_management': 'Member Management',
-                'overdue_fines': 'Overdue Books & Fines',
-                'book_search': 'Advanced Book Search',
-                'library_reports': 'Library Reports',
+
+                'add_item': 'Add Item',
+                'add_purchase': 'Add Purchase',
+                'assign_item': 'Assign Item',
+                'stock_overview': 'Stock Overview',
+                'history': 'History',
+                'return_item': 'Return Items',
+
+                // Helper for button links
+                'add_item_desc': 'Register a new book or media item into the catalog.',
+                'add_purchase_desc': 'Record details and quantities for recent library acquisitions.',
+                'assign_item_desc': 'Issue books or media items to students and record assignments.',
+                'stock_overview_desc': 'View total purchased, assigned, and currently available quantities.',
+                'history_desc': 'View detailed logs of items added, purchased, assigned, and returned.',
+                'return_item_desc': 'Process item returns and record the item condition.'
+
             },
             'hi': {
                 'madarsa_system': 'मदरसा प्रणाली',
@@ -276,16 +244,28 @@
                 'en_option': 'English',
                 'hi_option': 'हिन्दी (Hindi)',
                 'ur_option': 'اردو (Urdu)',
+                'logout': 'लॉगआउट',
+                'edit_profile': 'प्रोफ़ाइल संपादित करें',
+                'admin_panel': 'एडमिन पैनल',
 
                 // Library System Specific
                 'library_title': 'पुस्तकालय प्रणाली',
                 'module_subtitle': 'विस्तृत पुस्तक सूचीकरण और परिसंचरण सुविधाओं तक पहुँचें।',
-                'book_catalog': 'पुस्तक सूची',
-                'issue_return': 'पुस्तक जारी और वापसी',
-                'member_management': 'सदस्य प्रबंधन',
-                'overdue_fines': 'अतिदेय पुस्तकें और जुर्माना',
-                'book_search': 'उन्नत पुस्तक खोज',
-                'library_reports': 'पुस्तकालय रिपोर्ट',
+
+                'add_item': 'आइटम जोड़ें',
+                'add_purchase': 'खरीद जोड़ें',
+                'assign_item': 'आइटम असाइन करें',
+                'stock_overview': 'स्टॉक अवलोकन',
+                'history': 'इतिहास',
+                'return_item': 'आइटम वापसी',
+
+                // Helper for button links
+                'add_item_desc': 'कैटलॉग में एक नई पुस्तक या मीडिया आइटम पंजीकृत करें।',
+                'add_purchase_desc': 'हाल की पुस्तकालय खरीद के लिए विवरण और मात्रा रिकॉर्ड करें।',
+                'assign_item_desc': 'छात्रों को किताबें या मीडिया आइटम जारी करें और असाइनमेंट रिकॉर्ड करें।',
+                'stock_overview_desc': 'कुल खरीदी गई, असाइन की गई, और वर्तमान में उपलब्ध मात्रा देखें।',
+                'history_desc': 'जोड़े गए, खरीदे गए, असाइन किए गए और वापस किए गए आइटमों के विस्तृत लॉग देखें।',
+                'return_item_desc': 'आइटम की वापसी प्रक्रिया करें और आइटम की स्थिति रिकॉर्ड करें।'
             },
             'ur': {
                 'madarsa_system': 'مدرسہ نظام',
@@ -297,20 +277,32 @@
                 'en_option': 'English',
                 'hi_option': 'ہندی (Hindi)',
                 'ur_option': 'اردو (Urdu)',
+                'logout': 'لاگ آؤٹ',
+                'edit_profile': 'پروفائل میں ترمیم کریں',
+                'admin_panel': 'ایڈمن پینل',
 
                 // Library System Specific
                 'library_title': 'لائبریری کا نظام',
                 'module_subtitle': 'تفصیلی کتاب کی فہرست سازی اور گردش کی خصوصیات تک رسائی حاصل کریں۔',
-                'book_catalog': 'کتاب کی فہرست',
-                'issue_return': 'کتاب جاری اور واپسی',
-                'member_management': 'رکن کا انتظام',
-                'overdue_fines': 'بقایا کتب اور جرمانے',
-                'book_search': 'جدید کتاب کی تلاش',
-                'library_reports': 'لائبریری کی رپورٹس',
+
+                'add_item': 'آئٹم شامل کریں',
+                'add_purchase': 'خریداری شامل کریں',
+                'assign_item': 'آئٹم تفویض کریں',
+                'stock_overview': 'اسٹاک کا جائزہ',
+                'history': 'تاریخ',
+                'return_item': 'آئٹم واپس کریں',
+
+                // Helper for button links
+                'add_item_desc': 'کیٹلاگ میں ایک نئی کتاب یا میڈیا آئٹم رجسٹر کریں۔',
+                'add_purchase_desc': 'حالیہ لائبریری خریداریوں کی تفصیلات اور مقدار ریکارڈ کریں۔',
+                'assign_item_desc': 'طلباء کو کتابیں یا میڈیا آئٹمز جاری کریں اور تفویض ریکارڈ کریں۔',
+                'stock_overview_desc': 'کل خریدی گئی، تفویض کردہ، اور فی الحال دستیاب مقدار دیکھیں۔',
+                'history_desc': 'شامل کردہ، خریدی گئی، تفویض کردہ، اور واپس کی گئی آئٹمز کے تفصیلی لاگز دیکھیں۔',
+                'return_item_desc': 'آئٹم کی واپسی کے عمل کو پورا کریں اور آئٹم کی حالت ریکارڈ کریں۔'
             }
         };
 
-        // --- Core Application Logic ---
+        // --- Core Application Logic (Simplified for Library Home) ---
 
         let currentLang = 'en';
         let dialogContentElement;
@@ -336,6 +328,14 @@
             document.getElementById('current-lang-display').textContent = getTranslation(currentLang + '_option');
 
             document.getElementById('main-content-wrapper').style.direction = isRtl ? 'rtl' : 'ltr';
+
+            // Update descriptions for modules
+            document.getElementById('add-item-desc').textContent = getTranslation('add_item_desc');
+            document.getElementById('add-purchase-desc').textContent = getTranslation('add_purchase_desc');
+            document.getElementById('assign-item-desc').textContent = getTranslation('assign_item_desc');
+            document.getElementById('stock-overview-desc').textContent = getTranslation('stock_overview_desc');
+            document.getElementById('history-desc').textContent = getTranslation('history_desc');
+            document.getElementById('return-item-desc').textContent = getTranslation('return_item_desc');
         }
 
         function changeLanguage(lang) {
@@ -375,6 +375,47 @@
             }
         }
 
+        function handleUserAction(action) {
+            if (action === 'Logout') {
+                localStorage.removeItem('isUserLoggedIn');
+                localStorage.removeItem('madarsaUserProfile');
+                window.location.href = 'login.html';
+            } else if (action === 'Edit Profile') {
+                window.location.href = 'edit_profile.html';
+            }
+        }
+
+        // Dummy function to get User Initial/Photo for Header
+        function getUserDisplayData() {
+            const storedData = localStorage.getItem('madarsaUserProfile');
+            let data = storedData ? JSON.parse(storedData) : { fullName: 'User', photo: null };
+
+            const initial = data.fullName ? data.fullName[0].toUpperCase() : 'U';
+
+            return { initial, photo: data.photo, name: data.fullName };
+        }
+
+        function updateUserNameDisplay() {
+            const userData = getUserDisplayData();
+
+            // Desktop Dropdown Toggle Button
+            const desktopUserToggle = document.getElementById('desktop-user-link');
+            if (desktopUserToggle) {
+                if (userData.photo) {
+                    desktopUserToggle.innerHTML = `<img src="${userData.photo}" alt="Profile" class="w-6 h-6 rounded-full object-cover">`;
+                } else {
+                    desktopUserToggle.innerHTML = `<div class="w-6 h-6 rounded-full flex items-center justify-center bg-gray-200 text-xs font-semibold" style="color: var(--color-primary);">${userData.initial}</div>`;
+                }
+            }
+
+            // Dropdown Header Name
+            const dropdownHeader = document.getElementById('dropdown-header-name');
+            if (dropdownHeader) {
+                dropdownHeader.textContent = userData.name;
+            }
+        }
+
+
         window.onload = function () {
             dialogContentElement = document.getElementById('dialog-content');
 
@@ -396,7 +437,23 @@
             const dialogCloseBtn = document.getElementById('dialog-close-btn');
             if (dialogCloseBtn) { dialogCloseBtn.addEventListener('click', closeLanguageDialog); }
 
+            // User dropdown toggle (Desktop)
+            const userMenuToggle = document.getElementById('user-menu-toggle');
+            if (userMenuToggle) {
+                userMenuToggle.addEventListener('click', (event) => {
+                    document.getElementById('user-dropdown-menu').classList.toggle('hidden');
+                    event.stopPropagation();
+                });
+            }
+
+            // Close dropdown if clicking outside
+            document.addEventListener('click', () => {
+                document.getElementById('user-dropdown-menu').classList.add('hidden');
+            });
+
+
             updateContent();
+            updateUserNameDisplay();
         };
 
         function handleModuleClick(moduleName) {
@@ -482,7 +539,6 @@
         </div>
     </header>
 
-
     <!-- --- 2. MAIN CONTENT AREA (Full width dashboard style) --- -->
     <main id="main-content-wrapper" class="main-content-area min-h-[calc(100vh-70px)]">
 
@@ -493,80 +549,82 @@
         <section class="module-section">
             <div class="module-grid">
 
-                <!-- BOOK CATALOG (was Manage Items / Samaan) --><button class="module-button"
-                    onclick="handleModuleClick('Book Catalog')">
-                    <h3 data-lang-key="book_catalog" class="text-xl md:text-2xl font-bold mb-1">Book Catalog</h3>
-                    <p data-lang-key="module_subtitle" class="subtitle-text">Access detailed book cataloging and
-                        circulation features.</p>
-                    <!-- Icon: Book Stack --><svg class="module-icon" xmlns="http://www.w3.org/2000/svg" fill="none"
-                        viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                <!-- 1. ADD ITEM (was Book Catalog) -->
+                <a href="add_item.html" class="module-button">
+                    <h3 data-lang-key="add_item" class="text-xl md:text-2xl font-bold mb-1">Add Item</h3>
+                    <p id="add-item-desc" class="subtitle-text"></p>
+                    <!-- Icon: Book Plus -->
+                    <svg class="module-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor" stroke-width="1.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
                         <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M12 21l-8-4.5V5.5L12 1m0 20v-4.5m0 0l8-4.5V5.5L12 1m0 16.5l8-4.5M4 16.5l8-4.5M4 16.5V5.5m0 11V5.5m8 0V1m0 4.5l8 4.5" />
+                            d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20v-10h-6l-2-2H5a2 2 0 00-2 2v10z" />
                     </svg>
-                </button>
+                </a>
 
-                <!-- ISSUE & RETURN BOOKS (was Weekly Meal Plan) --><button class="module-button"
-                    onclick="handleModuleClick('Issue & Return Books')">
-                    <h3 data-lang-key="issue_return" class="text-xl md:text-2xl font-bold mb-1">Issue & Return Books
-                    </h3>
-                    <p data-lang-key="module_subtitle" class="subtitle-text">Access detailed book cataloging and
-                        circulation features.</p>
-                    <!-- Icon: Exchange / Swap --><svg class="module-icon" xmlns="http://www.w3.org/2000/svg"
-                        fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M7 16V9M17 8v7M10 13l3-3 3 3" />
+                <!-- 2. ADD PURCHASE (was Issue & Return Books) -->
+                <a href="add_purchase.html" class="module-button">
+                    <h3 data-lang-key="add_purchase" class="text-xl md:text-2xl font-bold mb-1">Add Purchase</h3>
+                    <p id="add-purchase-desc" class="subtitle-text"></p>
+                    <!-- Icon: Shopping Cart -->
+                    <svg class="module-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor" stroke-width="1.5">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.2 6.8a1.5 1.5 0 001.4 1.2h12.4a1.5 1.5 0 001.4-1.2L17 13M12 18h.01" />
                     </svg>
-                </button>
+                </a>
 
-                <!-- MEMBER MANAGEMENT (was Daily Purchases) --><button class="module-button"
-                    onclick="handleModuleClick('Member Management')">
-                    <h3 data-lang-key="member_management" class="text-xl md:text-2xl font-bold mb-1">Member Management
-                    </h3>
-                    <p data-lang-key="module_subtitle" class="subtitle-text">Access detailed book cataloging and
-                        circulation features.</p>
-                    <!-- Icon: Users Group --><svg class="module-icon" xmlns="http://www.w3.org/2000/svg" fill="none"
-                        viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                <!-- 3. ASSIGN ITEMS (was Member Management) -->
+                <a href="assign_item.html" class="module-button">
+                    <h3 data-lang-key="assign_item" class="text-xl md:text-2xl font-bold mb-1">Assign Item</h3>
+                    <p id="assign-item-desc" class="subtitle-text"></p>
+                    <!-- Icon: Handshake / Issue -->
+                    <svg class="module-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor" stroke-width="1.5">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                         <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M12 22s-8-4-8-10V5l8-3 8 3v7c0 6-8 10-8 10z" />
+                            d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9v4.5m-9-9v4.5m-1.5 6a4.5 4.5 0 01-4.5-4.5v-1.5m4.5 6a4.5 4.5 0 004.5 4.5h1.5" />
                     </svg>
-                </button>
+                </a>
 
-                <!-- OVERDUE BOOKS & FINES (was Cooking Entry) --><button class="module-button"
-                    onclick="handleModuleClick('Overdue Books & Fines')">
-                    <h3 data-lang-key="overdue_fines" class="text-xl md:text-2xl font-bold mb-1">Overdue Books & Fines
-                    </h3>
-                    <p data-lang-key="module_subtitle" class="subtitle-text">Access detailed book cataloging and
-                        circulation features.</p>
-                    <!-- Icon: Alert Triangle --><svg class="module-icon" xmlns="http://www.w3.org/2000/svg" fill="none"
-                        viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                <!-- 4. RETURN ITEMS (new) -->
+                <a href="return_item.html" class="module-button">
+                    <h3 data-lang-key="return_item" class="text-xl md:text-2xl font-bold mb-1">Return Items</h3>
+                    <p id="return-item-desc" class="subtitle-text"></p>
+                    <!-- Icon: Corner Up Left (Return) -->
+                    <svg class="module-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor" stroke-width="1.5">
                         <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M12 9v3.75m-9.303 3.375l1.43 1.43a3 3 0 004.242 0l1.43-1.43m-6.06-6.06l1.43 1.43a3 3 0 004.242 0l1.43-1.43m-9.09 9.09l1.43-1.43a3 3 0 004.242 0l1.43 1.43" />
+                            d="M9 10L4 15m0 0l5 5M4 15h16a2 2 0 002-2v-1" />
                     </svg>
-                </button>
+                </a>
 
-                <!-- ADVANCED BOOK SEARCH (was Waste Entry) --><button class="module-button"
-                    onclick="handleModuleClick('Advanced Book Search')">
-                    <h3 data-lang-key="book_search" class="text-xl md:text-2xl font-bold mb-1">Advanced Book Search</h3>
-                    <p data-lang-key="module_subtitle" class="subtitle-text">Access detailed book cataloging and
-                        circulation features.</p>
-                    <!-- Icon: Search Glass --><svg class="module-icon" xmlns="http://www.w3.org/2000/svg" fill="none"
-                        viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                <!-- 5. STOCK OVERVIEW (was Advanced Book Search) -->
+                <a href="stock_overview.html" class="module-button">
+                    <h3 data-lang-key="stock_overview" class="text-xl md:text-2xl font-bold mb-1">Stock Overview</h3>
+                    <p id="stock-overview-desc" class="subtitle-text"></p>
+                    <!-- Icon: Chart Bar / Clipboard -->
+                    <svg class="module-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor" stroke-width="1.5">
                         <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M10 12l2 2 4-4m-6 0h2m-2 4h4M3 6h18a2 2 0 012 2v8a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2z" />
+                            d="M9 17v-4h6v4m2 0H7m0-4h10m0 0V7a2 2 0 00-2-2h-6a2 2 0 00-2 2v4M4 12h16" />
                     </svg>
-                </button>
+                </a>
 
-                <!-- LIBRARY REPORTS (was Dashboard / Summary) --><button class="module-button"
-                    onclick="handleModuleClick('Library Reports')">
-                    <h3 data-lang-key="library_reports" class="text-xl md:text-2xl font-bold mb-1">Library Reports</h3>
-                    <p data-lang-key="module_subtitle" class="subtitle-text">Access detailed book cataloging and
-                        circulation features.</p>
-                    <!-- Icon: Chart Bar --><svg class="module-icon" xmlns="http://www.w3.org/2000/svg" fill="none"
-                        viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                <!-- 6. HISTORY (was Library Reports) -->
+                <a href="history.html" class="module-button">
+                    <h3 data-lang-key="history" class="text-xl md:text-2xl font-bold mb-1">History</h3>
+                    <p id="history-desc" class="subtitle-text"></p>
+                    <!-- Icon: Clock / History -->
+                    <svg class="module-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor" stroke-width="1.5">
                         <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M12 8V4M8 12H4M16 12h4M12 16v4M5 5l2 2M19 19l-2-2M5 19l2-2M19 5l-2 2" />
+                            d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
-                </button>
+                </a>
+
+
+                <!-- Placeholder for future modules like Overdue Fines or Advanced Search -->
 
             </div>
         </section>

@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Residential Students - Hostel System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        :root {
+            --color-primary: #00A693;
+            --color-background: #F2F3F4;
+            --color-accent: #E08A27;
+            --color-text-dark: #1A1A1A;
+            --color-text-light: #FFFFFF;
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;700&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap');
+
+        /* Language Styles */
+        body,
+        .lang-en {
+            font-family: 'Poppins', sans-serif;
+            direction: ltr;
+            background-color: var(--color-background);
+        }
+
+        .lang-hi {
+            font-family: 'Noto Sans Devanagari', sans-serif;
+            direction: ltr;
+        }
+
+        .lang-ur {
+            font-family: 'Noto Nastaliq Urdu', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+            direction: rtl;
+            line-height: 1.8;
+            text-align: right;
+        }
+
+        /* Form & Table Inputs */
+        .form-input,
+        select,
+        .form-textarea {
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid #ccc;
+            width: 100%;
+            font-family: inherit;
+        }
+
+        .form-input:focus,
+        select:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(0, 166, 147, 0.2);
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            font-size: 0.875rem;
+        }
+
+        /* Buttons */
+        .primary-button {
+            padding: 0.8rem 1.5rem;
+            background-color: var(--color-primary);
+            color: var(--color-text-light);
+            font-weight: 600;
+            border-radius: 0.75rem;
+            transition: background-color 0.3s, transform 0.1s;
+            box-shadow: 0 4px 10px rgba(0, 166, 147, 0.4);
+            cursor: pointer;
+        }
+
+        .primary-button:hover {
+            background-color: #008f7d;
+            transform: translateY(-1px);
+        }
+
+        .action-button {
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            transition: background-color 0.2s;
+        }
+
+        .delete-button {
+            background-color: #fce8e8;
+            color: #cc0000;
+        }
+
+        .delete-button:hover {
+            background-color: #fcc;
+        }
+
+        /* Table Styling */
+        .admin-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 10px;
+        }
+
+        .admin-table th {
+            text-align: left;
+            padding: 1rem 1.5rem;
+            font-size: 0.875rem;
+            color: gray;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        .lang-ur .admin-table th {
+            text-align: right;
+        }
+
+        .admin-table td {
+            padding: 1rem 1.5rem;
+            background-color: white;
+            border-top: 1px solid #eee;
+            border-bottom: 1px solid #eee;
+            font-size: 0.8775rem;
+            font-weight: 500;
+        }
+
+        .admin-table tr td:first-child {
+            border-top-left-radius: 0.75rem;
+            border-bottom-left-radius: 0.75rem;
+        }
+
+        .admin-table tr td:last-child {
+            border-top-right-radius: 0.75rem;
+            border-bottom-right-radius: 0.75rem;
+        }
+
+        .lang-ur .admin-table tr td:first-child {
+            border-radius: 0;
+            border-top-right-radius: 0.75rem;
+            border-bottom-right-radius: 0.75rem;
+        }
+
+        .lang-ur .admin-table tr td:last-child {
+            border-radius: 0;
+            border-top-left-radius: 0.75rem;
+            border-bottom-left-radius: 0.75rem;
+        }
+
+        .status-pill {
+            display: inline-block;
+            padding: 0.3rem 0.7rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        /* Modal Styles */
+        .modal-backdrop {
+            background-color: rgba(0, 0, 0, 0.6);
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-content {
+            background-color: var(--color-background);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            border-radius: 1rem;
+            max-width: 95%;
+            width: 750px;
+            max-height: 90vh;
+            overflow-y: auto;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        /* Fixed Header */
+        header {
+            background-color: var(--color-text-light);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            width: 100%;
+            z-index: 10;
+            padding: 1rem 2rem;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .table-container table {
+            min-width: 1000px;
+        }
+    </style>
+</head>
+
+<body class="lang-en">
+
+    <script>
+        // --- Dummy Data ---
+        let dummyStudents = [
+            { studentId: 'S101', name: 'Ahmed Khan', roomNo: 'B-101', bedNo: 1, class: 'Hifz 1', status: 'Checked-In', guardian: 'Mr. Zafar Khan', phone: '9000111222', checkInDate: '2024-08-15' },
+            { studentId: 'S102', name: 'Fatima Zohra', roomNo: 'L-205', bedNo: 2, class: 'Fiqh 2', status: 'Checked-In', guardian: 'Mrs. Ayesha Begum', phone: '9888777666', checkInDate: '2024-09-01' },
+            { studentId: 'S103', name: 'Omar Farooq', roomNo: 'B-103', bedNo: 3, class: 'Hadith 1', status: 'Checked-Out', guardian: 'Mr. Tariq Ali', phone: '8765432109', checkInDate: '2024-07-20' },
+            { studentId: 'S104', name: 'Hafsa Bint', roomNo: 'L-201', bedNo: 1, class: 'Hifz 1', status: 'Checked-In', guardian: 'Mr. Yousuf', phone: '7000555444', checkInDate: '2024-10-10' },
+        ];
+
+        const STUDENT_STORAGE_KEY = 'madarsaHostelStudents';
+
+        // Initialize/Load Students from localStorage
+        function loadStudents() {
+            const storedStudents = localStorage.getItem(STUDENT_STORAGE_KEY);
+            if (storedStudents) {
+                try {
+                    dummyStudents = JSON.parse(storedStudents);
+                } catch (e) {
+                    console.error("Error loading students:", e);
+                }
+            } else {
+                saveStudents();
+            }
+        }
+
+        // Save Students to localStorage
+        function saveStudents() {
+            localStorage.setItem(STUDENT_STORAGE_KEY, JSON.stringify(dummyStudents));
+        }
+
+        // --- Multilingual Data ---
+        const langData = {
+            'en': {
+                'hostel_system': 'Hostel System',
+                'page_title': 'Residential Students',
+                'description': 'View and manage student assignments, room details, and check-in/check-out status.',
+                'back_to_hostel': 'Back to Hostel',
+                'logout': 'Logout',
+                'search_placeholder': 'Search by Name, ID, or Room No....',
+                'add_new': 'Add New Student',
+
+                // Table Headers
+                'student_id': 'Student ID',
+                'student_name': 'Student Name',
+                'room_bed': 'Room/Bed No.',
+                'class': 'Class',
+                'guardian': 'Guardian',
+                'check_in_date': 'Check-In Date',
+                'status': 'Status',
+                'actions': 'Actions',
+                'view': 'View',
+                'edit': 'Edit',
+                'check_out': 'Check Out',
+
+                // Status/Filters
+                'Checked-In': 'Checked-In',
+                'Checked-Out': 'Checked-Out',
+                'all_status': 'All Status',
+                'room_type': 'Room Type',
+
+                // Modal
+                'modal_add_title': 'Assign New Student',
+                'modal_edit_title': 'Edit Student Details',
+                'modal_view_title': 'View Student Details',
+                'personal_info': 'Personal Information',
+                'hostel_assignment': 'Hostel Assignment',
+                'full_name': 'Full Name',
+                'room_no': 'Room No.',
+                'bed_no': 'Bed No.',
+                'phone': 'Phone',
+                'date': 'Date',
+                'save': 'Save Changes',
+                'assign': 'Assign Student',
+                'cancel': 'Cancel',
+                'form_success_add': 'Student assigned successfully!',
+                'form_success_edit': 'Student details updated!',
+                'confirm_checkout': 'Are you sure you want to check out this student?',
+                'checkout_success': 'Student successfully checked out.'
+            },
+            'hi': {
+                'hostel_system': 'छात्रावास प्रणाली',
+                'page_title': 'आवासीय छात्र',
+                'description': 'छात्रों के असाइनमेंट, कमरे के विवरण और चेक-इन/चेक-आउट स्थिति को देखें और प्रबंधित करें।',
+                'back_to_hostel': 'छात्रावास पर वापस',
+                'logout': 'लॉगआउट',
+                'search_placeholder': 'नाम, आईडी, या कमरे के नंबर से खोजें...',
+                'add_new': 'नया छात्र जोड़ें',
+
+                // Table Headers
+                'student_id': 'छात्र आईडी',
+                'student_name': 'छात्र का नाम',
+                'room_bed': 'कमरा/बेड नं.',
+                'class': 'कक्षा',
+                'guardian': 'अभिभावक',
+                'check_in_date': 'चेक-इन तिथि',
+                'status': 'स्थिति',
+                'actions': 'कार्यवाही',
+                'view': 'देखें',
+                'edit': 'संपादित करें',
+                'check_out': 'चेक आउट',
+
+                // Status/Filters
+                'Checked-In': 'चेक-इन',
+                'Checked-Out': 'चेक-आउट',
+                'all_status': 'सभी स्थिति',
+                'room_type': 'कमरे का प्रकार',
+
+                // Modal
+                'modal_add_title': 'नए छात्र को असाइन करें',
+                'modal_edit_title': 'छात्र विवरण संपादित करें',
+                'modal_view_title': 'छात्र विवरण देखें',
+                'personal_info': 'व्यक्तिगत जानकारी',
+                'hostel_assignment': 'छात्रावास असाइनमेंट',
+                'full_name': 'पूरा नाम',
+                'room_no': 'कमरा नं.',
+                'bed_no': 'बेड नं.',
+                'phone': 'फ़ोन',
+                'date': 'तिथि',
+                'save': 'परिवर्तन सहेजें',
+                'assign': 'छात्र असाइन करें',
+                'cancel': 'रद्द करें',
+                'form_success_add': 'छात्र सफलतापूर्वक असाइन किया गया!',
+                'form_success_edit': 'छात्र विवरण अपडेट किए गए!',
+                'confirm_checkout': 'क्या आप निश्चित रूप से इस छात्र को चेक आउट करना चाहते हैं?',
+                'checkout_success': 'छात्र सफलतापूर्वक चेक आउट किया गया।'
+            },
+            'ur': {
+                'hostel_system': 'ہاسٹل نظام',
+                'page_title': 'رہائشی طلباء',
+                'description': 'طلباء کی اسائنمنٹس، کمرے کی تفصیلات، اور چیک اِن/چیک آؤٹ کی حیثیت دیکھیں اور ان کا نظم کریں۔',
+                'back_to_hostel': 'ہاسٹل پر واپس جائیں',
+                'logout': 'لاگ آؤٹ',
+                'search_placeholder': 'نام، آئی ڈی، یا کمرہ نمبر سے تلاش کریں...',
+                'add_new': 'نیا طالب علم شامل کریں',
+
+                // Table Headers
+                'student_id': 'طالب علم کی آئی ڈی',
+                'student_name': 'طالب علم کا نام',
+                'room_bed': 'کمرہ/بیڈ نمبر',
+                'class': 'کلاس',
+                'guardian': 'سرپرست',
+                'check_in_date': 'چیک اِن کی تاریخ',
+                'status': 'حیثیت',
+                'actions': 'عمل',
+                'view': 'دیکھیں',
+                'edit': 'ترمیم کریں',
+                'check_out': 'چیک آؤٹ',
+
+                // Status/Filters
+                'Checked-In': 'چیک اِن',
+                'Checked-Out': 'چیک آؤٹ',
+                'all_status': 'تمام حیثیتیں',
+                'room_type': 'کمرے کی قسم',
+
+                // Modal
+                'modal_add_title': 'نئے طالب علم کو تفویض کریں',
+                'modal_edit_title': 'طالب علم کی تفصیلات میں ترمیم کریں',
+                'modal_view_title': 'طالب علم کی تفصیلات دیکھیں',
+                'personal_info': 'ذاتی معلومات',
+                'hostel_assignment': 'ہاسٹل کی تفویض',
+                'full_name': 'پورا نام',
+                'room_no': 'کمرہ نمبر',
+                'bed_no': 'بیڈ نمبر',
+                'phone': 'فون',
+                'date': 'تاریخ',
+                'save': 'تبدیلیاں محفوظ کریں',
+                'assign': 'طالب علم تفویض کریں',
+                'cancel': 'منسوخ کریں',
+                'form_success_add': 'طالب علم کامیابی سے تفویض کیا گیا!',
+                'form_success_edit': 'طالب علم کی تفصیلات اپ ڈیٹ ہو گئیں!',
+                'confirm_checkout': 'کیا آپ واقعی اس طالب علم کو چیک آؤٹ کرنا چاہتے ہیں؟',
+                'checkout_success': 'طالب علم کامیابی سے چیک آؤٹ کیا گیا۔'
+            }
+        };
+
+        let currentLang = 'en';
+
+        function getTranslation(key) {
+            return langData[currentLang][key] || langData['en'][key] || key;
+        }
+
+        // Helper to get student by ID
+        function getStudentById(id) {
+            return dummyStudents.find(student => student.studentId === id);
+        }
+
+        // --- Core UI Update Functions ---
+        function updateContent() {
+            document.body.className = 'lang-' + currentLang;
+
+            document.querySelectorAll('[data-lang-key]').forEach(el => {
+                const key = el.getAttribute('data-lang-key');
+                el.textContent = getTranslation(key);
+            });
+
+            document.getElementById('search-input').placeholder = getTranslation('search_placeholder');
+
+            // Re-render table and filters
+            renderTable(filterStudents());
+            updateFilterOptions();
+        }
+
+        function changeLanguage(lang) {
+            if (lang in langData) {
+                currentLang = lang;
+                localStorage.setItem('madarsaSystemLang', lang);
+                updateContent();
+            }
+        }
+
+        function updateFilterOptions() {
+            const statusFilter = document.getElementById('status-filter');
+
+            const selectedStatus = statusFilter.value;
+            statusFilter.innerHTML = `<option value="" data-lang-key="all_status">${getTranslation('all_status')}</option>`;
+
+            const statuses = ['Checked-In', 'Checked-Out'];
+            statuses.forEach(status => {
+                const option = document.createElement('option');
+                option.value = status;
+                option.textContent = getTranslation(status);
+                statusFilter.appendChild(option);
+            });
+            statusFilter.value = selectedStatus;
+        }
+
+        // --- Table Rendering ---
+        function renderTable(studentList) {
+            const tbody = document.getElementById('students-table-body');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+
+            studentList.forEach(student => {
+                const tr = document.createElement('tr');
+
+                let statusColor;
+                let checkoutButton = '';
+
+                switch (student.status) {
+                    case 'Checked-In':
+                        statusColor = 'bg-green-100 text-green-700';
+                        checkoutButton = `<button onclick="handleAction('checkout', '${student.studentId}')" class="action-button delete-button hover:bg-red-200 ml-2">${getTranslation('check_out')}</button>`;
+                        break;
+                    case 'Checked-Out':
+                        statusColor = 'bg-red-100 text-red-700';
+                        break;
+                }
+
+                const translatedStatus = getTranslation(student.status);
+
+                tr.innerHTML = `
+                    <td>${student.studentId}</td>
+                    <td class="font-bold text-gray-800">${student.name}</td>
+                    <td>${student.roomNo}/${student.bedNo}</td>
+                    <td>${student.class}</td>
+                    <td>${student.guardian}</td>
+                    <td>${student.checkInDate}</td>
+                    <td><span class="status-pill ${statusColor}">${translatedStatus}</span></td>
+                    <td>
+                        <button onclick="handleAction('view', '${student.studentId}')" class="action-button bg-blue-100 text-blue-700 hover:bg-blue-200">${getTranslation('view')}</button>
+                        <button onclick="handleAction('edit', '${student.studentId}')" class="action-button bg-yellow-100 text-yellow-700 hover:bg-yellow-200 ml-2">${getTranslation('edit')}</button>
+                        ${checkoutButton}
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // --- Filter Logic ---
+        function filterStudents() {
+            const search = document.getElementById('search-input').value.toLowerCase();
+            const status = document.getElementById('status-filter').value;
+
+            return dummyStudents.filter(student => {
+                const matchesSearch = student.name.toLowerCase().includes(search) ||
+                    student.studentId.toLowerCase().includes(search) ||
+                    student.roomNo.toLowerCase().includes(search);
+
+                const matchesStatus = !status || student.status === status;
+
+                return matchesSearch && matchesStatus;
+            });
+        }
+
+        function handleFilter() {
+            renderTable(filterStudents());
+        }
+
+        // --- Modal Handling ---
+        function openStudentModal(titleKey, contentHtml) {
+            const modal = document.getElementById('student-modal');
+            const modalTitle = document.getElementById('modal-title');
+            const modalBody = document.getElementById('modal-body');
+
+            modalTitle.textContent = getTranslation(titleKey);
+            modalBody.innerHTML = contentHtml;
+
+            modal.classList.remove('hidden');
+            setTimeout(() => { modal.classList.remove('opacity-0'); }, 10);
+        }
+
+        function closeStudentModal() {
+            const modal = document.getElementById('student-modal');
+            modal.classList.add('opacity-0');
+            setTimeout(() => { modal.classList.add('hidden'); }, 300);
+        }
+
+        // --- Content Creators ---
+        function createAssignmentForm(student = null) {
+            const isEdit = student !== null;
+            const isRtl = currentLang === 'ur';
+            const alignment = isRtl ? 'text-right' : 'text-left';
+            const statusList = ['Checked-In', 'Checked-Out'];
+
+            let statusOptions = '';
+            statusList.forEach(stat => {
+                const selected = isEdit && student.status === stat ? 'selected' : '';
+                statusOptions += `<option value="${stat}" ${selected}>${getTranslation(stat)}</option>`;
+            });
+
+            return `
+                <form id="assignment-form" onsubmit="return saveStudentDetails(event, ${isEdit ? `'${student.studentId}'` : 'null'})" class="${alignment}">
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                        
+                        <!-- Full Name -->
+                        <div class="form-group">
+                            <label for="student-name" class="form-label">${getTranslation('full_name')}</label>
+                            <input type="text" id="student-name" class="form-input" value="${isEdit ? student.name : ''}" required ${isEdit ? 'disabled' : ''}>
+                        </div>
+                        
+                        <!-- Student ID (Read Only/Display) -->
+                        <div class="form-group">
+                            <label for="student-id" class="form-label">${getTranslation('student_id')}</label>
+                            <input type="text" id="student-id" class="form-input bg-gray-100" value="${isEdit ? student.studentId : 'New ID (Sxxx)'}" disabled>
+                        </div>
+                        
+                        <!-- Room No. -->
+                        <div class="form-group">
+                            <label for="room-no" class="form-label">${getTranslation('room_no')}</label>
+                            <input type="text" id="room-no" class="form-input" value="${isEdit ? student.roomNo : ''}" required>
+                        </div>
+
+                        <!-- Bed No. -->
+                        <div class="form-group">
+                            <label for="bed-no" class="form-label">${getTranslation('bed_no')}</label>
+                            <input type="number" id="bed-no" class="form-input" value="${isEdit ? student.bedNo : ''}" min="1" required>
+                        </div>
+
+                        <!-- Class -->
+                        <div class="form-group">
+                            <label for="student-class" class="form-label">${getTranslation('class')}</label>
+                            <input type="text" id="student-class" class="form-input" value="${isEdit ? student.class : ''}" required>
+                        </div>
+
+                        <!-- Guardian Phone -->
+                        <div class="form-group">
+                            <label for="guardian-phone" class="form-label">${getTranslation('guardian')} (${getTranslation('phone')})</label>
+                            <input type="tel" id="guardian-phone" class="form-input" value="${isEdit ? student.phone : ''}" required>
+                        </div>
+                        
+                        <!-- Check-In Date -->
+                        <div class="form-group">
+                            <label for="check-in-date" class="form-label">${getTranslation('check_in_date')}</label>
+                            <input type="date" id="check-in-date" class="form-input" value="${isEdit ? student.checkInDate : new Date().toISOString().slice(0, 10)}" required>
+                        </div>
+
+                        <!-- Status (Only visible on edit) -->
+                        ${isEdit ? `
+                        <div class="form-group">
+                            <label for="student-status" class="form-label">${getTranslation('status')}</label>
+                            <select id="student-status" class="form-input" required>${statusOptions}</select>
+                        </div>` : ''}
+
+                    </div>
+
+                    <div class="flex justify-end space-x-4 mt-6">
+                        <button type="button" onclick="closeStudentModal()" class="action-button bg-gray-200 text-gray-700 hover:bg-gray-300">${getTranslation('cancel')}</button>
+                        <button type="submit" class="primary-button">${isEdit ? getTranslation('save') : getTranslation('assign')}</button>
+                    </div>
+                </form>
+            `;
+        }
+
+        function createViewContent(student) {
+            const isRtl = currentLang === 'ur';
+            const alignment = isRtl ? 'text-right' : 'text-left';
+            const translatedStatus = getTranslation(student.status);
+            const statusColor = student.status === 'Checked-In' ? 'text-green-600' : 'text-red-600';
+
+            return `
+                <div class="space-y-4 ${alignment}">
+                    <h2 class="text-2xl font-bold text-gray-800">${student.name}</h2>
+                    <p class="text-sm text-gray-500">${getTranslation('student_id')}: ${student.studentId} | ${getTranslation('class')}: ${student.class}</p>
+
+                    <div class="grid grid-cols-2 gap-4 border-t pt-4">
+                        <div class="col-span-2">
+                            <p class="font-bold text-gray-600">${getTranslation('status')}</p>
+                            <p class="text-lg font-semibold ${statusColor}">${translatedStatus}</p>
+                        </div>
+
+                        <div>
+                            <p class="font-bold text-gray-600">${getTranslation('room_no')}</p>
+                            <p>${student.roomNo}</p>
+                        </div>
+                        <div>
+                            <p class="font-bold text-gray-600">${getTranslation('bed_no')}</p>
+                            <p>${student.bedNo}</p>
+                        </div>
+                        
+                        <div>
+                            <p class="font-bold text-gray-600">${getTranslation('check_in_date')}</p>
+                            <p>${student.checkInDate}</p>
+                        </div>
+
+                        <div class="col-span-2 pt-4 border-t mt-4">
+                            <h3 class="text-lg font-bold text-gray-700 mb-2">${getTranslation('guardian')}</h3>
+                        </div>
+
+                        <div>
+                            <p class="font-bold text-gray-600">${getTranslation('full_name')}</p>
+                            <p>${student.guardian}</p>
+                        </div>
+                        <div>
+                            <p class="font-bold text-gray-600">${getTranslation('phone')}</p>
+                            <p>${student.phone}</p>
+                        </div>
+
+                    </div>
+                    
+                    <div class="flex justify-end pt-4 border-t">
+                        <button onclick="handleAction('edit', '${student.studentId}')" class="action-button bg-yellow-100 text-yellow-700 hover:bg-yellow-200">${getTranslation('edit')}</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // --- Action Dispatcher (Add/View/Edit/Checkout) ---
+        function handleAction(action, id) {
+            const student = getStudentById(id);
+
+            if (action === 'add') {
+                openStudentModal('modal_add_title', createAssignmentForm(null));
+            } else if (!student && action !== 'add') {
+                console.error(`Student not found with ID: ${id}`);
+                return;
+            } else if (action === 'view') {
+                openStudentModal('modal_view_title', createViewContent(student));
+            } else if (action === 'edit') {
+                openStudentModal('modal_edit_title', createAssignmentForm(student));
+            } else if (action === 'checkout') {
+                if (confirm(getTranslation('confirm_checkout'))) {
+                    checkoutStudent(id);
+                }
+            }
+        }
+
+        // --- Checkout Logic ---
+        function checkoutStudent(id) {
+            const studentIndex = dummyStudents.findIndex(s => s.studentId === id);
+            if (studentIndex !== -1) {
+                dummyStudents[studentIndex].status = 'Checked-Out';
+                saveStudents();
+                handleFilter();
+                alert(getTranslation('checkout_success'));
+            }
+        }
+
+        // --- Save Logic (Add/Edit) ---
+        function saveStudentDetails(event, id) {
+            event.preventDefault();
+
+            const form = event.target;
+            const name = form.querySelector('#student-name').value;
+            const roomNo = form.querySelector('#room-no').value;
+            const bedNo = form.querySelector('#bed-no').value;
+            const studentClass = form.querySelector('#student-class').value;
+            const guardianPhone = form.querySelector('#guardian-phone').value;
+            const checkInDate = form.querySelector('#check-in-date').value;
+            const status = form.querySelector('#student-status')?.value || 'Checked-In'; // Default to Checked-In for new assignment
+
+            if (!name || !roomNo || !bedNo || !studentClass || !guardianPhone || !checkInDate) {
+                alert("Please fill all required fields.");
+                return false;
+            }
+
+            if (id) {
+                // EDIT LOGIC
+                const studentIndex = dummyStudents.findIndex(s => s.studentId === id);
+                if (studentIndex !== -1) {
+                    dummyStudents[studentIndex] = {
+                        ...dummyStudents[studentIndex],
+                        name, roomNo, bedNo: parseInt(bedNo), class: studentClass,
+                        phone: guardianPhone, checkInDate, status
+                    };
+                    alert(getTranslation('form_success_edit'));
+                }
+            } else {
+                // ADD LOGIC
+                const newIdNum = Math.max(...dummyStudents.map(s => parseInt(s.studentId.substring(1)))) + 1;
+                const newId = 'S' + (newIdNum > 0 ? newIdNum : 105);
+
+                const newStudent = {
+                    studentId: newId,
+                    name, roomNo, bedNo: parseInt(bedNo), class: studentClass,
+                    guardian: 'Guardian Name Placeholder', // Placeholder for now
+                    phone: guardianPhone, checkInDate, status: 'Checked-In'
+                };
+                dummyStudents.unshift(newStudent);
+                alert(getTranslation('form_success_add'));
+            }
+
+            saveStudents();
+            closeStudentModal();
+            updateContent();
+            return false;
+        }
+
+        // Initialize content and language
+        window.onload = function () {
+            loadStudents(); // Load data
+            const storedLang = localStorage.getItem('madarsaSystemLang');
+            currentLang = (storedLang && storedLang in langData) ? storedLang : 'en';
+
+            // Initial content update and table render
+            updateContent();
+
+            // Attach event listeners to filters
+            document.getElementById('search-input').addEventListener('input', handleFilter);
+            document.getElementById('status-filter').addEventListener('change', handleFilter);
+        };
+    </script>
+
+    <!-- HEADER -->
+    <header>
+        <div class="max-w-7xl mx-auto w-full flex justify-between items-center">
+            <!-- Left: Back Button & Title -->
+            <div class="flex items-center space-x-4">
+                <a href="hostel_system.html" class="action-button bg-gray-100 text-gray-700 hover:bg-gray-200"
+                    data-lang-key="back_to_hostel">Back to Hostel</a>
+                <h1 class="text-xl font-bold" data-lang-key="page_title" style="color: var(--color-primary);">
+                    Residential Students</h1>
+            </div>
+
+            <!-- Right: Language Switch -->
+            <div class="flex items-center space-x-2">
+                <select onchange="changeLanguage(this.value)" class="bg-gray-100 rounded-lg p-1 text-sm">
+                    <option value="en" selected>English</option>
+                    <option value="hi">हिन्दी</option>
+                    <option value="ur">اردو</option>
+                </select>
+                <button onclick="window.location.href='login.html'"
+                    class="text-sm font-semibold text-red-600 hover:text-red-800 transition-colors ml-4"
+                    data-lang-key="logout">Logout</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="max-w-7xl mx-auto w-full p-4 md:p-8">
+        <div class="bg-white p-6 md:p-8 rounded-xl shadow-2xl">
+
+            <!-- Description and Action Button -->
+            <div
+                class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 space-y-4 md:space-y-0">
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-700" data-lang-key="page_title">Residential Students</h2>
+                    <p class="text-gray-500 mt-1 text-sm" data-lang-key="description">View and manage student
+                        assignments, room details, and check-in/check-out status.</p>
+                </div>
+
+                <!-- Add New Button - Opens Modal -->
+                <button onclick="handleAction('add', null)" class="primary-button flex items-center space-x-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                    </svg>
+                    <span data-lang-key="add_new">Add New Student</span>
+                </button>
+            </div>
+
+            <!-- Filter and Search Controls -->
+            <div class="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-8">
+
+                <!-- Search -->
+                <div class="sm:col-span-2 relative">
+                    <input type="text" id="search-input" class="form-input pl-10"
+                        placeholder="Search by Name, ID, or Room No....">
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                        class="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                </div>
+
+                <!-- Status Filter -->
+                <div class="sm:col-span-1">
+                    <select id="status-filter" class="form-input">
+                        <option value="" data-lang-key="all_status">All Status</option>
+                        <!-- Options injected by JS -->
+                    </select>
+                </div>
+
+                <!-- Placeholder for Room Type Filter -->
+                <div class="sm:col-span-1">
+                    <select id="room-type-filter" class="form-input">
+                        <option value="" data-lang-key="room_type">Room Type</option>
+                        <option value="single">Single</option>
+                        <option value="double">Double</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Students Table -->
+            <div class="table-container">
+                <table class="admin-table">
+                    <thead>
+                        <tr class="bg-gray-100 rounded-lg">
+                            <th data-lang-key="student_id">Student ID</th>
+                            <th data-lang-key="student_name">Student Name</th>
+                            <th data-lang-key="room_bed">Room/Bed No.</th>
+                            <th data-lang-key="class">Class</th>
+                            <th data-lang-key="guardian">Guardian</th>
+                            <th data-lang-key="check_in_date">Check-In Date</th>
+                            <th data-lang-key="status">Status</th>
+                            <th data-lang-key="actions">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="students-table-body">
+                        <!-- Student data will be injected here by JS -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="text-center text-sm text-gray-500 mt-6">
+                Showing ${dummyStudents.length} entries
+            </div>
+
+        </div>
+    </main>
+
+    <!-- STUDENT VIEW/EDIT/ADD MODAL -->
+    <div id="student-modal"
+        class="hidden opacity-0 fixed inset-0 z-50 flex items-center justify-center modal-backdrop transition-opacity duration-300">
+        <div class="modal-content p-6 md:p-8 transform scale-100 transition-transform duration-300"
+            style="border: 3px solid var(--color-primary);">
+            <div class="flex justify-between items-start pb-4 border-b mb-6">
+                <h3 id="modal-title" class="text-xl font-bold text-gray-700">Student Details</h3>
+                <button onclick="closeStudentModal()" class="text-gray-500 hover:text-gray-900 transition-colors p-1"
+                    aria-label="Close">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                        stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            <div id="modal-body">
+                <!-- Dynamic content (View or Edit/Add Form) goes here -->
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
