@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Madarsa System - Edit Profile</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        /* Custom Colors */
+        :root {
+            --color-primary: #00A693;
+            --color-background: #F2F3F4;
+            --color-accent: #E08A27;
+            --color-text-dark: #1A1A1A;
+            --color-text-light: #FFFFFF;
+        }
+
+        /* Local Urdu Font */
+        @font-face {
+            font-family: "UrduLocal";
+            src: url("assets/urdu.ttf") format("truetype");
+            font-weight: 400;
+            font-style: normal;
+        }
+
+        /* Google Fonts (Poppins + Hindi + Noto Naskh for stable Urdu fallback) */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;700&family=Noto+Naskh+Arabic:wght@400;700&display=swap');
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--color-background);
+            color: var(--color-text-dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 5rem;
+            /* Space for fixed header */
+        }
+
+        /* Fixed Header Style */
+        header {
+            background-color: var(--color-text-light);
+            border-bottom: 2px solid rgba(0, 0, 0, 0.05);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            position: fixed;
+            /* Header ko top par chipka diya */
+            top: 0;
+            width: 100%;
+            /* Full width */
+            z-index: 20;
+            padding: 1rem 2rem;
+        }
+
+        /* Language Styles */
+        .lang-en,
+        .lang-hi {
+            direction: ltr;
+        }
+
+        .lang-en {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .lang-hi {
+            font-family: 'Noto Sans Devanagari', sans-serif;
+        }
+
+        .lang-ur {
+            /* Using UrduLocal with Naskh fallback for stability */
+            font-family: 'UrduLocal', 'Noto Naskh Arabic', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+            direction: rtl;
+            line-height: 1.8;
+            text-align: right;
+        }
+
+        .profile-card {
+            max-width: 900px;
+            /* Thoda bada kiya for professional look */
+            width: 100%;
+            background-color: var(--color-text-light);
+            border-radius: 1.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .form-input,
+        .form-textarea {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid #ccc;
+            margin-top: 0.5rem;
+            transition: border-color 0.3s, box-shadow 0.3s;
+            font-family: inherit;
+        }
+
+        .form-input:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(0, 166, 147, 0.2);
+        }
+
+        .primary-button {
+            padding: 0.8rem 2rem;
+            background-color: var(--color-primary);
+            color: var(--color-text-light);
+            font-weight: 600;
+            border-radius: 0.75rem;
+            transition: background-color 0.3s, transform 0.1s;
+            box-shadow: 0 4px 10px rgba(0, 166, 147, 0.4);
+            cursor: pointer;
+        }
+
+        .primary-button:hover {
+            background-color: #008f7d;
+            transform: translateY(-1px);
+        }
+
+        .secondary-button {
+            padding: 0.8rem 2rem;
+            background-color: transparent;
+            color: var(--color-text-dark);
+            font-weight: 600;
+            border: 1px solid #ccc;
+            border-radius: 0.75rem;
+            transition: background-color 0.3s;
+        }
+
+        .secondary-button:hover {
+            background-color: var(--color-background);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Dialog Styles (for Language Selector) */
+        .dialog-backdrop {
+            background-color: rgba(0, 0, 0, 0.7);
+            transition: opacity 0.3s ease;
+        }
+
+        .dialog-content {
+            background-color: var(--color-background);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            border: 3px solid var(--color-primary);
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        /* Profile Picture Dropzone */
+        .profile-upload-area {
+            height: 120px;
+            width: 120px;
+            border: 2px dashed #ccc;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: border-color 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .profile-upload-area:hover {
+            border-color: var(--color-primary);
+        }
+
+        .profile-image-preview {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        /* RTL Specific styles */
+        .lang-ur .form-label {
+            text-align: right;
+            display: block;
+        }
+
+        .lang-ur .flex-row-reverse-on-rtl {
+            flex-direction: row-reverse;
+        }
+    </style>
+</head>
+
+<body class="lang-en">
+
+    <!-- Language Data Structure -->
+    <script>
+        // Use a consistent key for profile data
+        const PROFILE_STORAGE_KEY = 'madarsaUserProfile';
+
+        const langData = {
+            'en': {
+                'system_name': 'Madarsa System',
+                'edit_profile_title': 'Edit Profile',
+                'update_details': 'Update your personal and administrative information.',
+                'section_personal': 'Personal Information',
+                'section_contact': 'Contact & Address',
+                'section_security': 'Security',
+                'full_name': 'Full Name',
+                'enrollment_id': 'Employee ID', // Changed for Admin
+                'email': 'Email Address',
+                'phone': 'Phone Number',
+                'dob': 'Date of Birth',
+                'designation': 'Designation', // New field
+                'joining_date': 'Joining Date', // New field
+                'address': 'Current Address',
+                'current_password': 'Current Password',
+                'new_password': 'New Password',
+                'confirm_password': 'Confirm New Password',
+                'update_button': 'Update Profile',
+                'back_button': 'Back to Home',
+                'profile_updated': 'Profile Updated Successfully!',
+                'fill_fields': 'Please fill in all required fields.',
+                'pass_mismatch': 'New password and confirmation do not match.',
+                'select_language': 'Select Language',
+                'upload_photo': 'Upload Photo',
+                'en_option': 'English',
+                'hi_option': 'हिन्दी (Hindi)',
+                'ur_option': 'اردو (Urdu)'
+            },
+            'hi': {
+                'system_name': 'मदरसा प्रणाली',
+                'edit_profile_title': 'प्रोफ़ाइल संपादित करें',
+                'update_details': 'अपने व्यक्तिगत और प्रशासनिक जानकारी अपडेट करें।',
+                'section_personal': 'व्यक्तिगत जानकारी',
+                'section_contact': 'संपर्क और पता',
+                'section_security': 'सुरक्षा',
+                'full_name': 'पूरा नाम',
+                'enrollment_id': 'कर्मचारी आईडी', // Changed for Admin
+                'email': 'ईमेल पता',
+                'phone': 'फ़ोन नंबर',
+                'dob': 'जन्म तिथि',
+                'designation': 'पदनाम', // New field
+                'joining_date': 'शामिल होने की तिथि', // New field
+                'address': 'वर्तमान पता',
+                'current_password': 'वर्तमान पासवर्ड',
+                'new_password': 'नया पासवर्ड',
+                'confirm_password': 'नया पासवर्ड पुष्टि करें',
+                'update_button': 'प्रोफ़ाइल अपडेट करें',
+                'back_button': 'होम पर वापस',
+                'profile_updated': 'प्रोफ़ाइल सफलतापूर्वक अपडेट हो गई!',
+                'fill_fields': 'कृपया सभी आवश्यक फ़ील्ड भरें।',
+                'pass_mismatch': 'नया पासवर्ड और पुष्टि मेल नहीं खाते हैं।',
+                'select_language': 'भाषा चुनें',
+                'upload_photo': 'फोटो अपलोड करें',
+                'en_option': 'English',
+                'hi_option': 'हिन्दी (Hindi)',
+                'ur_option': 'اردو (Urdu)'
+            },
+            'ur': {
+                'system_name': 'مدرسہ نظام',
+                'edit_profile_title': 'پروفائل میں ترمیم کریں',
+                'update_details': 'اپنی ذاتی اور انتظامی معلومات اپ ڈیٹ کریں۔',
+                'section_personal': 'ذاتی معلومات',
+                'section_contact': 'رابطہ اور پتہ',
+                'section_security': 'سیکیورٹی',
+                'full_name': 'پورا نام',
+                'enrollment_id': 'ملازمتی آئی ڈی', // Changed for Admin
+                'email': 'ای میل اڈریس',
+                'phone': 'فون نمبر',
+                'dob': 'تاریخ پیدائش',
+                'designation': 'عہدہ', // New field
+                'joining_date': 'شمولیت کی تاریخ', // New field
+                'address': 'موجودہ پتہ',
+                'current_password': 'موجودہ پاس ورڈ',
+                'new_password': 'نیا پاس ورڈ',
+                'confirm_password': 'نئے پاس ورڈ کی تصدیق کریں',
+                'update_button': 'پروفائل اپ ڈیٹ کریں',
+                'back_button': 'ہوم پر واپس جائیں',
+                'profile_updated': 'پروفائل کامیابی سے اپ ڈیٹ ہو گئی!',
+                'fill_fields': 'براہ کرم تمام مطلوبہ فیلڈز پُر کریں۔',
+                'pass_mismatch': 'نیا پاس ورڈ اور تصدیقی پاس ورڈ مماثل نہیں ہیں۔',
+                'select_language': 'زبان منتخب کریں',
+                'upload_photo': 'تصویر اپ لوڈ کریں',
+                'en_option': 'English',
+                'hi_option': 'ہندی (Hindi)',
+                'ur_option': 'اردو (Urdu)'
+            }
+        };
+
+        let currentLang = 'en';
+        let dialogContentElement;
+        let messageDialog; // Reference to the custom message modal
+
+        // --- Data Handling ---
+        function getInitialData() {
+            const storedData = localStorage.getItem(PROFILE_STORAGE_KEY);
+            if (storedData) {
+                return JSON.parse(storedData);
+            }
+            // Default Demo Data for ADMIN
+            return {
+                fullName: 'Admin User',
+                userId: 'admin001',
+                email: 'admin@madarsa.com',
+                phone: '9876543210',
+                dob: '1985-05-20',
+                designation: 'System Administrator', // Updated
+                joiningDate: '2020-01-15', // New field
+                address: 'Head Office, Madarsa Main Building, India',
+                photo: null // Base64 string
+            };
+        }
+
+        function getTranslation(key) {
+            return langData[currentLang][key] || langData['en'][key] || key;
+        }
+
+        // --- UI Updates ---
+        function updateContent() {
+            document.body.className = 'lang-' + currentLang;
+            const isRtl = currentLang === 'ur';
+
+            document.querySelectorAll('[data-lang-key]').forEach(el => {
+                const key = el.getAttribute('data-lang-key');
+                el.textContent = getTranslation(key);
+            });
+
+            // Set input direction for RTL consistency
+            document.querySelectorAll('input[type="text"], input[type="email"], input[type="tel"], textarea, input[type="date"]').forEach(input => {
+                input.style.direction = isRtl ? 'rtl' : 'ltr';
+                input.style.textAlign = isRtl ? 'right' : 'left';
+            });
+
+            // Set form group alignment for RTL
+            document.querySelectorAll('.form-group > label').forEach(label => {
+                label.style.textAlign = isRtl ? 'right' : 'left';
+                label.style.display = 'block';
+            });
+
+            // Update language display in dialog
+            const currentLangDisplay = document.getElementById('current-lang-display');
+            if (currentLangDisplay) {
+                currentLangDisplay.textContent = getTranslation(currentLang + '_option');
+            }
+
+            // Reload saved data into form (to update the UI)
+            loadProfileData();
+        }
+
+        function loadProfileData() {
+            const data = getInitialData();
+
+            // Populate form fields
+            document.getElementById('full-name').value = data.fullName;
+            document.getElementById('enrollment-id').value = data.userId;
+            document.getElementById('email-address').value = data.email;
+            document.getElementById('phone-number').value = data.phone;
+            document.getElementById('dob').value = data.dob;
+            document.getElementById('designation').value = data.designation; // Updated field
+            document.getElementById('joining-date').value = data.joiningDate; // New field
+            document.getElementById('address').value = data.address;
+
+            // Update Header Display
+            document.getElementById('user-display-name').textContent = data.fullName;
+            document.getElementById('user-display-email').textContent = data.email;
+            document.getElementById('user-display-id').textContent = `${getTranslation('enrollment_id')}: ${data.userId}`;
+
+            // Handle Profile Picture
+            const profileImg = document.getElementById('profile-image-preview');
+            const profileText = document.getElementById('profile-text-placeholder');
+
+            if (data.photo) {
+                profileImg.src = data.photo;
+                profileImg.classList.remove('hidden');
+                profileText.classList.add('hidden');
+            } else {
+                profileImg.classList.add('hidden');
+                profileText.classList.remove('hidden');
+                // Set text placeholder to first letter of name
+                profileText.textContent = data.fullName ? data.fullName[0].toUpperCase() : 'U';
+            }
+
+            // Employee ID is read-only
+            document.getElementById('enrollment-id').readOnly = true;
+        }
+
+        // --- Custom Message Modal ---
+        function showMessage(message, isSuccess = true) {
+            const modalTitle = document.getElementById('message-modal-title');
+            const modalBody = document.getElementById('message-modal-body');
+            const modalIcon = document.getElementById('message-modal-icon');
+
+            modalBody.textContent = message;
+
+            if (isSuccess) {
+                modalTitle.textContent = getTranslation('profile_updated');
+                modalIcon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-8 h-8 text-green-500">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>`;
+            } else {
+                modalTitle.textContent = "Error";
+                modalIcon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-8 h-8 text-red-500">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.021 3.373 1.8 3.373h14.714c1.77 0 2.644-1.873 1.799-3.376l-7.468-12.914a1.884 1.884 0 00-3.292 0l-7.468 12.914z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 15h.007v.008H12v-.008z" />
+                    </svg>`;
+            }
+
+            messageDialog.classList.remove('hidden');
+            setTimeout(() => {
+                messageDialog.classList.remove('opacity-0');
+            }, 10);
+        }
+
+        function closeMessageDialog() {
+            messageDialog.classList.add('opacity-0');
+            setTimeout(() => {
+                messageDialog.classList.add('hidden');
+            }, 300);
+        }
+
+        // --- Language Change ---
+        function changeLanguage(lang) {
+            if (lang in langData) {
+                currentLang = lang;
+                localStorage.setItem('madarsaSystemLang', lang);
+                updateContent();
+                closeLanguageDialog();
+            }
+        }
+
+        function openLanguageDialog() {
+            const dialog = document.getElementById('language-dialog');
+            dialog.classList.remove('hidden');
+
+            setTimeout(() => {
+                dialog.classList.remove('opacity-0');
+                if (dialogContentElement) {
+                    dialogContentElement.classList.remove('scale-95');
+                    dialogContentElement.classList.add('scale-100');
+                }
+            }, 10);
+        }
+
+        function closeLanguageDialog() {
+            const dialog = document.getElementById('language-dialog');
+            dialog.classList.add('opacity-0');
+            if (dialogContentElement) {
+                dialogContentElement.classList.remove('scale-100');
+                dialogContentElement.classList.add('scale-95');
+            }
+
+            setTimeout(() => {
+                dialog.classList.add('hidden');
+            }, 300);
+        }
+
+        // --- Photo Upload Logic ---
+        function triggerPhotoUpload() {
+            document.getElementById('photo-input').click();
+        }
+
+        function handlePhotoChange(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            if (!file.type.startsWith('image/')) {
+                showMessage("Invalid file type. Please select an image.", false);
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onloadend = function () {
+                const base64Image = reader.result;
+
+                // Update persistent data
+                const data = getInitialData();
+                data.photo = base64Image;
+                localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(data));
+
+                // Update UI
+                loadProfileData();
+                showMessage("Profile photo updated successfully!", true);
+            }
+            reader.readAsDataURL(file);
+        }
+
+
+        // --- Profile Update Logic ---
+        function handleProfileUpdate(event) {
+            event.preventDefault();
+
+            const fullName = document.getElementById('full-name').value.trim();
+            const email = document.getElementById('email-address').value.trim();
+            const phone = document.getElementById('phone-number').value.trim();
+            const dob = document.getElementById('dob').value.trim();
+            const designation = document.getElementById('designation').value.trim(); // Updated
+            const joiningDate = document.getElementById('joining-date').value.trim(); // Updated
+            const address = document.getElementById('address').value.trim();
+
+            const currentPass = document.getElementById('current-password').value.trim();
+            const newPass = document.getElementById('new-password').value.trim();
+            const confirmPass = document.getElementById('confirm-password').value.trim();
+
+            if (!fullName || !email || !phone || !dob || !designation || !joiningDate || !address) {
+                showMessage(getTranslation('fill_fields'), false);
+                return;
+            }
+
+            // --- Password Change Logic ---
+            let passwordChanged = false;
+            if (newPass || currentPass || confirmPass) {
+                if (!currentPass || !newPass || !confirmPass) {
+                    showMessage("Password fields require current, new, and confirmation inputs.", false);
+                    return;
+                }
+
+                // Demo Current Password check (Always '12345' for demo)
+                if (currentPass !== '12345') {
+                    showMessage("Incorrect current password (use 12345 for demo).", false);
+                    return;
+                }
+
+                if (newPass !== confirmPass) {
+                    showMessage(getTranslation('pass_mismatch'), false);
+                    return;
+                }
+
+                if (newPass.length < 5) {
+                    showMessage("New password must be at least 5 characters long.", false);
+                    return;
+                }
+
+                passwordChanged = true;
+            }
+
+
+            // --- Save Data to Local Storage ---
+            const currentData = getInitialData();
+            const updatedData = {
+                ...currentData,
+                fullName: fullName,
+                email: email,
+                phone: phone,
+                dob: dob,
+                designation: designation, // Updated
+                joiningDate: joiningDate, // Updated
+                address: address
+                // Password is NOT saved in localStorage in this demo.
+            };
+
+            localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(updatedData));
+
+            // Clear password fields after (successful) hypothetical update
+            document.getElementById('current-password').value = '';
+            document.getElementById('new-password').value = '';
+            document.getElementById('confirm-password').value = '';
+
+            // Update UI with new details
+            loadProfileData();
+
+            // Show Success Message
+            let successMessage = getTranslation('profile_updated');
+            if (passwordChanged) {
+                successMessage += " (Password updated successfully for demo)";
+            }
+
+            showMessage(successMessage, true);
+        }
+
+        window.onload = function () {
+            // Initializing dialogs
+            dialogContentElement = document.getElementById('dialog-content');
+            messageDialog = document.getElementById('message-dialog');
+
+            // Check for stored language preference
+            const storedLang = localStorage.getItem('madarsaSystemLang');
+            currentLang = (storedLang && storedLang in langData) ? storedLang : 'en';
+
+            // Load saved data and update content based on language
+            loadProfileData();
+            updateContent();
+
+            // Language Dialog Listeners
+            document.getElementById('lang-en-btn').addEventListener('click', () => changeLanguage('en'));
+            document.getElementById('lang-hi-btn').addEventListener('click', () => changeLanguage('hi'));
+            document.getElementById('lang-ur-btn').addEventListener('click', () => changeLanguage('ur'));
+            document.getElementById('language-toggle').addEventListener('click', openLanguageDialog);
+            document.getElementById('dialog-close-btn').addEventListener('click', closeLanguageDialog);
+
+            // Form Listeners
+            document.getElementById('profile-form').addEventListener('submit', handleProfileUpdate);
+            document.getElementById('photo-input').addEventListener('change', handlePhotoChange);
+            document.getElementById('profile-upload-area').addEventListener('click', triggerPhotoUpload);
+            document.getElementById('message-modal-close-btn').addEventListener('click', closeMessageDialog);
+        };
+    </script>
+
+
+    <!-- HEADER (Fixed, Full Width) -->
+    <header class="w-full p-4 md:px-8 flex items-center justify-between">
+        <!-- Left Side: Back Button & Title -->
+        <div class="flex items-center space-x-4">
+            <a href="index.html" class="p-2 rounded-full hover:bg-gray-200 transition-colors" aria-label="Back">
+                <!-- Back Arrow Icon -->
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                    stroke="currentColor" class="w-6 h-6" style="color: var(--color-text-dark);">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+                </svg>
+            </a>
+            <h1 data-lang-key="edit_profile_title" class="text-xl md:text-2xl font-bold"
+                style="color: var(--color-text-dark);">Edit Profile</h1>
+        </div>
+
+
+        <!-- Right Side: Language Toggle -->
+        <button id="language-toggle" class="p-2 rounded-full hover:bg-gray-200 transition-all flex-shrink-0"
+            aria-label="Change Language">
+            <!-- Language Icon: Globe (Inline SVG) -->
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"
+                style="color: var(--color-primary);">
+                <circle cx="12" cy="12" r="10" />
+                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+                <path d="M2.5 7h19M2.5 17h19" />
+            </svg>
+        </button>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main class="w-full flex justify-center">
+        <div class="profile-card">
+
+            <!-- Profile Picture and Info Header -->
+            <div
+                class="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-8 pb-6 border-b mb-6 lang-ur:flex-row-reverse-on-rtl">
+
+                <!-- Photo Upload Area -->
+                <div id="profile-upload-area"
+                    class="profile-upload-area flex items-center justify-center text-gray-500 font-medium">
+                    <img id="profile-image-preview" class="profile-image-preview hidden" src="" alt="Profile Photo">
+                    <span id="profile-text-placeholder" class="text-5xl font-semibold">U</span>
+                    <!-- Hidden File Input -->
+                    <input type="file" id="photo-input" class="hidden" accept="image/*">
+
+                    <!-- Upload Icon Overlay -->
+                    <div
+                        class="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                            stroke="white" class="w-8 h-8">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- User Details -->
+                <div class="space-y-1 text-center sm:text-left lang-ur:text-right">
+                    <h2 class="text-2xl font-bold" id="user-display-name">Demo User</h2>
+                    <p class="text-md font-medium text-gray-600" id="user-display-email">admin@madarsa.com</p>
+                    <p class="text-sm text-gray-400" id="user-display-id" data-lang-key="enrollment_id">Employee ID:
+                        admin001</p>
+                    <p class="text-xs text-gray-400 font-semibold cursor-pointer hover:text-gray-700"
+                        onclick="triggerPhotoUpload()" data-lang-key="upload_photo">Upload Photo</p>
+                </div>
+            </div>
+
+            <!-- Profile Update Form -->
+            <form id="profile-form">
+
+                <!-- Section: Personal Information -->
+                <h3 class="text-xl font-bold text-gray-700 mb-4" data-lang-key="section_personal">Personal Information
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+
+                    <!-- Full Name -->
+                    <div class="form-group">
+                        <label for="full-name" class="form-label text-sm font-semibold mb-1"
+                            data-lang-key="full_name">Full Name</label>
+                        <input type="text" id="full-name" class="form-input" required>
+                    </div>
+
+                    <!-- Employee ID (Read Only) -->
+                    <div class="form-group">
+                        <label for="enrollment-id" class="form-label text-sm font-semibold mb-1"
+                            data-lang-key="enrollment_id">Employee ID</label>
+                        <input type="text" id="enrollment-id" class="form-input bg-gray-100 cursor-not-allowed"
+                            disabled>
+                    </div>
+
+                    <!-- Date of Birth -->
+                    <div class="form-group">
+                        <label for="dob" class="form-label text-sm font-semibold mb-1" data-lang-key="dob">Date of
+                            Birth</label>
+                        <input type="date" id="dob" class="form-input" required>
+                    </div>
+
+                    <!-- Designation -->
+                    <div class="form-group">
+                        <label for="designation" class="form-label text-sm font-semibold mb-1"
+                            data-lang-key="designation">Designation</label>
+                        <input type="text" id="designation" class="form-input" required>
+                    </div>
+
+                    <!-- Joining Date -->
+                    <div class="form-group">
+                        <label for="joining-date" class="form-label text-sm font-semibold mb-1"
+                            data-lang-key="joining_date">Joining Date</label>
+                        <input type="date" id="joining-date" class="form-input" required>
+                    </div>
+
+                    <!-- Empty placeholder for grid alignment -->
+                    <div class="form-group hidden md:block"></div>
+
+                </div>
+
+                <!-- Section: Contact & Address -->
+                <div class="pt-8 mt-8 border-t">
+                    <h3 class="text-xl font-bold text-gray-700 mb-4" data-lang-key="section_contact">Contact & Address
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+
+                        <!-- Email Address -->
+                        <div class="form-group">
+                            <label for="email-address" class="form-label text-sm font-semibold mb-1"
+                                data-lang-key="email">Email Address</label>
+                            <input type="email" id="email-address" class="form-input" required>
+                        </div>
+
+                        <!-- Phone Number -->
+                        <div class="form-group">
+                            <label for="phone-number" class="form-label text-sm font-semibold mb-1"
+                                data-lang-key="phone">Phone Number</label>
+                            <input type="tel" id="phone-number" class="form-input">
+                        </div>
+
+                        <!-- Current Address (Full Width) -->
+                        <div class="form-group md:col-span-2">
+                            <label for="address" class="form-label text-sm font-semibold mb-1"
+                                data-lang-key="address">Current Address</label>
+                            <textarea id="address" class="form-textarea h-24" required></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section: Security -->
+                <div class="pt-8 mt-8 border-t">
+                    <h3 class="text-xl font-bold text-gray-700 mb-4" data-lang-key="section_security">Security</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+
+                        <!-- Current Password -->
+                        <div class="form-group md:col-span-2">
+                            <label for="current-password" class="form-label text-sm font-semibold mb-1"
+                                data-lang-key="current_password">Current Password (use 12345 for demo)</label>
+                            <input type="password" id="current-password" class="form-input">
+                        </div>
+
+                        <!-- New Password -->
+                        <div class="form-group">
+                            <label for="new-password" class="form-label text-sm font-semibold mb-1"
+                                data-lang-key="new_password">New Password</label>
+                            <input type="password" id="new-password" class="form-input">
+                        </div>
+
+                        <!-- Confirm New Password -->
+                        <div class="form-group">
+                            <label for="confirm-password" class="form-label text-sm font-semibold mb-1"
+                                data-lang-key="confirm_password">Confirm New Password</label>
+                            <input type="password" id="confirm-password" class="form-input">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="mt-10 flex flex-col sm:flex-row justify-end space-y-3 sm:space-y-0 sm:space-x-4">
+                    <button type="button" onclick="window.location.href='index.html'" class="secondary-button"
+                        data-lang-key="back_button">Back to Home</button>
+                    <button type="submit" class="primary-button" data-lang-key="update_button">Update Profile</button>
+                </div>
+            </form>
+
+        </div>
+    </main>
+
+    <!-- CUSTOM MESSAGE DIALOG (For Success/Error) -->
+    <div id="message-dialog"
+        class="hidden opacity-0 fixed inset-0 z-50 flex items-center justify-center dialog-backdrop transition-opacity duration-300">
+        <div class="bg-white rounded-xl shadow-2xl p-8 max-w-sm w-11/12 transform scale-100 transition-transform duration-300"
+            style="border: 3px solid var(--color-primary);">
+            <div class="flex items-center space-x-3 mb-4">
+                <span id="message-modal-icon"></span>
+                <h3 id="message-modal-title" class="text-xl font-bold">Message</h3>
+            </div>
+            <p id="message-modal-body" class="text-gray-700 mb-6"></p>
+            <div class="flex justify-end">
+                <button id="message-modal-close-btn" class="primary-button w-full" style="width: auto;"
+                    onclick="closeMessageDialog()">
+                    OK
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- LANGUAGE CHANGE DIALOG -->
+    <div id="language-dialog"
+        class="hidden opacity-0 fixed inset-0 z-50 flex items-center justify-center dialog-backdrop">
+        <div id="dialog-content" class="dialog-content p-6 rounded-xl w-11/12 max-w-sm transform scale-95">
+
+            <div class="flex justify-between items-center mb-4">
+                <h3 data-lang-key="select_language" class="text-lg font-bold">Select Language</h3>
+                <button id="dialog-close-btn" class="text-gray-500 hover:text-gray-900 transition-colors p-1"
+                    aria-label="Close">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                        stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+
+            <p class="mb-4 text-sm font-medium">Current Language: <span id="current-lang-display"
+                    class="font-bold text-primary" style="color: var(--color-primary);">English</span></p>
+
+            <div class="space-y-3">
+                <button id="lang-en-btn"
+                    class="w-full text-center py-3 rounded-lg font-semibold hover:bg-gray-200 transition-colors"
+                    style="border: 1px solid var(--color-primary);">English</button>
+                <button id="lang-hi-btn"
+                    class="w-full text-center py-3 rounded-lg font-semibold hover:bg-gray-200 transition-colors lang-hi"
+                    style="border: 1px solid var(--color-primary);">हिन्दी (Hindi)</button>
+                <button id="lang-ur-btn"
+                    class="w-full text-center py-3 rounded-lg font-semibold hover:bg-gray-200 transition-colors lang-ur"
+                    style="border: 1px solid var(--color-primary); direction: rtl;">اردو (Urdu)</button>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

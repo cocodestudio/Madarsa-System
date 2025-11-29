@@ -415,9 +415,9 @@
     <header class="sticky top-0 z-20 w-full p-4 md:px-8 flex items-center justify-between">
         <!-- Logo & System Name -->
         <div class="flex items-center space-x-3">
-            <div class="w-8 h-8 rounded-full flex items-center justify-center p-1">
-                <!-- Using external SVG file -->
-                <img src="assets/logo.svg" alt="Logo" class="w-full h-full">
+            <!-- Logo From Assets Folder -->
+            <div class="w-8 h-8 rounded-full flex items-center justify-center p-1" style="color: var(--color-primary);">
+                <img src="assets/logo.svg" alt="Logo" class="w-full h-full object-contain">
             </div>
 
             <!-- System Name & Subtitle -->
@@ -431,25 +431,61 @@
         </div>
 
 
-        <!-- Navigation and Language Toggle -->
-        <nav class="flex items-center space-x-4 md:space-x-6">
-            <!-- Navigation Links -->
-            <a href="#" data-lang-key="about"
-                class="text-sm md:text-base font-medium hover:text-primary transition-colors flex-shrink-0"
-                style="color: var(--color-text-dark);">About</a>
-            <a href="#" data-lang-key="privacy"
-                class="text-sm md:text-base font-medium hover:text-primary transition-colors flex-shrink-0"
-                style="color: var(--color-text-dark);">Privacy</a>
 
-            <!-- Language Change Icon -->
-            <button id="language-toggle" class="p-2 rounded-full hover:bg-gray-100 transition-all flex-shrink-0"
-                aria-label="Change Language">
+        <!-- Navigation and User/Mobile Toggle -->
+        <div class="flex items-center space-x-2 md:space-x-4">
 
-                <img src="assets/language.svg" alt="Language Icon" class="w-6 h-6"
-                    style="color: var(--color-primary);" />
+            <!-- 1. Desktop Navigation Links & Language Toggle (Hidden on Mobile) -->
+            <div id="desktop-nav" class="hidden md:flex items-center space-x-4 md:space-x-6">
+                <a href="about.html" data-lang-key="about"
+                    class="text-sm md:text-base font-medium hover:text-primary transition-colors flex-shrink-0"
+                    style="color: var(--color-text-dark);">About</a>
+                <a href="privacy.html" data-lang-key="privacy"
+                    class="text-sm md:text-base font-medium hover:text-primary transition-colors flex-shrink-0"
+                    style="color: var(--color-text-dark);">Privacy</a>
+
+                <!-- Language Change Icon - Replaced hardcoded path with inline SVG -->
+                <button id="language-toggle" class="p-2 rounded-full hover:bg-gray-100 transition-all flex-shrink-0"
+                    aria-label="Change Language">
+
+                    <img src="assets/language.svg" alt="Language" class="w-6 h-6" style="color: var(--color-primary);">
+                </button>
+
+            </div>
+
+            <!-- 2. User Profile Dropdown (Desktop/Tablet) -->
+            <div id="user-menu-desktop" class="relative hidden md:block">
+                <button id="user-menu-toggle" class="p-2 rounded-full hover:bg-gray-100 transition-all flex-shrink-0"
+                    aria-label="User Menu">
+
+                    <img src="assets/user.svg" alt="User Icon" class="w-6 h-6" style="color: var(--color-text-dark);">
+                </button>
+
+
+                <!-- Dropdown Menu -->
+                <div id="user-dropdown-menu"
+                    class="hidden absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-xl py-1 z-30 transform origin-top-right transition-all duration-200 ease-out"
+                    style="border: 1px solid var(--color-primary);">
+                    <a href="edit_profile.html" onclick="handleUserAction('Edit Profile')" data-lang-key="edit_profile"
+                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors rounded-t-lg">Edit
+                        Profile</a>
+                    <a href="#" onclick="handleUserAction('Logout')" data-lang-key="logout"
+                        class="block px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors rounded-b-lg">Logout</a>
+                </div>
+            </div>
+
+            <!-- 3. Mobile Menu Toggle (Hamburger/Three Dots) -->
+            <button id="mobile-menu-toggle"
+                class="p-2 rounded-full hover:bg-gray-100 transition-all flex-shrink-0 md:hidden"
+                aria-label="Open Mobile Menu">
+                <!-- Three Dots Icon: Inline SVG -->
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6"
+                    style="color: var(--color-text-dark);">
+                    <path
+                        d="M3 10c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2zm19 2c0 1.104-.896 2-2 2s-2-.896-2-2 .896-2 2-2 2 .896 2 2zm-9 0c0 1.104-.896 2-2 2s-2-.896-2-2 .896-2 2-2 2 .896 2 2z" />
+                </svg>
             </button>
-
-        </nav>
+        </div>
     </header>
 
 

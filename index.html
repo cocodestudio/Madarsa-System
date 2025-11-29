@@ -6,7 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Madarsa System - Home</title>
     <script src="https://cdn.tailwindcss.com"></script>
+
     <style>
+        /* Custom Colors & Fonts */
         :root {
             --color-primary: #00A693;
             --color-background: #F2F3F4;
@@ -16,10 +18,20 @@
             --color-module-bg: #EBEBEB;
         }
 
+        /* English (Poppins), Hindi (Devanagari) */
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Noto+Sans+Devanagari:wght@100..900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
+
+        /* Local Urdu Font */
+        @font-face {
+            font-family: 'UrduFont';
+            src: url('assets/urdu.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
 
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Poppins', 'Inter', sans-serif;
             background-color: var(--color-background);
             color: var(--color-text-dark);
             transition: all 0.3s ease;
@@ -29,47 +41,39 @@
             user-select: none;
         }
 
-        .lang-en {
-            font-family: 'Inter', sans-serif;
-        }
-
+        .lang-en,
         .lang-hi {
-            font-family: 'Noto Sans Devangari', sans-serif;
             direction: ltr;
         }
 
+        .lang-en {
+            font-family: 'Poppins', 'Inter', sans-serif;
+        }
+
+        .lang-hi {
+            font-family: 'Noto Sans Devanagari', sans-serif;
+        }
+
+        /* Urdu Language Using Local Font */
         .lang-ur {
-            font-family: "Jameel Noori Nastaleeq", "Urdu Typesetting", "Nastaliq", 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'UrduFont', 'Noto Naskh Arabic', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             direction: rtl;
+            line-height: 1.8;
         }
 
         .hero-section * {
             transition: all 0.3s ease;
         }
 
-        .lang-ur .hero-section * {
-            font-family: "Jameel Noori Nastaleeq", "Urdu Typesetting", "Nastaliq", 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
-        }
-
-        .lang-hi .hero-section * {
-            font-family: 'Noto Sans Devangari', sans-serif !important;
+        .lang-ur .hero-section *,
+        .lang-ur .rtl-text-right {
+            text-align: right;
         }
 
         header {
             background-color: var(--color-text-light);
             border-bottom: 2px solid rgba(0, 0, 0, 0.05);
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-        }
-
-        @media (max-width: 767px) {
-            header nav {
-                white-space: nowrap;
-                flex-shrink: 0;
-            }
-
-            header nav a {
-                font-size: 0.75rem;
-            }
         }
 
         .hero-section {
@@ -153,12 +157,16 @@
             text-align: left;
         }
 
+        .lang-ur .module-button {
+            text-align: right;
+            align-items: flex-end;
+        }
+
         .module-button:hover {
             transform: translateY(-5px);
             box-shadow:
                 0 0 0 3px var(--color-text-dark),
                 0 10px 25px rgba(0, 0, 0, 0.25);
-            border: none;
         }
 
         .module-icon {
@@ -168,6 +176,11 @@
             opacity: 0.2;
             transition: opacity 0.3s ease, transform 0.3s ease;
             color: var(--color-text-dark);
+        }
+
+        .lang-ur .module-icon {
+            right: auto;
+            left: 1.5rem;
         }
 
         .module-button:hover .module-icon {
@@ -202,8 +215,47 @@
             transition: transform 0.3s ease, opacity 0.3s ease;
         }
 
-        .rtl-text-right {
-            text-align: right;
+        .drawer-backdrop {
+            background-color: rgba(0, 0, 0, 0.5);
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        .drawer-content {
+            background-color: var(--color-text-light);
+            width: 80%;
+            max-width: 300px;
+            height: 100%;
+            position: fixed;
+            top: 0;
+            transition: transform 0.3s ease-in-out;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+            z-index: 55;
+            padding: 1.5rem;
+        }
+
+        .drawer-ltr .drawer-content {
+            right: 0;
+            transform: translateX(100%);
+        }
+
+        .drawer-ltr.drawer-open .drawer-content {
+            transform: translateX(0);
+        }
+
+        .drawer-rtl .drawer-content {
+            left: 0;
+            right: auto;
+            transform: translateX(-100%);
+        }
+
+        .drawer-rtl.drawer-open .drawer-content {
+            transform: translateX(0);
+        }
+
+        .lang-ur #user-menu-desktop #user-dropdown-menu {
+            right: auto;
+            left: 0;
+            transform-origin: top left;
         }
     </style>
 </head>
@@ -243,10 +295,12 @@
                 'hi_option': 'हिन्दी (Hindi)',
                 'ur_option': 'اردو (Urdu)',
                 'home': 'Home',
-                'explore_modules': 'Explore Our Modules'
+                'explore_modules': 'Explore Our Modules',
+                'edit_profile': 'Edit Profile',
+                'logout': 'Logout'
             },
             'hi': {
-                'madarsa_system': 'मदरसा प्रणाली',
+                'madarsa_system': 'مدرسه प्रणाली',
                 'sub_title': 'इस्लामी शिक्षा प्रबंधन में उत्कृष्टता',
                 'about': 'हमारे बारे में',
                 'privacy': 'गोपनीयता',
@@ -275,7 +329,9 @@
                 'hi_option': 'हिन्दी (Hindi)',
                 'ur_option': 'اردو (Urdu)',
                 'home': 'होम',
-                'explore_modules': 'हमारे मॉड्यूल देखें'
+                'explore_modules': 'हमारे मॉड्यूल देखें',
+                'edit_profile': 'प्रोफ़ाइल संपादित करें',
+                'logout': 'लॉगआउट'
             },
             'ur': {
                 'madarsa_system': 'مدرسہ نظام',
@@ -307,7 +363,9 @@
                 'hi_option': 'ہندی (Hindi)',
                 'ur_option': 'اردو (Urdu)',
                 'home': 'صفحہ اول',
-                'explore_modules': 'ہمارے ماڈیولز دریافت کریں'
+                'explore_modules': 'ہمارے ماڈیولز دریافت کریں',
+                'edit_profile': 'پروفائل میں ترمیم کریں',
+                'logout': 'لاگ آؤٹ'
             }
         };
 
@@ -320,8 +378,11 @@
 
         // Function to update all text elements
         function updateContent() {
-            document.body.className = 'lang-' + currentLang;
             const isRtl = currentLang === 'ur';
+
+            document.body.className = 'lang-' + currentLang;
+            document.getElementById('mobile-drawer').classList.toggle('drawer-rtl', isRtl);
+            document.getElementById('mobile-drawer').classList.toggle('drawer-ltr', !isRtl);
 
             document.querySelectorAll('[data-lang-key]').forEach(el => {
                 const key = el.getAttribute('data-lang-key');
@@ -336,12 +397,16 @@
                 heroTitleElement.innerHTML = newHtml;
             }
 
-            document.querySelectorAll('.footer-link').forEach(el => {
+            // Update directions for relevant elements
+            document.querySelectorAll('.footer-link, #user-dropdown-menu a').forEach(el => {
                 el.classList.toggle('rtl-text-right', isRtl);
             });
 
-            document.getElementById('current-lang-display').textContent = getTranslation(currentLang + '_option');
+            // Set main content direction
             document.getElementById('main-content-wrapper').style.direction = isRtl ? 'rtl' : 'ltr';
+
+            // Update language display in dialog
+            document.getElementById('current-lang-display').textContent = getTranslation(currentLang + '_option');
         }
 
         // Function to change language and store in local storage
@@ -354,7 +419,7 @@
             }
         }
 
-        // Language Dialog Animation
+        // --- Dialog Functions (Existing) ---
         function openLanguageDialog() {
             const dialog = document.getElementById('language-dialog');
             dialog.classList.remove('hidden');
@@ -377,20 +442,89 @@
             }, 300);
         }
 
+        // --- User Menu Dropdown Functions (New) ---
+        function toggleUserDropdown() {
+            const dropdown = document.getElementById('user-dropdown-menu');
+            dropdown.classList.toggle('hidden');
+        }
+
+        // --- Mobile Drawer Functions (New) ---
+        function openMobileDrawer() {
+            const drawer = document.getElementById('mobile-drawer');
+            drawer.classList.remove('hidden');
+            setTimeout(() => {
+                drawer.classList.add('opacity-100', 'drawer-open');
+                drawer.classList.remove('opacity-0');
+            }, 10);
+        }
+
+        function closeMobileDrawer() {
+            const drawer = document.getElementById('mobile-drawer');
+            drawer.classList.remove('drawer-open');
+            drawer.classList.add('opacity-0');
+            setTimeout(() => {
+                drawer.classList.add('hidden');
+            }, 300); // Match transition duration
+        }
+
         // Initialize function
         window.onload = function () {
             dialogContentElement = document.getElementById('dialog-content');
             const storedLang = localStorage.getItem('madarsaSystemLang');
             currentLang = (storedLang && storedLang in langData) ? storedLang : 'en';
+
+            // Language Dialog Listeners
             document.getElementById('lang-en-btn').addEventListener('click', () => changeLanguage('en'));
             document.getElementById('lang-hi-btn').addEventListener('click', () => changeLanguage('hi'));
             document.getElementById('lang-ur-btn').addEventListener('click', () => changeLanguage('ur'));
             document.getElementById('language-toggle').addEventListener('click', openLanguageDialog);
             document.getElementById('dialog-close-btn').addEventListener('click', closeLanguageDialog);
+
+            // User Menu Listeners (Desktop)
+            document.getElementById('user-menu-toggle').addEventListener('click', toggleUserDropdown);
+
+            // Mobile Drawer Listeners
+            document.getElementById('mobile-menu-toggle').addEventListener('click', openMobileDrawer);
+            document.getElementById('drawer-close-btn').addEventListener('click', closeMobileDrawer);
+
+            // Close dropdown/drawer if clicking outside
+            document.addEventListener('click', (event) => {
+                const userMenu = document.getElementById('user-menu-desktop');
+                const userDropdown = document.getElementById('user-dropdown-menu');
+                const drawerBackdrop = document.getElementById('drawer-backdrop');
+
+                // Close User Menu if click is outside
+                if (userMenu && !userMenu.contains(event.target) && !userDropdown.classList.contains('hidden')) {
+                    userDropdown.classList.add('hidden');
+                }
+
+                // Close Drawer if click is on backdrop
+                if (drawerBackdrop && event.target === drawerBackdrop) {
+                    closeMobileDrawer();
+                }
+            });
+
             updateContent();
         };
+
         function handleModuleClick(moduleName) {
             console.log(`Clicked on module: ${moduleName}. Implementation will be added on separate pages later.`);
+        }
+
+        function handleUserAction(action) {
+            if (action === 'Logout') {
+                console.log('User action: Logout triggered. Clearing session.');
+                localStorage.removeItem('isUserLoggedIn');
+                window.location.href = 'login.html';
+
+            } else {
+                console.log(`User action: ${action} triggered.`);
+            }
+
+            const userDropdown = document.getElementById('user-dropdown-menu');
+            if (userDropdown) {
+                userDropdown.classList.add('hidden');
+            }
         }
     </script>
 
@@ -399,9 +533,9 @@
     <header class="sticky top-0 z-20 w-full p-4 md:px-8 flex items-center justify-between">
         <!-- Logo & System Name -->
         <div class="flex items-center space-x-3">
-            <div class="w-8 h-8 rounded-full flex items-center justify-center p-1">
-                <!-- Using external SVG file -->
-                <img src="assets/logo.svg" alt="Logo" class="w-full h-full">
+            <!-- Logo From Assets Folder -->
+            <div class="w-8 h-8 rounded-full flex items-center justify-center p-1" style="color: var(--color-primary);">
+                <img src="assets/logo.svg" alt="Logo" class="w-full h-full object-contain">
             </div>
 
             <!-- System Name & Subtitle -->
@@ -415,26 +549,129 @@
         </div>
 
 
-        <!-- Navigation and Language Toggle -->
-        <nav class="flex items-center space-x-4 md:space-x-6">
-            <!-- Navigation Links -->
-            <a href="about.html" data-lang-key="about"
-                class="text-sm md:text-base font-medium hover:text-primary transition-colors flex-shrink-0"
-                style="color: var(--color-text-dark);">About</a>
-            <a href="privacy.html" data-lang-key="privacy"
-                class="text-sm md:text-base font-medium hover:text-primary transition-colors flex-shrink-0"
-                style="color: var(--color-text-dark);">Privacy</a>
 
-            <!-- Language Change Icon -->
-            <button id="language-toggle" class="p-2 rounded-full hover:bg-gray-100 transition-all flex-shrink-0"
-                aria-label="Change Language">
+        <!-- Navigation and User/Mobile Toggle -->
+        <div class="flex items-center space-x-2 md:space-x-4">
 
-                <img src="assets/language.svg" alt="Language Icon" class="w-6 h-6"
-                    style="color: var(--color-primary);" />
+            <!-- 1. Desktop Navigation Links & Language Toggle (Hidden on Mobile) -->
+            <div id="desktop-nav" class="hidden md:flex items-center space-x-4 md:space-x-6">
+                <a href="about.html" data-lang-key="about"
+                    class="text-sm md:text-base font-medium hover:text-primary transition-colors flex-shrink-0"
+                    style="color: var(--color-text-dark);">About</a>
+                <a href="privacy.html" data-lang-key="privacy"
+                    class="text-sm md:text-base font-medium hover:text-primary transition-colors flex-shrink-0"
+                    style="color: var(--color-text-dark);">Privacy</a>
+
+                <!-- Language Change Icon - Replaced hardcoded path with inline SVG -->
+                <button id="language-toggle" class="p-2 rounded-full hover:bg-gray-100 transition-all flex-shrink-0"
+                    aria-label="Change Language">
+
+                    <img src="assets/language.svg" alt="Language" class="w-6 h-6" style="color: var(--color-primary);">
+                </button>
+
+            </div>
+
+            <!-- 2. User Profile Dropdown (Desktop/Tablet) -->
+            <div id="user-menu-desktop" class="relative hidden md:block">
+                <button id="user-menu-toggle" class="p-2 rounded-full hover:bg-gray-100 transition-all flex-shrink-0"
+                    aria-label="User Menu">
+
+                    <img src="assets/user.svg" alt="User Icon" class="w-6 h-6" style="color: var(--color-text-dark);">
+                </button>
+
+
+                <!-- Dropdown Menu -->
+                <div id="user-dropdown-menu"
+                    class="hidden absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-xl py-1 z-30 transform origin-top-right transition-all duration-200 ease-out"
+                    style="border: 1px solid var(--color-primary);">
+                    <a href="edit_profile.html" onclick="handleUserAction('Edit Profile')" data-lang-key="edit_profile"
+                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors rounded-t-lg">Edit
+                        Profile</a>
+                    <a href="#" onclick="handleUserAction('Logout')" data-lang-key="logout"
+                        class="block px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors rounded-b-lg">Logout</a>
+                </div>
+            </div>
+
+            <!-- 3. Mobile Menu Toggle (Hamburger/Three Dots) -->
+            <button id="mobile-menu-toggle"
+                class="p-2 rounded-full hover:bg-gray-100 transition-all flex-shrink-0 md:hidden"
+                aria-label="Open Mobile Menu">
+                <!-- Three Dots Icon: Inline SVG -->
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6"
+                    style="color: var(--color-text-dark);">
+                    <path
+                        d="M3 10c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2zm19 2c0 1.104-.896 2-2 2s-2-.896-2-2 .896-2 2-2 2 .896 2 2zm-9 0c0 1.104-.896 2-2 2s-2-.896-2-2 .896-2 2-2 2 .896 2 2z" />
+                </svg>
             </button>
-
-        </nav>
+        </div>
     </header>
+
+
+    <!-- MOBILE OFF-CANVAS DRAWER -->
+    <div id="mobile-drawer" class="hidden fixed inset-0 z-50 opacity-0 drawer-backdrop">
+        <!-- Drawer Content -->
+        <div class="drawer-content flex flex-col justify-start">
+            <div class="flex justify-between items-center p-4 border-b" style="border-color: rgba(0, 0, 0, 0.1);">
+                <!-- User Profile Icon/Placeholder in Drawer -->
+                <div class="flex items-center space-x-3">
+                    <button onclick="handleUserAction('Edit Profile')" aria-label="Edit Profile"
+                        class="p-2 rounded-full hover:bg-gray-100 transition-all flex-shrink-0"
+                        style="color: var(--color-primary);">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6">
+                            <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+                            <circle cx="12" cy="7" r="4" />
+                        </svg>
+                    </button>
+                    <span class="text-sm font-semibold">User Account</span>
+                </div>
+                <!-- Close Button -->
+                <button id="drawer-close-btn" class="text-gray-500 hover:text-gray-900 transition-colors p-1"
+                    aria-label="Close Mobile Menu">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                        stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Navigation Links in Drawer -->
+            <nav class="flex flex-col space-y-2 p-4 flex-grow">
+                <a href="index.html" data-lang-key="home"
+                    class="text-base font-medium p-3 rounded-lg hover:bg-gray-100 transition-colors"
+                    style="color: var(--color-text-dark);">Home</a>
+                <a href="about.html" data-lang-key="about"
+                    class="text-base font-medium p-3 rounded-lg hover:bg-gray-100 transition-colors"
+                    style="color: var(--color-text-dark);">About</a>
+                <a href="privacy.html" data-lang-key="privacy"
+                    class="text-base font-medium p-3 rounded-lg hover:bg-gray-100 transition-colors"
+                    style="color: var(--color-text-dark);">Privacy</a>
+
+                <!-- Language Toggle in Drawer -->
+                <button id="language-toggle-drawer"
+                    class="flex items-center justify-start space-x-3 p-3 rounded-lg hover:bg-gray-100 transition-all"
+                    aria-label="Change Language in Drawer" onclick="openLanguageDialog(); closeMobileDrawer();">
+                    <!-- Language Icon: Globe (Inline SVG) -->
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"
+                        style="color: var(--color-primary);">
+                        <circle cx="12" cy="12" r="10" />
+                        <path
+                            d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+                        <path d="M2.5 7h19M2.5 17h19" />
+                    </svg>
+                    <span data-lang-key="select_language" class="text-base font-medium"
+                        style="color: var(--color-text-dark);">Select Language</span>
+                </button>
+
+                <hr class="my-2 border-gray-200">
+
+                <!-- Logout Button in Drawer -->
+                <a href="#" onclick="handleUserAction('Logout')" data-lang-key="logout"
+                    class="text-base font-medium p-3 rounded-lg hover:bg-red-50 transition-colors text-red-600">Logout</a>
+            </nav>
+        </div>
+    </div>
 
 
     <!-- MAIN CONTENT WRAPPER -->
@@ -445,6 +682,7 @@
             <div class="relative z-10 max-w-7xl mx-auto">
                 <h2 id="hero-title" class="text-4xl md:text-7xl font-black mb-6 leading-tight"
                     style="color: var(--color-text-dark);">
+                    Integrated Digital Management for Islamic Institutions
                 </h2>
                 <p data-lang-key="hero_desc" class="text-base md:text-xl max-w-5xl mx-auto font-medium"
                     style="color: var(--color-text-dark);">
@@ -454,7 +692,7 @@
             </div>
         </section>
 
-        <!-- SPACE FILLER -->
+        <!-- EXPLORE MODULES SEPARATOR -->
         <div class="separator-container">
             <h3 data-lang-key="explore_modules" class="text-lg font-bold" style="color: var(--color-text-dark);">Explore
                 Our Modules</h3>
@@ -467,7 +705,7 @@
             <div class="module-grid">
 
                 <!-- ACADEMIC SYSTEM -->
-                <a href="academic_system.html" class="module-button">
+                <a href="academic_system.html" class="module-button" onclick="handleModuleClick('Academic')">
                     <h3 data-lang-key="academic_system" class="text-xl md:text-2xl font-bold mb-2">Academic System</h3>
                     <p data-lang-key="academic_desc" class="subtitle-text text-sm md:text-base font-medium">Manage
                         curricula, grades, and student performance.</p>
@@ -481,7 +719,7 @@
                 </a>
 
                 <!-- ACCOUNTING SYSTEM -->
-                <a href="accounting_system.html" class="module-button">
+                <a href="accounting_system.html" class="module-button" onclick="handleModuleClick('Accounting')">
                     <h3 data-lang-key="accounting_system" class="text-xl md:text-2xl font-bold mb-2">Accounting System
                     </h3>
                     <p data-lang-key="accounting_desc" class="subtitle-text text-sm md:text-base font-medium">Handle
@@ -498,7 +736,7 @@
                 </a>
 
                 <!-- KITCHEN SYSTEM -->
-                <a href="kitchen_system.html" class="module-button">
+                <a href="kitchen_system.html" class="module-button" onclick="handleModuleClick('Kitchen')">
                     <h3 data-lang-key="kitchen_system" class="text-xl md:text-2xl font-bold mb-2">Kitchen System</h3>
                     <p data-lang-key="kitchen_desc" class="subtitle-text text-sm md:text-base font-medium">Organize meal
                         planning and inventory.</p>
@@ -513,7 +751,7 @@
                 </a>
 
                 <!-- LIBRARY SYSTEM -->
-                <a href="library_system.html" class="module-button">
+                <a href="library_system.html" class="module-button" onclick="handleModuleClick('Library')">
                     <h3 data-lang-key="library_system" class="text-xl md:text-2xl font-bold mb-2">Library System</h3>
                     <p data-lang-key="library_desc" class="subtitle-text text-sm md:text-base font-medium">Track books,
                         circulation, and cataloging.</p>
@@ -527,7 +765,7 @@
                 </a>
 
                 <!-- HOSTEL SYSTEM -->
-                <a href="hostel_system.html" class="module-button">
+                <a href="hostel_system.html" class="module-button" onclick="handleModuleClick('Hostel')">
                     <h3 data-lang-key="hostel_system" class="text-xl md:text-2xl font-bold mb-2">Hostel System</h3>
                     <p data-lang-key="hostel_desc" class="subtitle-text text-sm md:text-base font-medium">Manage room
                         assignments and resident records.</p>
@@ -542,7 +780,7 @@
                 </a>
 
                 <!-- ADMINISTRATION -->
-                <a href="administration.html" class="module-button">
+                <a href="administration.html" class="module-button" onclick="handleModuleClick('Administration')">
                     <h3 data-lang-key="administration" class="text-xl md:text-2xl font-bold mb-2">Administration</h3>
                     <p data-lang-key="admin_desc" class="subtitle-text text-sm md:text-base font-medium">Oversee staff,
                         general records, and compliance.</p>
@@ -582,7 +820,7 @@
                     class="w-full text-center py-3 rounded-lg font-semibold hover:bg-gray-200 transition-colors"
                     style="border: 1px solid var(--color-primary);">English</button>
                 <button id="lang-hi-btn"
-                    class="w-full text-center py-3 rounded-lg font-semibold hover:bg-gray-200 transition-colors"
+                    class="w-full text-center py-3 rounded-lg font-semibold hover:bg-gray-200 transition-colors lang-hi"
                     style="border: 1px solid var(--color-primary);">हिन्दी (Hindi)</button>
                 <button id="lang-ur-btn"
                     class="w-full text-center py-3 rounded-lg font-semibold hover:bg-gray-200 transition-colors lang-ur"
@@ -605,23 +843,24 @@
             </div>
 
             <!-- Quick Links -->
-<div>
-    <h4 data-lang-key="quick_links" class="text-lg font-semibold mb-3">Quick Links</h4>
-    <ul class="space-y-2 text-sm">
-        <li><a href="index.html" data-lang-key="home"
-                class="footer-link hover:text-primary transition-colors">Home</a></li>
-        <li><a href="about.html" data-lang-key="about"
-                class="footer-link hover:text-primary transition-colors">About</a></li>
-        <li><a href="privacy.html" data-lang-key="privacy"
-                class="footer-link hover:text-primary transition-colors">Privacy</a></li>
-    </ul>
-</div>
+            <div>
+                <h4 data-lang-key="quick_links" class="text-lg font-semibold mb-3">Quick Links</h4>
+                <ul class="space-y-2 text-sm">
+                    <li><a href="index.html" data-lang-key="home"
+                            class="footer-link hover:text-primary transition-colors">Home</a></li>
+                    <li><a href="about.html" data-lang-key="about"
+                            class="footer-link hover:text-primary transition-colors">About</a></li>
+                    <li><a href="privacy.html" data-lang-key="privacy"
+                            class="footer-link hover:text-primary transition-colors">Privacy</a></li>
+                </ul>
+            </div>
 
             <!-- Connect With Us -->
             <div>
                 <h4 data-lang-key="connect" class="text-lg font-semibold mb-3">Connect With Us</h4>
                 <div class="flex space-x-4">
                     <a href="#" target="_blank" class="hover:text-primary transition-colors">
+                        <!-- LinkedIn SVG -->
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                             fill="currentColor">
                             <path
@@ -629,6 +868,7 @@
                         </svg>
                     </a>
                     <a href="#" target="_blank" class="hover:text-primary transition-colors">
+                        <!-- Github SVG -->
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                             fill="currentColor">
                             <path
