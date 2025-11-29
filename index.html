@@ -4,203 +4,185 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Madarsa System - Home</title>
+    <title>Madarsa System - Login</title>
+
+    <!-- Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
 
+    <!-- Three.js for 3D Background -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
     <style>
-        /* Custom Colors & Fonts */
+        /* Custom Colors */
         :root {
             --color-primary: #00A693;
             --color-background: #F2F3F4;
             --color-accent: #E08A27;
             --color-text-dark: #1A1A1A;
             --color-text-light: #FFFFFF;
-            --color-module-bg: #EBEBEB;
         }
 
-        /* English (Poppins), Hindi (Devanagari) */
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Noto+Sans+Devanagari:wght@100..900&display=swap');
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
-
-        /* Local Urdu Font */
+        /* Local Urdu Font - NOTE: Using web-safe Nastaliq is recommended for better compatibility */
         @font-face {
-            font-family: 'UrduFont';
-            src: url('assets/urdu.ttf') format('truetype');
-            font-weight: normal;
+            font-family: "UrduLocal";
+            /* This local path will only work if the file is truly accessible by the browser environment */
+            src: url("assets/urdu.ttf") format("truetype");
+            font-weight: 400;
             font-style: normal;
         }
 
+        /* Google Fonts (Poppins + Hindi only) */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;700&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap');
+
+
         body {
-            font-family: 'Poppins', 'Inter', sans-serif;
-            background-color: var(--color-background);
+            font-family: 'Poppins', sans-serif;
             color: var(--color-text-dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
             transition: all 0.3s ease;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
+            position: relative;
+            background: #111;
+            overflow: hidden;
         }
 
+        /* Full-screen 3D Canvas */
+        #three-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: block;
+            z-index: -1;
+            background-color: #0b151f;
+        }
+
+        /* Language Styles */
         .lang-en,
         .lang-hi {
             direction: ltr;
         }
 
         .lang-en {
-            font-family: 'Poppins', 'Inter', sans-serif;
+            font-family: 'Poppins', sans-serif;
         }
 
         .lang-hi {
             font-family: 'Noto Sans Devanagari', sans-serif;
         }
 
-        /* Urdu Language Using Local Font */
         .lang-ur {
-            font-family: 'UrduFont', 'Noto Naskh Arabic', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            /* Fallback to web-safe Nastaliq if local font fails */
+            font-family: 'UrduLocal', 'Noto Nastaliq Urdu', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
             direction: rtl;
             line-height: 1.8;
-        }
-
-        .hero-section * {
-            transition: all 0.3s ease;
-        }
-
-        .lang-ur .hero-section *,
-        .lang-ur .rtl-text-right {
             text-align: right;
         }
 
-        header {
+        /* Login Box */
+        .login-wrapper {
             background-color: var(--color-text-light);
-            border-bottom: 2px solid rgba(0, 0, 0, 0.05);
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-        }
-
-        .hero-section {
-            position: relative;
+            border-radius: 1.5rem;
+            box-shadow: 0 15px 45px rgba(0, 0, 0, 0.5);
+            border: none;
             overflow: hidden;
-            background-color: var(--color-background);
-            z-index: 1;
-            padding: 8rem 2rem 4rem 2rem;
+            width: 95%;
+            max-width: 900px;
+            display: flex;
+            min-height: 500px;
+            animation: fadeIn 0.8s ease-out;
+            z-index: 10;
+            margin-top: 5rem;
+            margin-bottom: 2rem;
         }
 
-        .separator-container {
-            max-width: 800px;
-            margin: 2rem auto 4rem auto;
+        .login-marketing-area {
+            flex: 1;
+            background: linear-gradient(135deg, var(--color-primary), #00665b);
+            color: var(--color-text-light);
+            padding: 3rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
             text-align: center;
         }
 
-        .separator-line {
-            height: 1px;
-            border: none;
-            background-color: rgba(0, 0, 0, 0.1);
-            position: relative;
-            margin-top: 1rem;
-        }
-
-        .separator-line::after {
-            content: '';
-            position: absolute;
-            top: -1px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 50px;
-            height: 3px;
-            background-color: var(--color-primary);
-            border-radius: 5px;
-        }
-
-        .module-grid {
-            display: grid;
-            gap: 2rem;
-            padding: 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        @media (min-width: 1024px) {
-            .module-grid {
-                grid-template-columns: repeat(3, 1fr);
-            }
-        }
-
-        @media (min-width: 640px) and (max-width: 1023px) {
-            .module-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        @media (max-width: 639px) {
-            .module-grid {
-                grid-template-columns: 1fr;
-                padding: 1rem;
-            }
-        }
-
-        .module-button {
-            background: linear-gradient(145deg, rgba(255, 255, 255, 1) 0%, var(--color-module-bg) 100%);
-            color: var(--color-text-dark);
-            border-radius: 2rem;
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
-            border: none;
-            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-            z-index: 1;
-            aspect-ratio: 1.5 / 1;
-            padding: 1.5rem;
+        .login-form-area {
+            flex: 1;
+            padding: 3rem;
             display: flex;
             flex-direction: column;
-            justify-content: flex-start;
-            align-items: flex-start;
-            text-align: left;
+            justify-content: center;
         }
 
-        .lang-ur .module-button {
-            text-align: right;
-            align-items: flex-end;
+        @media (max-width: 768px) {
+            .login-wrapper {
+                flex-direction: column;
+                max-width: 420px;
+                margin-top: 5rem;
+            }
+
+            .login-marketing-area {
+                display: none;
+            }
+
+            .login-form-area {
+                width: 100%;
+                padding: 2rem;
+            }
         }
 
-        .module-button:hover {
-            transform: translateY(-5px);
-            box-shadow:
-                0 0 0 3px var(--color-text-dark),
-                0 10px 25px rgba(0, 0, 0, 0.25);
+        .lang-ur .login-wrapper {
+            flex-direction: row-reverse;
         }
 
-        .module-icon {
-            position: absolute;
-            bottom: 1.5rem;
-            right: 1.5rem;
-            opacity: 0.2;
-            transition: opacity 0.3s ease, transform 0.3s ease;
-            color: var(--color-text-dark);
+        /* Form Elements */
+        .form-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid #ccc;
+            margin-top: 0.5rem;
+            transition: border-color 0.3s, box-shadow 0.3s;
+            font-family: inherit;
         }
 
-        .lang-ur .module-icon {
-            right: auto;
-            left: 1.5rem;
+        .form-input:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(0, 166, 147, 0.2);
         }
 
-        .module-button:hover .module-icon {
-            opacity: 0.4;
-            transform: scale(1.1) rotate(5deg);
+        .primary-button {
+            width: 100%;
+            padding: 0.8rem 1.5rem;
+            background-color: var(--color-primary);
+            color: var(--color-text-light);
+            font-weight: 600;
+            border-radius: 0.75rem;
+            transition: background-color 0.3s, transform 0.1s;
+            box-shadow: 0 4px 10px rgba(0, 166, 147, 0.4);
+            cursor: pointer;
         }
 
-        .module-button h3 {
-            color: var(--color-text-dark);
+        .primary-button:hover {
+            background-color: #008f7d;
+            transform: translateY(-1px);
         }
 
-        .module-button .subtitle-text {
-            color: var(--color-text-dark);
-            opacity: 0.7;
-            transition: all 0.3s ease;
-        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
 
-        footer {
-            background-color: var(--color-text-dark);
-            color: var(--color-background);
+            to {
+                opacity: 1;
+            }
         }
 
         .dialog-backdrop {
@@ -215,47 +197,41 @@
             transition: transform 0.3s ease, opacity 0.3s ease;
         }
 
-        .drawer-backdrop {
-            background-color: rgba(0, 0, 0, 0.5);
-            transition: opacity 0.3s ease-in-out;
+        .lang-ur .form-label {
+            text-align: right;
+            display: block;
         }
 
-        .drawer-content {
-            background-color: var(--color-text-light);
-            width: 80%;
-            max-width: 300px;
-            height: 100%;
-            position: fixed;
-            top: 0;
-            transition: transform 0.3s ease-in-out;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
-            z-index: 55;
-            padding: 1.5rem;
+        .lang-ur .login-marketing-area {
+            text-align: right;
         }
 
-        .drawer-ltr .drawer-content {
-            right: 0;
-            transform: translateX(100%);
+        /* --- Custom Loader Styles --- */
+        #login-loader {
+            display: none;
+            /* Initially hidden */
+            margin-top: 1rem;
+            justify-content: center;
+            align-items: center;
+            height: 2.5rem;
+            /* Match button height */
         }
 
-        .drawer-ltr.drawer-open .drawer-content {
-            transform: translateX(0);
+        .loader-spinner {
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(0, 166, 147, 0.3);
+            /* Lighter border for background */
+            border-top-color: var(--color-primary);
+            /* Primary color for spinning part */
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
         }
 
-        .drawer-rtl .drawer-content {
-            left: 0;
-            right: auto;
-            transform: translateX(-100%);
-        }
-
-        .drawer-rtl.drawer-open .drawer-content {
-            transform: translateX(0);
-        }
-
-        .lang-ur #user-menu-desktop #user-dropdown-menu {
-            right: auto;
-            left: 0;
-            transform-origin: top left;
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
         }
     </style>
 </head>
@@ -266,106 +242,64 @@
     <script>
         const langData = {
             'en': {
-                'madarsa_system': 'Madarsa System',
-                'sub_title': 'Excellence in Islamic Education Management',
-                'about': 'About',
-                'privacy': 'Privacy',
-                'hero_title': 'Integrated Digital Management for Islamic Institutions',
-                'hero_highlight': 'Innovation',
-                'hero_desc': 'Transforming traditional madarsa operations through modern, secure, and intuitive digital tools. Access all your academic, financial, and administrative needs from a single, unified platform.',
-                'academic_system': 'Academic System',
-                'academic_desc': 'Manage curricula, grades, and student performance.',
-                'accounting_system': 'Accounting System',
-                'accounting_desc': 'Handle fees, expenses, and financial reports.',
-                'kitchen_system': 'Kitchen System',
-                'kitchen_desc': 'Organize meal planning and inventory.',
-                'library_system': 'Library System',
-                'library_desc': 'Track books, circulation, and cataloging.',
-                'hostel_system': 'Hostel System',
-                'hostel_desc': 'Manage room assignments and resident records.',
-                'administration': 'Administration',
-                'admin_desc': 'Oversee staff, general records, and compliance.',
-                'footer_company': 'Madarsa System',
-                'footer_tagline': 'Crafting premium digital solutions that drive innovation and growth.',
-                'quick_links': 'Quick Links',
-                'connect': 'Connect With Us',
-                'all_rights': '© 2025 Madarsa System. All Rights Reserved.',
+                'login_title': 'Welcome Back',
+                'login_subtitle': 'Sign in to access the Madarsa Management System.',
+                'user_id': 'User ID / Enrollment No.',
+                'password': 'Password',
+                'forgot_password': 'Forgot Password?',
+                'login_button': 'Log In',
+                'or': 'OR',
+                'new_user': 'New User? Contact Administration',
                 'select_language': 'Select Language',
                 'en_option': 'English',
                 'hi_option': 'हिन्दी (Hindi)',
                 'ur_option': 'اردو (Urdu)',
-                'home': 'Home',
-                'explore_modules': 'Explore Our Modules',
-                'edit_profile': 'Edit Profile',
-                'logout': 'Logout'
+                'system_name': 'Madarsa System',
+                'marketing_title': 'Excellence in Islamic Education Management',
+                'marketing_text': 'Our integrated digital solution empowers Madrasa administration, ensuring streamlined academic, financial, and hostel management with secure, modern technology.',
+                'marketing_quote': '"Verily, with hardship comes ease."',
+                'marketing_source': 'Al-Inshirah (94:6)',
+                'loading': 'Logging in...'
             },
             'hi': {
-                'madarsa_system': 'مدرسه प्रणाली',
-                'sub_title': 'इस्लामी शिक्षा प्रबंधन में उत्कृष्टता',
-                'about': 'हमारे बारे में',
-                'privacy': 'गोपनीयता',
-                'hero_title': 'इस्लामी संस्थाओं के लिए एकीकृत डिजिटल प्रबंधन',
-                'hero_highlight': 'नवाचार',
-                'hero_desc': 'आधुनिक, सुरक्षित और सहज डिजिटल उपकरणों के माध्यम से पारंपरिक मदरसा संचालन को बदलना। अपनी सभी शैक्षणिक, वित्तीय और प्रशासनिक जरूरतों को एक ही, एकीकृत मंच से एक्सेस करें।',
-                'academic_system': 'शैक्षणिक प्रणाली',
-                'academic_desc': 'पाठ्यक्रम, ग्रेड और छात्र प्रदर्शन का प्रबंधन करें।',
-                'accounting_system': 'लेखांकन प्रणाली',
-                'accounting_desc': 'शुल्क, खर्च और वित्तीय रिपोर्ट संभालें।',
-                'kitchen_system': 'रसोईघर प्रणाली',
-                'kitchen_desc': 'भोजन योजना और इन्वेंट्री को व्यवस्थित करें।',
-                'library_system': 'पुस्तकालय प्रणाली',
-                'library_desc': 'पुस्तकों, परिसंचरण और सूचीकरण पर नज़र रखें।',
-                'hostel_system': 'छात्रावास प्रणाली',
-                'hostel_desc': 'कमरे के असाइनमेंट और निवासी रिकॉर्ड प्रबंधित करें।',
-                'administration': 'प्रशासन',
-                'admin_desc': 'कर्मचारियों, सामान्य रिकॉर्ड और अनुपालन की देखरेख करें।',
-                'footer_company': 'मदरसा तकनीक',
-                'footer_tagline': 'प्रीमियम डिजिटल समाधान तैयार करना जो नवाचार और विकास को बढ़ावा देता है।',
-                'quick_links': 'त्वरित लिंक',
-                'connect': 'हमसे जुड़ें',
-                'all_rights': '© 2025 मदरसा तकनीक। सर्वाधिकार सुरक्षित।',
+                'login_title': 'आपका स्वागत है',
+                'login_subtitle': 'मदरसा प्रबंधन प्रणाली तक पहुंचने के लिए साइन इन करें।',
+                'user_id': 'उपयोगकर्ता आईडी / नामांकन संख्या',
+                'password': 'पासवर्ड',
+                'forgot_password': 'पासवर्ड भूल गए?',
+                'login_button': 'लॉग इन करें',
+                'or': 'या',
+                'new_user': 'नए उपयोगकर्ता? प्रशासन से संपर्क करें',
                 'select_language': 'भाषा चुनें',
                 'en_option': 'English',
                 'hi_option': 'हिन्दी (Hindi)',
                 'ur_option': 'اردو (Urdu)',
-                'home': 'होम',
-                'explore_modules': 'हमारे मॉड्यूल देखें',
-                'edit_profile': 'प्रोफ़ाइल संपादित करें',
-                'logout': 'लॉगआउट'
+                'system_name': 'मदरसा प्रणाली',
+                'marketing_title': 'इस्लामी शिक्षा प्रबंधन में उत्कृष्टता',
+                'marketing_text': 'हमारा एकीकृत डिजिटल समाधान मदरसा प्रशासन को सशक्त बनाता है, सुरक्षित और आधुनिक तकनीक के साथ सुव्यवस्थित शैक्षणिक, वित्तीय और छात्रावास प्रबंधन सुनिश्चित करता है।',
+                'marketing_quote': '"निस्संदेह, कठिनाई के साथ आसानी है।"',
+                'marketing_source': 'अल-इंशिरह (94:6)',
+                'loading': 'लॉग इन हो रहा है...'
             },
             'ur': {
-                'madarsa_system': 'مدرسہ نظام',
-                'sub_title': 'اسلامی تعلیم کے انتظام میں فضیلت',
-                'about': 'ہمارے بارے میں',
-                'privacy': 'رازداری',
-                'hero_title': 'اسلامی اداروں کے لیے مربوط ڈیجیٹل انتظام',
-                'hero_highlight': 'جدت',
-                'hero_desc': 'جدید، محفوظ اور بدیہی ڈیجیٹل آلات کے ذریعے روایتی مدرسہ آپریشنز کو تبدیل کرنا۔ اپنی تمام تعلیمی، مالیاتی اور انتظامی ضروریات کو ایک ہی، متحدہ پلیٹ فارم سے حاصل کریں۔',
-                'academic_system': 'تعلیمی نظام',
-                'academic_desc': 'نصابات، درجات اور طلباء کی کارکردگی کا انتظام کریں۔',
-                'accounting_system': 'اکاؤنٹنگ سسٹم',
-                'accounting_desc': 'فیس، اخراجات، اور مالیاتی رپورٹس کو سنبھالیں۔',
-                'kitchen_system': 'باورچی خانے کا نظام',
-                'kitchen_desc': 'کھانے کی منصوبہ بندی اور انوینٹری کو منظم کریں۔',
-                'library_system': 'لائبریری کا نظام',
-                'library_desc': 'کتابوں، گردش اور کیٹلاگنگ کو ٹریک کریں۔',
-                'hostel_system': 'ہاسٹل کا نظام',
-                'hostel_desc': 'کمروں کی تقسیم اور رہائشی ریکارڈ کا انتظام کریں۔',
-                'administration': 'انتظامیہ',
-                'admin_desc': 'عملے، عمومی ریکارڈ اور تعمیل کی نگرانی کریں۔',
-                'footer_company': 'مدرسہ ٹیک',
-                'footer_tagline': 'پریمیم ڈیجیٹل حل تیار کرنا جو جدت اور ترقی کو فروغ دیتا ہے۔',
-                'quick_links': 'فوری لنکس',
-                'connect': 'ہم سے رابطہ کریں',
-                'all_rights': '© 2025 مدرسہ ٹیک۔ جملہ حقوق محفوظ ہیں۔',
+                'login_title': 'خوش آمدید',
+                'login_subtitle': 'مدرسہ انتظامی نظام تک رسائی کے لیے سائن ان کریں۔',
+                'user_id': 'یوزر آئی ڈی / اندراج نمبر',
+                'password': 'پاس ورڈ',
+                'forgot_password': 'پاس ورڈ بھول گئے؟',
+                'login_button': 'لاگ اِن کریں',
+                'or': 'یا',
+                'new_user': 'نئے صارف؟ انتظامیہ سے رابطہ کریں',
                 'select_language': 'زبان منتخب کریں',
                 'en_option': 'English',
                 'hi_option': 'ہندی (Hindi)',
                 'ur_option': 'اردو (Urdu)',
-                'home': 'صفحہ اول',
-                'explore_modules': 'ہمارے ماڈیولز دریافت کریں',
-                'edit_profile': 'پروفائل میں ترمیم کریں',
-                'logout': 'لاگ آؤٹ'
+                'system_name': 'مدرسہ نظام',
+                'marketing_title': 'اسلامی تعلیم کے انتظام میں فضیلت',
+                'marketing_text': 'ہمارا مربوط ڈیجیٹل حل مدرسہ انتظامیہ کو بااختیار بناتا ہے، جو محفوظ، جدید ٹیکنالوجی کے ساتھ منظم تعلیمی، مالیاتی اور ہاسٹل کے انتظام کو یقینی بناتا ہے۔',
+                'marketing_quote': '"یقیناً، مشکل کے ساتھ آسانی ہے۔"',
+                'marketing_source': 'الانشراح (94:6)',
+                'loading': 'لاگ اِن ہو رہا ہے...'
             }
         };
 
@@ -378,38 +312,35 @@
 
         // Function to update all text elements
         function updateContent() {
+            document.body.className = 'lang-' + currentLang + ' p-4 md:p-8';
             const isRtl = currentLang === 'ur';
-
-            document.body.className = 'lang-' + currentLang;
-            document.getElementById('mobile-drawer').classList.toggle('drawer-rtl', isRtl);
-            document.getElementById('mobile-drawer').classList.toggle('drawer-ltr', !isRtl);
 
             document.querySelectorAll('[data-lang-key]').forEach(el => {
                 const key = el.getAttribute('data-lang-key');
                 el.textContent = getTranslation(key);
             });
 
-            const heroTitleElement = document.getElementById('hero-title');
-            if (heroTitleElement) {
-                const fullText = getTranslation('hero_title');
-                const highlightWord = getTranslation('hero_highlight');
-                const newHtml = fullText.replace(highlightWord, `<span class="text-primary font-extrabold" style="color: var(--color-primary);">${highlightWord}</span>`);
-                heroTitleElement.innerHTML = newHtml;
-            }
+            // Handle placeholder updates
+            document.getElementById('user-id-input').placeholder = getTranslation('user_id');
+            document.getElementById('password-input').placeholder = getTranslation('password');
+            document.getElementById('loader-text').textContent = getTranslation('loading');
 
-            // Update directions for relevant elements
-            document.querySelectorAll('.footer-link, #user-dropdown-menu a').forEach(el => {
-                el.classList.toggle('rtl-text-right', isRtl);
+            // Adjust form alignment for RTL
+            document.querySelectorAll('.form-group').forEach(group => {
+                group.style.textAlign = isRtl ? 'right' : 'left';
+            });
+            document.querySelectorAll('.form-input').forEach(input => {
+                input.style.textAlign = isRtl ? 'right' : 'left';
             });
 
-            // Set main content direction
-            document.getElementById('main-content-wrapper').style.direction = isRtl ? 'rtl' : 'ltr';
-
             // Update language display in dialog
-            document.getElementById('current-lang-display').textContent = getTranslation(currentLang + '_option');
+            const currentLangDisplay = document.getElementById('current-lang-display');
+            if (currentLangDisplay) {
+                currentLangDisplay.textContent = getTranslation(currentLang + '_option');
+            }
         }
 
-        // Function to change language and store in local storage
+        // Function to change language and close dialog (Refactored)
         function changeLanguage(lang) {
             if (lang in langData) {
                 currentLang = lang;
@@ -419,59 +350,209 @@
             }
         }
 
-        // --- Dialog Functions (Existing) ---
+        // --- Dialog Functions (New) ---
         function openLanguageDialog() {
             const dialog = document.getElementById('language-dialog');
             dialog.classList.remove('hidden');
 
             setTimeout(() => {
                 dialog.classList.remove('opacity-0');
-                dialogContentElement.classList.remove('scale-95');
-                dialogContentElement.classList.add('scale-100');
+                if (dialogContentElement) {
+                    dialogContentElement.classList.remove('scale-95');
+                    dialogContentElement.classList.add('scale-100');
+                }
             }, 10);
         }
 
         function closeLanguageDialog() {
             const dialog = document.getElementById('language-dialog');
             dialog.classList.add('opacity-0');
-            dialogContentElement.classList.remove('scale-100');
-            dialogContentElement.classList.add('scale-95');
+            if (dialogContentElement) {
+                dialogContentElement.classList.remove('scale-100');
+                dialogContentElement.classList.add('scale-95');
+            }
 
             setTimeout(() => {
                 dialog.classList.add('hidden');
             }, 300);
         }
 
-        // --- User Menu Dropdown Functions (New) ---
-        function toggleUserDropdown() {
-            const dropdown = document.getElementById('user-dropdown-menu');
-            dropdown.classList.toggle('hidden');
+        // Helper to manage UI state (button/loader)
+        function setLoginState(isLoading) {
+            const buttonContainer = document.getElementById('login-button-container');
+            const loader = document.getElementById('login-loader');
+            const button = document.getElementById('login-btn');
+
+            if (isLoading) {
+                buttonContainer.classList.add('hidden');
+                loader.style.display = 'flex';
+                button.disabled = true;
+            } else {
+                buttonContainer.classList.remove('hidden');
+                loader.style.display = 'none';
+                button.disabled = false;
+            }
         }
 
-        // --- Mobile Drawer Functions (New) ---
-        function openMobileDrawer() {
-            const drawer = document.getElementById('mobile-drawer');
-            drawer.classList.remove('hidden');
+        // --- UPDATED: Dummy Login Function with Local Storage and Loader ---
+        function handleLogin(event) {
+            event.preventDefault();
+            const userId = document.getElementById('user-id-input').value;
+            const password = document.getElementById('password-input').value;
+
+            // Show loader and disable button immediately
+            setLoginState(true);
+
+            // Demo Credentials
+            const DEMO_USER = 'demo';
+            const DEMO_PASS = '12345';
+
+            // Simulate Network delay (2 seconds)
             setTimeout(() => {
-                drawer.classList.add('opacity-100', 'drawer-open');
-                drawer.classList.remove('opacity-0');
-            }, 10);
+                if (userId === DEMO_USER && password === DEMO_PASS) {
+                    // Success
+                    localStorage.setItem('isUserLoggedIn', 'true');
+                    console.log('Login successful. Redirecting to Home.');
+
+                    // Redirect to the home page (index.html)
+                    window.location.href = 'home.html';
+
+                } else if (userId && password) {
+                    // Failure
+                    setLoginState(false); // Hide loader, enable button
+                    console.warn('Authentication failed. Use demo/12345 for testing.');
+                    alert('Invalid credentials. Please use "demo" and "12345" for the demo.');
+                } else {
+                    // Failure (Missing input)
+                    setLoginState(false); // Hide loader, enable button
+                    alert('Please enter both User ID and Password.');
+                }
+            }, 2000); // 2 second delay for realistic loading effect
         }
 
-        function closeMobileDrawer() {
-            const drawer = document.getElementById('mobile-drawer');
-            drawer.classList.remove('drawer-open');
-            drawer.classList.add('opacity-0');
-            setTimeout(() => {
-                drawer.classList.add('hidden');
-            }, 300); // Match transition duration
+        // --- THREE.JS PARTICLE ANIMATION SETUP ---
+        let scene, camera, renderer, particles, particleCount = 1000;
+        let ambientLight;
+
+        function initThreeJS() {
+            const container = document.body;
+
+            // 1. Scene setup
+            scene = new THREE.Scene();
+
+            // 2. Camera setup
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.z = 10;
+
+            // 3. Renderer setup
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            renderer.setClearColor(0x0b151f, 1);
+
+            // Create a canvas element and append it
+            const canvasElement = renderer.domElement;
+            canvasElement.id = 'three-canvas';
+            container.appendChild(canvasElement);
+
+            // 4. Lights (Subtle Ambient)
+            ambientLight = new THREE.AmbientLight(0x404040, 1.5);
+            scene.add(ambientLight);
+
+            // 5. Particle System (Point Cloud)
+            const geometry = new THREE.BufferGeometry();
+            const positions = [];
+            const colors = [];
+
+            const color = new THREE.Color(varValue('--color-primary'));
+
+            for (let i = 0; i < particleCount; i++) {
+                // Random position within a cube
+                const x = (Math.random() - 0.5) * 100;
+                const y = (Math.random() - 0.5) * 100;
+                const z = (Math.random() - 0.5) * 100;
+                positions.push(x, y, z);
+
+                // Add color (slight variance)
+                colors.push(color.r, color.g, color.b);
+            }
+
+            // Corrected array type to Float32Array
+            geometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(positions), 3));
+            geometry.setAttribute('color', new THREE.BufferAttribute(new Float32Array(colors), 3));
+
+            const material = new THREE.PointsMaterial({
+                size: 0.2,
+                vertexColors: true,
+                transparent: true,
+                opacity: 0.7,
+                blending: THREE.AdditiveBlending,
+            });
+
+            particles = new THREE.Points(geometry, material);
+            scene.add(particles);
+
+            // Handle window resize
+            window.addEventListener('resize', onWindowResize, false);
+        }
+
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        function varValue(cssVar) {
+            const style = getComputedStyle(document.body);
+            const colorHex = style.getPropertyValue(cssVar).trim().replace('#', '0x');
+            return parseInt(colorHex, 16);
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            // Subtle animation
+            particles.rotation.x += 0.0001;
+            particles.rotation.y += 0.0002;
+            particles.rotation.z += 0.0003;
+
+            // Subtle camera movement
+            camera.position.x = Math.sin(Date.now() * 0.00005) * 0.5;
+            camera.position.y = Math.cos(Date.now() * 0.00005) * 0.5;
+
+            renderer.render(scene, camera);
         }
 
         // Initialize function
         window.onload = function () {
+            // === NEW: Auto-login check (State Check) ===
+            // NOTE: If you are renaming index.html to home.html,
+            // the redirect destination here should be 'home.html'
+            // and the session check logic should be moved to the new index.html (the login page)
+            const isLoggedIn = localStorage.getItem('isUserLoggedIn');
+            if (isLoggedIn === 'true') {
+                console.log('User already logged in. Redirecting to Home (home.html).');
+                // We keep 'index.html' here based on your current file names, 
+                // but this should be changed to 'home.html' if you follow the renaming strategy.
+                window.location.href = 'home.html';
+                return;
+            }
+            // ============================================
+
             dialogContentElement = document.getElementById('dialog-content');
             const storedLang = localStorage.getItem('madarsaSystemLang');
             currentLang = (storedLang && storedLang in langData) ? storedLang : 'en';
+
+            // --- Initialize THREE.JS Background ---
+            try {
+                initThreeJS();
+                animate();
+            } catch (e) {
+                console.error("Three.js initialization failed:", e);
+                // Fallback to CSS background if 3D fails
+                document.body.style.backgroundColor = '#111';
+            }
+
 
             // Language Dialog Listeners
             document.getElementById('lang-en-btn').addEventListener('click', () => changeLanguage('en'));
@@ -480,321 +561,125 @@
             document.getElementById('language-toggle').addEventListener('click', openLanguageDialog);
             document.getElementById('dialog-close-btn').addEventListener('click', closeLanguageDialog);
 
-            // User Menu Listeners (Desktop)
-            document.getElementById('user-menu-toggle').addEventListener('click', toggleUserDropdown);
-
-            // Mobile Drawer Listeners
-            document.getElementById('mobile-menu-toggle').addEventListener('click', openMobileDrawer);
-            document.getElementById('drawer-close-btn').addEventListener('click', closeMobileDrawer);
-
-            // Close dropdown/drawer if clicking outside
-            document.addEventListener('click', (event) => {
-                const userMenu = document.getElementById('user-menu-desktop');
-                const userDropdown = document.getElementById('user-dropdown-menu');
-                const drawerBackdrop = document.getElementById('drawer-backdrop');
-
-                // Close User Menu if click is outside
-                if (userMenu && !userMenu.contains(event.target) && !userDropdown.classList.contains('hidden')) {
-                    userDropdown.classList.add('hidden');
-                }
-
-                // Close Drawer if click is on backdrop
-                if (drawerBackdrop && event.target === drawerBackdrop) {
-                    closeMobileDrawer();
-                }
-            });
+            // Form Listener
+            document.getElementById('login-form').addEventListener('submit', handleLogin);
 
             updateContent();
         };
-
-        function handleModuleClick(moduleName) {
-            console.log(`Clicked on module: ${moduleName}. Implementation will be added on separate pages later.`);
-        }
-
-        function handleUserAction(action) {
-            if (action === 'Logout') {
-                console.log('User action: Logout triggered. Clearing session.');
-                localStorage.removeItem('isUserLoggedIn');
-                window.location.href = 'login.html';
-
-            } else {
-                console.log(`User action: ${action} triggered.`);
-            }
-
-            const userDropdown = document.getElementById('user-dropdown-menu');
-            if (userDropdown) {
-                userDropdown.classList.add('hidden');
-            }
-        }
     </script>
 
-
-    <!-- HEADER -->
-    <header class="sticky top-0 z-20 w-full p-4 md:px-8 flex items-center justify-between">
-        <!-- Logo & System Name -->
-        <div class="flex items-center space-x-3">
-            <!-- Logo From Assets Folder -->
-            <div class="w-8 h-8 rounded-full flex items-center justify-center p-1" style="color: var(--color-primary);">
-                <img src="assets/logo.svg" alt="Logo" class="w-full h-full object-contain">
-            </div>
-
-            <!-- System Name & Subtitle -->
-            <div>
-                <h1 data-lang-key="madarsa_system" class="text-xl md:text-2xl font-bold"
-                    style="color: var(--color-text-dark);">Madarsa System</h1>
-                <p data-lang-key="sub_title" class="text-xs md:text-sm font-medium" style="color: var(--color-accent);">
-                    Excellence in Islamic Education Management
-                </p>
-            </div>
-        </div>
-
-
-
-        <!-- Navigation and User/Mobile Toggle -->
-        <div class="flex items-center space-x-2 md:space-x-4">
-
-            <!-- 1. Desktop Navigation Links & Language Toggle (Hidden on Mobile) -->
-            <div id="desktop-nav" class="hidden md:flex items-center space-x-4 md:space-x-6">
-                <a href="about.html" data-lang-key="about"
-                    class="text-sm md:text-base font-medium hover:text-primary transition-colors flex-shrink-0"
-                    style="color: var(--color-text-dark);">About</a>
-                <a href="privacy.html" data-lang-key="privacy"
-                    class="text-sm md:text-base font-medium hover:text-primary transition-colors flex-shrink-0"
-                    style="color: var(--color-text-dark);">Privacy</a>
-
-                <!-- Language Change Icon - Replaced hardcoded path with inline SVG -->
-                <button id="language-toggle" class="p-2 rounded-full hover:bg-gray-100 transition-all flex-shrink-0"
-                    aria-label="Change Language">
-
-                    <img src="assets/language.svg" alt="Language" class="w-6 h-6" style="color: var(--color-primary);">
-                </button>
-
-            </div>
-
-            <!-- 2. User Profile Dropdown (Desktop/Tablet) -->
-            <div id="user-menu-desktop" class="relative hidden md:block">
-                <button id="user-menu-toggle" class="p-2 rounded-full hover:bg-gray-100 transition-all flex-shrink-0"
-                    aria-label="User Menu">
-
-                    <img src="assets/user.svg" alt="User Icon" class="w-6 h-6" style="color: var(--color-text-dark);">
-                </button>
-
-
-                <!-- Dropdown Menu -->
-                <div id="user-dropdown-menu"
-                    class="hidden absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-xl py-1 z-30 transform origin-top-right transition-all duration-200 ease-out"
-                    style="border: 1px solid var(--color-primary);">
-                    <a href="edit_profile.html" onclick="handleUserAction('Edit Profile')" data-lang-key="edit_profile"
-                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors rounded-t-lg">Edit
-                        Profile</a>
-                    <a href="#" onclick="handleUserAction('Logout')" data-lang-key="logout"
-                        class="block px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors rounded-b-lg">Logout</a>
-                </div>
-            </div>
-
-            <!-- 3. Mobile Menu Toggle (Hamburger/Three Dots) -->
-            <button id="mobile-menu-toggle"
-                class="p-2 rounded-full hover:bg-gray-100 transition-all flex-shrink-0 md:hidden"
-                aria-label="Open Mobile Menu">
-                <!-- Three Dots Icon: Inline SVG -->
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6"
-                    style="color: var(--color-text-dark);">
-                    <path
-                        d="M3 10c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2zm19 2c0 1.104-.896 2-2 2s-2-.896-2-2 .896-2 2-2 2 .896 2 2zm-9 0c0 1.104-.896 2-2 2s-2-.896-2-2 .896-2 2-2 2 .896 2 2z" />
-                </svg>
-            </button>
-        </div>
+    <!-- HEADER/LANGUAGE SELECTOR ICON -->
+    <header
+        class="w-full max-w-7xl flex justify-end items-center py-4 absolute top-0 right-0 left-0 mx-auto px-4 md:px-8 z-20">
+        <!-- Language Change Icon -->
+        <button id="language-toggle" class="p-2 rounded-full hover:bg-white transition-all flex-shrink-0"
+            aria-label="Change Language">
+            <!-- Language Icon: Globe (Inline SVG) -->
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"
+                style="color: var(--color-primary);">
+                <circle cx="12" cy="12" r="10" />
+                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+                <path d="M2.5 7h19M2.5 17h19" />
+            </svg>
+        </button>
     </header>
 
+    <!-- LOGIN WRAPPER (Horizontal Split on Desktop) -->
+    <div class="login-wrapper">
 
-    <!-- MOBILE OFF-CANVAS DRAWER -->
-    <div id="mobile-drawer" class="hidden fixed inset-0 z-50 opacity-0 drawer-backdrop">
-        <!-- Drawer Content -->
-        <div class="drawer-content flex flex-col justify-start">
-            <div class="flex justify-between items-center p-4 border-b" style="border-color: rgba(0, 0, 0, 0.1);">
-                <!-- User Profile Icon/Placeholder in Drawer -->
-                <div class="flex items-center space-x-3">
-                    <button onclick="handleUserAction('Edit Profile')" aria-label="Edit Profile"
-                        class="p-2 rounded-full hover:bg-gray-100 transition-all flex-shrink-0"
-                        style="color: var(--color-primary);">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6">
-                            <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
-                            <circle cx="12" cy="7" r="4" />
-                        </svg>
-                    </button>
-                    <span class="text-sm font-semibold">User Account</span>
-                </div>
-                <!-- Close Button -->
-                <button id="drawer-close-btn" class="text-gray-500 hover:text-gray-900 transition-colors p-1"
-                    aria-label="Close Mobile Menu">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
-                        stroke="currentColor" class="w-6 h-6">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+        <!-- LEFT SIDE: Marketing/Decorative Content (Hidden on mobile) -->
+        <div class="login-marketing-area">
+            <div class="space-y-6 max-w-sm">
+                <!-- Large Logo Icon -->
+                <div class="w-16 h-16 mx-auto" style="color: var(--color-text-light);">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="w-full h-full">
+                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                        <path d="M6.5 2H20v20h-13.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+                        <path d="M10 8h6" />
+                        <path d="M10 12h6" />
                     </svg>
-                </button>
+                </div>
+                <h2 data-lang-key="marketing_title" class="text-3xl font-bold">Excellence in Islamic Education
+                    Management</h2>
+                <p data-lang-key="marketing_text" class="text-sm font-light leading-relaxed opacity-90">Our integrated
+                    digital solution empowers Madrasa administration, ensuring streamlined academic, financial, and
+                    hostel management with secure, modern technology.</p>
+
+                <!-- Inspirational Quote -->
+                <div class="mt-8 pt-4 border-t border-white border-opacity-30">
+                    <p data-lang-key="marketing_quote" class="text-lg italic font-semibold">"Verily, with hardship comes
+                        ease."</p>
+                    <p data-lang-key="marketing_source" class="text-sm opacity-70 mt-1">Al-Inshirah (94:6)</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT SIDE: Login Form -->
+        <div class="login-form-area">
+            <!-- Title -->
+            <div class="flex flex-col items-center sm:items-start mb-8 text-center sm:text-left">
+                <h1 data-lang-key="login_title" class="text-3xl font-bold mb-1">Welcome Back</h1>
+                <p data-lang-key="login_subtitle" class="text-gray-500 text-sm">Sign in to access the Madarsa
+                    Management System.</p>
             </div>
 
-            <!-- Navigation Links in Drawer -->
-            <nav class="flex flex-col space-y-2 p-4 flex-grow">
-                <a href="index.html" data-lang-key="home"
-                    class="text-base font-medium p-3 rounded-lg hover:bg-gray-100 transition-colors"
-                    style="color: var(--color-text-dark);">Home</a>
-                <a href="about.html" data-lang-key="about"
-                    class="text-base font-medium p-3 rounded-lg hover:bg-gray-100 transition-colors"
-                    style="color: var(--color-text-dark);">About</a>
-                <a href="privacy.html" data-lang-key="privacy"
-                    class="text-base font-medium p-3 rounded-lg hover:bg-gray-100 transition-colors"
-                    style="color: var(--color-text-dark);">Privacy</a>
+            <!-- Login Form -->
+            <form id="login-form">
+                <div class="space-y-5">
+                    <!-- User ID Field -->
+                    <div class="form-group">
+                        <label for="user-id-input" class="form-label text-sm font-semibold mb-1"
+                            data-lang-key="user_id">User ID / Enrollment No.</label>
+                        <input type="text" id="user-id-input" class="form-input" required
+                            placeholder="User ID / Enrollment No.">
+                    </div>
 
-                <!-- Language Toggle in Drawer -->
-                <button id="language-toggle-drawer"
-                    class="flex items-center justify-start space-x-3 p-3 rounded-lg hover:bg-gray-100 transition-all"
-                    aria-label="Change Language in Drawer" onclick="openLanguageDialog(); closeMobileDrawer();">
-                    <!-- Language Icon: Globe (Inline SVG) -->
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"
-                        style="color: var(--color-primary);">
-                        <circle cx="12" cy="12" r="10" />
-                        <path
-                            d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
-                        <path d="M2.5 7h19M2.5 17h19" />
-                    </svg>
-                    <span data-lang-key="select_language" class="text-base font-medium"
-                        style="color: var(--color-text-dark);">Select Language</span>
-                </button>
+                    <!-- Password Field -->
+                    <div class="form-group">
+                        <label for="password-input" class="form-label text-sm font-semibold mb-1"
+                            data-lang-key="password">Password</label>
+                        <input type="password" id="password-input" class="form-input" required placeholder="Password">
+                    </div>
+                </div>
 
-                <hr class="my-2 border-gray-200">
+                <!-- Forgot Password Link -->
+                <div class="mt-4 text-right lang-ur:text-left">
+                    <a href="forgot_password.html" class="text-sm font-medium hover:underline"
+                        style="color: var(--color-accent);" data-lang-key="forgot_password">Forgot Password?</a>
+                </div>
 
-                <!-- Logout Button in Drawer -->
-                <a href="#" onclick="handleUserAction('Logout')" data-lang-key="logout"
-                    class="text-base font-medium p-3 rounded-lg hover:bg-red-50 transition-colors text-red-600">Logout</a>
-            </nav>
+                <!-- Login Button Container -->
+                <div id="login-button-container" class="mt-8">
+                    <button type="submit" id="login-btn" class="primary-button" data-lang-key="login_button">Log
+                        In</button>
+                </div>
+
+                <!-- NEW: Loader -->
+                <div id="login-loader"
+                    class="mt-8 flex flex-row items-center justify-center space-x-3 bg-gray-100 rounded-xl px-4 py-2 opacity-90">
+                    <div class="loader-spinner"></div>
+                    <span id="loader-text" class="text-sm font-medium" style="color: var(--color-text-dark);">Logging
+                        in...</span>
+                </div>
+
+            </form>
+
+            <!-- Separator -->
+            <div class="flex items-center my-6">
+                <hr class="flex-grow border-gray-300">
+                <span class="px-3 text-gray-500 text-sm font-medium" data-lang-key="or">OR</span>
+                <hr class="flex-grow border-gray-300">
+            </div>
+
+            <!-- Contact Admin Link -->
+            <div class="text-center">
+                <a href="contact.html" class="text-sm font-medium hover:underline"
+                    style="color: var(--color-text-dark);" data-lang-key="new_user">New User? Contact Administration</a>
+            </div>
         </div>
     </div>
-
-
-    <!-- MAIN CONTENT WRAPPER -->
-    <main id="main-content-wrapper" class="p-4 md:p-8 min-h-[calc(100vh-10rem)]">
-
-        <!-- HERO SECTION -->
-        <section class="hero-section mb-0 text-center">
-            <div class="relative z-10 max-w-7xl mx-auto">
-                <h2 id="hero-title" class="text-4xl md:text-7xl font-black mb-6 leading-tight"
-                    style="color: var(--color-text-dark);">
-                    Integrated Digital Management for Islamic Institutions
-                </h2>
-                <p data-lang-key="hero_desc" class="text-base md:text-xl max-w-5xl mx-auto font-medium"
-                    style="color: var(--color-text-dark);">
-                    Transforming traditional madarsa operations through modern, secure, and intuitive digital tools.
-                    Access all your academic, financial, and administrative needs from a single, unified platform.
-                </p>
-            </div>
-        </section>
-
-        <!-- EXPLORE MODULES SEPARATOR -->
-        <div class="separator-container">
-            <h3 data-lang-key="explore_modules" class="text-lg font-bold" style="color: var(--color-text-dark);">Explore
-                Our Modules</h3>
-            <hr class="separator-line">
-        </div>
-
-
-        <!-- MODULE BUTTONS -->
-        <section class="module-section">
-            <div class="module-grid">
-
-                <!-- ACADEMIC SYSTEM -->
-                <a href="academic_system.html" class="module-button" onclick="handleModuleClick('Academic')">
-                    <h3 data-lang-key="academic_system" class="text-xl md:text-2xl font-bold mb-2">Academic System</h3>
-                    <p data-lang-key="academic_desc" class="subtitle-text text-sm md:text-base font-medium">Manage
-                        curricula, grades, and student performance.</p>
-                    <svg class="module-icon w-12 h-12 md:w-16 md:h-16" xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
-                        stroke-linejoin="round">
-                        <path d="M12 20V10" />
-                        <path d="M18.6 12.6L12 16l-6.6-3.4" />
-                        <path d="M12 2L2 7l10 5 10-5z" />
-                    </svg>
-                </a>
-
-                <!-- ACCOUNTING SYSTEM -->
-                <a href="accounting_system.html" class="module-button" onclick="handleModuleClick('Accounting')">
-                    <h3 data-lang-key="accounting_system" class="text-xl md:text-2xl font-bold mb-2">Accounting System
-                    </h3>
-                    <p data-lang-key="accounting_desc" class="subtitle-text text-sm md:text-base font-medium">Handle
-                        fees, expenses, and financial reports.</p>
-                    <svg class="module-icon w-12 h-12 md:w-16 md:h-16" xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
-                        stroke-linejoin="round">
-                        <path d="M5 20h14" />
-                        <path d="M7 16l2-8 3 4 3-4 2 8" />
-                        <path d="M12 15l2 5" />
-                        <path d="M12 15l-2 5" />
-                        <path d="M16 3l1 5" />
-                    </svg>
-                </a>
-
-                <!-- KITCHEN SYSTEM -->
-                <a href="kitchen_system.html" class="module-button" onclick="handleModuleClick('Kitchen')">
-                    <h3 data-lang-key="kitchen_system" class="text-xl md:text-2xl font-bold mb-2">Kitchen System</h3>
-                    <p data-lang-key="kitchen_desc" class="subtitle-text text-sm md:text-base font-medium">Organize meal
-                        planning and inventory.</p>
-                    <svg class="module-icon w-12 h-12 md:w-16 md:h-16" xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
-                        stroke-linejoin="round">
-                        <path d="M12 2v20" />
-                        <path d="M16 16l-4 4-4-4" />
-                        <path d="M18 6l-6 6-6-6" />
-                        <path d="M8 2h8" />
-                    </svg>
-                </a>
-
-                <!-- LIBRARY SYSTEM -->
-                <a href="library_system.html" class="module-button" onclick="handleModuleClick('Library')">
-                    <h3 data-lang-key="library_system" class="text-xl md:text-2xl font-bold mb-2">Library System</h3>
-                    <p data-lang-key="library_desc" class="subtitle-text text-sm md:text-base font-medium">Track books,
-                        circulation, and cataloging.</p>
-                    <svg class="module-icon w-12 h-12 md:w-16 md:h-16" xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
-                        stroke-linejoin="round">
-                        <path d="M4 19.5A2.5 2.5 0 016.5 17H20" />
-                        <path
-                            d="M6.5 2H20v20c0 1.38-1.12 2.5-2.5 2.5H6.5A2.5 2.5 0 014 19.5v-15c0-.83.67-1.5 1.5-1.5H11m4 1.5H19" />
-                    </svg>
-                </a>
-
-                <!-- HOSTEL SYSTEM -->
-                <a href="hostel_system.html" class="module-button" onclick="handleModuleClick('Hostel')">
-                    <h3 data-lang-key="hostel_system" class="text-xl md:text-2xl font-bold mb-2">Hostel System</h3>
-                    <p data-lang-key="hostel_desc" class="subtitle-text text-sm md:text-base font-medium">Manage room
-                        assignments and resident records.</p>
-                    <svg class="module-icon w-12 h-12 md:w-16 md:h-16" xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
-                        stroke-linejoin="round">
-                        <path d="M2 4h18" />
-                        <path d="M2 8h18" />
-                        <path d="M2 12h18" />
-                        <path d="M18 8v4" />
-                    </svg>
-                </a>
-
-                <!-- ADMINISTRATION -->
-                <a href="administration.html" class="module-button" onclick="handleModuleClick('Administration')">
-                    <h3 data-lang-key="administration" class="text-xl md:text-2xl font-bold mb-2">Administration</h3>
-                    <p data-lang-key="admin_desc" class="subtitle-text text-sm md:text-base font-medium">Oversee staff,
-                        general records, and compliance.</p>
-                    <svg class="module-icon w-12 h-12 md:w-16 md:h-16" xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
-                        stroke-linejoin="round">
-                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-                    </svg>
-                </a>
-
-            </div>
-        </section>
-
-    </main>
 
     <!-- LANGUAGE CHANGE DIALOG -->
     <div id="language-dialog"
@@ -830,60 +715,9 @@
     </div>
 
 
-    <!-- FOOTER -->
-    <footer class="p-8 md:p-12 mt-12">
-        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-16">
-
-            <!-- Company Info & Tagline -->
-            <div>
-                <h4 data-lang-key="footer_company" class="text-xl font-bold mb-3" style="color: var(--color-accent);">
-                    Madarsa System</h4>
-                <p data-lang-key="footer_tagline" class="text-sm font-light leading-relaxed">Crafting premium digital
-                    solutions that drive innovation and growth.</p>
-            </div>
-
-            <!-- Quick Links -->
-            <div>
-                <h4 data-lang-key="quick_links" class="text-lg font-semibold mb-3">Quick Links</h4>
-                <ul class="space-y-2 text-sm">
-                    <li><a href="index.html" data-lang-key="home"
-                            class="footer-link hover:text-primary transition-colors">Home</a></li>
-                    <li><a href="about.html" data-lang-key="about"
-                            class="footer-link hover:text-primary transition-colors">About</a></li>
-                    <li><a href="privacy.html" data-lang-key="privacy"
-                            class="footer-link hover:text-primary transition-colors">Privacy</a></li>
-                </ul>
-            </div>
-
-            <!-- Connect With Us -->
-            <div>
-                <h4 data-lang-key="connect" class="text-lg font-semibold mb-3">Connect With Us</h4>
-                <div class="flex space-x-4">
-                    <a href="#" target="_blank" class="hover:text-primary transition-colors">
-                        <!-- LinkedIn SVG -->
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                            fill="currentColor">
-                            <path
-                                d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.518-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.764 7 2.456v6.779z" />
-                        </svg>
-                    </a>
-                    <a href="#" target="_blank" class="hover:text-primary transition-colors">
-                        <!-- Github SVG -->
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                            fill="currentColor">
-                            <path
-                                d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.08-.731.084-.716.084-.716 1.192.083 1.815 1.229 1.815 1.229 1.06 1.815 2.813 1.293 3.493.98.107-.76.417-1.292.76-1.594-2.665-.304-5.467-1.334-5.467-5.931 0-1.311.468-2.381 1.236-3.221-.124-.303-.537-1.523.117-3.176 0 0 1.008-.322 3.301 1.229 1.008-.281 2.073-.423 3.138-.428 1.065.005 2.13.147 3.138.428 2.292-1.551 3.301-1.229 3.301-1.229.653 1.653.24 2.873.117 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.923.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.565 21.799 24 17.3 24 12c0-6.627-5.373-12-12-12z" />
-                        </svg>
-                    </a>
-                </div>
-            </div>
-
-        </div>
-
-        <div class="mt-8 pt-4 border-t border-gray-700 text-center">
-            <p data-lang-key="all_rights" class="text-sm font-light" style="color: var(--color-background);">© 2025
-                Madarsa System. All Rights Reserved.</p>
-        </div>
+    <!-- Optional Footer Placeholder -->
+    <footer class="text-xs text-gray-500 absolute bottom-4 text-center z-10">
+        <p data-lang-key="system_name">Madarsa System</p>
     </footer>
 
 </body>

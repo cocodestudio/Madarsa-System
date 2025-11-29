@@ -245,7 +245,7 @@
     <!-- Language Data Structure (Centralized) -->
     <script>
         function goToHomepage() {
-            window.location.replace('index.html');
+            window.location.replace('home.html');
         }
 
         const langData = {
@@ -494,65 +494,74 @@
         <section class="module-section">
             <div class="module-grid">
 
-                <!-- ADD NEW EMPLOYEE --><button class="module-button" onclick="handleModuleClick('Add New Employee')">
+                <!-- ADD NEW EMPLOYEE -->
+                <a href="add_employee.html" class="module-button">
                     <h3 data-lang-key="add_new_employee" class="text-xl md:text-2xl font-bold mb-1">Add New Employee
                     </h3>
                     <p data-lang-key="module_subtitle" class="subtitle-text">Access employee, notification, and access
                         control features.</p>
-                    <!-- Icon: User Plus --><svg class="module-icon" xmlns="http://www.w3.org/2000/svg" fill="none"
-                        viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                    <!-- Icon: User Plus -->
+                    <svg class="module-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor" stroke-width="1.5">
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.722A7.5 7.5 0 002.25 12v3M4.5 9h-2.25m-2.25 3h2.25m10.5-6h-2.25m0 0H7.5" />
                     </svg>
-                </button>
+                </a>
 
-                <!-- TEACHERS/STAFF --><button class="module-button" onclick="handleModuleClick('Teachers/Staff')">
+                <!-- TEACHERS/STAFF -->
+                <a href="teacher_staff.html" class="module-button">
                     <h3 data-lang-key="teachers_staff" class="text-xl md:text-2xl font-bold mb-1">Teachers/Staff</h3>
                     <p data-lang-key="module_subtitle" class="subtitle-text">Access employee, notification, and access
                         control features.</p>
-                    <!-- Icon: Users Group --><svg class="module-icon" xmlns="http://www.w3.org/2000/svg" fill="none"
-                        viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                    <!-- Icon: Users Group -->
+                    <svg class="module-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor" stroke-width="1.5">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M12 22s-8-4-8-10V5l8-3 8 3v7c0 6-8 10-8 10z" />
                     </svg>
-                </button>
+                </a>
 
-                <!-- NOTIFICATIONS/NOTICES --><button class="module-button"
-                    onclick="handleModuleClick('Notifications/Notices')">
+                <!-- NOTIFICATIONS/NOTICES -->
+                <a href="notifications.html" class="module-button">
                     <h3 data-lang-key="notifications_notices" class="text-xl md:text-2xl font-bold mb-1">
                         Notifications/Notices</h3>
                     <p data-lang-key="module_subtitle" class="subtitle-text">Access employee, notification, and access
                         control features.</p>
-                    <!-- Icon: Bell / Notification --><svg class="module-icon" xmlns="http://www.w3.org/2000/svg"
-                        fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                    <!-- Icon: Bell / Notification -->
+                    <svg class="module-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor" stroke-width="1.5">
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M14.857 17.082a23.848 23.848 0 005.424-2.883 1.888 1.888 0 000-2.614 23.848 23.848 0 00-5.424-2.883m-4.227 4.542l-2.029-2.029a.75.75 0 00-1.06 0l-2.029 2.029m4.227 0v2.25" />
                     </svg>
-                </button>
+                </a>
 
-                <!-- RESPONSIBILITIES --><button class="module-button" onclick="handleModuleClick('Responsibilities')">
+                <!-- RESPONSIBILITIES -->
+                <a href="responsibilities.html" class="module-button">
                     <h3 data-lang-key="responsibilities" class="text-xl md:text-2xl font-bold mb-1">Responsibilities
                     </h3>
                     <p data-lang-key="module_subtitle" class="subtitle-text">Access employee, notification, and access
                         control features.</p>
-                    <!-- Icon: Clipboard Check --><svg class="module-icon" xmlns="http://www.w3.org/2000/svg"
-                        fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                    <!-- Icon: Clipboard Check -->
+                    <svg class="module-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor" stroke-width="1.5">
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M9 12l2 2 4-4m-6 0h2m-2 4h4M3 6h18a2 2 0 012 2v8a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2z" />
                     </svg>
-                </button>
+                </a>
 
-                <!-- ACCESS CONTROL --><button class="module-button" onclick="handleModuleClick('Access Control')">
+                <!-- ACCESS CONTROL -->
+                <a href="access_control.html" class="module-button">
                     <h3 data-lang-key="access_control" class="text-xl md:text-2xl font-bold mb-1">Access Control</h3>
                     <p data-lang-key="module_subtitle" class="subtitle-text">Access employee, notification, and access
                         control features.</p>
-                    <!-- Icon: Lock / Key --><svg class="module-icon" xmlns="http://www.w3.org/2000/svg" fill="none"
-                        viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                    <!-- Icon: Lock / Key -->
+                    <svg class="module-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor" stroke-width="1.5">
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M12 15v3m-3-3h6M5 11h14a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2z" />
                     </svg>
-                </button>
+                </a>
 
 
             </div>
