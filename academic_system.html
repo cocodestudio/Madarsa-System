@@ -308,6 +308,13 @@
                 'old_student_admission': 'Old Student Admission',
                 'new_student_admission': 'New Student Admission',
                 'student_summary': 'Student Summary',
+
+                // Examination Sub-Menu Options (New) - Matched to the image content
+                'assign_roll_number': 'Assign roll number',
+                'grades': 'Grades',
+                'exams': 'Exams',
+                'enter_number': 'Enter number.',
+                'assign_curriculum': 'Assign curriculum',
             },
             'hi': {
                 'madarsa_system': 'मदरसा प्रणाली',
@@ -343,6 +350,13 @@
                 'old_student_admission': 'पुराने छात्र का प्रवेश',
                 'new_student_admission': 'नए छात्र का प्रवेश',
                 'student_summary': 'छात्र सारांश',
+
+                // Examination Sub-Menu Options (New) - Matched to the image content
+                'assign_roll_number': 'रोल नंबर असाइन करें',
+                'grades': 'ग्रेड्स',
+                'exams': 'परीक्षाएं',
+                'enter_number': 'नंबर दर्ज करें।',
+                'assign_curriculum': 'पाठ्यक्रम असाइन करें',
             },
             'ur': {
                 'madarsa_system': 'مدرسہ نظام',
@@ -378,6 +392,13 @@
                 'old_student_admission': 'داخلہ قدیم طلباء',
                 'new_student_admission': 'داخلہ طالب علم',
                 'student_summary': 'گوشوارہ طلباء',
+
+                // Examination Sub-Menu Options (New) - Matched to the image content
+                'assign_roll_number': 'رول نمبر تفویض کریں',
+                'grades': 'گریڈز',
+                'exams': 'امتحانات',
+                'enter_number': 'نمبر درج کریں',
+                'assign_curriculum': 'نصاب تفویض کریں',
             }
         };
 
@@ -386,6 +407,7 @@
         let currentLang = 'en';
         let dialogContentElement;
         let admissionDialogContentElement;
+        let examinationDialogContentElement; // 1. Examination Dialog Content Element
 
         function getTranslation(key) {
             return langData[currentLang][key] || langData['en'][key] || key;
@@ -419,6 +441,17 @@
                 const admissionTitle = document.getElementById('admission-dialog-title');
                 if (admissionTitle) {
                     admissionTitle.classList.toggle('rtl-text-right', isRtl);
+                }
+            }
+
+            // 2. Apply directionality to the examination sub-menu container
+            const examinationMenu = document.getElementById('examination-menu-container');
+            if (examinationMenu) {
+                examinationMenu.style.direction = isRtl ? 'rtl' : 'ltr';
+                // Also update the alignment of the Urdu title inside the dialog
+                const examinationTitle = document.getElementById('examination-dialog-title');
+                if (examinationTitle) {
+                    examinationTitle.classList.toggle('rtl-text-right', isRtl);
                 }
             }
         }
@@ -489,9 +522,41 @@
             }
         }
 
+        // 3. Examination Dialog Functions
+        function openExaminationDialog() {
+            const dialog = document.getElementById('examination-sub-dialog');
+            if (dialog) {
+                dialog.classList.remove('hidden');
+                setTimeout(() => {
+                    dialog.classList.remove('opacity-0');
+                    if (examinationDialogContentElement) {
+                        examinationDialogContentElement.classList.remove('scale-95');
+                        examinationDialogContentElement.classList.add('scale-100');
+                    }
+                }, 10);
+            }
+        }
+
+        function closeExaminationDialog() {
+            const dialog = document.getElementById('examination-sub-dialog');
+            if (dialog) {
+                dialog.classList.add('opacity-0');
+                if (examinationDialogContentElement) {
+                    examinationDialogContentElement.classList.remove('scale-100');
+                    examinationDialogContentElement.classList.add('scale-95');
+                }
+                setTimeout(() => {
+                    dialog.classList.add('hidden');
+                }, 300);
+            }
+        }
+
+
         function handleModuleClick(moduleName) {
             if (moduleName === 'Admission Register') {
                 openAdmissionDialog();
+            } else if (moduleName === 'Examinations') { // 4. Handle Examinations click
+                openExaminationDialog();
             } else {
                 console.log(`Clicked on submodule: ${moduleName}. Implementation will be added later.`);
             }
@@ -514,9 +579,41 @@
                     url = 'student_summary_report.html';
                     break;
             }
-
+            closeAdmissionDialog();
             window.location.href = url;
         }
+
+        // 5. Examination Sub-menu Click Handler
+        function handleExaminationSubmenuClick(optionKey) {
+            let url = '';
+
+            switch (optionKey) {
+                case 'assign_roll_number':
+                    url = 'academic_assign_roll_number.html';
+                    break;
+                case 'grades': 
+                    url = 'academic_exam_grades.html';
+                    break;
+                case 'exams': 
+                    url = 'academic_exam_grades.html';
+                    break;
+                case 'enter_number': 
+                    url = 'academic_mark_entry.html';
+                    break;
+                case 'assign_curriculum':
+                    url = 'academic_assign_curriculum.html';
+                    break;
+                default:
+                    console.error(`Error: Invalid page key received: ${optionKey}`);
+                    return;
+            }
+
+            if (url) {
+                console.log(`Navigating to: ${url}`);
+                window.location.href = url;
+            }
+        }
+
 
         // --- Consistency functions for User Profile ---
         function handleUserAction(action) {
@@ -540,6 +637,7 @@
         window.onload = function () {
             dialogContentElement = document.getElementById('dialog-content');
             admissionDialogContentElement = document.getElementById('admission-dialog-content');
+            examinationDialogContentElement = document.getElementById('examination-dialog-content'); // 6. Initialize Examination Dialog Element
 
             currentLang = 'en'; // Defaulting to 'en'
 
@@ -566,6 +664,18 @@
             // Attach click handler to Admission Register main button
             const admissionRegisterBtn = document.getElementById('admission-register-btn');
             if (admissionRegisterBtn) { admissionRegisterBtn.addEventListener('click', () => handleModuleClick('Admission Register')); }
+
+            // 7. Examination Dialog Setup
+            const examinationCloseBtn = document.getElementById('examination-dialog-close-btn');
+            if (examinationCloseBtn) { examinationCloseBtn.addEventListener('click', closeExaminationDialog); }
+
+            const examinationsBtn = document.getElementById('examinations-btn');
+            if (examinationsBtn) {
+                examinationsBtn.addEventListener('click', (event) => {
+                    event.preventDefault(); // Prevent default link action (though it's a button now, good practice)
+                    handleModuleClick('Examinations');
+                });
+            }
 
             // Dropdown Toggle Setup (Ensures consistency with previous pattern)
             document.getElementById('user-menu-toggle').addEventListener('click', (event) => {
@@ -692,7 +802,7 @@
         <section class="module-section">
             <div class="module-grid">
 
-                <!-- ADMISSION REGISTER (ID added for easy JS access) -->
+                <!-- 1. ADMISSION REGISTER (Opens Modal to Sub-links) -->
                 <button class="module-button" id="admission-register-btn">
                     <h3 data-lang-key="admission_register" class="text-xl md:text-2xl font-bold mb-1">Admission Register
                     </h3>
@@ -704,8 +814,8 @@
                     </svg>
                 </button>
 
-                <!-- GRADES & SECTIONS -->
-                <button class="module-button" onclick="handleModuleClick('Grades & Sections')">
+                <!-- 2. GRADES & SECTIONS -->
+                <a href="grades_sections.html" class="module-button">
                     <h3 data-lang-key="grades_sections" class="text-xl md:text-2xl font-bold mb-1">Grades & Sections
                     </h3>
                     <p data-lang-key="module_subtitle" class="subtitle-text">Access detailed management features.</p>
@@ -714,10 +824,10 @@
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
                     </svg>
-                </button>
+                </a>
 
-                <!-- EXAMINATIONS -->
-                <button class="module-button" onclick="handleModuleClick('Examinations')">
+                <!-- 3. EXAMINATIONS (Opens Modal to Sub-links) -->
+                <button class="module-button" id="examinations-btn">
                     <h3 data-lang-key="examinations" class="text-xl md:text-2xl font-bold mb-1">Examinations</h3>
                     <p data-lang-key="module_subtitle" class="subtitle-text">Access detailed management features.</p>
                     <svg class="module-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -727,8 +837,8 @@
                     </svg>
                 </button>
 
-                <!-- RESULTS -->
-                <button class="module-button" onclick="handleModuleClick('Results')">
+                <!-- 4. RESULTS -->
+                <a href="academic_results.html" class="module-button">
                     <h3 data-lang-key="results" class="text-xl md:text-2xl font-bold mb-1">Results</h3>
                     <p data-lang-key="module_subtitle" class="subtitle-text">Access detailed management features.</p>
                     <svg class="module-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -736,21 +846,21 @@
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M12 8c1.657 0 3 .895 3 2s-1.343 2-3 2h-1M9 10h1m2 2h1m-1 2h1m-2-2v4m-2 2h6M12 22s-8-4-8-10V5l8-3 8 3v7c0 6-8 10-8 10z" />
                     </svg>
-                </button>
+                </a>
 
-                <!-- ATTENDANCE -->
-                <button class="module-button" onclick="handleModuleClick('Attendance')">
-                    <h3 data-lang-key="attendance" class="text-xl md:text-2xl font-bold mb-1">Attendance</h3>
+                <!-- 5. ATTENDANCE (Daily Marking) -->
+                <a href="academic_attendance.html" class="module-button">
+                    <h3 data-lang-key="attendance" class="text-xl md:text-2xl font-bold mb-1">Attendance (Daily)</h3>
                     <p data-lang-key="module_subtitle" class="subtitle-text">Access detailed management features.</p>
                     <svg class="module-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                         stroke="currentColor" stroke-width="1.5">
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M8 7V3m8 4V3m-4 4V3m-5 9h10m-10 4h10m-10 4h10M5 7h14a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V9a2 2 0 012-2z" />
                     </svg>
-                </button>
+                </a>
 
-                <!-- CURRICULUM -->
-                <button class="module-button" onclick="handleModuleClick('Curriculum')">
+                <!-- 6. CURRICULUM -->
+                <a href="academic_curriculum.html" class="module-button">
                     <h3 data-lang-key="curriculum" class="text-xl md:text-2xl font-bold mb-1">Curriculum</h3>
                     <p data-lang-key="module_subtitle" class="subtitle-text">Access detailed management features.</p>
                     <svg class="module-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -758,10 +868,10 @@
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M12 21l-8-4.5V5.5L12 1m0 20v-4.5m0 0l8-4.5V5.5L12 1m0 16.5l8-4.5M4 16.5l8-4.5M4 16.5V5.5m0 11V5.5m8 0V1m0 4.5l8 4.5" />
                     </svg>
-                </button>
+                </a>
 
-                <!-- PRINT LIU REPORTS -->
-                <button class="module-button" onclick="handleModuleClick('Print LIU Reports')">
+                <!-- 7. PRINT LIU REPORTS -->
+                <a href="academic_liu_report.html" class="module-button">
                     <h3 data-lang-key="print_liureports" class="text-xl md:text-2xl font-bold mb-1">Print LIU Reports
                     </h3>
                     <p data-lang-key="module_subtitle" class="subtitle-text">Access detailed management features.</p>
@@ -770,10 +880,10 @@
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M6 9h12M6 15h12M15 19H9a2 2 0 01-2-2v-3m8 0v3m-3-3v3m-3-3v3m10 0v-4a2 2 0 00-2-2H7a2 2 0 00-2 2v4m4 0h6m-6 0h6" />
                     </svg>
-                </button>
+                </a>
 
-                <!-- FILTER DATA -->
-                <button class="module-button" onclick="handleModuleClick('Filter Data')">
+                <!-- 8. FILTER DATA -->
+                <a href="academic_filter_data.html" class="module-button">
                     <h3 data-lang-key="filter_data" class="text-xl md:text-2xl font-bold mb-1">Filter Data</h3>
                     <p data-lang-key="module_subtitle" class="subtitle-text">Access detailed management features.</p>
                     <svg class="module-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -781,10 +891,10 @@
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-1 1h-3.828L12 10.172 8.828 7H4a1 1 0 01-1-1V4zM7 11.5v7.5m5-7.5v7.5m5-7.5v7.5" />
                     </svg>
-                </button>
+                </a>
 
-                <!-- CUSTOMIZABLE TABLE DISPLAY -->
-                <button class="module-button" onclick="handleModuleClick('Customizable Table Display')">
+                <!-- 9. CUSTOMIZABLE TABLE DISPLAY -->
+                <a href="academic_customizable_table.html" class="module-button">
                     <h3 data-lang-key="customizable_table" class="text-xl md:text-2xl font-bold mb-1">Customizable Table
                         Display</h3>
                     <p data-lang-key="module_subtitle" class="subtitle-text">Access detailed management features.</p>
@@ -793,10 +903,10 @@
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M4 7h16M4 11h16M4 15h16M4 19h16M11 7v12M17 7v12M5 7v12" />
                     </svg>
-                </button>
+                </a>
 
-                <!-- STUDENT ID CARDS -->
-                <button class="module-button" onclick="handleModuleClick('Student ID Cards')">
+                <!-- 10. STUDENT ID CARDS -->
+                <a href="academic_id_cards.html" class="module-button">
                     <h3 data-lang-key="student_id_cards" class="text-xl md:text-2xl font-bold mb-1">Student ID Cards
                     </h3>
                     <p data-lang-key="module_subtitle" class="subtitle-text">Access detailed management features.</p>
@@ -805,10 +915,10 @@
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M3 10h18M3 14h18M5 18h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
                     </svg>
-                </button>
+                </a>
 
-                <!-- ATTENDANCE REGISTER -->
-                <button class="module-button" onclick="handleModuleClick('Attendance Register')">
+                <!-- 11. ATTENDANCE REGISTER -->
+                <a href="academic_attendance_register.html" class="module-button">
                     <h3 data-lang-key="attendance_register" class="text-xl md:text-2xl font-bold mb-1">Attendance
                         Register</h3>
                     <p data-lang-key="module_subtitle" class="subtitle-text">Access detailed management features.</p>
@@ -817,7 +927,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M12 12h.01" />
                     </svg>
-                </button>
+                </a>
 
 
             </div>
@@ -900,6 +1010,56 @@
                 <!-- 4. Student Summary -->
                 <button class="sub-module-button w-full" onclick="handleAdmissionSubmenuClick('student_summary')">
                     <span data-lang-key="student_summary">Student Summary</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- EXAMINATION SUB-MENU DIALOG (NEW) -->
+    <div id="examination-sub-dialog"
+        class="hidden opacity-0 fixed inset-0 z-40 flex items-center justify-center dialog-backdrop">
+        <div id="examination-dialog-content"
+            class="sub-dialog-content p-6 rounded-3xl w-11/12 transform scale-95 transition-all duration-300">
+
+            <div class="flex items-center" id="examination-menu-container">
+                <!-- Close Button -->
+                <button id="examination-dialog-close-btn"
+                    class="text-red-500 hover:text-red-700 transition-colors p-1 absolute top-4 left-4"
+                    style="font-size: 2rem; line-height: 1;">
+                    &times;
+                </button>
+                <!-- Title (Centered) -->
+                <h3 id="examination-dialog-title" data-lang-key="examinations"
+                    class="text-xl md:text-2xl font-bold flex-grow text-center mb-6">
+                    Examinations
+                </h3>
+            </div>
+
+
+            <div class="space-y-4">
+                <!-- 1. Assign roll number -->
+                <button class="sub-module-button w-full" onclick="handleExaminationSubmenuClick('assign_roll_number')">
+                    <span data-lang-key="assign_roll_number">Assign roll number</span>
+                </button>
+
+                <!-- 2. Grades -->
+                <button class="sub-module-button w-full" onclick="handleExaminationSubmenuClick('grades')">
+                    <span data-lang-key="grades">Grades</span>
+                </button>
+
+                <!-- 3. Exams -->
+                <button class="sub-module-button w-full" onclick="handleExaminationSubmenuClick('exams')">
+                    <span data-lang-key="exams">Exams</span>
+                </button>
+
+                <!-- 4. Enter number. -->
+                <button class="sub-module-button w-full" onclick="handleExaminationSubmenuClick('enter_number')">
+                    <span data-lang-key="enter_number">Enter number.</span>
+                </button>
+
+                <!-- 5. Assign curriculum -->
+                <button class="sub-module-button w-full" onclick="handleExaminationSubmenuClick('assign_curriculum')">
+                    <span data-lang-key="assign_curriculum">Assign curriculum</span>
                 </button>
             </div>
         </div>

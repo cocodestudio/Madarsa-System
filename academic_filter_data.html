@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Filter Data - Academic System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- jsPDF Autotable Plugin for complex table layout -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+
+
+    <style>
+        :root {
+            --color-primary: #00A693;
+            --color-background: #F2F3F4;
+            --color-accent: #E08A27;
+            --color-text-dark: #1A1A1A;
+            --color-text-light: #FFFFFF;
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;700&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap');
+
+        /* Language Styles */
+        body,
+        .lang-en {
+            font-family: 'Poppins', sans-serif;
+            direction: ltr;
+            background-color: var(--color-background);
+        }
+
+        .lang-hi {
+            font-family: 'Noto Sans Devanagari', sans-serif;
+            direction: ltr;
+        }
+
+        .lang-ur {
+            font-family: 'Noto Nastaliq Urdu', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+            direction: rtl;
+            line-height: 1.8;
+            text-align: right;
+        }
+
+        /* Form & Inputs */
+        .form-input,
+        select {
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid #ccc;
+            width: 100%;
+            font-family: inherit;
+        }
+
+        .form-input:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(0, 166, 147, 0.2);
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            font-size: 0.875rem;
+            color: var(--color-text-dark);
+        }
+
+        /* Buttons */
+        .primary-button {
+            padding: 0.5rem 1.5rem;
+            background-color: #10b981;
+            color: white;
+            font-weight: 600;
+            border-radius: 0.25rem;
+            transition: background-color 0.2s;
+            cursor: pointer;
+        }
+
+        /* Green Apply Filter button */
+        .primary-button:hover {
+            background-color: #059669;
+        }
+
+        .print-button {
+            padding: 0.5rem 1.5rem;
+            background-color: var(--color-primary);
+            color: white;
+            font-weight: 600;
+            border-radius: 0.25rem;
+            transition: background-color 0.2s;
+            cursor: pointer;
+        }
+
+        /* General Print button */
+
+        /* Fixed Header */
+        header {
+            background-color: var(--color-text-light);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            width: 100%;
+            z-index: 10;
+            padding: 1rem 2rem;
+        }
+
+        /* --- Report Table Styling --- */
+        .report-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .report-table th,
+        .report-table td {
+            padding: 0.75rem 1rem;
+            font-size: 0.8rem;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+
+        /* Header Styling (Matching Image Blue/White) */
+        .report-table th {
+            background-color: #3b82f6;
+            color: white;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        /* Body Styling (Alternating light colors) */
+        .report-table tbody tr:nth-child(even) {
+            background-color: #f7f7f7;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .table-container table {
+            min-width: 1500px;
+        }
+    </style>
+</head>
+
+<body class="lang-en">
+
+    <script>
+        // Helper to format date YYYY-MM-DD
+        function formatDate(date) {
+            const d = new Date(date);
+            let month = '' + (d.getMonth() + 1);
+            let day = '' + d.getDate();
+            const year = d.getFullYear();
+
+            if (month.length < 2) month = '0' + month;
+            if (day.length < 2) day = '0' + day;
+
+            return [year, month, day].join('-');
+        }
+
+        // --- Dummy Data (Extending previous admitted students data) ---
+        let DUMMY_STUDENTS = [
+            { name: 'Ali Raza', father: 'Mohammad Reza', entry: 'DAKH001', num: 1, state: 'Punjab', city: 'Lahore', pcode: '54000', poffice: 'Lahore Office', address: 'Village Lahore', mobile: '03001234567', aadhaar: '123456789012', dob: '0000-00-00', status: 'First', residential: 'Non-resident', aided: 'Unaided' },
+            { name: 'Fatima Ansar', father: 'Ismat Ansar', entry: 'DAKH002', num: 2, state: 'Uttar Pradesh', city: 'Agra', pcode: '282001', poffice: 'Delhi PO', address: 'City Delhi', mobile: '09876543210', aadhaar: '210987654321', dob: '0000-00-00', status: 'Rabia', residential: 'Resident', aided: 'Half-assist' },
+            { name: 'Ahmed Faraz', father: 'Syed Faraz', entry: 'DAKH003', num: 3, state: 'Sindh', city: 'Karachi', pcode: '75500', poffice: 'Karachi PO', address: 'Street No. 5 Karachi', mobile: '03111223344', aadhaar: '987654321098', dob: '0000-00-00', status: 'Samia', residential: 'Resident', aided: 'Relief' },
+            { name: 'Maryam Shah', father: 'Shahid Shah', entry: 'DAKH004', num: 4, state: 'Punjab', city: 'Lahore', pcode: '54600', poffice: 'Lahore PO', address: 'Gujarpura neighborhood', mobile: '03221234567', aadhaar: '321098765432', dob: '0000-00-00', status: 'Arbitration', residential: 'Resident', aided: 'Unaided' },
+            { name: 'Ayesha Siddiqui', father: 'Sadiq Siddiqui', entry: 'DAKH006', num: 6, state: 'Punjab', city: 'Multan', pcode: '60000', poffice: 'Multan PO', address: 'Street No. 2 Multan', mobile: '03441234567', aadhaar: '543210987654', dob: '0000-00-00', status: 'First', residential: 'Non-resident', aided: 'Unaided' },
+            { name: 'Salmah Arif', father: 'Arif Ahmed', entry: 'DAKH005', num: 5, state: 'Punjab', city: 'Faisalabad', pcode: '38000', poffice: 'Faisalabad PO', address: 'Gulberg neighborhood', mobile: '03331234567', aadhaar: '432109876543', dob: '0000-00-00', status: 'Fifth', residential: 'Resident', aided: 'Half-assist' },
+        ];
+
+        const AVAILABLE_CLASSES = ['First', 'Rabia', 'Samia', 'Fifth', 'Arbitration', 'Test Urdu'];
+        const RESIDENTIAL_STATUSES = ['Residential', 'Non-resident'];
+        const AID_STATUSES = ['Aided', 'Unaided', 'Half-assist', 'Relief'];
+
+        // --- Multilingual Data ---
+        const langData = {
+            'en': {
+                'academic_system': 'Academic System',
+                'page_title': 'Student data',
+                'back_to_academic': 'Back to Academic',
+                'logout': 'Logout',
+
+                // Filters/Actions
+                'apply_filter': 'Apply filter',
+                'print_report': 'Print Report',
+                'address_filter': 'Address:',
+                'pin_code_filter': 'PIN Code:',
+                'residential_filter': 'Residential / Non-residential:',
+                'aided_filter': 'Aided/Unaided:',
+                'select': 'Select',
+
+                // Table Headers (Matching Image)
+                'state': 'State', 'city': 'City', 'pin_code': 'PIN Code', 'post_office': 'Post office',
+                'address': 'Address', 'mobile': 'Mobile', 'aadhaar': 'Aadhaar', 'date_of_birth': 'Date of birth',
+                'status': 'Status', 'father_name': 'Father\'s Name', 'name': 'Name', 'entry_number': 'Entry number',
+                'number': 'Number'
+            },
+            'ur': {
+                'academic_system': 'تعلیمی نظام',
+                'page_title': 'طالب علم کا ڈیٹا',
+                'back_to_academic': 'اکیڈمک پر واپس جائیں',
+                'logout': 'لاگ آؤٹ',
+
+                // Filters/Actions
+                'apply_filter': 'فلٹر لگائیں',
+                'print_report': 'رپورٹ پرنٹ کریں',
+                'address_filter': 'پتہ:',
+                'pin_code_filter': 'پن کوڈ:',
+                'residential_filter': 'رہائشی / غیر رہائشی:',
+                'aided_filter': 'معاونت یافتہ / غیر معاونت یافتہ:',
+                'select': 'منتخب کریں',
+
+                // Table Headers (Matching Image)
+                'state': 'صوبہ', 'city': 'شہر', 'pin_code': 'پن کوڈ', 'post_office': 'پوسٹ آفس',
+                'address': 'پتہ', 'mobile': 'موبائل', 'aadhaar': 'آدھار', 'date_of_birth': 'تاریخ پیدائش',
+                'status': 'حالت', 'father_name': 'والد کا نام', 'name': 'نام', 'entry_number': 'انٹری نمبر',
+                'number': 'نمبر'
+            }
+        };
+
+        let currentLang = 'en';
+
+        function getTranslation(key) {
+            return langData[currentLang][key] || langData['en'][key] || key;
+        }
+
+        // --- Core UI Update Functions ---
+        function updateContent() {
+            document.body.className = 'lang-' + currentLang;
+
+            document.querySelectorAll('[data-lang-key]').forEach(el => {
+                const key = el.getAttribute('data-lang-key');
+                el.textContent = getTranslation(key);
+            });
+
+            populateDropdowns();
+            renderStudentsTable(filterStudents());
+        }
+
+        function changeLanguage(lang) {
+            if (lang in langData) {
+                currentLang = lang;
+                localStorage.setItem('madarsaSystemLang', lang);
+                updateContent();
+            }
+        }
+
+        function populateDropdowns() {
+            const residentialDropdown = document.getElementById('residential-filter');
+            const aidedDropdown = document.getElementById('aided-filter');
+            const classDropdown = document.getElementById('class-filter');
+
+            // Residential Filter
+            residentialDropdown.innerHTML = `<option value="">${getTranslation('select')}</option>`;
+            RESIDENTIAL_STATUSES.forEach(status => {
+                residentialDropdown.innerHTML += `<option value="${status}">${status}</option>`;
+            });
+
+            // Aided Filter
+            aidedDropdown.innerHTML = `<option value="">${getTranslation('select')}</option>`;
+            AID_STATUSES.forEach(status => {
+                aidedDropdown.innerHTML += `<option value="${status}">${status}</option>`;
+            });
+
+            // Class/Status Filter
+            classDropdown.innerHTML = `<option value="">${getTranslation('select')}</option>`;
+            AVAILABLE_CLASSES.forEach(c => {
+                classDropdown.innerHTML += `<option value="${c}">${c}</option>`;
+            });
+        }
+
+        // --- Table Rendering ---
+        function renderStudentsTable(studentList) {
+            const tbody = document.getElementById('students-table-body');
+            if (!tbody) return;
+
+            tbody.innerHTML = '';
+
+            if (studentList.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="15" class="text-center text-gray-500 p-4">${getTranslation('no_data') || 'No students found matching the filters.'}</td></tr>`;
+                return;
+            }
+
+            studentList.forEach(student => {
+                const tr = document.createElement('tr');
+
+                // Define headers array for easy mapping
+                const orderedKeys = ['number', 'entry', 'name', 'father', 'status', 'dob', 'aadhaar', 'mobile', 'address', 'poffice', 'pcode', 'city', 'state', 'residential', 'aided'];
+
+                tr.innerHTML = `
+                    <td class="text-center">${student.num}</td>
+                    <td class="font-semibold text-gray-800">${student.name}</td>
+                    <td>${student.father}</td>
+                    <td>${student.status}</td>
+                    <td class="text-center">${student.dob}</td>
+                    <td>${student.aadhaar}</td>
+                    <td>${student.mobile}</td>
+                    <td>${student.address}</td>
+                    <td>${student.poffice}</td>
+                    <td class="text-center">${student.pcode}</td>
+                    <td>${student.city}</td>
+                    <td>${student.state}</td>
+                    <td>${student.residential}</td>
+                    <td>${student.aided}</td>
+                `;
+
+                tbody.appendChild(tr);
+            });
+        }
+
+        // --- Filter Logic ---
+        function filterStudents() {
+            const addressInput = document.getElementById('address-input').value.toLowerCase();
+            const pinCodeInput = document.getElementById('pin-code-input').value;
+            const residentialFilter = document.getElementById('residential-filter').value;
+            const aidedFilter = document.getElementById('aided-filter').value;
+            const classFilter = document.getElementById('class-filter').value;
+
+            return DUMMY_STUDENTS.filter(s => {
+                const matchesAddress = !addressInput || s.address.toLowerCase().includes(addressInput);
+                const matchesPinCode = !pinCodeInput || s.pcode.includes(pinCodeInput);
+                const matchesResidential = !residentialFilter || s.residential === residentialFilter;
+                const matchesAided = !aidedFilter || s.aided === aidedFilter;
+                const matchesClass = !classFilter || s.status === classFilter;
+
+                return matchesAddress && matchesPinCode && matchesResidential && matchesAided && matchesClass;
+            });
+        }
+
+        function handleFilter() {
+            renderStudentsTable(filterStudents());
+        }
+
+        function generatePDFReport() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF('l', 'pt', 'a4'); // Landscape A4
+
+            const filteredData = filterStudents();
+
+            const headers = [
+                ['Number', 'Entry Number', 'Name', 'Father\'s Name', 'Status', 'DOB', 'Aadhaar', 'Mobile', 'Address', 'P.O.', 'PIN', 'City', 'State', 'Residence', 'Aid']
+            ];
+
+            const body = filteredData.map(s => [
+                s.num, s.entry, s.name, s.father, s.status, s.dob, s.aadhaar, s.mobile, s.address, s.poffice, s.pcode, s.city, s.state, s.residential, s.aided
+            ]);
+
+            doc.setFontSize(16);
+            doc.text(getTranslation('page_title').toUpperCase(), doc.internal.pageSize.getWidth() / 2, 30, { align: 'center' });
+
+            doc.autoTable({
+                head: headers,
+                body: body,
+                startY: 45,
+                theme: 'grid',
+                styles: { fontSize: 7, cellPadding: 3, font: 'Poppins', overflow: 'linebreak' },
+                headStyles: { fillColor: '#3b82f6', textColor: 255 },
+                margin: { left: 10, right: 10 },
+            });
+
+            doc.save(`Student_Data_Filter_${formatDate(new Date())}.pdf`);
+        }
+
+
+        // Initialize content and language
+        window.onload = function () {
+            const storedLang = localStorage.getItem('madarsaSystemLang');
+            currentLang = (storedLang && storedLang in langData) ? storedLang : 'en';
+
+            // Initial content update and table render
+            updateContent();
+
+            // Attach filter listeners
+            document.getElementById('apply-filter-btn').addEventListener('click', handleFilter);
+            document.getElementById('print-report-btn').addEventListener('click', generatePDFReport);
+
+            // Live search listeners
+            document.getElementById('address-input').addEventListener('input', handleFilter);
+            document.getElementById('pin-code-input').addEventListener('input', handleFilter);
+            document.getElementById('residential-filter').addEventListener('change', handleFilter);
+            document.getElementById('aided-filter').addEventListener('change', handleFilter);
+            document.getElementById('class-filter').addEventListener('change', handleFilter);
+        };
+    </script>
+
+    <!-- HEADER -->
+    <header>
+        <div class="max-w-7xl mx-auto w-full flex justify-between items-center">
+            <!-- Left: Back Button & Title -->
+            <div class="flex items-center space-x-4">
+                <a href="academic_system.html" class="action-button bg-gray-100 text-gray-700 hover:bg-gray-200"
+                    data-lang-key="back_to_academic">Back to Academic</a>
+                <h1 class="text-xl font-bold" data-lang-key="page_title" style="color: var(--color-primary);">Student
+                    data</h1>
+            </div>
+
+            <!-- Right: Language Switch -->
+            <div class="flex items-center space-x-2">
+                <select onchange="changeLanguage(this.value)" class="bg-gray-100 rounded-lg p-1 text-sm">
+                    <option value="en" selected>English</option>
+                    <option value="ur">اردو</option>
+                </select>
+                <button onclick="window.location.href='login.html'"
+                    class="text-sm font-semibold text-red-600 hover:text-red-800 transition-colors ml-4 action-button px-3 py-1"
+                    data-lang-key="logout">Logout</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="max-w-7xl mx-auto w-full p-4 md:p-8">
+
+        <!-- Filter Card -->
+        <div class="bg-white p-6 md:p-8 rounded-xl shadow-2xl mb-8">
+            <h2 class="text-2xl font-bold text-gray-700 mb-6" data-lang-key="page_title">Student data</h2>
+
+            <!-- Filters Section -->
+            <div class="grid grid-cols-1 md:grid-cols-6 gap-4 items-end">
+
+                <!-- Address -->
+                <div class="form-group md:col-span-2">
+                    <label for="address-input" class="form-label" data-lang-key="address_filter">Address:</label>
+                    <input type="text" id="address-input" class="form-input" placeholder="Street/Village/City">
+                </div>
+
+                <!-- PIN Code -->
+                <div class="form-group">
+                    <label for="pin-code-input" class="form-label" data-lang-key="pin_code_filter">PIN Code:</label>
+                    <input type="text" id="pin-code-input" class="form-input" placeholder="e.g. 54000">
+                </div>
+
+                <!-- Residential / Non-residential -->
+                <div class="form-group">
+                    <label for="residential-filter" class="form-label" data-lang-key="residential_filter">Residential /
+                        Non-residential:</label>
+                    <select id="residential-filter" class="form-input">
+                        <!-- Options populated by JS -->
+                    </select>
+                </div>
+
+                <!-- Aided / Unaided -->
+                <div class="form-group">
+                    <label for="aided-filter" class="form-label" data-lang-key="aided_filter">Aided/Unaided:</label>
+                    <select id="aided-filter" class="form-input">
+                        <!-- Options populated by JS -->
+                    </select>
+                </div>
+
+                <!-- Class Filter -->
+                <div class="form-group">
+                    <label for="class-filter" class="form-label" data-lang-key="status">Status (Grade):</label>
+                    <select id="class-filter" class="form-input">
+                        <!-- Options populated by JS -->
+                    </select>
+                </div>
+
+                <!-- Apply Filter Button (Moved up for better flow) -->
+                <div class="form-group md:col-span-1 flex space-x-2">
+                    <button type="button" id="apply-filter-btn" class="action-button primary-button flex-grow"
+                        data-lang-key="apply_filter">Apply Filter</button>
+                    <button type="button" onclick="resetFilters()"
+                        class="action-button bg-gray-200 text-gray-700 hover:bg-gray-300 flex-grow"
+                        data-lang-key="reset_filter">Reset</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Student Data Table -->
+        <div class="bg-white p-6 md:p-8 rounded-xl shadow-2xl">
+
+            <div class="flex justify-end mb-4">
+                <button type="button" id="print-report-btn" class="print-button flex items-center space-x-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                        <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                        <rect x="6" y="14" width="12" height="8"></rect>
+                    </svg>
+                    <span data-lang-key="print_report">Print Report</span>
+                </button>
+            </div>
+
+            <div class="table-container">
+                <table class="report-table">
+                    <thead>
+                        <tr>
+                            <th data-lang-key="number" style="width: 3%">No.</th>
+                            <th data-lang-key="entry_number" style="width: 7%">Entry number</th>
+                            <th data-lang-key="name" style="width: 10%">Name</th>
+                            <th data-lang-key="father_name" style="width: 10%">Father's Name</th>
+                            <th data-lang-key="status" style="width: 7%">Status</th>
+                            <th data-lang-key="date_of_birth" style="width: 8%">Date of birth</th>
+                            <th data-lang-key="aadhaar" style="width: 8%">Aadhaar</th>
+                            <th data-lang-key="mobile" style="width: 8%">Mobile</th>
+                            <th data-lang-key="address" style="width: 15%">Address</th>
+                            <th data-lang-key="post_office" style="width: 8%">Post office</th>
+                            <th data-lang-key="pin_code" style="width: 6%">PIN Code</th>
+                            <th data-lang-key="city" style="width: 5%">City</th>
+                            <th data-lang-key="state" style="width: 5%">State</th>
+                            <th data-lang-key="residential_filter" style="width: 5%">Residential</th>
+                            <th data-lang-key="aided_filter" style="width: 5%">Aided/Unaided</th>
+                        </tr>
+                    </thead>
+                    <tbody id="students-table-body">
+                        <!-- Student data will be injected here by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+</body>
+
+</html>

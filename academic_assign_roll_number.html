@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assign Roll Number - Academic System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        :root {
+            --color-primary: #00A693;
+            --color-background: #F2F3F4;
+            --color-accent: #E08A27;
+            --color-text-dark: #1A1A1A;
+            --color-text-light: #FFFFFF;
+            --color-yellow: #FBBF24;
+            --color-blue: #3b82f6;
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;700&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap');
+
+        /* Language Styles */
+        body,
+        .lang-en {
+            font-family: 'Poppins', sans-serif;
+            direction: ltr;
+            background-color: var(--color-background);
+        }
+
+        .lang-hi {
+            font-family: 'Noto Sans Devanagari', sans-serif;
+            direction: ltr;
+        }
+
+        .lang-ur {
+            font-family: 'Noto Nastaliq Urdu', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+            direction: rtl;
+            line-height: 1.8;
+            text-align: right;
+        }
+
+        /* Form & Inputs */
+        .form-input,
+        select {
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid #ccc;
+            width: 100%;
+            font-family: inherit;
+        }
+
+        .form-input:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(0, 166, 147, 0.2);
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            font-size: 0.875rem;
+            color: var(--color-dark-blue);
+        }
+
+        /* Buttons */
+        .primary-button {
+            padding: 0.75rem 1.5rem;
+            background-color: #10b981;
+            /* Green Save Button */
+            color: white;
+            font-weight: 600;
+            border-radius: 0.5rem;
+            transition: background-color 0.2s;
+            cursor: pointer;
+        }
+
+        .primary-button:hover {
+            background-color: #059669;
+        }
+
+        .secondary-button {
+            background-color: var(--color-yellow);
+            /* Yellow Automatic Button */
+            color: var(--color-text-dark);
+            font-weight: 700;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            transition: background-color 0.2s;
+        }
+
+        /* Fixed Header */
+        header {
+            background-color: var(--color-text-light);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            width: 100%;
+            z-index: 10;
+            padding: 1rem 2rem;
+        }
+
+        /* Card Structure */
+        .centered-card {
+            background-color: white;
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            max-width: 900px;
+            width: 100%;
+            margin: 2rem auto;
+            text-align: center;
+        }
+
+        /* Table Styling (Matching Image Yellow/White) */
+        .roll-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .roll-table th,
+        .roll-table td {
+            padding: 0.8rem 1rem;
+            font-size: 0.9rem;
+            border: 1px solid #ccc;
+        }
+
+        .roll-table thead th {
+            background-color: var(--color-yellow);
+            color: var(--color-text-dark);
+            font-weight: 700;
+            text-transform: uppercase;
+            border-color: #f59e0b;
+        }
+
+        .roll-input {
+            width: 80px;
+            padding: 0.4rem;
+            text-align: center;
+            border: 1px solid #ccc;
+            border-radius: 0.25rem;
+        }
+    </style>
+</head>
+
+<body class="lang-en">
+
+    <script>
+        // --- Dummy Data ---
+        const DUMMY_EXAMS = ['University', 'Mid-Term 2025', 'Annual 2024'];
+        const DUMMY_CLASSES = ['First', 'Sania', 'Rabia', 'Fifth', 'Hifz'];
+
+        // Simulating the list of students in a selected class, including current roll no
+        let DUMMY_STUDENTS_ROLL = [
+            { id: 1, name: 'Ali Reza', currentRoll: 1, section: 'First' },
+            { id: 2, name: 'Ayesha Siddiqui', currentRoll: 2, section: 'First' },
+            { id: 3, name: 'Ahmed Faraz', currentRoll: 3, section: 'Sania' },
+            { id: 4, name: 'Nabila Khalid', currentRoll: 4, section: 'Sania' },
+        ];
+
+        const ROLL_STORAGE_KEY = 'madarsaRollAssignments';
+
+        // Load/Save Logic (Simulated)
+        function loadRolls() {
+            // In a real app, this would load roll number assignments for the selected exam/class
+        }
+
+        // --- Multilingual Data ---
+        const langData = {
+            'en': {
+                'academic_system': 'Academic System',
+                'page_title': 'Assign roll number',
+                'back_to_academic': 'Back to Academic',
+                'logout': 'Logout',
+
+                // Form/Labels
+                'select_exam': 'Select exam:',
+                'suffix': 'Suffix (if desired):',
+                'example_suffix': 'example A or 1',
+                'assign_auto': 'Assign automatic roll number',
+                'save_roll': 'Save roll number',
+                'select_exam_placeholder': '-- Select exam --',
+
+                // Table Headers
+                'new_roll_number': 'New roll number',
+                'current_roll_number': 'Current roll number',
+                'door': 'Door (Section)',
+                'student': 'Student',
+                'roll_saved_success': 'Roll numbers successfully saved!',
+                'roll_auto_assigned': 'Automatic roll numbers assigned to the table.'
+            },
+            'ur': {
+                'academic_system': 'تعلیمی نظام',
+                'page_title': 'رول نمبر تفویض کریں',
+                'back_to_academic': 'اکیڈمک پر واپس جائیں',
+                'logout': 'لاگ آؤٹ',
+
+                // Form/Labels
+                'select_exam': 'امتحان منتخب کریں:',
+                'suffix': 'لاحقہ (اگر مطلوب ہو):',
+                'example_suffix': 'مثلاً A یا 1',
+                'assign_auto': 'خودکار رول نمبر تفویض کریں',
+                'save_roll': 'رول نمبر محفوظ کریں',
+                'select_exam_placeholder': '-- امتحان منتخب کریں --',
+
+                // Table Headers
+                'new_roll_number': 'نیا رول نمبر',
+                'current_roll_number': 'موجودہ رول نمبر',
+                'door': 'کلاس',
+                'student': 'طالب علم',
+                'roll_saved_success': 'رول نمبر کامیابی سے محفوظ ہو گئے!',
+                'roll_auto_assigned': 'خودکار رول نمبرز کو جدول میں تفویض کر دیا گیا ہے۔'
+            }
+        };
+
+        let currentLang = 'en';
+
+        function getTranslation(key) {
+            return langData[currentLang][key] || langData['en'][key] || key;
+        }
+
+        // --- Core UI Update Functions ---
+        function updateContent() {
+            document.body.className = 'lang-' + currentLang;
+
+            document.querySelectorAll('[data-lang-key]').forEach(el => {
+                const key = el.getAttribute('data-lang-key');
+                el.textContent = getTranslation(key);
+            });
+
+            populateDropdowns();
+            renderRollAssignmentTable(DUMMY_STUDENTS_ROLL); // Initial render with full list
+        }
+
+        function changeLanguage(lang) {
+            if (lang in langData) {
+                currentLang = lang;
+                localStorage.setItem('madarsaSystemLang', lang);
+                updateContent();
+            }
+        }
+
+        function populateDropdowns() {
+            const examDropdown = document.getElementById('exam-select');
+
+            examDropdown.innerHTML = `<option value="">${getTranslation('select_exam_placeholder')}</option>`;
+            DUMMY_EXAMS.forEach(exam => {
+                examDropdown.innerHTML += `<option value="${exam}">${exam}</option>`;
+            });
+        }
+
+        // --- Table Rendering ---
+        function renderRollAssignmentTable(studentList) {
+            const tbody = document.getElementById('roll-table-body');
+            if (!tbody) return;
+
+            tbody.innerHTML = '';
+
+            if (studentList.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" class="text-center text-gray-500 p-4">Select an exam to load students.</td></tr>`;
+                return;
+            }
+
+            studentList.forEach(student => {
+                const tr = document.createElement('tr');
+                tr.dataset.studentId = student.id;
+
+                tr.innerHTML = `
+                    <td><input type="text" name="new-roll-${student.id}" class="roll-input text-center" value=""></td>
+                    <td>${student.currentRoll}</td>
+                    <td>${student.section}</td>
+                    <td>${student.name}</td>
+                `;
+
+                // Reorder columns to match image: New Roll, Current Roll, Section, Student
+                const cells = Array.from(tr.children).map(c => c.outerHTML);
+                tr.innerHTML = `${cells[0]}${cells[1]}${cells[2]}${cells[3]}`;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // --- Action Logic ---
+        function handleAutomaticAssignment() {
+            const suffix = document.getElementById('suffix-input').value.trim();
+            let roll = 1;
+
+            document.querySelectorAll('#roll-table-body tr').forEach(row => {
+                const newRollInput = row.querySelector('input[name^="new-roll-"]');
+                if (newRollInput) {
+                    newRollInput.value = roll + (suffix ? suffix : '');
+                    roll++;
+                }
+            });
+
+            alert(getTranslation('roll_auto_assigned'));
+        }
+
+        function handleSaveRolls() {
+            const exam = document.getElementById('exam-select').value;
+            if (!exam) {
+                alert("Please select an exam first.");
+                return;
+            }
+
+            const rollAssignments = [];
+            let allValid = true;
+
+            document.querySelectorAll('#roll-table-body tr').forEach(row => {
+                const studentId = row.dataset.studentId;
+                const newRollInput = row.querySelector('input[name^="new-roll-"]');
+                const newRoll = newRollInput ? newRollInput.value.trim() : '';
+
+                if (!newRoll) {
+                    newRollInput.classList.add('border-red-500');
+                    allValid = false;
+                    return;
+                }
+                newRollInput.classList.remove('border-red-500');
+
+                rollAssignments.push({
+                    studentId: studentId,
+                    rollNumber: newRoll
+                });
+            });
+
+            if (!allValid) {
+                alert("Please fill new roll numbers for all students.");
+                return;
+            }
+
+            // Dummy Save Logic
+            console.log(`Saving Roll Numbers for Exam: ${exam}`);
+            console.log("Assignments:", rollAssignments);
+
+            // In a real application, this would update the DUMMY_STUDENTS_ROLL array and localStorage
+
+            alert(getTranslation('roll_saved_success'));
+        }
+
+        function handleExamSelect() {
+            // This function would fetch students belonging to the selected exam/class
+            const selectedExam = document.getElementById('exam-select').value;
+            const studentsInClass = DUMMY_STUDENTS_ROLL.filter(s => s.section === 'First'); // Simplified filter logic
+
+            if (selectedExam) {
+                renderRollAssignmentTable(studentsInClass);
+            } else {
+                renderRollAssignmentTable([]); // Clear table if no exam is selected
+            }
+        }
+
+
+        // Initialize content and language
+        window.onload = function () {
+            loadRolls();
+            const storedLang = localStorage.getItem('madarsaSystemLang');
+            currentLang = (storedLang && storedLang in langData) ? storedLang : 'en';
+
+            // Initial content update and table render (Table will be empty initially)
+            updateContent();
+
+            // Attach listeners
+            document.getElementById('exam-select').addEventListener('change', handleExamSelect);
+            document.getElementById('assign-auto-btn').addEventListener('click', handleAutomaticAssignment);
+            document.getElementById('save-roll-btn').addEventListener('click', handleSaveRolls);
+        };
+    </script>
+
+    <!-- HEADER -->
+    <header>
+        <div class="max-w-7xl mx-auto w-full flex justify-between items-center">
+            <!-- Left: Back Button & Title -->
+            <div class="flex items-center space-x-4">
+                <a href="academic_system.html" class="action-button bg-gray-100 text-gray-700 hover:bg-gray-200"
+                    data-lang-key="back_to_academic">Back to Academic</a>
+                <h1 class="text-xl font-bold" data-lang-key="page_title" style="color: var(--color-primary);">Assign
+                    Roll Number</h1>
+            </div>
+
+            <!-- Right: Language Switch -->
+            <div class="flex items-center space-x-2">
+                <select onchange="changeLanguage(this.value)" class="bg-gray-100 rounded-lg p-1 text-sm">
+                    <option value="en" selected>English</option>
+                    <option value="ur">اردو</option>
+                </select>
+                <button onclick="window.location.href='login.html'"
+                    class="text-sm font-semibold text-red-600 hover:text-red-800 transition-colors ml-4 action-button px-3 py-1"
+                    data-lang-key="logout">Logout</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="max-w-7xl mx-auto w-full p-4 md:p-8">
+
+        <h2 class="text-3xl font-bold text-gray-700 text-center mb-6" data-lang-key="page_title">Assign Roll Number</h2>
+
+        <!-- Roll Assignment Card -->
+        <div class="centered-card">
+
+            <!-- Filter Controls -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8 items-end">
+
+                <!-- Exam Select -->
+                <div class="form-group md:col-span-2">
+                    <label for="exam-select" class="form-label" data-lang-key="select_exam">Select exam:</label>
+                    <select id="exam-select" class="form-input"></select>
+                </div>
+
+                <!-- Suffix Input -->
+                <div class="form-group md:col-span-1">
+                    <label for="suffix-input" class="form-label" data-lang-key="suffix">Suffix (if desired):</label>
+                    <input type="text" id="suffix-input" class="form-input" placeholder="example A or 1">
+                </div>
+
+                <!-- Placeholder -->
+                <div class="md:col-span-1"></div>
+            </div>
+
+            <!-- Roll Assignment Table -->
+            <div class="table-container">
+                <table class="roll-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 15%" data-lang-key="new_roll_number">New roll number</th>
+                            <th style="width: 15%" data-lang-key="current_roll_number">Current roll number</th>
+                            <th style="width: 15%" data-lang-key="door">Door (Section)</th>
+                            <th style="width: 55%" data-lang-key="student">Student</th>
+                        </tr>
+                    </thead>
+                    <tbody id="roll-table-body">
+                        <!-- Student roll data will be injected here by JS -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex flex-col md:flex-row justify-center space-y-3 md:space-y-0 md:space-x-4 mt-8">
+                <button type="button" id="assign-auto-btn" onclick="handleAutomaticAssignment()"
+                    class="secondary-button" data-lang-key="assign_auto">Assign automatic roll number</button>
+                <button type="button" id="save-roll-btn" onclick="handleSaveRolls()" class="primary-button"
+                    data-lang-key="save_roll">Save roll number</button>
+            </div>
+        </div>
+
+    </main>
+</body>
+
+</html>

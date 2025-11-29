@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student ID Cards - Academic System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- jsPDF Library for PDF Generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <!-- html2canvas for capturing HTML as image for PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+
+    <style>
+        :root {
+            --color-primary: #00A693;
+            --color-background: #F2F3F4;
+            --color-accent: #E08A27;
+            --color-text-dark: #1A1A1A;
+            --color-text-light: #FFFFFF;
+            --color-logo-green: #10b981;
+            /* Green color used in image */
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;700&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap');
+
+        /* Language Styles */
+        body,
+        .lang-en {
+            font-family: 'Poppins', sans-serif;
+            direction: ltr;
+            background-color: var(--color-background);
+        }
+
+        .lang-hi {
+            font-family: 'Noto Sans Devanagari', sans-serif;
+            direction: ltr;
+        }
+
+        .lang-ur {
+            font-family: 'Noto Nastaliq Urdu', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+            direction: rtl;
+            line-height: 1.8;
+            text-align: right;
+        }
+
+        /* Form & Inputs */
+        .form-input {
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid #ccc;
+            width: 100%;
+            font-family: inherit;
+        }
+
+        /* Buttons */
+        .primary-button {
+            padding: 0.8rem 1.5rem;
+            background-color: var(--color-primary);
+            color: white;
+            font-weight: 600;
+            border-radius: 0.5rem;
+            transition: background-color 0.2s;
+            cursor: pointer;
+        }
+
+        .print-button {
+            background-color: var(--color-logo-green);
+            color: white;
+            padding: 0.6rem 2rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: background-color 0.2s;
+        }
+
+        .print-button:hover {
+            background-color: #059669;
+        }
+
+        /* Fixed Header */
+        header {
+            background-color: var(--color-text-light);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            width: 100%;
+            z-index: 10;
+            padding: 1rem 2rem;
+        }
+
+        /* --- ID Card Styling (Premium Look) --- */
+        #id-card-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            /* Responsive grid for cards */
+            gap: 1.5rem;
+            padding: 1.5rem;
+            background-color: white;
+            border-radius: 1rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .id-card {
+            width: 100%;
+            max-width: 300px;
+            height: 480px;
+            /* Fixed height for consistency */
+            border: 2px solid #ddd;
+            border-radius: 1rem;
+            overflow: hidden;
+            background-color: white;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            font-family: 'Poppins', sans-serif;
+            margin: 0 auto;
+        }
+
+        .card-header-logo {
+            background-color: #f3f4f6;
+            /* Light gray header */
+            padding: 0.5rem;
+            font-size: 0.8rem;
+            color: var(--color-text-dark);
+            text-align: center;
+        }
+
+        .card-photo-box {
+            height: 100px;
+            width: 100px;
+            border-radius: 50%;
+            margin: 1rem auto 0.5rem auto;
+            border: 3px solid var(--color-primary);
+            overflow: hidden;
+            display: flex;
+            /* Ensure centering of initials */
+            align-items: center;
+            justify-content: center;
+            background-color: #e0f2f1;
+            /* Light teal background for initials */
+        }
+
+        .card-photo-box img {
+            object-fit: cover;
+            width: 100%;
+            height: 100%;
+        }
+
+        .card-detail-group {
+            padding: 0 1.5rem;
+            font-size: 0.75rem;
+            line-height: 1.4;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.2rem;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: #6b7280;
+            flex-shrink: 0;
+            padding-right: 0.5rem;
+        }
+
+        .detail-value {
+            font-weight: 500;
+            color: var(--color-text-dark);
+            text-align: right;
+            flex-grow: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .card-validity {
+            background-color: var(--color-primary);
+            color: white;
+            padding: 0.5rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+        .lang-ur .detail-row {
+            flex-direction: row-reverse;
+            text-align: right;
+        }
+
+        .lang-ur .detail-value {
+            text-align: left;
+            padding-left: 0.5rem;
+            padding-right: 0;
+        }
+
+        .print-area-wrapper {
+            /* Needed for jsPDF to find and print the dynamic grid */
+            width: 100%;
+            padding: 1rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+
+<body class="lang-en">
+
+    <script>
+        // Helper to format date YYYY-MM-DD
+        function formatDate(date) {
+            const d = new Date(date);
+            let month = '' + (d.getMonth() + 1);
+            let day = '' + d.getDate();
+            const year = d.getFullYear();
+
+            if (month.length < 2) month = '0' + month;
+            if (day.length < 2) day = '0' + day;
+
+            return [year, month, day].join('-');
+        }
+
+        // --- Dummy Data (Extending previous data) ---
+        const DUMMY_STUDENTS = [
+            // FIX: Removed external photoUrl to prevent CORS/Corrupt PNG errors with html2canvas/jsPDF
+            { id: 1, entryNo: 'DAKH001', name: 'Ali Raza', father: 'Mohammad Raza', dob: '2007-01-01', status: 'First Year', address: 'House 12, Lahore', mobile: '9997983085' },
+            { id: 2, entryNo: 'DAKH002', name: 'Fatima Ansar', father: 'Ismat Ansar', dob: '2006-05-15', status: 'Rabia', address: 'City Delhi, UP', mobile: '09876543210' },
+            { id: 3, entryNo: 'DAKH003', name: 'Ahmed Faraz', father: 'Syed Faraz', dob: '2008-03-20', status: 'Samia', address: 'Street 5, Karachi', mobile: '03111223344' },
+            { id: 4, entryNo: 'DAKH004', name: 'Ayesha Siddiqui', father: 'Sadiq Siddiqui', dob: '2009-07-28', status: 'First Year', address: 'Multan PO, Punjab', mobile: '03441234567' },
+        ];
+
+        // --- Multilingual Data ---
+        const langData = {
+            'en': {
+                'academic_system': 'Academic System',
+                'page_title': 'Student ID Cards',
+                'back_to_academic': 'Back to Academic',
+                'logout': 'Logout',
+
+                // Form/Table
+                'search_by_id': 'Search by Entry No. or Name',
+                'generate_cards': 'Generate Cards',
+                'print_all_cards': 'Print All Cards',
+                'no_students_found': 'No students found for card generation.',
+
+                // Card Details
+                'madrasa_name': 'Fairul Uloom Islamia',
+                'madrasa_location': 'Madrasa, Rampur',
+                'entry_number': 'Entry number:',
+                'name': 'Name:',
+                'fathers_name': 'Father\'s Name:',
+                'dob': 'Date of Birth:',
+                'status': 'Status:',
+                'address': 'Address:',
+                'mobile': 'Mobile:',
+                'valid_until': 'This card is valid until May 2026.',
+                'son_daughter': 'Son',
+                'of': 'of',
+            },
+            'ur': {
+                'academic_system': 'تعلیمی نظام',
+                'page_title': 'طالب علم کے شناختی کارڈ',
+                'back_to_academic': 'اکیڈمک پر واپس جائیں',
+                'logout': 'لاگ آؤٹ',
+
+                // Form/Table
+                'search_by_id': 'انٹری نمبر یا نام سے تلاش کریں',
+                'generate_cards': 'کارڈز بنائیں',
+                'print_all_cards': 'تمام کارڈز پرنٹ کریں',
+
+                // Card Details
+                'madrasa_name': 'جامعہ فیض العلوم رامپور',
+                'madrasa_location': 'مدرسہ، رامپور',
+                'entry_number': 'انٹری نمبر:',
+                'name': 'نام:',
+                'fathers_name': 'والد کا نام:',
+                'dob': 'تاریخ پیدائش:',
+                'status': 'حالت:',
+                'address': 'پتہ:',
+                'mobile': 'موبائل:',
+                'valid_until': 'یہ کارڈ مئی 2026 تک درست ہے۔',
+                'son_daughter': 'بیٹا',
+                'of': 'کے',
+            }
+        };
+
+        let currentLang = 'en';
+        let generatedStudents = DUMMY_STUDENTS; // Students currently displayed
+
+        function getTranslation(key) {
+            return langData[currentLang][key] || langData['en'][key] || key;
+        }
+
+        // --- Core UI Update Functions ---
+        function updateContent() {
+            document.body.className = 'lang-' + currentLang;
+
+            document.querySelectorAll('[data-lang-key]').forEach(el => {
+                const key = el.getAttribute('data-lang-key');
+                el.textContent = getTranslation(key);
+            });
+
+            document.getElementById('search-input').placeholder = getTranslation('search_by_id');
+
+            renderCardGrid(generatedStudents);
+        }
+
+        function changeLanguage(lang) {
+            if (lang in langData) {
+                currentLang = lang;
+                localStorage.setItem('madarsaSystemLang', lang);
+                updateContent();
+            }
+        }
+
+        // --- Card Rendering Logic ---
+        function generateCardHtml(student) {
+            const isRtl = currentLang === 'ur';
+            // Generate initials for placeholder
+            const initials = student.name.split(' ').map(n => n[0]).join('');
+
+            return `
+                <div class="id-card" id="card-${student.entryNo}">
+                    <!-- Header -->
+                    <div class="card-header-logo">
+                        <p class="font-bold text-base">${getTranslation('madrasa_name')}</p>
+                        <p class="text-xs">${getTranslation('madrasa_location')}</p>
+                    </div>
+
+                    <!-- Photo and Main Details -->
+                    <div class="flex flex-col items-center">
+                        <div class="card-photo-box">
+                            <!-- Using initials as fallback image is not possible with html2canvas constraints -->
+                            <span class="text-4xl font-bold" style="color: var(--color-primary);">${initials}</span>
+                        </div>
+                        <h4 class="text-lg font-bold text-gray-800 mt-2">${student.name}</h4>
+                    </div>
+                    
+                    <!-- Details Grid -->
+                    <div class="card-detail-group mt-3 ${isRtl ? 'text-right' : 'text-left'}">
+                        
+                        <div class="detail-row">
+                            <span class="detail-label">${getTranslation('entry_number')}</span>
+                            <span class="detail-value font-bold text-gray-800">${student.entryNo}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">${getTranslation('status')}</span>
+                            <span class="detail-value">${student.status}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">${getTranslation('dob')}</span>
+                            <span class="detail-value">${student.dob}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">${getTranslation('fathers_name')}</span>
+                            <span class="detail-value">${student.father}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">${getTranslation('mobile')}</span>
+                            <span class="detail-value">${student.mobile}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">${getTranslation('address')}</span>
+                            <span class="detail-value">${student.address}</span>
+                        </div>
+                    </div>
+
+                    <!-- Validity Footer -->
+                    <div class="card-validity">
+                        ${getTranslation('valid_until')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderCardGrid(studentList) {
+            const container = document.getElementById('id-card-container');
+            if (!container) return;
+
+            container.innerHTML = '';
+
+            if (studentList.length === 0) {
+                container.innerHTML = `<div class="w-full text-center p-10 text-gray-500 font-semibold">${getTranslation('no_students_found') || 'No students found for card generation.'}</div>`;
+                document.getElementById('print-all-btn').classList.add('hidden');
+                return;
+            }
+
+            studentList.forEach(student => {
+                container.innerHTML += generateCardHtml(student);
+            });
+
+            document.getElementById('print-all-btn').classList.remove('hidden');
+        }
+
+        // --- Filter/Generate Logic ---
+        function handleGenerateCards(event) {
+            event.preventDefault();
+            const searchInput = document.getElementById('search-input').value.toLowerCase().trim();
+
+            let results = DUMMY_STUDENTS;
+            if (searchInput) {
+                results = DUMMY_STUDENTS.filter(s =>
+                    s.entryNo.toLowerCase().includes(searchInput) || s.name.toLowerCase().includes(searchInput)
+                );
+            }
+
+            generatedStudents = results;
+            renderCardGrid(generatedStudents);
+            return false;
+        }
+
+        // --- PDF Logic ---
+        function printAllCards() {
+            const { jsPDF } = window.jspdf;
+            if (!jsPDF) {
+                alert("PDF library (jsPDF) not loaded. Cannot generate PDF.");
+                return;
+            }
+
+            const container = document.getElementById('id-card-container');
+            if (!container || generatedStudents.length === 0) return;
+
+            const doc = new jsPDF('p', 'pt', 'a4');
+            const cards = container.querySelectorAll('.id-card');
+
+            // Temporarily hide the buttons for clean printing
+            const printBtnContainer = document.getElementById('print-area');
+            printBtnContainer.classList.add('hidden');
+
+            let cardsProcessed = 0;
+
+            // Function to recursively process cards
+            const processCard = (cardIndex) => {
+                if (cardIndex >= cards.length) {
+                    doc.save(`Student_ID_Cards_${formatDate(new Date())}.pdf`);
+                    // Restore visibility
+                    printBtnContainer.classList.remove('hidden');
+                    return;
+                }
+
+                const card = cards[cardIndex];
+
+                // Use offset values that ensure 2 cards per row on A4 Portrait (595x842 pt)
+                const cardWidth = 280;
+                const cardHeight = 480;
+                const margin = 20;
+
+                const xOffset = (cardIndex % 2) === 0 ? 10 : (10 + cardWidth + margin);
+                let yOffset = 10 + (Math.floor(cardIndex / 2) * (cardHeight + margin));
+
+                // Check if a new page is needed (every 4th card, assuming 2 rows fit on portrait A4)
+                if (cardIndex > 0 && (cardIndex % 4) === 0 && (cardIndex % 2) === 0) {
+                    doc.addPage();
+                    yOffset = 10;
+                }
+
+                // If yOffset exceeds page height, add a new page (secondary check for safety)
+                if (yOffset + cardHeight + margin > doc.internal.pageSize.getHeight()) {
+                    doc.addPage();
+                    yOffset = 10;
+                }
+
+
+                html2canvas(card, { scale: 3 }).then(canvas => {
+                    const imgData = canvas.toDataURL('image/jpeg', 1.0); // Use JPEG for better reliability on large canvases
+
+                    // Add image to PDF
+                    doc.addImage(imgData, 'JPEG', xOffset, yOffset, cardWidth, cardHeight);
+
+                    // Process next card
+                    processCard(cardIndex + 1);
+                }).catch(error => {
+                    console.error("Error generating canvas for card:", error);
+                    // Attempt to process next card even on failure
+                    processCard(cardIndex + 1);
+                });
+            };
+
+            // Start processing
+            processCard(0);
+
+            alert(`Generating PDF for ${generatedStudents.length} cards...`);
+        }
+
+
+        // Initialize content and language
+        window.onload = function () {
+            const storedLang = localStorage.getItem('madarsaSystemLang');
+            currentLang = (storedLang && storedLang in langData) ? storedLang : 'en';
+
+            // Initial content update
+            updateContent();
+
+            // Generate all cards initially
+            renderCardGrid(DUMMY_STUDENTS);
+
+            // Attach form listeners
+            document.getElementById('generate-form').addEventListener('submit', handleGenerateCards);
+            document.getElementById('print-all-btn').addEventListener('click', printAllCards);
+        };
+    </script>
+
+    <!-- HEADER -->
+    <header>
+        <div class="max-w-7xl mx-auto w-full flex justify-between items-center">
+            <!-- Left: Back Button & Title -->
+            <div class="flex items-center space-x-4">
+                <a href="academic_system.html" class="action-button bg-gray-100 text-gray-700 hover:bg-gray-200"
+                    data-lang-key="back_to_academic">Back to Academic</a>
+                <h1 class="text-xl font-bold" data-lang-key="page_title" style="color: var(--color-primary);">Student ID
+                    Cards</h1>
+            </div>
+
+            <!-- Right: Language Switch -->
+            <div class="flex items-center space-x-2">
+                <select onchange="changeLanguage(this.value)" class="bg-gray-100 rounded-lg p-1 text-sm">
+                    <option value="en" selected>English</option>
+                    <option value="ur">اردو</option>
+                </select>
+                <button onclick="window.location.href='login.html'"
+                    class="text-sm font-semibold text-red-600 hover:text-red-800 transition-colors ml-4 action-button px-3 py-1"
+                    data-lang-key="logout">Logout</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="w-full p-4 md:p-8">
+
+        <!-- Filter/Generate Form -->
+        <div class="bg-white p-6 md:p-8 rounded-xl shadow-2xl max-w-xl mx-auto mb-8">
+            <h2 class="text-2xl font-bold text-gray-700 mb-6" data-lang-key="page_title">Student ID Cards</h2>
+
+            <form id="generate-form">
+                <div class="form-group mb-4">
+                    <label for="search-input" class="form-label" data-lang-key="search_by_id">Search by Entry No. or
+                        Name</label>
+                    <input type="text" id="search-input" class="form-input" placeholder="e.g., DAKH001 or Ali Raza">
+                </div>
+
+                <div class="flex justify-end">
+                    <button type="submit" class="primary-button" data-lang-key="generate_cards">Generate Cards</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Print Button and Cards Container -->
+        <div id="print-area" class="max-w-7xl mx-auto mb-8 text-center">
+            <button id="print-all-btn" class="print-button mb-6 hidden">
+                <span data-lang-key="print_all_cards">Print All Cards</span>
+            </button>
+
+            <div id="id-card-container" class="p-6">
+                <!-- ID Cards Grid injected by JS -->
+                <div class="w-full text-center p-10 text-gray-500 font-semibold">Generate cards by searching above.
+                </div>
+            </div>
+        </div>
+
+
+    </main>
+
+</body>
+
+</html>

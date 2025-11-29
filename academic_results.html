@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>See the Result - Academic System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- jsPDF Library for PDF Generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <!-- html2canvas for capturing HTML as image for PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <style>
+        :root {
+            --color-primary: #00A693;
+            --color-background: #F2F3F4;
+            --color-accent: #E08A27;
+            --color-text-dark: #1A1A1A;
+            --color-text-light: #FFFFFF;
+            --color-dark-blue: #1e3a8a;
+            --color-yellow: #FBBF24;
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;700&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap');
+
+        /* Language Styles */
+        body,
+        .lang-en {
+            font-family: 'Poppins', sans-serif;
+            direction: ltr;
+            background-color: var(--color-background);
+        }
+
+        .lang-hi {
+            font-family: 'Noto Sans Devanagari', sans-serif;
+            direction: ltr;
+        }
+
+        .lang-ur {
+            font-family: 'Noto Nastaliq Urdu', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+            direction: rtl;
+            line-height: 1.8;
+            text-align: right;
+        }
+
+        /* Form & Inputs */
+        .form-input,
+        select {
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid #ccc;
+            width: 100%;
+            font-family: inherit;
+        }
+
+        .form-input:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(0, 166, 147, 0.2);
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            font-size: 0.875rem;
+            color: var(--color-dark-blue);
+        }
+
+        /* Buttons & Header */
+        .primary-button {
+            padding: 0.8rem 1.5rem;
+            background-color: var(--color-primary);
+            color: white;
+            font-weight: 600;
+            border-radius: 0.5rem;
+            transition: background-color 0.2s;
+            cursor: pointer;
+        }
+
+        .action-button {
+            background-color: #f3f4f6;
+            color: var(--color-text-dark);
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: background-color 0.2s;
+        }
+
+        /* See Result Button (Matching Image Yellow Style) */
+        .result-button {
+            padding: 0.8rem 2.5rem;
+            background-color: var(--color-yellow);
+            color: var(--color-text-dark);
+            font-size: 1.125rem;
+            font-weight: 700;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 10px rgba(251, 191, 36, 0.4);
+            transition: background-color 0.2s;
+        }
+
+        .result-button:hover {
+            background-color: #f59e0b;
+        }
+
+        /* Print Button */
+        .print-button {
+            background-color: var(--color-dark-blue);
+            color: white;
+            padding: 0.6rem 2rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: background-color 0.2s;
+        }
+
+        .print-button:hover {
+            background-color: #1e3a8a;
+        }
+
+        /* Fixed Header */
+        header {
+            background-color: var(--color-text-light);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            width: 100%;
+            z-index: 10;
+            padding: 1rem 2rem;
+        }
+
+        /* Card Structure */
+        .centered-card {
+            background-color: white;
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            max-width: 650px;
+            width: 100%;
+            margin: 2rem auto;
+            text-align: center;
+        }
+
+        .main-title {
+            color: var(--color-dark-blue);
+            /* Dark Blue title */
+            font-size: 2.25rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+        }
+
+        /* Result Display Styles */
+        .result-output-card {
+            border: 1px solid #ddd;
+            border-radius: 0.5rem;
+            padding: 0;
+            overflow: hidden;
+            text-align: left;
+            margin-top: 2rem;
+        }
+
+        /* Result Table Styles (Matching image yellow/white) */
+        .result-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .result-table th,
+        .result-table td {
+            border: 1px solid #ddd;
+            padding: 0.75rem;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .result-table thead th,
+        .result-table tfoot td {
+            background-color: var(--color-yellow);
+            color: var(--color-text-dark);
+            /* Dark text on yellow header */
+            font-weight: 700;
+        }
+
+        .result-table .subject-row {
+            background-color: white;
+        }
+
+        .result-table .total-row {
+            background-color: #f59e0b !important;
+            /* Slightly darker amber for total row */
+            font-weight: 700;
+        }
+
+        .result-final-status {
+            text-align: center;
+            padding: 1rem 0;
+            font-size: 1.125rem;
+        }
+    </style>
+</head>
+
+<body class="lang-en">
+
+    <script>
+        // Helper to format date YYYY-MM-DD
+        function formatDate(date) {
+            const d = new Date(date);
+            let month = '' + (d.getMonth() + 1);
+            let day = '' + d.getDate();
+            const year = d.getFullYear();
+
+            if (month.length < 2) month = '0' + month;
+            if (day.length < 2) day = '0' + day;
+
+            return [year, month, day].join('-');
+        }
+
+        // --- Dummy Data ---
+        const DUMMY_EXAMS = ['September 2025', 'Mid-Term 2025', 'Annual 2024'];
+        const DUMMY_RANKS = ['First Year', 'Fifth Year', 'Hifz'];
+
+        // Simulating result data fetch
+        const DUMMY_RESULTS = {
+            'DAKH001-September 2025': {
+                name: 'Ali Raza',
+                exam: 'September 2025', // Added exam name for PDF function
+                entryNo: 'DAKH001',
+                grade: 'Fifth Year',
+                status: 'Passed',
+                gradeLetter: 'A',
+                percentage: 93.0,
+                totalMarks: 200,
+                obtainedMarks: 186,
+                subjects: [
+                    { name: 'Arabic', book: 'Arabic book', marks: 97 },
+                    { name: 'English', book: 'English book', marks: 89 }
+                ]
+            },
+            'DAKH002-Mid-Term 2025': {
+                name: 'Fatima Ali',
+                exam: 'Mid-Term 2025', // Added exam name for PDF function
+                entryNo: 'DAKH002',
+                grade: 'Hifz',
+                status: 'Passed',
+                gradeLetter: 'A+',
+                percentage: 93.3,
+                totalMarks: 300,
+                obtainedMarks: 280,
+                subjects: [{ name: 'Nazira', book: 'Quran Pak', marks: 140 }, { name: 'Hifz', book: 'Hifz Revision', marks: 140 }]
+            }
+        };
+
+        // --- Multilingual Data ---
+        const langData = {
+            'en': {
+                'academic_system': 'Academic System',
+                'page_title': 'See the result',
+                'back_to_academic': 'Back to Academic',
+                'logout': 'Logout',
+
+                // Form/Labels
+                'select_exam': 'Select exam:',
+                'rank_optional': 'Rank (optional):',
+                'roll_number': 'Entry Number:',
+                'see_the_result': 'See the result',
+                'all_levels': '-- All levels --',
+                'example_roll': 'For example DAKH001 or 123',
+                'student_name': 'Student Name',
+
+                // Result Display Headers (Matching Image)
+                'number': 'Marks',
+                'book': 'Book',
+                'subject': 'Subject',
+                'total_number': 'Total Marks',
+                'result': 'Result:',
+                'grade': 'Grade:',
+                'percentage': 'Percentage:',
+                'result_not_found': 'Result not found for the given criteria.',
+                'print': 'Print',
+                'passed': 'Pass',
+                'failed': 'Fail',
+                'marks': 'Marks'
+            },
+            'ur': {
+                'academic_system': 'تعلیمی نظام',
+                'page_title': 'نتیجہ دیکھیں',
+                'back_to_academic': 'اکیڈمک پر واپس جائیں',
+                'logout': 'لاگ آؤٹ',
+
+                // Form/Labels
+                'select_exam': 'امتحان منتخب کریں:',
+                'rank_optional': 'رینک (اختیاری):',
+                'roll_number': 'رول نمبر:',
+                'see_the_result': 'نتیجہ دیکھیں',
+                'all_levels': '-- تمام لیولز --',
+                'example_roll': 'مثلاً DAKH001 یا 123',
+                'student_name': 'طالب علم کا نام',
+
+                // Result Display Headers (Matching Image)
+                'number': 'نمبر',
+                'book': 'کتاب',
+                'subject': 'مضمون',
+                'total_number': 'کل نمبر',
+                'result': 'نتیجہ:',
+                'grade': 'گریڈ:',
+                'percentage': 'فیصد:',
+                'result_not_found': 'منتخب معیار کے لیے نتیجہ نہیں ملا۔',
+                'print': 'پرنٹ کریں',
+                'passed': 'پاس',
+                'failed': 'فیل',
+                'marks': 'نمبر'
+            }
+        };
+
+        let currentLang = 'en';
+
+        function getTranslation(key) {
+            return langData[currentLang][key] || langData['en'][key] || key;
+        }
+
+        // --- Core UI Update Functions ---
+        function updateContent() {
+            document.body.className = 'lang-' + currentLang;
+
+            document.querySelectorAll('[data-lang-key]').forEach(el => {
+                const key = el.getAttribute('data-lang-key');
+                el.textContent = getTranslation(key);
+            });
+
+            // Set placeholders
+            document.getElementById('roll-number-input').placeholder = getTranslation('example_roll');
+
+            populateDropdown('exam-select', DUMMY_EXAMS, getTranslation('select_exam'));
+            populateDropdown('rank-select', DUMMY_RANKS, getTranslation('all_levels'));
+        }
+
+        function populateDropdown(id, options, defaultText) {
+            const select = document.getElementById(id);
+            if (!select) return;
+
+            select.innerHTML = `<option value="">${defaultText}</option>`;
+            options.forEach(opt => {
+                select.innerHTML += `<option value="${opt}">${opt}</option>`;
+            });
+        }
+
+        function changeLanguage(lang) {
+            if (lang in langData) {
+                currentLang = lang;
+                localStorage.setItem('madarsaSystemLang', lang);
+                updateContent();
+            }
+        }
+
+        // --- Result Logic ---
+        function handleResultLookup(event) {
+            event.preventDefault();
+
+            const rollNumber = document.getElementById('roll-number-input').value.trim().toUpperCase();
+            const exam = document.getElementById('exam-select').value;
+            const outputArea = document.getElementById('result-output-area');
+
+            outputArea.innerHTML = ''; // Clear previous result
+
+            if (!rollNumber || !exam) {
+                alert("Please enter the Roll Number and select an Exam.");
+                return false;
+            }
+
+            const key = rollNumber + '-' + exam;
+            const result = DUMMY_RESULTS[key];
+
+            if (result) {
+                renderResult(result);
+            } else {
+                outputArea.innerHTML = `<div class="centered-card max-w-[650px] mt-8 p-8 text-center text-red-600 font-semibold">${getTranslation('result_not_found')}</div>`;
+            }
+
+            return false;
+        }
+
+        function renderResult(result) {
+            const outputArea = document.getElementById('result-output-area');
+            const isRtl = currentLang === 'ur';
+
+            // Generate subject table rows
+            const subjectRows = result.subjects.map(s => `
+                <tr class="subject-row">
+                    <td>${s.marks}</td>
+                    <td>${s.book}</td>
+                    <td>${s.name}</td>
+                </tr>
+            `).join('');
+
+            const resultHtml = `
+                <div class="p-6 md:p-8">
+                    <h3 class="text-2xl font-bold mb-4 text-center">${result.name}</h3>
+                    
+                    <!-- Subject Marks Table -->
+                    <div class="table-container">
+                        <table class="result-table">
+                            <thead>
+                                <tr>
+                                    <th data-lang-key="marks" style="width: 20%;">${getTranslation('marks')}</th>
+                                    <th data-lang-key="book" style="width: 40%;">${getTranslation('book')}</th>
+                                    <th data-lang-key="subject" style="width: 40%;">${getTranslation('subject')}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${subjectRows}
+                            </tbody>
+                            <tfoot>
+                                <tr class="total-row">
+                                    <td>${result.obtainedMarks} / ${result.totalMarks}</td>
+                                    <td colspan="2" class="text-center font-bold text-lg">${getTranslation('total_number')}</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                    
+                    <!-- Final Summary -->
+                    <div class="result-final-status space-y-2 mt-6 ${isRtl ? 'text-right' : 'text-left'}">
+                         <div class="font-bold text-green-600">
+                             <span class="text-sm text-gray-700" data-lang-key="result">${getTranslation('result')}:</span> ${getTranslation(result.status.toLowerCase())}
+                         </div>
+                         <div class="font-bold text-blue-600 text-xl">
+                            <span class="text-sm text-gray-700" data-lang-key="grade">${getTranslation('grade')}:</span> ${result.gradeLetter || result.grade}
+                         </div>
+                         <div class="font-bold text-gray-800">
+                            <span class="text-sm text-gray-700" data-lang-key="percentage">${getTranslation('percentage')}:</span> ${result.percentage.toFixed(1)}%
+                         </div>
+                    </div>
+                </div>
+            `;
+
+            // Assemble the final card with print button
+            outputArea.innerHTML = `
+                <div class="centered-card max-w-[800px] mt-8 p-0">
+                    <div id="pdf-content-area">
+                        ${resultHtml}
+                    </div>
+                    <div class="p-4 border-t border-gray-200 flex justify-center">
+                        <button onclick="generateResultPDF('${result.entryNo}', '${result.exam}')" class="print-button flex items-center space-x-2">
+                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+                             <span data-lang-key="print">${getTranslation('print')}</span>
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            // Reapply translations to the new dynamic HTML
+            updateContent();
+        }
+
+        // --- PDF Generation Logic (using jsPDF) ---
+        function generateResultPDF(entryNo, examName) {
+            const { jsPDF } = window.jspdf;
+            if (!jsPDF) {
+                alert("PDF library (jsPDF) not loaded. Cannot generate PDF.");
+                return;
+            }
+
+            // Find the element to convert (the actual result card)
+            const content = document.getElementById('pdf-content-area');
+            if (!content) return;
+
+            const doc = new jsPDF('p', 'pt', 'a4');
+
+            // Use html2canvas integrated with jsPDF to capture the HTML content
+            doc.html(content, {
+                callback: function (doc) {
+                    doc.save(`Result_${entryNo}_${examName.replace(/ /g, '_')}.pdf`);
+                },
+                x: 10,
+                y: 10,
+                width: 580, // Content width
+                windowWidth: 800 // Window width for scaling
+            });
+        }
+
+        // Initialize content and language
+        window.onload = function () {
+            const storedLang = localStorage.getItem('madarsaSystemLang');
+            currentLang = (storedLang && storedLang in langData) ? storedLang : 'en';
+
+            // Initial content update
+            updateContent();
+
+            // Attach form listener
+            document.getElementById('result-lookup-form').addEventListener('submit', handleResultLookup);
+        };
+    </script>
+
+    <!-- HEADER -->
+    <header>
+        <div class="max-w-7xl mx-auto w-full flex justify-between items-center">
+            <!-- Left: Back Button & Title -->
+            <div class="flex items-center space-x-4">
+                <a href="academic_system.html" class="action-button bg-gray-100 text-gray-700 hover:bg-gray-200"
+                    data-lang-key="back_to_academic">Back to Academic</a>
+                <h1 class="text-xl font-bold" data-lang-key="page_title" style="color: var(--color-primary);">See the
+                    result</h1>
+            </div>
+
+            <!-- Right: Language Switch -->
+            <div class="flex items-center space-x-2">
+                <select onchange="changeLanguage(this.value)" class="bg-gray-100 rounded-lg p-1 text-sm">
+                    <option value="en" selected>English</option>
+                    <option value="ur">اردو</option>
+                </select>
+                <button onclick="window.location.href='login.html'"
+                    class="text-sm font-semibold text-red-600 hover:text-red-800 transition-colors ml-4 action-button px-3 py-1"
+                    data-lang-key="logout">Logout</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="w-full p-4 md:p-8">
+
+        <h2 class="main-title text-center" data-lang-key="page_title">See the result</h2>
+
+        <!-- Result Lookup Card -->
+        <div class="centered-card">
+            <form id="result-lookup-form" class="space-y-6">
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-6">
+
+                    <!-- Select Exam -->
+                    <div class="form-group">
+                        <label for="exam-select" class="form-label" data-lang-key="select_exam">Select exam:</label>
+                        <select id="exam-select" class="form-input" required></select>
+                    </div>
+
+                    <!-- Rank (Optional) -->
+                    <div class="form-group">
+                        <label for="rank-select" class="form-label" data-lang-key="rank_optional">Rank
+                            (optional):</label>
+                        <select id="rank-select" class="form-input"></select>
+                    </div>
+
+                    <!-- Roll Number (Full Width) -->
+                    <div class="form-group md:col-span-2">
+                        <label for="roll-number-input" class="form-label" data-lang-key="roll_number">Roll
+                            Number:</label>
+                        <input type="text" id="roll-number-input" class="form-input text-center" required>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="flex justify-center pt-6">
+                    <button type="submit" class="result-button" data-lang-key="see_the_result">See the result</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- RESULT OUTPUT AREA (Dynamic Table and Print Button) -->
+        <div id="result-output-area" class="max-w-7xl mx-auto">
+            <!-- Result HTML injected here -->
+        </div>
+
+    </main>
+
+</body>
+
+</html>

@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Curriculum Management</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        :root {
+            --color-primary: #00A693;
+            --color-background: #F2F3F4;
+            --color-accent: #E08A27;
+            --color-text-dark: #1A1A1A;
+            --color-text-light: #FFFFFF;
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;700&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap');
+
+        /* Language Styles */
+        body,
+        .lang-en {
+            font-family: 'Poppins', sans-serif;
+            direction: ltr;
+            background-color: var(--color-background);
+        }
+
+        .lang-hi {
+            font-family: 'Noto Sans Devanagari', sans-serif;
+            direction: ltr;
+        }
+
+        .lang-ur {
+            font-family: 'Noto Nastaliq Urdu', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+            direction: rtl;
+            line-height: 1.8;
+            text-align: right;
+        }
+
+        /* Form & Inputs */
+        .form-input,
+        select {
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid #ccc;
+            width: 100%;
+            font-family: inherit;
+        }
+
+        .form-input:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(0, 166, 147, 0.2);
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            font-size: 0.875rem;
+            color: var(--color-text-dark);
+        }
+
+        /* Buttons */
+        .primary-button {
+            padding: 0.75rem 1.5rem;
+            background-color: var(--color-accent);
+            color: var(--color-text-dark);
+            font-weight: 700;
+            border-radius: 0.5rem;
+            transition: background-color 0.2s;
+            cursor: pointer;
+        }
+
+        /* Yellow Add Button */
+        .primary-button:hover {
+            background-color: #f59e0b;
+        }
+
+        .action-button {
+            padding: 0.4rem 0.6rem;
+            border-radius: 0.25rem;
+            font-size: 0.7rem;
+            font-weight: 600;
+            transition: background-color 0.2s;
+        }
+
+        .btn-edit {
+            background-color: #3b82f6;
+            color: white;
+        }
+
+        .btn-delete {
+            background-color: #ef4444;
+            color: white;
+        }
+
+        .btn-config {
+            background-color: #f59e0b;
+            color: white;
+        }
+
+        /* Fixed Header */
+        header {
+            background-color: var(--color-text-light);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            width: 100%;
+            z-index: 10;
+            padding: 1rem 2rem;
+        }
+
+        /* Table Styling */
+        .admin-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 5px;
+        }
+
+        .admin-table th {
+            background-color: var(--color-yellow);
+            color: var(--color-text-dark);
+            text-align: left;
+            padding: 0.75rem 1rem;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        .lang-ur .admin-table th {
+            text-align: right;
+        }
+
+        .admin-table td {
+            padding: 0.75rem 1rem;
+            background-color: white;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+            font-size: 0.85rem;
+            font-weight: 500;
+            border: none;
+        }
+
+        .admin-table tbody tr:hover td {
+            background-color: #f7f7f7;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .table-container table {
+            min-width: 900px;
+        }
+
+        /* Form Card */
+        .form-card {
+            background-color: white;
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            max-width: 900px;
+            margin: 2rem auto 4rem auto;
+        }
+    </style>
+</head>
+
+<body class="lang-en">
+
+    <script>
+        // --- Dummy Data (From Grades/Status for Course Selection) ---
+        const DUMMY_GRADES = [
+            'First', 'Second Year', 'Third Year', 'Fourth Year', 'Fifth Year', 'Sania', 'Arbitration', 'Hifz', 'Nazirah', 'Sixteenth', 'Memorization', 'Hadith tour'
+        ];
+
+        // --- Dummy Curriculum Data ---
+        let DUMMY_CURRICULUM = [
+            { id: 1, grade: 'First', subjectEn: 'Fiqh Basics', subjectUrdu: 'فقہ بنیادی', book: 'Noor ul Idah', sequence: 1, status: 'Active' },
+            { id: 2, grade: 'Fifth Year', subjectEn: 'Arabic Grammar', subjectUrdu: 'صرف و نحو', book: 'Mizan Sarf', sequence: 2, status: 'Active' },
+            { id: 3, grade: 'Hifz', subjectEn: 'Quran Memorization', subjectUrdu: 'حفظ قرآن', book: 'Mushaf', sequence: 1, status: 'Active' },
+        ];
+
+        const CURRICULUM_STORAGE_KEY = 'madarsaCurriculum';
+        let nextSubjectId = 4;
+
+        // Load/Save Logic
+        function loadCurriculum() {
+            const storedCurriculum = localStorage.getItem(CURRICULUM_STORAGE_KEY);
+            if (storedCurriculum) {
+                try {
+                    DUMMY_CURRICULUM = JSON.parse(storedCurriculum);
+                    if (DUMMY_CURRICULUM.length > 0) {
+                        const maxId = Math.max(...DUMMY_CURRICULUM.map(c => c.id));
+                        nextSubjectId = maxId + 1;
+                    }
+                } catch (e) {
+                    console.error("Error loading curriculum:", e);
+                }
+            } else {
+                saveCurriculum();
+            }
+        }
+
+        function saveCurriculum() {
+            localStorage.setItem(CURRICULUM_STORAGE_KEY, JSON.stringify(DUMMY_CURRICULUM));
+        }
+
+        // Helper to get subject by ID
+        function getSubjectById(id) {
+            return DUMMY_CURRICULUM.find(s => s.id === id);
+        }
+
+        // --- Multilingual Data ---
+        const langData = {
+            'en': {
+                'academic_system': 'Academic System',
+                'page_title': 'Manage the curriculum',
+                'back_to_academic': 'Back to Academic',
+                'logout': 'Logout',
+
+                // Form/Table
+                'select_status': 'Select status:',
+                'subject_name_urdu': 'Subject name (Urdu):',
+                'subject_name_en': 'Subject Name (English):',
+                'book_name': 'Book name:',
+                'sequence_number': 'Sequence number:',
+                'add': 'Add',
+                'list_of_subjects': 'List of Subjects',
+
+                // Table Headers
+                'action': 'Action',
+                'status_col': 'Status',
+                'configuration': 'Configuration',
+                'book_col': 'Book name',
+                'subject_en_col': 'Subject Name (EN)',
+                'subject_urdu_col': 'Subject Name (Urdu)',
+                'identification_number': 'ID No.',
+
+                // Actions
+                'edit': 'Edit',
+                'delete': 'Delete',
+                'inactive': 'Inactive',
+                'active': 'Active',
+
+                // Status
+                'Active': 'Active',
+                'Inactive': 'Inactive',
+
+                // Modal
+                'modal_edit_title': 'Edit Subject Details',
+                'save': 'Save Changes',
+                'cancel': 'Cancel',
+
+                // Messages
+                'validation_error': 'Please select Status and provide Subject Names, Book Name, and Sequence.',
+                'subject_added': 'Subject successfully added to curriculum!',
+                'subject_updated': 'Subject successfully updated!',
+                'subject_deleted': 'Subject deleted.',
+                'confirm_delete': 'Are you sure you want to delete this subject?'
+            },
+            'ur': {
+                'academic_system': 'تعلیمی نظام',
+                'page_title': 'نصاب کا انتظام کریں',
+                'back_to_academic': 'اکیڈمک پر واپس جائیں',
+                'logout': 'لاگ آؤٹ',
+
+                // Form/Table
+                'select_status': 'حالت منتخب کریں:',
+                'subject_name_urdu': 'مضمون کا نام (اردو):',
+                'subject_name_en': 'مضمون کا نام (انگریزی):',
+                'book_name': 'کتاب کا نام:',
+                'sequence_number': 'ترتیب نمبر:',
+                'add': 'شامل کریں',
+                'list_of_subjects': 'مضامین کی فہرست',
+
+                // Table Headers
+                'action': 'عمل',
+                'status_col': 'حالت',
+                'configuration': 'ترتیب',
+                'book_col': 'کتاب کا نام',
+                'subject_en_col': 'مضمون کا نام (EN)',
+                'subject_urdu_col': 'مضمون کا نام (اردو)',
+                'identification_number': 'شناختی نمبر',
+
+                // Actions
+                'edit': 'ترمیم کریں',
+                'delete': 'حذف کریں',
+                'inactive': 'غیر فعال کریں',
+                'active': 'فعال کریں',
+
+                // Status
+                'Active': 'فعال',
+                'Inactive': 'غیر فعال',
+
+                // Modal
+                'modal_edit_title': 'مضمون کی تفصیلات میں ترمیم کریں',
+                'save': 'تبدیلیاں محفوظ کریں',
+                'cancel': 'منسوخ کریں',
+
+                // Messages
+                'validation_error': 'براہ کرم حالت منتخب کریں اور مضامین کے نام، کتاب کا نام، اور ترتیب فراہم کریں۔',
+                'subject_added': 'مضمون کامیابی سے نصاب میں شامل کیا گیا!',
+                'subject_updated': 'مضمون کامیابی سے اپ ڈیٹ کیا گیا!',
+                'subject_deleted': 'مضمون حذف کر دیا گیا۔',
+                'confirm_delete': 'کیا آپ واقعی اس مضمون کو حذف کرنا چاہتے ہیں؟'
+            }
+        };
+
+        let currentLang = 'en';
+
+        function getTranslation(key) {
+            return langData[currentLang][key] || langData['en'][key] || key;
+        }
+
+        // --- Core UI Update Functions ---
+        function updateContent() {
+            document.body.className = 'lang-' + currentLang;
+
+            document.querySelectorAll('[data-lang-key]').forEach(el => {
+                const key = el.getAttribute('data-lang-key');
+                el.textContent = getTranslation(key);
+            });
+
+            populateDropdowns();
+            renderCurriculumTable();
+        }
+
+        function changeLanguage(lang) {
+            if (lang in langData) {
+                currentLang = lang;
+                localStorage.setItem('madarsaSystemLang', lang);
+                updateContent();
+            }
+        }
+
+        function populateDropdowns() {
+            const statusDropdown = document.getElementById('status-select-filter');
+
+            // Populate Status/Grade Dropdown
+            statusDropdown.innerHTML = `<option value="" disabled selected data-lang-key="select_status">${getTranslation('select_status')}</option>`;
+            DUMMY_GRADES.forEach(grade => {
+                statusDropdown.innerHTML += `<option value="${grade}">${grade}</option>`;
+            });
+        }
+
+        // --- Table Rendering ---
+        function renderCurriculumTable() {
+            const tbody = document.getElementById('curriculum-table-body');
+            const filterGrade = document.getElementById('status-select-filter').value;
+            if (!tbody) return;
+
+            tbody.innerHTML = '';
+
+            const filteredCurriculum = DUMMY_CURRICULUM.filter(s => !filterGrade || s.grade === filterGrade);
+
+            if (filteredCurriculum.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" class="text-center text-gray-500 p-4">${getTranslation('no_data') || 'There is no curriculum.'}</td></tr>`;
+                return;
+            }
+
+            filteredCurriculum.sort((a, b) => a.sequence - b.sequence).forEach(subject => {
+                const tr = document.createElement('tr');
+
+                const statusClass = subject.status === 'Active' ? 'text-green-600' : 'text-red-600';
+
+                tr.innerHTML = `
+                    <td>
+                        <button onclick="handleAction('edit', ${subject.id})" class="action-button btn-edit mr-1">${getTranslation('edit')}</button>
+                        <button onclick="handleAction('delete', ${subject.id})" class="action-button btn-delete">${getTranslation('delete')}</button>
+                    </td>
+                    <td class="${statusClass}">${getTranslation(subject.status) || subject.status}</td>
+                    <td><button onclick="handleAction('config', ${subject.id})" class="action-button btn-config">${getTranslation('configuration') || 'Config'}</button></td>
+                    <td>${subject.book}</td>
+                    <td>${subject.subjectEn}</td>
+                    <td>${subject.subjectUrdu}</td>
+                    <td>${subject.sequence}</td>
+                `;
+
+                // Reorder columns to match the image: Action, Status, Configuration, Book, Subject EN, Subject URDU, Sequence
+                const cells = Array.from(tr.children).map(c => c.outerHTML);
+                tr.innerHTML = `${cells[0]}${cells[1]}${cells[2]}${cells[3]}${cells[4]}${cells[5]}${cells[6]}`;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // --- CRUD Logic ---
+        function handleAddSubject(event) {
+            event.preventDefault();
+            const form = event.target;
+
+            const grade = form.querySelector('#status-select-add').value;
+            const subjectUrdu = form.querySelector('#subject-urdu-add').value.trim();
+            const subjectEn = form.querySelector('#subject-en-add').value.trim();
+            const book = form.querySelector('#book-name-add').value.trim();
+            const sequence = parseInt(form.querySelector('#sequence-number-add').value);
+
+            if (!grade || !subjectUrdu || !subjectEn || !book || isNaN(sequence)) {
+                alert(getTranslation('validation_error'));
+                return false;
+            }
+
+            const newSubject = {
+                id: nextSubjectId++,
+                grade,
+                subjectEn,
+                subjectUrdu,
+                book,
+                sequence,
+                status: 'Active'
+            };
+
+            DUMMY_CURRICULUM.push(newSubject);
+            saveCurriculum();
+
+            form.reset();
+            updateContent();
+            alert(getTranslation('subject_added'));
+
+            return false;
+        }
+
+        function handleAction(action, id) {
+            const subject = getSubjectById(id);
+            if (!subject) return;
+
+            if (action === 'edit') {
+                openEditModal(subject);
+            } else if (action === 'delete') {
+                if (confirm(getTranslation('confirm_delete'))) {
+                    deleteSubject(id);
+                }
+            } else if (action === 'config') {
+                alert(`Configuration for: ${subject.subjectEn} in Grade ${subject.grade}. (Logic not yet implemented)`);
+            }
+        }
+
+        function deleteSubject(id) {
+            DUMMY_CURRICULUM = DUMMY_CURRICULUM.filter(s => s.id !== id);
+            saveCurriculum();
+            updateContent();
+            alert(getTranslation('subject_deleted'));
+        }
+
+        // --- Modal Handling for Edit ---
+        function openEditModal(subject) {
+            const modal = document.getElementById('edit-modal');
+            const isRtl = currentLang === 'ur';
+
+            document.getElementById('modal-title').textContent = getTranslation('modal_edit_title');
+
+            const formHtml = `
+                <form id="edit-subject-form" onsubmit="return saveEditedSubject(event, ${subject.id})">
+                    <div class="form-group">
+                        <label class="form-label">${getTranslation('select_status')}</label>
+                        <input type="text" class="form-input bg-gray-100" value="${subject.grade}" disabled>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4 mt-4">
+                        <div class="form-group">
+                            <label for="edit-subject-en" class="form-label">${getTranslation('subject_name_en')}</label>
+                            <input type="text" id="edit-subject-en" class="form-input" value="${subject.subjectEn}" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-subject-urdu" class="form-label">${getTranslation('subject_name_urdu')}</label>
+                            <input type="text" id="edit-subject-urdu" class="form-input" value="${subject.subjectUrdu}" required>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4 mt-4">
+                        <div class="form-group">
+                            <label for="edit-book-name" class="form-label">${getTranslation('book_name')}</label>
+                            <input type="text" id="edit-book-name" class="form-input" value="${subject.book}" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-sequence" class="form-label">${getTranslation('sequence_number')}</label>
+                            <input type="number" id="edit-sequence" class="form-input" value="${subject.sequence}" min="1" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group mt-4">
+                        <label for="edit-status" class="form-label">${getTranslation('status_col')}</label>
+                        <select id="edit-status" class="form-input">
+                            <option value="Active" ${subject.status === 'Active' ? 'selected' : ''}>${getTranslation('Active')}</option>
+                            <option value="Inactive" ${subject.status === 'Inactive' ? 'selected' : ''}>${getTranslation('Inactive')}</option>
+                        </select>
+                    </div>
+
+                    <div class="flex justify-end space-x-4 mt-8">
+                        <button type="button" onclick="closeEditModal()" class="action-button bg-gray-200 text-gray-700 hover:bg-gray-300">${getTranslation('cancel')}</button>
+                        <button type="submit" class="primary-button">${getTranslation('save')}</button>
+                    </div>
+                </form>
+            `;
+
+            document.getElementById('modal-body').innerHTML = formHtml;
+            document.getElementById('edit-subject-form').style.textAlign = isRtl ? 'right' : 'left';
+
+
+            modal.classList.remove('hidden', 'opacity-0');
+        }
+
+        function closeEditModal() {
+            document.getElementById('edit-modal').classList.add('opacity-0');
+            setTimeout(() => { document.getElementById('edit-modal').classList.add('hidden'); }, 300);
+        }
+
+        function saveEditedSubject(event, id) {
+            event.preventDefault();
+            const form = event.target;
+
+            const subjectEn = form.querySelector('#edit-subject-en').value.trim();
+            const subjectUrdu = form.querySelector('#edit-subject-urdu').value.trim();
+            const book = form.querySelector('#edit-book-name').value.trim();
+            const sequence = parseInt(form.querySelector('#edit-sequence').value);
+            const status = form.querySelector('#edit-status').value;
+
+            if (!subjectEn || !subjectUrdu || !book || isNaN(sequence) || !status) {
+                alert(getTranslation('validation_error'));
+                return false;
+            }
+
+            const subjectIndex = DUMMY_CURRICULUM.findIndex(s => s.id === id);
+
+            if (subjectIndex !== -1) {
+                DUMMY_CURRICULUM[subjectIndex] = {
+                    ...DUMMY_CURRICULUM[subjectIndex],
+                    subjectEn,
+                    subjectUrdu,
+                    book,
+                    sequence,
+                    status
+                };
+                saveCurriculum();
+                closeEditModal();
+                updateContent();
+                alert(getTranslation('subject_updated'));
+            }
+
+            return false;
+        }
+
+
+        // Initialize content and language
+        window.onload = function () {
+            loadCurriculum();
+            const storedLang = localStorage.getItem('madarsaSystemLang');
+            currentLang = (storedLang && storedLang in langData) ? storedLang : 'en';
+
+            // Initial content update and table render
+            updateContent();
+
+            // Attach form listener for adding new item
+            document.getElementById('add-subject-form').addEventListener('submit', handleAddSubject);
+
+            // Attach filter listener
+            document.getElementById('status-select-filter').addEventListener('change', renderCurriculumTable);
+        };
+    </script>
+
+    <!-- HEADER -->
+    <header>
+        <div class="max-w-7xl mx-auto w-full flex justify-between items-center">
+            <!-- Left: Back Button & Title -->
+            <div class="flex items-center space-x-4">
+                <a href="academic_system.html" class="action-button bg-gray-100 text-gray-700 hover:bg-gray-200"
+                    data-lang-key="back_to_academic">Back to Academic</a>
+                <h1 class="text-xl font-bold" data-lang-key="page_title" style="color: var(--color-primary);">Manage the
+                    curriculum</h1>
+            </div>
+
+            <!-- Right: Language Switch -->
+            <div class="flex items-center space-x-2">
+                <select onchange="changeLanguage(this.value)" class="bg-gray-100 rounded-lg p-1 text-sm">
+                    <option value="en" selected>English</option>
+                    <option value="ur">اردو</option>
+                </select>
+                <button onclick="window.location.href='login.html'"
+                    class="text-sm font-semibold text-red-600 hover:text-red-800 transition-colors ml-4"
+                    data-lang-key="logout">Logout</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="max-w-7xl mx-auto w-full p-4 md:p-8">
+
+        <!-- Add Subject Form -->
+        <div class="form-card">
+            <h2 class="text-2xl font-bold text-gray-700 mb-6" data-lang-key="page_title">Manage the curriculum</h2>
+
+            <form id="add-subject-form">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6 items-end">
+
+                    <!-- Status (Grade) Select - Row 1 -->
+                    <div class="form-group md:col-span-2">
+                        <label for="status-select-filter" class="form-label" data-lang-key="select_status">Select
+                            status:</label>
+                        <select id="status-select-filter" class="form-input" required></select>
+                    </div>
+
+                    <!-- Subject Name (Urdu) - Row 2 -->
+                    <div class="form-group">
+                        <label for="subject-urdu-add" class="form-label" data-lang-key="subject_name_urdu">Subject name
+                            (Urdu):</label>
+                        <input type="text" id="subject-urdu-add" class="form-input" required
+                            placeholder="For example: عربی">
+                    </div>
+
+                    <!-- Subject Name (English) - Row 2 -->
+                    <div class="form-group">
+                        <label for="subject-en-add" class="form-label" data-lang-key="subject_name_en">Subject Name
+                            (English):</label>
+                        <input type="text" id="subject-en-add" class="form-input" required placeholder="e.g. Arabic">
+                    </div>
+
+                    <!-- Book Name - Row 3 -->
+                    <div class="form-group">
+                        <label for="book-name-add" class="form-label" data-lang-key="book_name">Book name:</label>
+                        <input type="text" id="book-name-add" class="form-input" required
+                            placeholder="For example: an Arabic book">
+                    </div>
+
+                    <!-- Sequence Number - Row 3 -->
+                    <div class="form-group">
+                        <label for="sequence-number-add" class="form-label" data-lang-key="sequence_number">Sequence
+                            number:</label>
+                        <input type="number" id="sequence-number-add" class="form-input" value="1" min="1" required>
+                    </div>
+
+                    <!-- Add Button (Full Width Bottom) -->
+                    <div class="form-group md:col-span-2 flex justify-center mt-4">
+                        <button type="submit" class="primary-button w-40" data-lang-key="add">Add</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+
+        <!-- Curriculum Listing Table -->
+        <div class="bg-white p-6 md:p-8 rounded-xl shadow-2xl">
+            <h2 class="text-2xl font-bold text-gray-700 mb-6" data-lang-key="list_of_subjects">List of Subjects</h2>
+
+            <div class="table-container">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 15%" data-lang-key="action">Action</th>
+                            <th style="width: 8%" data-lang-key="status_col">Status</th>
+                            <th style="width: 10%" data-lang-key="configuration">Configuration</th>
+                            <th style="width: 20%" data-lang-key="book_col">Book name</th>
+                            <th style="width: 15%" data-lang-key="subject_en_col">Subject Name (EN)</th>
+                            <th style="width: 15%" data-lang-key="subject_urdu_col">Subject Name (Urdu)</th>
+                            <th style="width: 10%" data-lang-key="identification">ID No.</th>
+                        </tr>
+                    </thead>
+                    <tbody id="curriculum-table-body">
+                        <!-- Subject data will be injected here by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <!-- SUBJECT EDIT MODAL -->
+    <div id="edit-modal"
+        class="hidden opacity-0 fixed inset-0 z-50 flex items-center justify-center dialog-backdrop transition-opacity duration-300">
+        <div class="modal-content p-6 md:p-8 transform scale-100 transition-transform duration-300">
+            <div class="flex justify-between items-start pb-4 border-b mb-6">
+                <h3 id="modal-title" class="text-xl font-bold text-gray-700">Edit Subject Details</h3>
+                <button onclick="closeEditModal()" class="text-gray-500 hover:text-gray-900 transition-colors p-1"
+                    aria-label="Close">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                        stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            <div id="modal-body">
+                <!-- Dynamic form content goes here -->
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

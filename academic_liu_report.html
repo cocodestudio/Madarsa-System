@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Print LIU Report - Academic System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- jsPDF Library for PDF Generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <!-- jsPDF Autotable Plugin for complex table layout -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+
+
+    <style>
+        :root {
+            --color-primary: #00A693;
+            --color-background: #F2F3F4;
+            --color-accent: #E08A27;
+            --color-text-dark: #1A1A1A;
+            --color-text-light: #FFFFFF;
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;700&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap');
+
+        /* Language Styles */
+        body,
+        .lang-en {
+            font-family: 'Poppins', sans-serif;
+            direction: ltr;
+            background-color: var(--color-background);
+        }
+
+        .lang-hi {
+            font-family: 'Noto Sans Devanagari', sans-serif;
+            direction: ltr;
+        }
+
+        .lang-ur {
+            font-family: 'Noto Nastaliq Urdu', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+            direction: rtl;
+            line-height: 1.8;
+            text-align: right;
+        }
+
+        /* Form & Inputs */
+        .form-input,
+        select {
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid #ccc;
+            width: 100%;
+            font-family: inherit;
+        }
+
+        /* Buttons */
+        .primary-button {
+            padding: 0.8rem 1.5rem;
+            background-color: #3b82f6;
+            color: white;
+            font-weight: 600;
+            border-radius: 0.5rem;
+            transition: background-color 0.2s;
+            cursor: pointer;
+        }
+
+        /* Fixed Header */
+        header {
+            background-color: var(--color-text-light);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            width: 100%;
+            z-index: 10;
+            padding: 1rem 2rem;
+        }
+
+        /* Table Styling (Based on Image) */
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .admin-table th,
+        .admin-table td {
+            padding: 0.6rem 0.8rem;
+            font-size: 0.75rem;
+            border: 1px solid #ccc;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        /* Header Styling (Matching Image Blue) */
+        .admin-table thead th {
+            background-color: #3b82f6;
+            color: white;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        /* Body Styling */
+        .admin-table tbody tr:nth-child(odd) {
+            background-color: white;
+        }
+
+        .admin-table tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .table-container table {
+            min-width: 1400px;
+        }
+    </style>
+</head>
+
+<body class="lang-en">
+
+    <script>
+        // --- Dummy Data (Matching the LIU Report columns) ---
+        const DUMMY_REPORT_DATA = [
+            { sno: 1, admNo: 'DAKH001', name: 'Ali Raza', father: 'Mohammad Raza', class: '00', dob: '0000-00-00', aadhaar: '123456789012', mobile: '03001234567', village: 'Village Lahore', ps: 'Lahore Office', pin: '54000', city: 'Lahore', state: 'Punjab' },
+            { sno: 2, admNo: 'DAKH002', name: 'Fatima Ansar', father: 'Ismat Ansar', class: '00', dob: '0000-00-00', aadhaar: '210987654321', mobile: '09876543210', village: 'City Delhi', ps: 'Delhi PO', pin: '282001', city: 'Agra', state: 'Uttar Pradesh' },
+            { sno: 3, admNo: 'DAKH003', name: 'Ahmed Faraz', father: 'Syed Faraz', class: '00', dob: '0000-00-00', aadhaar: '987654321098', mobile: '03111223344', village: 'Street 5 Karachi', ps: 'Karachi PO', pin: '75500', city: 'Karachi', state: 'Sindh' },
+            { sno: 10, admNo: 'DAKH011', name: 'Shakir', father: 'Sajid', class: '2017-01-01', dob: '2007-01-01', aadhaar: '25578977472', mobile: '9997663085', village: 'Gangoh', ps: 'Gangoh', pin: '247341', city: 'Saharanpur', state: 'Uttar Pradesh' },
+            { sno: 11, admNo: 'DAKH012', name: 'Arshad Khan', father: 'Amjad Khan', class: 'حفظ', dob: '2025-08-01', aadhaar: '12487762389', mobile: '2789466833', village: 'Gangoh', ps: 'Gangoh', pin: '247341', city: 'Saharanpur', state: 'Uttar Pradesh' },
+        ];
+
+
+        // --- Multilingual Data ---
+        const langData = {
+            'en': {
+                'academic_system': 'Academic System',
+                'page_title': 'LIU Report',
+                'back_to_academic': 'Back to Academic',
+                'logout': 'Logout',
+
+                // Table Headers (Matching Image)
+                'sno': 'SNO',
+                'adm_no': 'Adm. No.',
+                'name': 'Name',
+                'father_name': 'Father\'s Name',
+                'class_dob': 'Class / DOB',
+                'aadhaar': 'Aadhaar',
+                'mobile': 'Mobile',
+                'village': 'Village',
+                'ps': 'P.S.',
+                'pin_code': 'PIN Code',
+                'city': 'City',
+                'state': 'State',
+                'print_report': 'Print Report',
+                'report_by_class': 'Report by Class'
+            },
+            'ur': {
+                'academic_system': 'تعلیمی نظام',
+                'page_title': 'LIU رپورٹ',
+                'back_to_academic': 'اکیڈمک پر واپس جائیں',
+                'logout': 'لاگ آؤٹ',
+
+                // Table Headers (Matching Image)
+                'sno': 'نمبر',
+                'adm_no': 'داخلہ نمبر',
+                'name': 'نام',
+                'father_name': 'والد کا نام',
+                'class_dob': 'کلاس / تاریخ پیدائش',
+                'aadhaar': 'آدھار',
+                'mobile': 'موبائل',
+                'village': 'گاؤں',
+                'ps': 'تھانہ',
+                'pin_code': 'پن کوڈ',
+                'city': 'شہر',
+                'state': 'صوبہ',
+                'print_report': 'رپورٹ پرنٹ کریں',
+                'report_by_class': 'کلاس کے لحاظ سے رپورٹ'
+            }
+        };
+
+        let currentLang = 'en';
+
+        function getTranslation(key) {
+            return langData[currentLang][key] || langData['en'][key] || key;
+        }
+
+        // --- Core UI Update Functions ---
+        function updateContent() {
+            document.body.className = 'lang-' + currentLang;
+
+            document.querySelectorAll('[data-lang-key]').forEach(el => {
+                const key = el.getAttribute('data-lang-key');
+                el.textContent = getTranslation(key);
+            });
+
+            renderReportTable(DUMMY_REPORT_DATA);
+        }
+
+        function changeLanguage(lang) {
+            if (lang in langData) {
+                currentLang = lang;
+                localStorage.setItem('madarsaSystemLang', lang);
+                updateContent();
+            }
+        }
+
+        // --- Table Rendering ---
+        function renderReportTable(dataList) {
+            const tbody = document.getElementById('report-table-body');
+            if (!tbody) return;
+
+            tbody.innerHTML = '';
+
+            // Define headers array for easy mapping
+            const headers = ['sno', 'adm_no', 'name', 'father_name', 'class_dob', 'aadhaar', 'mobile', 'village', 'ps', 'pin_code', 'city', 'state'];
+
+            dataList.forEach(student => {
+                const tr = document.createElement('tr');
+
+                let rowHtml = '';
+                headers.forEach(key => {
+                    const value = student[key] !== undefined ? student[key] : '-';
+                    // Apply bold only to Name column
+                    const isName = key === 'name';
+                    rowHtml += `<td ${isName ? 'class="font-semibold"' : ''}>${value}</td>`;
+                });
+
+                tr.innerHTML = rowHtml;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // --- PDF Generation Logic (using jsPDF Autotable) ---
+        function generatePDF() {
+            const { jsPDF } = window.jspdf;
+            if (!jsPDF || !jsPDF.autoTable) {
+                alert("PDF library (jsPDF Autotable) not loaded. Cannot generate PDF.");
+                return;
+            }
+
+            const doc = new jsPDF('l', 'pt', 'a4'); // Landscape for more columns
+            const finalData = DUMMY_REPORT_DATA;
+
+            // Get Header and Body data in a format suitable for autoTable
+            const headers = [
+                [
+                    getTranslation('sno'), getTranslation('adm_no'), getTranslation('name'), getTranslation('father_name'),
+                    getTranslation('class_dob'), getTranslation('aadhaar'), getTranslation('mobile'), getTranslation('village'),
+                    getTranslation('ps'), getTranslation('pin_code'), getTranslation('city'), getTranslation('state')
+                ]
+            ];
+
+            // Map student objects to an ordered array for the table body
+            const body = finalData.map(s => [
+                s.sno, s.admNo, s.name, s.father, s.class + ' / ' + s.dob, // Combine Class and DOB for space efficiency in PDF
+                s.aadhaar, s.mobile, s.village, s.ps, s.pin, s.city, s.state
+            ]);
+
+            // Title
+            doc.setFontSize(16);
+            doc.text(getTranslation('page_title').toUpperCase(), doc.internal.pageSize.getWidth() / 2, 30, { align: 'center' });
+
+            // Generate Table
+            doc.autoTable({
+                head: headers,
+                body: body,
+                startY: 45,
+                theme: 'grid',
+                styles: { fontSize: 7, cellPadding: 3, font: 'Poppins', overflow: 'linebreak' }, // Smaller font for landscape
+                headStyles: { fillColor: '#3b82f6', textColor: 255 },
+                margin: { left: 10, right: 10 },
+                columnStyles: {
+                    4: { cellWidth: 70 }, // Increase width for combined Class/DOB column
+                }
+            });
+
+            // Open PDF in new tab
+            doc.save(`LIU_Report_${formatDate(new Date())}.pdf`); // Save as file
+            // window.open(doc.output('bloburl'), '_blank'); // Optionally open in new tab
+        }
+
+
+        // Initialize content and language
+        window.onload = function () {
+            const storedLang = localStorage.getItem('madarsaSystemLang');
+            currentLang = (storedLang && storedLang in langData) ? storedLang : 'en';
+
+            // Initial content update and table render
+            updateContent();
+
+            // Attach PDF listener
+            document.getElementById('print-btn').addEventListener('click', generatePDF);
+        };
+    </script>
+
+    <!-- HEADER -->
+    <header>
+        <div class="max-w-7xl mx-auto w-full flex justify-between items-center">
+            <!-- Left: Back Button & Title -->
+            <div class="flex items-center space-x-4">
+                <a href="academic_system.html" class="action-button bg-gray-100 text-gray-700 hover:bg-gray-200"
+                    data-lang-key="back_to_academic">Back to Academic</a>
+                <h1 class="text-xl font-bold" data-lang-key="page_title" style="color: var(--color-primary);">LIU Report
+                </h1>
+            </div>
+
+            <!-- Right: Language Switch -->
+            <div class="flex items-center space-x-2">
+                <select onchange="changeLanguage(this.value)" class="bg-gray-100 rounded-lg p-1 text-sm">
+                    <option value="en" selected>English</option>
+                    <option value="ur">اردو</option>
+                </select>
+                <button onclick="window.location.href='login.html'"
+                    class="text-sm font-semibold text-red-600 hover:text-red-800 transition-colors ml-4 action-button px-3 py-1"
+                    data-lang-key="logout">Logout</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="max-w-7xl mx-auto w-full p-4 md:p-8">
+
+        <!-- Page Header and Print Button -->
+        <div class="mb-6 flex flex-col md:flex-row justify-between items-center">
+            <h2 class="text-3xl font-bold text-gray-800 mb-4 md:mb-0" data-lang-key="page_title">LIU Report</h2>
+
+            <button id="print-btn" class="primary-button flex items-center space-x-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                    <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                    <rect x="6" y="14" width="12" height="8"></rect>
+                </svg>
+                <span data-lang-key="print_report">Print Report</span>
+            </button>
+        </div>
+
+        <!-- Report Table -->
+        <div class="bg-white p-6 md:p-8 rounded-xl shadow-2xl">
+            <div class="table-container">
+                <table class="admin-table" id="liu-report-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 5%" data-lang-key="sno">SNO</th>
+                            <th style="width: 8%" data-lang-key="adm_no">Adm. No.</th>
+                            <th style="width: 13%" data-lang-key="name">Name</th>
+                            <th style="width: 13%" data-lang-key="father_name">Father's Name</th>
+                            <th style="width: 10%" data-lang-key="class_dob">Class / DOB</th>
+                            <th style="width: 8%" data-lang-key="aadhaar">Aadhaar</th>
+                            <th style="width: 9%" data-lang-key="mobile">Mobile</th>
+                            <th style="width: 10%" data-lang-key="village">Village</th>
+                            <th style="width: 7%" data-lang-key="ps">P.S.</th>
+                            <th style="width: 7%" data-lang-key="pin_code">PIN Code</th>
+                            <th style="width: 5%" data-lang-key="city">City</th>
+                            <th style="width: 5%" data-lang-key="state">State</th>
+                        </tr>
+                    </thead>
+                    <tbody id="report-table-body">
+                        <!-- Student data will be injected here by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+</body>
+
+</html>

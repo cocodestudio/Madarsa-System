@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grades & Sections Management</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        :root {
+            --color-primary: #00A693;
+            --color-background: #F2F3F4;
+            --color-accent: #E08A27;
+            --color-text-dark: #1A1A1A;
+            --color-text-light: #FFFFFF;
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;700&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap');
+
+        /* Language Styles */
+        body,
+        .lang-en {
+            font-family: 'Poppins', sans-serif;
+            direction: ltr;
+            background-color: var(--color-background);
+        }
+
+        .lang-hi {
+            font-family: 'Noto Sans Devanagari', sans-serif;
+            direction: ltr;
+        }
+
+        .lang-ur {
+            font-family: 'Noto Nastaliq Urdu', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+            direction: rtl;
+            line-height: 1.8;
+            text-align: right;
+        }
+
+        /* Form & Inputs */
+        .form-input,
+        select,
+        .form-textarea {
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid #ccc;
+            width: 100%;
+            font-family: inherit;
+        }
+
+        .form-input:focus,
+        select:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(0, 166, 147, 0.2);
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            font-size: 0.875rem;
+            color: var(--color-text-dark);
+        }
+
+        /* Buttons */
+        .primary-button {
+            padding: 0.75rem 1.5rem;
+            background-color: var(--color-primary);
+            color: var(--color-text-light);
+            font-weight: 600;
+            border-radius: 0.5rem;
+            transition: background-color 0.2s;
+            cursor: pointer;
+        }
+
+        .primary-button:hover {
+            background-color: #008f7d;
+        }
+
+        .action-button {
+            padding: 0.4rem 0.6rem;
+            border-radius: 0.25rem;
+            font-size: 0.7rem;
+            font-weight: 600;
+            transition: background-color 0.2s;
+        }
+
+        .btn-edit {
+            background-color: #3b82f6;
+            color: white;
+        }
+
+        .btn-delete {
+            background-color: #ef4444;
+            color: white;
+        }
+
+        .btn-status-toggle {
+            background-color: #f59e0b;
+            color: white;
+        }
+
+        /* Yellow/Orange for Disable/Inactive */
+        .btn-status-enable {
+            background-color: #10b981;
+            color: white;
+        }
+
+        /* Green for Enable/Active */
+
+        /* Fixed Header */
+        header {
+            background-color: var(--color-text-light);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            width: 100%;
+            z-index: 10;
+            padding: 1rem 2rem;
+        }
+
+        /* Table Styling (Matching Image/Standard Admin UI) */
+        .admin-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 5px;
+        }
+
+        .admin-table th {
+            background-color: #f3f4f6;
+            color: var(--color-text-dark);
+            text-align: left;
+            padding: 0.75rem 1rem;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        .lang-ur .admin-table th {
+            text-align: right;
+        }
+
+        .admin-table td {
+            padding: 0.75rem 1rem;
+            background-color: white;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+            font-size: 0.85rem;
+            font-weight: 500;
+            border: none;
+        }
+
+        .admin-table tbody tr:hover td {
+            background-color: #f7f7f7;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .table-container table {
+            min-width: 900px;
+        }
+
+        /* Status Display */
+        .status-active {
+            color: #10b981;
+            font-weight: 600;
+        }
+
+        .status-inactive {
+            color: #ef4444;
+            font-weight: 600;
+        }
+
+        /* Modal Styles */
+        .modal-content {
+            background-color: var(--color-background);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            border-radius: 1rem;
+            max-width: 95%;
+            width: 400px;
+            max-height: 90vh;
+            overflow-y: auto;
+            border: 3px solid var(--color-primary);
+        }
+    </style>
+</head>
+
+<body class="lang-en">
+
+    <script>
+        // --- Dummy Data ---
+        let DUMMY_GRADES = [
+            { id: 1, rankUrdu: 'اول', nameEn: 'First Year', nameUrdu: 'فرسٹ', identification: 1, status: 'Active' },
+            { id: 2, rankUrdu: 'ثانی', nameEn: 'Second Year', nameUrdu: 'سانیہ', identification: 2, status: 'Active' },
+            { id: 3, rankUrdu: 'ثالث', nameEn: 'Third Year', nameUrdu: 'ثالثہ', identification: 3, status: 'Inactive' },
+            { id: 4, rankUrdu: 'رابعہ', nameEn: 'Fourth Year', nameUrdu: 'رابعہ', identification: 4, status: 'Active' },
+            { id: 5, rankUrdu: 'خامس', nameEn: 'Fifth Year', nameUrdu: 'خامسہ', identification: 5, status: 'Active' },
+        ];
+
+        const GRADE_STORAGE_KEY = 'madarsaAcademicGrades';
+        let nextGradeId = 6;
+
+        // Load/Save Logic
+        function loadGrades() {
+            const storedGrades = localStorage.getItem(GRADE_STORAGE_KEY);
+            if (storedGrades) {
+                try {
+                    dummyGrades = JSON.parse(storedGrades);
+                    if (dummyGrades.length > 0) {
+                        const maxId = Math.max(...dummyGrades.map(g => g.id));
+                        nextGradeId = maxId + 1;
+                    }
+                } catch (e) {
+                    console.error("Error loading grades:", e);
+                }
+            } else {
+                saveGrades();
+            }
+        }
+
+        function saveGrades() {
+            localStorage.setItem(GRADE_STORAGE_KEY, JSON.stringify(DUMMY_GRADES));
+        }
+
+        // Helper to get grade by ID
+        function getGradeById(id) {
+            return DUMMY_GRADES.find(g => g.id === id);
+        }
+
+        // --- Multilingual Data ---
+        const langData = {
+            'en': {
+                'academic_system': 'Academic System',
+                'page_title': 'Grades & Sections Management',
+                'back_to_academic': 'Back to Academic',
+                'logout': 'Logout',
+
+                // Form/Table
+                'add_status': 'Add Status',
+                'rank_name_urdu': 'Rank name (Urdu)',
+                'grade_name_en': 'Grade Name (English)',
+                'list_of_grades': 'List of Grades',
+                'identification_number': 'Identification Number',
+                'add': 'Add',
+
+                // Table Headers
+                'action': 'Action',
+                'status_col': 'Status',
+                'name_en': 'Name (EN)',
+                'name_urdu': 'Name (Urdu)',
+                'rank_urdu_short': 'Rank (Urdu)',
+                'identification': 'ID No.',
+
+                // Actions
+                'edit': 'Edit',
+                'delete': 'Delete',
+                'inactive': 'Inactive',
+                'active': 'Active',
+
+                // Status
+                'Active': 'Active',
+                'Inactive': 'Inactive',
+
+                // Modal
+                'modal_edit_title': 'Edit Grade Details',
+                'save': 'Save Changes',
+                'cancel': 'Cancel',
+
+                // Messages
+                'validation_error': 'Please provide English Name, Urdu Rank, and Identification Number.',
+                'grade_added': 'Grade successfully added!',
+                'grade_updated': 'Grade successfully updated!',
+                'grade_deleted': 'Grade deleted.',
+                'confirm_delete': 'Are you sure you want to delete this Grade? This action cannot be undone.'
+            },
+            'hi': {
+                'academic_system': 'शैक्षणिक प्रणाली',
+                'page_title': 'ग्रेड और अनुभाग प्रबंधन',
+                'back_to_academic': 'शैक्षणिक पर वापस',
+                'logout': 'लॉगआउट',
+
+                // Form/Table
+                'add_status': 'स्थिति जोड़ें',
+                'rank_name_urdu': 'पद का नाम (उर्दू)',
+                'grade_name_en': 'ग्रेड का नाम (अंग्रेजी)',
+                'list_of_grades': 'ग्रेड्स की सूची',
+                'identification_number': 'पहचान संख्या',
+                'add': 'जोड़ें',
+
+                // Table Headers
+                'action': 'कार्यवाही',
+                'status_col': 'स्थिति',
+                'name_en': 'नाम (EN)',
+                'name_urdu': 'नाम (उर्दू)',
+                'rank_urdu_short': 'पद (उर्दू)',
+                'identification': 'आईडी नं.',
+
+                // Actions
+                'edit': 'संपादित करें',
+                'delete': 'हटाएँ',
+                'inactive': 'निष्क्रिय',
+                'active': 'सक्रिय',
+
+                // Status
+                'Active': 'सक्रिय',
+                'Inactive': 'निष्क्रिय',
+
+                // Modal
+                'modal_edit_title': 'ग्रेड विवरण संपादित करें',
+                'save': 'परिवर्तन सहेजें',
+                'cancel': 'रद्द करें',
+
+                // Messages
+                'validation_error': 'कृपया अंग्रेजी नाम, उर्दू पद, और पहचान संख्या प्रदान करें।',
+                'grade_added': 'ग्रेड सफलतापूर्वक जोड़ा गया!',
+                'grade_updated': 'ग्रेड सफलतापूर्वक अपडेट किया गया!',
+                'grade_deleted': 'ग्रेड हटा दिया गया।',
+                'confirm_delete': 'क्या आप निश्चित रूप से इस ग्रेड को हटाना चाहते हैं? यह कार्रवाई अपरिवर्तनीय है।'
+            },
+            'ur': {
+                'academic_system': 'تعلیمی نظام',
+                'page_title': 'گریڈز اور سیکشنز کا انتظام',
+                'back_to_academic': 'اکیڈمک پر واپس جائیں',
+                'logout': 'لاگ آؤٹ',
+
+                // Form/Table
+                'add_status': 'حالت شامل کریں',
+                'rank_name_urdu': 'رینک کا نام (اردو)',
+                'grade_name_en': 'گریڈ کا نام (انگریزی)',
+                'list_of_grades': 'گریڈز کی فہرست',
+                'identification_number': 'شناخت نمبر',
+                'add': 'شامل کریں',
+
+                // Table Headers
+                'action': 'عمل',
+                'status_col': 'حالت',
+                'name_en': 'نام (EN)',
+                'name_urdu': 'نام (اردو)',
+                'rank_urdu_short': 'رینک (اردو)',
+                'identification': 'شناختی نمبر',
+
+                // Actions
+                'edit': 'ترمیم کریں',
+                'delete': 'حذف کریں',
+                'inactive': 'غیر فعال کریں',
+                'active': 'فعال کریں',
+
+                // Status
+                'Active': 'فعال',
+                'Inactive': 'غیر فعال',
+
+                // Modal
+                'modal_edit_title': 'گریڈ کی تفصیلات میں ترمیم کریں',
+                'save': 'تبدیلیاں محفوظ کریں',
+                'cancel': 'منسوخ کریں',
+
+                // Messages
+                'validation_error': 'براہ کرم انگریزی نام، اردو رینک، اور شناختی نمبر فراہم کریں۔',
+                'grade_added': 'گریڈ کامیابی سے شامل کیا گیا!',
+                'grade_updated': 'گریڈ کامیابی سے اپ ڈیٹ کیا گیا!',
+                'grade_deleted': 'گریڈ حذف کر دیا گیا۔',
+                'confirm_delete': 'کیا آپ واقعی اس گریڈ کو حذف کرنا چاہتے ہیں؟ اس عمل کو واپس نہیں کیا جا سکتا۔'
+            }
+        };
+
+        let currentLang = 'en';
+
+        function getTranslation(key) {
+            return langData[currentLang][key] || langData['en'][key] || key;
+        }
+
+        // --- Core UI Update Functions ---
+        function updateContent() {
+            document.body.className = 'lang-' + currentLang;
+
+            document.querySelectorAll('[data-lang-key]').forEach(el => {
+                const key = el.getAttribute('data-lang-key');
+                el.textContent = getTranslation(key);
+            });
+
+            loadGrades();
+            renderGradeTable();
+        }
+
+        function changeLanguage(lang) {
+            if (lang in langData) {
+                currentLang = lang;
+                localStorage.setItem('madarsaSystemLang', lang);
+                updateContent();
+            }
+        }
+
+        // --- Table Rendering ---
+        function renderGradeTable() {
+            const tbody = document.getElementById('grades-table-body');
+            if (!tbody) return;
+
+            tbody.innerHTML = '';
+
+            DUMMY_GRADES.sort((a, b) => a.identification - b.identification).forEach(grade => {
+
+                const statusKey = grade.status === 'Active' ? 'Active' : 'Inactive';
+                const statusClass = grade.status === 'Active' ? 'status-active' : 'status-inactive';
+                const statusText = getTranslation(statusKey); // FIX: Defined statusText here
+
+                const toggleAction = grade.status === 'Active' ? 'disable' : 'enable';
+                const toggleText = getTranslation(grade.status === 'Active' ? 'inactive' : 'active');
+                const toggleBtnClass = grade.status === 'Active' ? 'btn-status-toggle' : 'btn-status-enable';
+
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>
+                        <button onclick="handleAction('edit', ${grade.id})" class="action-button btn-edit mr-1">${getTranslation('edit')}</button>
+                        <button onclick="handleAction('delete', ${grade.id})" class="action-button btn-delete mr-1">${getTranslation('delete')}</button>
+                        <button onclick="handleAction('${toggleAction}', ${grade.id})" class="action-button ${toggleBtnClass}">${toggleText}</button>
+                    </td>
+                    <td class="${statusClass}">${statusText}</td>
+                    <td>${grade.nameEn}</td>
+                    <td>${grade.nameUrdu}</td>
+                    <td>${grade.identification}</td>
+                    <td class="text-xs text-gray-500">${grade.rankUrdu}</td>
+                `;
+
+                // Reorder columns to match the image: Action, Status, Name(EN), Name(Urdu), ID, Rank(Urdu)
+                const columns = [
+                    tr.cells[0].outerHTML, // Action
+                    tr.cells[1].outerHTML, // Status
+                    tr.cells[2].outerHTML, // Name (EN)
+                    tr.cells[3].outerHTML, // Name (Urdu)
+                    tr.cells[4].outerHTML, // ID
+                    tr.cells[5].outerHTML  // Rank (Urdu)
+                ];
+
+                tr.innerHTML = columns.join('');
+                tbody.appendChild(tr);
+            });
+        }
+
+        // --- CRUD Logic ---
+        function handleAddGrade(event) {
+            event.preventDefault();
+            const form = event.target;
+
+            const rankUrdu = form.querySelector('#rank-urdu-add').value.trim();
+            const nameEn = form.querySelector('#name-en-add').value.trim();
+            const identification = parseInt(form.querySelector('#id-number-add').value);
+
+            if (!rankUrdu || !nameEn || isNaN(identification)) {
+                alert(getTranslation('validation_error'));
+                return false;
+            }
+
+            const newGrade = {
+                id: nextGradeId++,
+                rankUrdu,
+                nameEn,
+                nameUrdu: rankUrdu, // Using Rank Urdu as Name Urdu for simplicity
+                identification,
+                status: 'Active'
+            };
+
+            DUMMY_GRADES.push(newGrade);
+            saveGrades();
+
+            form.reset();
+            updateContent();
+            alert(getTranslation('grade_added'));
+
+            return false;
+        }
+
+        function handleAction(action, id) {
+            const grade = getGradeById(id);
+            if (!grade) return;
+
+            if (action === 'edit') {
+                openEditModal(grade);
+            } else if (action === 'delete') {
+                if (confirm(getTranslation('confirm_delete'))) {
+                    deleteGrade(id);
+                }
+            } else if (action === 'disable') {
+                updateGradeStatus(id, 'Inactive');
+            } else if (action === 'enable') {
+                updateGradeStatus(id, 'Active');
+            }
+        }
+
+        function deleteGrade(id) {
+            DUMMY_GRADES = DUMMY_GRADES.filter(g => g.id !== id);
+            saveGrades();
+            updateContent();
+            alert(getTranslation('grade_deleted'));
+        }
+
+        function updateGradeStatus(id, newStatus) {
+            const gradeIndex = DUMMY_GRADES.findIndex(g => g.id === id);
+            if (gradeIndex !== -1) {
+                DUMMY_GRADES[gradeIndex].status = newStatus;
+                saveGrades();
+                updateContent();
+                alert(getTranslation('item_status_updated'));
+            }
+        }
+
+        // --- Modal Handling for Edit ---
+        function openEditModal(grade) {
+            const modal = document.getElementById('edit-modal');
+            const isRtl = currentLang === 'ur';
+
+            document.getElementById('modal-title').textContent = getTranslation('modal_edit_title') + `: ${grade.nameEn}`;
+
+            const formHtml = `
+                <form id="edit-grade-form" onsubmit="return saveEditedGrade(event, ${grade.id})">
+                    <div class="form-group">
+                        <label for="edit-rank-urdu" class="form-label">${getTranslation('rank_name_urdu')}</label>
+                        <input type="text" id="edit-rank-urdu" class="form-input" value="${grade.rankUrdu}" required>
+                    </div>
+                    <div class="form-group mt-4">
+                        <label for="edit-name-en" class="form-label">${getTranslation('grade_name_en')}</label>
+                        <input type="text" id="edit-name-en" class="form-input" value="${grade.nameEn}" required>
+                    </div>
+                    <div class="form-group mt-4">
+                        <label for="edit-id-number" class="form-label">${getTranslation('identification')}</label>
+                        <input type="number" id="edit-id-number" class="form-input" value="${grade.identification}" required>
+                    </div>
+                    <div class="form-group mt-4">
+                        <label for="edit-status" class="form-label">${getTranslation('status_col')}</label>
+                        <select id="edit-status" class="form-input" required>
+                            <option value="Active" ${grade.status === 'Active' ? 'selected' : ''}>${getTranslation('Active')}</option>
+                            <option value="Inactive" ${grade.status === 'Inactive' ? 'selected' : ''}>${getTranslation('Inactive')}</option>
+                        </select>
+                    </div>
+
+                    <div class="flex justify-end space-x-4 mt-8">
+                        <button type="button" onclick="closeEditModal()" class="action-button bg-gray-200 text-gray-700 hover:bg-gray-300">${getTranslation('cancel')}</button>
+                        <button type="submit" class="primary-button">${getTranslation('save')}</button>
+                    </div>
+                </form>
+            `;
+
+            document.getElementById('modal-body').innerHTML = formHtml;
+            document.getElementById('edit-grade-form').style.textAlign = isRtl ? 'right' : 'left';
+
+
+            modal.classList.remove('hidden', 'opacity-0');
+        }
+
+        function closeEditModal() {
+            document.getElementById('edit-modal').classList.add('opacity-0');
+            setTimeout(() => { document.getElementById('edit-modal').classList.add('hidden'); }, 300);
+        }
+
+        function saveEditedGrade(event, id) {
+            event.preventDefault();
+            const form = event.target;
+
+            const rankUrdu = form.querySelector('#edit-rank-urdu').value.trim();
+            const nameEn = form.querySelector('#edit-name-en').value.trim();
+            const identification = parseInt(form.querySelector('#edit-id-number').value);
+            const status = form.querySelector('#edit-status').value;
+
+            if (!rankUrdu || !nameEn || isNaN(identification) || !status) {
+                alert(getTranslation('validation_error'));
+                return false;
+            }
+
+            const gradeIndex = DUMMY_GRADES.findIndex(g => g.id === id);
+
+            if (gradeIndex !== -1) {
+                DUMMY_GRADES[gradeIndex] = {
+                    ...DUMMY_GRADES[gradeIndex],
+                    rankUrdu,
+                    nameEn,
+                    nameUrdu: rankUrdu, // Assuming Name Urdu is the same as Rank Urdu
+                    identification,
+                    status
+                };
+                saveGrades();
+                closeEditModal();
+                updateContent();
+                alert(getTranslation('grade_updated'));
+            }
+
+            return false;
+        }
+
+
+        // Initialize content and language
+        window.onload = function () {
+            loadGrades();
+            const storedLang = localStorage.getItem('madarsaSystemLang');
+            currentLang = (storedLang && storedLang in langData) ? storedLang : 'en';
+
+            // Initial content update and table render
+            updateContent();
+
+            // Attach form listener for adding new item
+            document.getElementById('add-grade-form').addEventListener('submit', handleAddGrade);
+        };
+    </script>
+
+    <!-- HEADER -->
+    <header>
+        <div class="max-w-7xl mx-auto w-full flex justify-between items-center">
+            <!-- Left: Back Button & Title -->
+            <div class="flex items-center space-x-4">
+                <a href="academic_system.html" class="action-button bg-gray-100 text-gray-700 hover:bg-gray-200"
+                    data-lang-key="back_to_academic">Back to Academic</a>
+                <h1 class="text-xl font-bold" data-lang-key="page_title" style="color: var(--color-primary);">Grades &
+                    Sections Management</h1>
+            </div>
+
+            <!-- Right: Language Switch -->
+            <div class="flex items-center space-x-2">
+                <select onchange="changeLanguage(this.value)" class="bg-gray-100 rounded-lg p-1 text-sm">
+                    <option value="en" selected>English</option>
+                    <option value="hi">हिन्दी</option>
+                    <option value="ur">اردو</option>
+                </select>
+                <button onclick="window.location.href='login.html'"
+                    class="text-sm font-semibold text-red-600 hover:text-red-800 transition-colors ml-4"
+                    data-lang-key="logout">Logout</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="max-w-7xl mx-auto w-full p-4 md:p-8">
+
+        <!-- Add New Grade Form -->
+        <div class="bg-white p-6 md:p-8 rounded-xl shadow-2xl mb-8">
+            <h2 class="text-2xl font-bold text-gray-700 mb-6" data-lang-key="add_status">Add Status</h2>
+
+            <form id="add-grade-form">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+
+                    <!-- Rank Name (Urdu) -->
+                    <div class="form-group">
+                        <label for="rank-urdu-add" class="form-label" data-lang-key="rank_name_urdu">Rank name
+                            (Urdu)</label>
+                        <input type="text" id="rank-urdu-add" class="form-input" required
+                            placeholder="For example: اول">
+                    </div>
+
+                    <!-- Grade Name (English) -->
+                    <div class="form-group">
+                        <label for="name-en-add" class="form-label" data-lang-key="grade_name_en">Grade Name
+                            (English)</label>
+                        <input type="text" id="name-en-add" class="form-input" required placeholder="e.g. First Year">
+                    </div>
+
+                    <!-- Identification Number -->
+                    <div class="form-group">
+                        <label for="id-number-add" class="form-label"
+                            data-lang-key="identification_number">Identification Number</label>
+                        <input type="number" id="id-number-add" class="form-input" required placeholder="e.g. 1">
+                    </div>
+
+                    <!-- Add Button -->
+                    <div class="form-group flex justify-end">
+                        <button type="submit" class="primary-button w-full" data-lang-key="add">Add</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+
+        <!-- Grade Listing Table -->
+        <div class="bg-white p-6 md:p-8 rounded-xl shadow-2xl">
+            <h2 class="text-2xl font-bold text-gray-700 mb-6" data-lang-key="list_of_grades">List of Grades</h2>
+
+            <div class="table-container">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 25%" data-lang-key="action">Action</th>
+                            <th style="width: 10%" data-lang-key="status_col">Status</th>
+                            <th style="width: 25%" data-lang-key="name_en">Name (EN)</th>
+                            <th style="width: 20%" data-lang-key="name_urdu">Name (Urdu)</th>
+                            <th style="width: 10%" data-lang-key="identification">ID No.</th>
+                            <th style="width: 10%" data-lang-key="rank_name_urdu">Rank (Urdu)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="grades-table-body">
+                        <!-- Grade data will be injected here by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <!-- GRADE EDIT MODAL -->
+    <div id="edit-modal"
+        class="hidden opacity-0 fixed inset-0 z-50 flex items-center justify-center modal-backdrop transition-opacity duration-300">
+        <div class="modal-content p-6 md:p-8 transform scale-100 transition-transform duration-300">
+            <div class="flex justify-between items-start pb-4 border-b mb-6">
+                <h3 id="modal-title" class="text-xl font-bold text-gray-700">Edit Grade Details</h3>
+                <button onclick="closeEditModal()" class="text-gray-500 hover:text-gray-900 transition-colors p-1"
+                    aria-label="Close">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                        stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            <div id="modal-body">
+                <!-- Dynamic form content goes here -->
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
