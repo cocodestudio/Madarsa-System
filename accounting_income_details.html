@@ -88,6 +88,16 @@
             transition: background-color 0.2s;
         }
 
+        .btn-edit {
+            background-color: #3b82f6;
+            color: white;
+        }
+
+        .btn-delete {
+            background-color: #ef4444;
+            color: white;
+        }
+
         /* Fixed Header */
         header {
             background-color: var(--color-text-light);
@@ -453,8 +463,8 @@
                     <td>${income.receivedFrom}</td>
                     <td>${income.description.substring(0, 50)}...</td>
                     <td class="flex space-x-3">
-                        <a href="#" onclick="handleAction('edit', ${income.id})" class="text-blue-600 hover:underline" data-lang-key="edit">${getTranslation('edit')}</a>
-                        <a href="#" onclick="handleAction('delete', ${income.id})" class="text-red-600 hover:underline" data-lang-key="delete">${getTranslation('delete')}</a>
+                        <a href="#" onclick="handleAction('edit', ${income.id})" class="action-button btn-edit mr-1" data-lang-key="edit">${getTranslation('edit')}</a>
+                        <a href="#" onclick="handleAction('delete', ${income.id})" class="action-button btn-delete mr-1" data-lang-key="delete">${getTranslation('delete')}</a>
                     </td>
                 `;
                 tbody.appendChild(tr);

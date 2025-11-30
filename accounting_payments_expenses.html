@@ -99,6 +99,16 @@
             padding: 1rem 2rem;
         }
 
+        .btn-edit {
+            background-color: #3b82f6;
+            color: white;
+        }
+
+        .btn-delete {
+            background-color: #ef4444;
+            color: white;
+        }
+
         /* Table Styling */
         .admin-table {
             width: 100%;
@@ -434,8 +444,8 @@
                     <td>${expense.recipient}</td>
                     <td>${expense.description.substring(0, 50)}...</td>
                     <td class="flex space-x-3">
-                        <a href="#" onclick="handleAction('edit', ${expense.id})" class="text-blue-600 hover:underline" data-lang-key="edit">${getTranslation('edit')}</a>
-                        <a href="#" onclick="handleAction('delete', ${expense.id})" class="text-red-600 hover:underline" data-lang-key="delete">${getTranslation('delete')}</a>
+                        <a href="#" onclick="handleAction('edit', ${expense.id})" class="action-button btn-edit mr-1" data-lang-key="edit">${getTranslation('edit')}</a>
+                        <a href="#" onclick="handleAction('delete', ${expense.id})" class="action-button btn-delete mr-1" data-lang-key="delete">${getTranslation('delete')}</a>
                     </td>
                 `;
                 tbody.appendChild(tr);

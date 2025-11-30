@@ -88,6 +88,16 @@
             transition: background-color 0.2s;
         }
 
+        .btn-edit {
+            background-color: #3b82f6;
+            color: white;
+        }
+
+        .btn-delete {
+            background-color: #ef4444;
+            color: white;
+        }
+
         /* Fixed Header */
         header {
             background-color: var(--color-text-light);
@@ -434,8 +444,8 @@
 
                 tr.innerHTML = `
                     <td class="flex space-x-2">
-                        <a href="#" onclick="handleAction('delete', ${purchase.id})" class="text-red-500 hover:underline" data-lang-key="delete">${getTranslation('delete')}</a>
-                        <a href="#" onclick="handleAction('edit', ${purchase.id})" class="text-blue-600 hover:underline" data-lang-key="edit">${getTranslation('edit')}</a>
+                        <a href="#" onclick="handleAction('delete', ${purchase.id})" class="action-button btn-delete mr-1" data-lang-key="delete">${getTranslation('delete')}</a>
+                        <a href="#" onclick="handleAction('edit', ${purchase.id})" class="action-button btn-edit mr-1" data-lang-key="edit">${getTranslation('edit')}</a>
                     </td>
                     <td>${purchase.date}</td>
                     <td>${purchase.unitPrice.toFixed(2)}</td>
