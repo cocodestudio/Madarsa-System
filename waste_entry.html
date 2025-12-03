@@ -15,7 +15,7 @@
         --color-text-light: #ffffff;
       }
 
-      @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;700&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap");
+      @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;700&family=Noto+Nastaliq+Urdu:wght=400;700&display=swap");
 
       /* Language Styles */
       body,
@@ -67,7 +67,7 @@
       /* Buttons */
       .primary-button {
         padding: 0.8rem 1.5rem;
-        background-color: #3b82f6;
+        background-color: var(--color-primary);
         color: var(--color-text-light);
         font-weight: 600;
         border-radius: 0.5rem;
@@ -76,7 +76,7 @@
       }
 
       .primary-button:hover {
-        background-color: #2563eb;
+        background-color: #008f80;
         transform: translateY(-1px);
       }
 
@@ -99,7 +99,7 @@
         padding: 1rem 2rem;
       }
 
-      /* History/Table Styling */
+      /* Table Styling */
       .admin-table {
         width: 100%;
         border-collapse: separate;
@@ -138,6 +138,18 @@
         border-bottom-right-radius: 0.75rem;
       }
 
+      .lang-ur .admin-table tr td:first-child {
+        border-radius: 0;
+        border-top-right-radius: 0.75rem;
+        border-bottom-right-radius: 0.75rem;
+      }
+
+      .lang-ur .admin-table tr td:last-child {
+        border-radius: 0;
+        border-top-left-radius: 0.75rem;
+        border-bottom-left-radius: 0.75rem;
+      }
+
       .table-container {
         overflow-x: auto;
         -webkit-overflow-scrolling: touch;
@@ -157,7 +169,7 @@
       }
 
       /* Modal Styles */
-      #entry-modal {
+      .app-modal {
         position: fixed;
         inset: 0;
         z-index: 50;
@@ -178,11 +190,42 @@
         overflow-y: auto;
         border: 3px solid var(--color-primary);
       }
+
+      /* Toast Styles */
+      #toast-container {
+        position: fixed;
+        top: 1rem;
+        right: 1rem;
+        z-index: 100;
+        width: 300px;
+      }
+
+      .toast {
+        padding: 0.75rem 1rem;
+        border-radius: 0.5rem;
+        margin-bottom: 0.5rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        animation: slideIn 0.3s ease-out;
+      }
+
+      @keyframes slideIn {
+        from {
+          transform: translateX(100%);
+          opacity: 0;
+        }
+
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
     </style>
   </head>
 
   <body class="lang-en">
     <script>
+      // --- Global Utility Functions ---
+
       // Helper to format date YYYY-MM-DD
       function formatDate(date) {
         const d = new Date(date);
@@ -196,7 +239,28 @@
         return [year, month, day].join("-");
       }
 
-      // --- Dummy Item Data (from Manage Items) ---
+      // Display Toast Notification
+      window.showToast = function (messageKey, type = "success") {
+        const toastContainer = document.getElementById("toast-container");
+        const message = getTranslation(messageKey);
+
+        const colorClass =
+          type === "success"
+            ? "bg-green-500 text-white"
+            : "bg-red-500 text-white";
+
+        const toast = document.createElement("div");
+        toast.className = `toast ${colorClass}`;
+        toast.textContent = message;
+
+        toastContainer.appendChild(toast);
+
+        setTimeout(() => {
+          toast.remove();
+        }, 3000);
+      };
+
+      // --- Data Setup (In a real app, this would be Firebase) ---
       const DUMMY_KITCHEN_ITEMS = [
         { id: 1, name: "Aaloo", unit: "kg", currentStock: 50.0 },
         { id: 2, name: "Chawal", unit: "kg", currentStock: 345.0 },
@@ -204,34 +268,9 @@
         { id: 4, name: "Doodh", unit: "liter", currentStock: 66.0 },
       ];
 
-      // --- Dummy Waste Entries Data ---
       const WASTE_STORAGE_KEY = "madarsaKitchenWaste";
-      let wasteEntries = {
-        "2025-11-29": [
-          {
-            id: 1,
-            date: "2025-11-29",
-            itemId: 1,
-            itemName: "Aaloo",
-            unit: "kg",
-            quantity: 5.0,
-            reason: "Spoiled due to improper storage.",
-          },
-        ],
-        "2025-11-28": [
-          {
-            id: 2,
-            date: "2025-11-28",
-            itemId: 3,
-            itemName: "Dal",
-            unit: "kg",
-            quantity: 2.5,
-            reason: "Excessive boiling wastage.",
-          },
-        ],
-      };
+      let wasteEntries = {};
 
-      // Initialize/Load Waste Entries from localStorage
       function loadWasteEntries() {
         const storedEntries = localStorage.getItem(WASTE_STORAGE_KEY);
         if (storedEntries) {
@@ -240,12 +279,9 @@
           } catch (e) {
             console.error("Error loading waste entries:", e);
           }
-        } else {
-          saveWasteEntries();
         }
       }
 
-      // Save Waste Entries to localStorage
       function saveWasteEntries() {
         localStorage.setItem(WASTE_STORAGE_KEY, JSON.stringify(wasteEntries));
       }
@@ -258,7 +294,6 @@
           back_to_kitchen: "Back to Kitchen",
           logout: "Logout",
 
-          // Form/Display
           select_date: "Select Date:",
           add_waste_entry: "Add Waste Entry",
           waste_date: "Waste Date:",
@@ -269,7 +304,6 @@
           no_records_found: "No waste records found for",
           select_item_placeholder: "-- Select item --",
 
-          // Table Headers
           date_wasted: "Waste Date",
           item_name: "Item",
           quantity: "Quantity",
@@ -278,17 +312,19 @@
           delete: "Delete",
           edit: "Edit",
 
-          // Modal
           modal_edit_title: "Edit Waste Entry",
+          modal_confirm_title: "Confirm Deletion",
+          confirm_message:
+            "Are you sure you want to delete this entry? This action cannot be undone.",
           save: "Save Changes",
           cancel: "Cancel",
 
-          // Messages
           validation_error:
             "Please select Date, Item, and valid Quantity (> 0).",
           entry_added: "Waste entry successfully added!",
           entry_deleted: "Entry deleted.",
           entry_updated: "Entry updated.",
+          confirm_delete: "Confirm delete?",
         },
         hi: {
           kitchen_system: "रसोई प्रणाली",
@@ -296,7 +332,6 @@
           back_to_kitchen: "रसोई पर वापस",
           logout: "लॉगआउट",
 
-          // Form/Display
           select_date: "तिथि चुनें:",
           add_waste_entry: "अपशिष्ट एंट्री जोड़ें",
           waste_date: "अपशिष्ट तिथि:",
@@ -307,7 +342,6 @@
           no_records_found: "के लिए कोई अपशिष्ट रिकॉर्ड नहीं मिला",
           select_item_placeholder: "-- आइटम चुनें --",
 
-          // Table Headers
           date_wasted: "अपशिष्ट तिथि",
           item_name: "आइटम",
           quantity: "मात्रा",
@@ -316,12 +350,13 @@
           delete: "हटाएँ",
           edit: "संपादित करें",
 
-          // Modal
           modal_edit_title: "अपशिष्ट एंट्री संपादित करें",
+          modal_confirm_title: "हटाने की पुष्टि करें",
+          confirm_message:
+            "क्या आप वाकई इस प्रविष्टि को हटाना चाहते हैं? यह कार्रवाई पूर्ववत नहीं की जा सकती।",
           save: "परिवर्तन सहेजें",
           cancel: "रद्द करें",
 
-          // Messages
           validation_error: "कृपया तिथि, आइटम, और वैध मात्रा (> 0) चुनें।",
           entry_added: "अपशिष्ट एंट्री सफलतापूर्वक जोड़ी गई!",
           entry_deleted: "एंट्री हटा दी गई।",
@@ -333,7 +368,6 @@
           back_to_kitchen: "باورچی خانے پر واپس جائیں",
           logout: "لاگ آؤٹ",
 
-          // Form/Display
           select_date: "تاریخ منتخب کریں:",
           add_waste_entry: "فضلے کی انٹری شامل کریں",
           waste_date: "فضلے کی تاریخ:",
@@ -344,7 +378,6 @@
           no_records_found: "کے لیے فضلے کا کوئی ریکارڈ نہیں ملا",
           select_item_placeholder: "-- آئٹم منتخب کریں --",
 
-          // Table Headers
           date_wasted: "فضلے کی تاریخ",
           item_name: "آئٹم",
           quantity: "مقدار",
@@ -353,14 +386,15 @@
           delete: "حذف کریں",
           edit: "ترمیم کریں",
 
-          // Modal
           modal_edit_title: "فضلے کی انٹری میں ترمیم کریں",
+          modal_confirm_title: "حذف کی تصدیق کریں",
+          confirm_message:
+            "کیا آپ واقعی اس انٹری کو حذف کرنا چاہتے ہیں؟ اس عمل کو واپس نہیں لیا جا سکتا۔",
           save: "تبدیلیاں محفوظ کریں",
           cancel: "منسوخ کریں",
 
-          // Messages
           validation_error:
-            "براہ کرم تاریخ، آئटم، اور درست مقدار (> 0) منتخب کریں۔",
+            "براہ کرم تاریخ، آئٹم، اور درست مقدار (> 0) منتخب کریں۔",
           entry_added: "فضلے کی انٹری کامیابی سے شامل ہو گئی!",
           entry_deleted: "انٹری حذف کر دی گئی۔",
           entry_updated: "انٹری اپ ڈیٹ کر دی گئی۔",
@@ -374,7 +408,7 @@
       }
 
       // --- Core UI Update Functions ---
-      function updateContent() {
+      window.updateContent = function () {
         document.body.className = "lang-" + currentLang;
 
         document.querySelectorAll("[data-lang-key]").forEach((el) => {
@@ -388,20 +422,18 @@
 
         populateItemDropdowns();
         renderDailyEntries();
-      }
+      };
 
-      function changeLanguage(lang) {
+      window.changeLanguage = function (lang) {
         if (lang in langData) {
           currentLang = lang;
           localStorage.setItem("madarsaSystemLang", lang);
           updateContent();
         }
-      }
+      };
 
       function populateItemDropdowns() {
         const itemDropdown = document.getElementById("item-select-add");
-
-        // Populate Item Dropdown
         itemDropdown.innerHTML = `<option value="" disabled selected data-lang-key="select_item_placeholder">${getTranslation(
           "select_item_placeholder"
         )}</option>`;
@@ -412,7 +444,7 @@
           itemDropdown.appendChild(option);
         });
 
-        // Re-populate modal item dropdown if open
+        // Re-populate modal item dropdown if it exists (for edit)
         const modalItemDropdown = document.getElementById("edit-item-select");
         if (modalItemDropdown) {
           modalItemDropdown.innerHTML = itemDropdown.innerHTML;
@@ -446,6 +478,7 @@
         entries.forEach((entry) => {
           const tr = document.createElement("tr");
 
+          // Note: handleAction is a global function now
           tr.innerHTML = `
                     <td class="font-bold text-gray-800">${entry.date}</td>
                     <td>${entry.itemName}</td>
@@ -473,16 +506,24 @@
         event.preventDefault();
         const form = event.target;
 
-        const selectedDate = form.querySelector("#waste-date-form").value;
-        const itemSelect = form.querySelector("#item-select-add");
-        const itemId = parseInt(itemSelect.value);
-        const quantity = parseFloat(
-          form.querySelector("#quantity-wasted-add").value
+        const selectedDate = isEdit
+          ? document.getElementById("edit-date-hidden").value
+          : document.getElementById("waste-date-select").value;
+
+        const itemSelect = form.querySelector(
+          isEdit ? "#edit-item-select" : "#item-select-add"
         );
-        const reason = form.querySelector("#reason-add").value.trim();
+        const itemId = parseInt(itemSelect.value);
+        const quantityInput = form.querySelector(
+          isEdit ? "#edit-quantity-wasted" : "#quantity-wasted-add"
+        );
+        const quantity = parseFloat(quantityInput.value);
+        const reason = form
+          .querySelector(isEdit ? "#edit-reason" : "#reason-add")
+          .value.trim();
 
         if (!selectedDate || !itemId || isNaN(quantity) || quantity <= 0) {
-          alert(getTranslation("validation_error"));
+          window.showToast("validation_error", "error");
           return false;
         }
 
@@ -500,7 +541,6 @@
           reason: reason,
         };
 
-        // Ensure the date entry exists in storage
         if (!wasteEntries[selectedDate]) {
           wasteEntries[selectedDate] = [];
         }
@@ -516,23 +556,24 @@
               ...newEntry,
               id: id,
             };
-            alert(getTranslation("entry_updated"));
+            window.showToast("entry_updated", "success");
           }
         } else {
           // ADD LOGIC
-          const maxId =
-            wasteEntries[selectedDate].length > 0
-              ? Math.max(...wasteEntries[selectedDate].map((e) => e.id || 0))
-              : 0;
+          // Generate a new unique ID (simple local max ID finder for dummy data)
+          const allIds = Object.values(wasteEntries)
+            .flat()
+            .map((e) => e.id || 0);
+          const maxId = allIds.length > 0 ? Math.max(...allIds) : 0;
           newEntry.id = maxId + 1;
           wasteEntries[selectedDate].push(newEntry);
-          alert(getTranslation("entry_added"));
+          window.showToast("entry_added", "success");
         }
 
         saveWasteEntries();
 
         if (!isEdit) {
-          // Keep date fields synced, but reset others
+          // Reset form fields on successful Add
           form.querySelector("#item-select-add").value = "";
           form.querySelector("#quantity-wasted-add").value = "";
           form.querySelector("#reason-add").value = "";
@@ -544,7 +585,7 @@
         return false;
       }
 
-      function deleteEntry(date, id) {
+      window.deleteConfirmedEntry = function (date, id) {
         if (!wasteEntries[date]) return;
 
         wasteEntries[date] = wasteEntries[date].filter(
@@ -552,37 +593,37 @@
         );
         saveWasteEntries();
         updateContent();
-        alert(getTranslation("entry_deleted"));
-      }
+        showToast("entry_deleted", "success");
+        closeConfirmationModal(); // Close the modal after deletion
+      };
 
       // --- Action Dispatcher (Delete/Edit) ---
-      function handleAction(action, date, id) {
+      window.handleAction = function (action, date, id) {
         const entry = wasteEntries[date]?.find((e) => e.id === id);
 
-        if (action === "delete") {
-          if (confirm(getTranslation("confirm_delete") || "Confirm delete?")) {
-            deleteEntry(date, id);
-          }
-        } else if (action === "edit") {
-          if (entry) {
-            openEntryModal(entry);
-          }
-        }
-      }
+        if (!entry) return;
 
-      // --- Modal Handling for Edit ---
-      function openEntryModal(entry) {
+        if (action === "delete") {
+          openConfirmationModal(entry);
+        } else if (action === "edit") {
+          openEntryModal(entry);
+        }
+      };
+
+      // --- MODAL HANDLERS ---
+
+      // 1. EDIT MODAL
+      window.openEntryModal = function (entry) {
         const modal = document.getElementById("entry-modal");
         const isRtl = currentLang === "ur";
 
         document.getElementById("modal-title").textContent =
           getTranslation("modal_edit_title");
 
-        // Set the correct date string for the form submission handler
         const dateString = entry.date;
 
         const formHtml = `
-                <form id="edit-waste-form" onsubmit="return saveEditedWaste(event, '${dateString}', ${
+                <form id="edit-waste-form" onsubmit="return handleEditSubmission(event, '${dateString}', ${
           entry.id
         })">
                     <input type="hidden" id="edit-date-hidden" value="${
@@ -627,8 +668,8 @@
 
         document.getElementById("modal-body").innerHTML = formHtml;
 
-        // Repopulate item dropdown and set value
-        populateDropdowns();
+        // Repopulate item dropdown and set value (Must be called after HTML is inserted)
+        populateItemDropdowns();
         document.getElementById("edit-item-select").value = entry.itemId;
 
         document.getElementById("edit-waste-form").style.textAlign = isRtl
@@ -636,60 +677,51 @@
           : "left";
 
         modal.classList.remove("hidden", "opacity-0");
-      }
+      };
 
-      function saveEditedWaste(event, date, id) {
-        event.preventDefault();
-        const form = event.target;
+      window.handleEditSubmission = function (event, date, id) {
+        // Re-use the main saveWasteEntry logic for editing
+        return saveWasteEntry(event, true, id);
+      };
 
-        const dateString = date;
-
-        const newItemId = parseInt(
-          form.querySelector("#edit-item-select").value
-        );
-        const newQuantity = parseFloat(
-          form.querySelector("#edit-quantity-wasted").value
-        );
-        const newReason = form.querySelector("#edit-reason").value.trim();
-
-        if (!newItemId || isNaN(newQuantity) || newQuantity <= 0) {
-          alert(getTranslation("validation_error"));
-          return false;
-        }
-
-        const itemDetails = DUMMY_KITCHEN_ITEMS.find(
-          (item) => item.id === newItemId
-        );
-
-        const entryIndex = wasteEntries[dateString].findIndex(
-          (e) => e.id === id
-        );
-
-        if (entryIndex !== -1) {
-          wasteEntries[dateString][entryIndex] = {
-            ...wasteEntries[dateString][entryIndex], // Keep date/id
-            itemId: newItemId,
-            itemName: itemDetails.name,
-            unit: itemDetails.unit,
-            quantity: newQuantity,
-            reason: newReason,
-          };
-
-          saveWasteEntries();
-          closeEntryModal();
-          updateContent();
-          alert(getTranslation("entry_updated"));
-        }
-
-        return false;
-      }
-
-      function closeEntryModal() {
-        document.getElementById("entry-modal").classList.add("opacity-0");
+      window.closeEntryModal = function () {
+        const modal = document.getElementById("entry-modal");
+        modal.classList.add("opacity-0");
         setTimeout(() => {
-          document.getElementById("entry-modal").classList.add("hidden");
+          modal.classList.add("hidden");
         }, 300);
-      }
+      };
+
+      // 2. CONFIRMATION MODAL
+      window.openConfirmationModal = function (entry) {
+        const modal = document.getElementById("confirmation-modal");
+        const titleElement = document.getElementById("confirm-modal-title");
+        const messageElement = document.getElementById("confirm-modal-message");
+        const confirmButton = document.getElementById("confirm-delete-button");
+        const isRtl = currentLang === "ur";
+
+        titleElement.textContent = getTranslation("modal_confirm_title");
+        messageElement.textContent = `${getTranslation("confirm_message")} (${
+          entry.itemName
+        }: ${entry.quantity} ${entry.unit})`;
+
+        // Set the onclick for the confirm button dynamically
+        confirmButton.setAttribute(
+          "onclick",
+          `deleteConfirmedEntry('${entry.date}', ${entry.id})`
+        );
+
+        modal.style.textAlign = isRtl ? "right" : "left";
+        modal.classList.remove("hidden", "opacity-0");
+      };
+
+      window.closeConfirmationModal = function () {
+        const modal = document.getElementById("confirmation-modal");
+        modal.classList.add("opacity-0");
+        setTimeout(() => {
+          modal.classList.add("hidden");
+        }, 300);
+      };
 
       // Initialize content and language
       window.onload = function () {
@@ -699,8 +731,14 @@
 
         // Set default date to today for both fields
         const today = formatDate(new Date());
-        document.getElementById("waste-date-select").value = today;
-        document.getElementById("waste-date-form").value = today;
+
+        const dateSelect = document.getElementById("waste-date-select");
+        const dateForm = document.getElementById("waste-date-form");
+        const currentEntryDate = document.getElementById("current-entry-date");
+
+        if (dateSelect) dateSelect.value = today;
+        if (dateForm) dateForm.value = today;
+        if (currentEntryDate) currentEntryDate.textContent = today;
 
         // Initial content update and table render
         updateContent();
@@ -712,8 +750,16 @@
         document
           .getElementById("add-waste-form")
           .addEventListener("submit", (e) => saveWasteEntry(e, false, null));
+
+        // Set current language in the selector
+        document.querySelector(
+          `select[onchange="changeLanguage(this.value)"]`
+        ).value = currentLang;
       };
     </script>
+
+    <!-- TOAST CONTAINER -->
+    <div id="toast-container"></div>
 
     <!-- HEADER -->
     <header>
@@ -724,7 +770,6 @@
             href="kitchen_system.html"
             class="action-button bg-gray-100 text-gray-700 hover:bg-gray-200"
             data-lang-key="back_to_kitchen"
-            style="text-decoration: none; display: inline-block; cursor: pointer;"
             >Back to Kitchen</a
           >
           <h1
@@ -742,7 +787,7 @@
             onchange="changeLanguage(this.value)"
             class="bg-gray-100 rounded-lg p-1 text-sm"
           >
-            <option value="en" selected>English</option>
+            <option value="en">English</option>
             <option value="hi">हिन्दी</option>
             <option value="ur">اردو</option>
           </select>
@@ -760,7 +805,7 @@
     <!-- MAIN CONTENT AREA -->
     <main class="max-w-4xl mx-auto w-full p-4 md:p-8">
       <!-- Select Date for Viewing Entries -->
-      <div class="bg-white p-6 md:p-8 rounded-xl shadow-2xl mb-8">
+      <div class="bg-white p-6 md:p-8 rounded-xl shadow-xl mb-8">
         <h2
           class="text-2xl font-bold text-gray-700 mb-6"
           data-lang-key="page_title"
@@ -787,7 +832,7 @@
       </div>
 
       <!-- Add Entry Form (Always visible for the selected date) -->
-      <div class="bg-white p-6 md:p-8 rounded-xl shadow-2xl mb-8">
+      <div class="bg-white p-6 md:p-8 rounded-xl shadow-xl mb-8">
         <h3
           class="text-lg font-semibold text-gray-700 mb-6"
           data-lang-key="add_waste_entry"
@@ -796,7 +841,7 @@
         </h3>
 
         <form id="add-waste-form">
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-end">
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
             <!-- Date (Read Only - Linked to Select Date) -->
             <div class="form-group">
               <label
@@ -840,39 +885,36 @@
                 min="0.01"
                 step="0.01"
                 required
+                placeholder="e.g., 2.5"
               />
             </div>
 
-            <!-- Reason -->
-            <div class="form-group">
-              <label for="reason-add" class="form-label" data-lang-key="reason"
-                >Reason (optional):</label
-              >
-              <textarea id="reason-add" class="form-textarea h-10"></textarea>
-            </div>
-
             <!-- Add Button -->
-            <div class="form-group md:col-span-2 flex justify-start">
+            <div class="form-group">
               <button
                 type="submit"
-                class="primary-button w-auto"
+                class="primary-button w-full"
                 data-lang-key="add_entry"
               >
                 Add Entry
               </button>
             </div>
           </div>
+
+          <!-- Reason (Full Width) -->
+          <div class="form-group mt-4">
+            <label for="reason-add" class="form-label" data-lang-key="reason"
+              >Reason (optional):</label
+            >
+            <textarea id="reason-add" class="form-textarea h-16"></textarea>
+          </div>
         </form>
       </div>
 
       <!-- History Table -->
-      <div class="bg-white p-6 md:p-8 rounded-xl shadow-2xl">
+      <div class="bg-white p-6 md:p-8 rounded-xl shadow-xl">
         <h3 class="text-lg font-semibold text-gray-700 mb-6">
-          Waste Records for
-          <span id="current-entry-date"
-            >${document.getElementById('waste-date-select')?.value ||
-            '...'}</span
-          >
+          Waste Records for <span id="current-entry-date">...</span>
         </h3>
 
         <!-- Info box when no entries are found -->
@@ -900,7 +942,7 @@
     <!-- ENTRY EDIT MODAL -->
     <div
       id="entry-modal"
-      class="hidden opacity-0 fixed inset-0 z-50 flex items-center justify-center modal-backdrop transition-opacity duration-300"
+      class="hidden opacity-0 app-modal transition-opacity duration-300"
     >
       <div
         class="modal-content p-6 md:p-8 transform scale-100 transition-transform duration-300"
@@ -932,6 +974,48 @@
         </div>
         <div id="modal-body">
           <!-- Dynamic form content goes here -->
+        </div>
+      </div>
+    </div>
+
+    <!-- CONFIRMATION MODAL (For Deletion) -->
+    <div
+      id="confirmation-modal"
+      class="hidden opacity-0 app-modal transition-opacity duration-300"
+    >
+      <div
+        class="modal-content p-6 md:p-8 transform scale-100 transition-transform duration-300 !border-red-500"
+      >
+        <h3
+          id="confirm-modal-title"
+          class="text-xl font-bold text-red-600 mb-4"
+          data-lang-key="modal_confirm_title"
+        >
+          Confirm Deletion
+        </h3>
+        <p
+          id="confirm-modal-message"
+          class="text-gray-700 mb-8"
+          data-lang-key="confirm_message"
+        ></p>
+
+        <div class="flex justify-end space-x-4">
+          <button
+            type="button"
+            onclick="closeConfirmationModal()"
+            class="action-button bg-gray-200 text-gray-700 hover:bg-gray-300"
+            data-lang-key="cancel"
+          >
+            Cancel
+          </button>
+          <button
+            id="confirm-delete-button"
+            type="button"
+            class="action-button bg-red-600 text-white hover:bg-red-700"
+            data-lang-key="delete"
+          >
+            Delete
+          </button>
         </div>
       </div>
     </div>

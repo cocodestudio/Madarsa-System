@@ -1,569 +1,822 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Attendance Register - Academic</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- jsPDF Library for PDF Generation -->
+    <!-- jsPDF Library for PDF Generation (Note: PDF generation remains table-based for printing) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <!-- jsPDF Autotable Plugin for complex table layout -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
 
-
     <style>
-        :root {
-            --color-primary: #00A693;
-            --color-background: #F2F3FF4;
-            --color-accent: #E08A27;
-            --color-text-dark: #1A1A1A;
-            --color-text-light: #FFFFFF;
-        }
+      :root {
+        --color-primary: #00a693;
+        --color-background: #f2f3f4;
+        --color-accent: #e08a27;
+        --color-text-dark: #1a1a1a;
+        --color-text-light: #ffffff;
+      }
 
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;700&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap');
+      @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;700&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap");
 
-        /* Language Styles */
-        body,
-        .lang-en {
-            font-family: 'Poppins', sans-serif;
-            direction: ltr;
-            background-color: var(--color-background);
-        }
+      /* Language Styles */
+      body,
+      .lang-en {
+        font-family: "Poppins", sans-serif;
+        direction: ltr;
+        background-color: var(--color-background);
+      }
 
-        .lang-hi {
-            font-family: 'Noto Sans Devanagari', sans-serif;
-            direction: ltr;
-        }
+      .lang-ur {
+        font-family: "Noto Nastaliq Urdu", "Segoe UI", Tahoma, Geneva, Verdana,
+          sans-serif !important;
+        direction: rtl;
+        line-height: 1.8;
+        text-align: right;
+      }
 
-        .lang-ur {
-            font-family: 'Noto Nastaliq Urdu', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
-            direction: rtl;
-            line-height: 1.8;
-            text-align: right;
-        }
+      /* Language alignment for general components */
+      .lang-ur .text-right-ur {
+        text-align: right;
+      }
 
-        /* Form & Inputs */
-        .form-input,
-        select {
-            padding: 0.75rem 1rem;
-            border-radius: 0.5rem;
-            border: 1px solid #ccc;
-            width: 100%;
-            font-family: inherit;
-        }
+      .lang-ur .text-left-ur {
+        text-align: left;
+      }
 
-        .form-input:focus,
-        select:focus {
-            outline: none;
-            border-color: var(--color-primary);
-            box-shadow: 0 0 0 3px rgba(0, 166, 147, 0.2);
-        }
+      .lang-en .text-right-ur {
+        text-align: left;
+      }
 
-        .form-label {
-            display: block;
-            font-weight: 600;
-            margin-bottom: 0.25rem;
-            font-size: 0.875rem;
-            color: var(--color-text-dark);
-        }
+      .lang-en .text-left-ur {
+        text-align: right;
+      }
 
-        /* Buttons */
-        .primary-button {
-            padding: 0.8rem 1.5rem;
-            background-color: var(--color-primary);
-            color: white;
-            font-weight: 600;
-            border-radius: 0.5rem;
-            transition: background-color 0.2s;
-            cursor: pointer;
-        }
+      .form-group {
+        text-align: left;
+      }
 
-        .primary-button:hover {
-            background-color: #008f7d;
-        }
+      .lang-ur .form-group {
+        text-align: right;
+      }
 
-        .action-button {
-            padding: 0.4rem 0.6rem;
-            border-radius: 0.25rem;
-            font-size: 0.7rem;
-            font-weight: 600;
-            transition: background-color 0.2s;
-        }
+      /* Form & Inputs */
+      .form-input,
+      select {
+        padding: 0.75rem 1rem;
+        border-radius: 0.5rem;
+        border: 1px solid #ccc;
+        width: 100%;
+        font-family: inherit;
+      }
 
-        /* Fixed Header */
-        header {
-            background-color: var(--color-text-light);
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            position: sticky;
-            top: 0;
-            width: 100%;
-            z-index: 10;
-            padding: 1rem 2rem;
-        }
+      .form-input:focus,
+      select:focus {
+        outline: none;
+        border-color: var(--color-primary);
+        box-shadow: 0 0 0 3px rgba(0, 166, 147, 0.2);
+      }
 
-        /* Card Structure */
-        .centered-card {
-            background-color: white;
-            border-radius: 1rem;
-            padding: 2rem;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-            max-width: 95%;
-            width: 100%;
-            margin: 2rem auto;
-            text-align: center;
-        }
+      .form-label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 0.25rem;
+        font-size: 0.875rem;
+        color: var(--color-text-dark);
+      }
 
-        .main-title {
-            color: var(--color-text-dark);
-            font-size: 2.25rem;
-            font-weight: 700;
-            margin-bottom: 1.5rem;
-        }
+      /* Buttons */
+      .primary-button {
+        padding: 0.8rem 1.5rem;
+        background-color: var(--color-primary);
+        color: white;
+        font-weight: 600;
+        border-radius: 0.5rem;
+        transition: background-color 0.2s;
+        cursor: pointer;
+      }
 
-        /* Table Styling */
-        .attendance-grid {
-            width: 100%;
-            border-collapse: collapse;
-        }
+      .primary-button:hover {
+        background-color: #008f7d;
+      }
 
-        .attendance-grid th,
-        .attendance-grid td {
-            padding: 0.4rem 0.2rem;
-            font-size: 0.75rem;
-            border: 1px solid #ddd;
-            text-align: center;
-            height: 40px;
-        }
+      /* Fixed Header */
+      header {
+        background-color: var(--color-text-light);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        position: sticky;
+        top: 0;
+        width: 100%;
+        z-index: 10;
+        padding: 1rem 2rem;
+      }
 
-        .attendance-grid th {
-            background-color: #f3f4f6;
-            font-weight: 700;
-        }
+      /* Card Structure */
+      .centered-card {
+        background-color: white;
+        border-radius: 1rem;
+        padding: 2rem;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        max-width: 95%;
+        width: 100%;
+        margin: 2rem auto;
+        text-align: center;
+      }
 
-        .attendance-grid .day-header {
-            width: 25px;
-            /* Fixed width for date columns */
-            font-size: 0.7rem;
-            text-transform: none;
-            padding: 0.2rem;
-        }
+      .main-title {
+        color: var(--color-text-dark);
+        font-size: 2.25rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+      }
 
-        .attendance-grid .status-P {
-            background-color: #d1fae5;
-            color: #059669;
-            font-weight: 600;
-        }
+      /* LIST VIEW STYLES */
+      .student-card {
+        cursor: pointer;
+        transition: all 0.2s;
+        border: 1px solid #e5e7eb;
+      }
 
-        .attendance-grid .status-A {
-            background-color: #fee2e2;
-            color: #dc2626;
-            font-weight: 600;
-        }
+      .student-card:hover {
+        background-color: #f9fafb;
+        border-color: var(--color-primary);
+      }
 
-        .attendance-grid .status-L {
-            background-color: #ffedd5;
-            color: #f59e0b;
-            font-weight: 600;
-        }
+      .status-P {
+        background-color: #d1fae5;
+        color: #059669;
+      }
 
-        .attendance-grid .status-LV {
-            background-color: #bfdbfe;
-            color: #1e40af;
-            font-weight: 600;
-        }
+      .status-A {
+        background-color: #fee2e2;
+        color: #dc2626;
+      }
 
-        .table-container {
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-        }
+      .status-L {
+        background-color: #ffedd5;
+        color: #f59e0b;
+      }
 
-        .table-container table {
-            min-width: 1200px;
-        }
+      .status-LV {
+        background-color: #bfdbfe;
+        color: #1e40af;
+      }
+
+      .detail-list-item {
+        padding: 0.5rem 0;
+        border-bottom: 1px dashed #eee;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .detail-status-badge {
+        padding: 0.3rem 0.5rem;
+        border-radius: 0.25rem;
+        font-weight: 600;
+        font-size: 0.75rem;
+      }
     </style>
-</head>
+  </head>
 
-<body class="lang-en">
-
+  <body class="lang-en">
     <script>
-        // Helper to format date YYYY-MM-DD
-        function formatDate(date) {
-            const d = new Date(date);
-            let month = '' + (d.getMonth() + 1);
-            let day = '' + d.getDate();
-            const year = d.getFullYear();
+      // Helper to format date YYYY-MM-DD
+      function formatDate(date) {
+        const d = new Date(date);
+        let month = "" + (d.getMonth() + 1);
+        let day = "" + d.getDate();
+        const year = d.getFullYear();
 
-            if (month.length < 2) month = '0' + month;
-            if (day.length < 2) day = '0' + day;
+        if (month.length < 2) month = "0" + month;
+        if (day.length < 2) day = "0" + day;
 
-            return [year, month, day].join('-');
+        return [year, month, day].join("-");
+      }
+
+      // --- Dummy Data ---
+      const DUMMY_STUDENTS_LIST = [
+        { id: 1, name: "Ali Raza", class: "First" },
+        { id: 2, name: "Fatima Ansar", class: "First" },
+        { id: 3, name: "Ahmed Faraz", class: "Fifth Year" },
+        { id: 4, name: "Maryam Shah", class: "Fifth Year" },
+        { id: 5, name: "Ayesha Siddiqui", class: "Arbitration" },
+      ];
+
+      const DUMMY_GRADES = [
+        "First",
+        "Arbitration",
+        "Fifth Year",
+        "Sania",
+        "Memorization",
+        "Takhassus",
+        "Nazra",
+      ];
+
+      // Attendance Data Structure
+      let studentAttendance = {
+        "2025-11-01": { 1: { status: "P", remarks: "" }, 2: { status: "A" } },
+        "2025-11-05": {
+          1: { status: "L", remarks: "Late" },
+          3: { status: "P" },
+        },
+        "2025-11-20": {
+          1: { status: "P" },
+          2: { status: "LV", remarks: "Sick leave" },
+          3: { status: "P" },
+        },
+        "2025-11-29": {
+          1: { status: "P" },
+          2: { status: "A" },
+          3: { status: "P" },
+          4: { status: "A" },
+        },
+      };
+
+      const ATTENDANCE_STORAGE_KEY = "madarsaAcademicAttendance";
+
+      // --- Load/Save Logic ---
+      function loadAttendance() {
+        const storedAttendance = localStorage.getItem(ATTENDANCE_STORAGE_KEY);
+        if (storedAttendance) {
+          try {
+            studentAttendance = JSON.parse(storedAttendance);
+          } catch (e) {
+            console.error("Error loading attendance:", e);
+          }
+        } else {
+          saveAttendance();
+        }
+      }
+
+      function saveAttendance() {
+        localStorage.setItem(
+          ATTENDANCE_STORAGE_KEY,
+          JSON.stringify(studentAttendance)
+        );
+      }
+      // --- End Load/Save Logic ---
+
+      // --- Multilingual Data ---
+      const langData = {
+        en: {
+          academic_system: "Academic System",
+          page_title: "Attendance Register",
+          back_to_academic: "Back to Academic",
+          logout: "Logout",
+
+          // Form/Labels
+          select_month_year: "Select month and year:",
+          select_status: "Select class/grade:",
+          please_select_grade:
+            "Please select a class/grade and month/year to view the register.",
+          print: "Print Register (PDF)",
+          month: "Month",
+
+          // Table Headers (Used in Summary/PDF)
+          student_name: "Student's Name",
+          total_p: "Total P",
+          total_a: "Total A",
+          total_l: "Total L",
+          total_lv: "Total LV",
+          grand_total: "Total Summary",
+
+          // List View Specific
+          daily_details: "Daily Attendance Details",
+          no_students: "No students found in this class.",
+        },
+        ur: {
+          academic_system: "تعلیمی نظام",
+          page_title: "حاضری رجسٹر",
+          back_to_academic: "اکیڈمک پر واپس جائیں",
+          logout: "لاگ آؤٹ",
+
+          // Form/Labels
+          select_month_year: "مہینہ اور سال منتخب کریں:",
+          select_status: "کلاس/گریڈ منتخب کریں:",
+          please_select_grade:
+            "رجسٹر دیکھنے کے لیے براہ کرم ایک کلاس/گریڈ اور مہینہ/سال منتخب کریں۔",
+          print: "رجسٹر پرنٹ کریں (PDF)",
+          month: "مہینہ",
+
+          // Table Headers (Used in Summary/PDF)
+          student_name: "طالب علم کا نام",
+          total_p: "کل حاضر",
+          total_a: "کل غیر حاضر",
+          total_l: "کل دیر سے",
+          total_lv: "کل چھٹی",
+          grand_total: "کل خلاصہ",
+
+          // List View Specific
+          daily_details: "روزانہ حاضری کی تفصیلات",
+          no_students: "اس کلاس میں کوئی طالب علم نہیں ملا۔",
+        },
+      };
+
+      let currentLang = "en";
+
+      function getTranslation(key) {
+        return langData[currentLang][key] || langData["en"][key] || key;
+      }
+
+      // --- Core UI Update Functions ---
+      function updateContent() {
+        document.body.className = "lang-" + currentLang;
+
+        // Update static elements
+        document.querySelectorAll("[data-lang-key]").forEach((el) => {
+          const key = el.getAttribute("data-lang-key");
+          el.textContent = getTranslation(key);
+        });
+
+        populateDropdowns();
+        renderStudentSummary(); // Changed from renderAttendanceGrid
+      }
+
+      function changeLanguage(lang) {
+        if (lang in langData) {
+          currentLang = lang;
+          localStorage.setItem("madarsaSystemLang", lang);
+          updateContent();
+        }
+      }
+
+      function populateDropdowns() {
+        const gradeDropdown = document.getElementById("grade-select");
+        const currentSelectedGrade = gradeDropdown.value;
+
+        gradeDropdown.innerHTML = `<option value="">${getTranslation(
+          "select_status"
+        )}</option>`;
+        DUMMY_GRADES.forEach((g) => {
+          gradeDropdown.innerHTML += `<option value="${g}" ${
+            g === currentSelectedGrade ? "selected" : ""
+          }>${g}</option>`;
+        });
+
+        // Set default month to current month if not set
+        const monthInput = document.getElementById("month-year-select");
+        if (!monthInput.value) {
+          const defaultMonth = new Date().toISOString().substring(0, 7);
+          monthInput.value = defaultMonth;
+        }
+      }
+
+      // --- List View Rendering Logic ---
+      function getDaysInMonth(year, month) {
+        return new Date(year, month, 0).getDate();
+      }
+
+      function renderStudentSummary() {
+        const listContainer = document.getElementById(
+          "attendance-list-container"
+        );
+        listContainer.innerHTML = ""; // Clear previous content
+
+        const monthYear = document.getElementById("month-year-select").value;
+        const selectedGrade = document.getElementById("grade-select").value;
+
+        if (!monthYear || !selectedGrade) {
+          document.getElementById("attendance-register-title").textContent =
+            getTranslation("page_title");
+          listContainer.innerHTML = `<p class="text-center text-red-600 font-semibold p-4">${getTranslation(
+            "please_select_grade"
+          )}</p>`;
+          return;
         }
 
-        // --- Dummy Data ---
-        // Simulating the full list of students admitted to the Madarsa (used for filtering)
-        const DUMMY_STUDENTS_LIST = [
-            { id: 1, name: 'Ali Raza', class: 'First' },
-            { id: 2, name: 'Fatima Ansar', class: 'First' },
-            { id: 3, name: 'Ahmed Faraz', class: 'Fifth Year' },
-            { id: 4, name: 'Maryam Shah', class: 'Fifth Year' },
-            { id: 5, name: 'Ayesha Siddiqui', class: 'Arbitration' },
+        const [year, month] = monthYear.split("-").map(Number);
+        const daysInMonth = getDaysInMonth(year, month);
+
+        // Update Title
+        const monthName = new Date(year, month - 1, 1).toLocaleString(
+          currentLang === "ur" ? "ur" : "en",
+          { month: "long" }
+        );
+        document.getElementById(
+          "attendance-register-title"
+        ).textContent = `${getTranslation(
+          "page_title"
+        )} - ${monthName} ${year} (${selectedGrade})`;
+
+        // Filter Students
+        const filteredStudents = DUMMY_STUDENTS_LIST.filter(
+          (s) => s.class === selectedGrade
+        );
+
+        if (filteredStudents.length === 0) {
+          listContainer.innerHTML = `<p class="text-center text-gray-500 font-semibold p-4">${getTranslation(
+            "no_students"
+          )}</p>`;
+          return;
+        }
+
+        // Build List Items (Summary Cards)
+        filteredStudents.forEach((student) => {
+          const totals = { P: 0, A: 0, L: 0, LV: 0 };
+          const attendanceDetails = []; // To store daily attendance for the detail view
+
+          // Calculate totals and build daily attendance details
+          for (let day = 1; day <= daysInMonth; day++) {
+            const dateKey = `${year}-${String(month).padStart(2, "0")}-${String(
+              day
+            ).padStart(2, "0")}`;
+            const dailyRecord = studentAttendance[dateKey]
+              ? studentAttendance[dateKey][student.id]
+              : null;
+            const status = dailyRecord ? dailyRecord.status : "A"; // Default Absent
+
+            if (status === "P") totals.P++;
+            else if (status === "A") totals.A++;
+            else if (status === "L") totals.L++;
+            else if (status === "LV") totals.LV++;
+
+            attendanceDetails.push({
+              day,
+              status,
+              remarks: dailyRecord?.remarks || "",
+            });
+          }
+
+          // Store details in a dataset attribute for later use
+          const detailsJson = JSON.stringify(attendanceDetails);
+
+          // Card HTML structure
+          const studentCard = document.createElement("div");
+          studentCard.id = `student-${student.id}`;
+          studentCard.className =
+            "bg-white p-4 rounded-xl shadow-md mb-4 student-card";
+          studentCard.setAttribute("data-student-id", student.id);
+          studentCard.setAttribute("onclick", `toggleDetails(${student.id})`);
+
+          // Summary Row
+          studentCard.innerHTML = `
+                    <div class="flex justify-between items-center">
+                        <div class="font-bold text-lg text-gray-800">${
+                          student.name
+                        }</div>
+                        <div class="text-gray-500 flex items-center space-x-2">
+                            <span class="text-xs text-right-ur">${getTranslation(
+                              "grand_total"
+                            )}</span>
+                            <span class="text-green-600 font-bold">${
+                              totals.P
+                            }</span>
+                            <span class="text-red-600 font-bold">${
+                              totals.A
+                            }</span>
+                            <svg class="w-5 h-5 text-gray-400 transform transition-transform duration-300" 
+                                id="arrow-${
+                                  student.id
+                                }" fill="none" stroke="currentColor" viewBox="0 0 24 24" 
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- Hidden Details Section (Vertical List) -->
+                    <div id="details-${
+                      student.id
+                    }" class="mt-4 overflow-hidden max-h-0 transition-all duration-300 ease-in-out">
+                        <h4 class="font-semibold mb-3 border-b pb-2 text-right-ur" style="color: var(--color-primary);">${getTranslation(
+                          "daily_details"
+                        )} (${daysInMonth} Days)</h4>
+                        <div class="daily-list-body space-y-1">
+                            ${renderDailyList(attendanceDetails, monthYear)}
+                        </div>
+                    </div>
+                `;
+
+          listContainer.appendChild(studentCard);
+        });
+      }
+
+      // --- Detail Rendering Sub-Function (Renders the vertical list) ---
+      function renderDailyList(details, monthYear) {
+        const [year, month] = monthYear.split("-");
+        let listHtml = "";
+
+        details.forEach((item) => {
+          const dateText = `${item.day}. ${monthName(month)}`;
+          const remarks = item.remarks ? ` - ${item.remarks}` : "";
+
+          listHtml += `
+                    <div class="detail-list-item">
+                        <div class="font-medium text-gray-600 text-right-ur">
+                            ${dateText} 
+                        </div>
+                        <div class="flex items-center space-x-2 text-left-ur">
+                            <span class="detail-status-badge status-${item.status}" 
+                                title="${item.remarks}">
+                                ${item.status}
+                            </span>
+                            <span class="text-xs text-gray-500">${remarks}</span>
+                        </div>
+                    </div>
+                `;
+        });
+        return listHtml;
+      }
+
+      function monthName(monthNum) {
+        const date = new Date(1990, monthNum - 1, 1);
+        return date.toLocaleString(currentLang === "ur" ? "ur" : "en", {
+          month: "short",
+        });
+      }
+
+      // --- Toggle Details ---
+      function toggleDetails(studentId) {
+        const detailsDiv = document.getElementById(`details-${studentId}`);
+        const arrowSvg = document.getElementById(`arrow-${studentId}`);
+
+        if (detailsDiv.classList.contains("max-h-0")) {
+          // Open
+          detailsDiv.classList.remove("max-h-0");
+          detailsDiv.style.maxHeight = detailsDiv.scrollHeight + "px";
+          detailsDiv.classList.add("py-2");
+          arrowSvg.classList.add("rotate-180");
+        } else {
+          // Close
+          detailsDiv.classList.add("max-h-0");
+          detailsDiv.style.maxHeight = "0px";
+          detailsDiv.classList.remove("py-2");
+          arrowSvg.classList.remove("rotate-180");
+        }
+      }
+      window.toggleDetails = toggleDetails; // Make globally accessible
+
+      // --- PDF Generation Logic (Modified to be Data-Driven) ---
+      function generatePDF() {
+        // FIX: Use the window object to explicitly access jsPDF and ensure it's loaded.
+        // Using `new window.jspdf.jsPDF` directly.
+        if (
+          typeof window.jspdf === "undefined" ||
+          typeof window.jspdf.jsPDF === "undefined" ||
+          typeof window.jspdf.jsPDF.autoTable === "undefined"
+        ) {
+          console.error(
+            "PDF library (jsPDF Autotable) not loaded or initialized correctly. Check network connection."
+          );
+          return;
+        }
+
+        const jsPDFConstructor = window.jspdf.jsPDF;
+
+        const monthYear = document.getElementById("month-year-select").value;
+        const selectedGrade = document.getElementById("grade-select").value;
+
+        if (!monthYear || !selectedGrade) {
+          console.error(getTranslation("please_select_grade"));
+          return;
+        }
+
+        const [year, month] = monthYear.split("-").map(Number);
+        const daysInMonth = getDaysInMonth(year, month);
+        const filteredStudents = DUMMY_STUDENTS_LIST.filter(
+          (s) => s.class === selectedGrade
+        );
+
+        if (filteredStudents.length === 0) {
+          console.error(getTranslation("no_students"));
+          return;
+        }
+
+        const doc = new jsPDFConstructor("l", "pt", "a4"); // Use the correctly accessed constructor
+
+        // 1. Prepare Data
+        const body = filteredStudents.map((student) => {
+          const row = [student.name];
+          const totals = { P: 0, A: 0, L: 0, LV: 0 };
+
+          for (let day = 1; day <= daysInMonth; day++) {
+            const dateKey = `${year}-${String(month).padStart(2, "0")}-${String(
+              day
+            ).padStart(2, "0")}`;
+            const dailyRecord = studentAttendance[dateKey]
+              ? studentAttendance[dateKey][student.id]
+              : null;
+            const status = dailyRecord ? dailyRecord.status : "A";
+
+            if (status === "P") totals.P++;
+            else if (status === "A") totals.A++;
+            else if (status === "L") totals.L++;
+            else if (status === "LV") totals.LV++;
+
+            row.push(status);
+          }
+          // Add totals columns at the end
+          row.push(totals.P, totals.A, totals.L, totals.LV);
+          return row;
+        });
+
+        // 2. Define Multi-Row Headers
+        const monthName = new Date(year, month - 1, 1).toLocaleString(
+          currentLang === "ur" ? "ur" : "en",
+          { month: "long" }
+        );
+
+        const mainHeaders = [
+          { content: getTranslation("student_name"), rowSpan: 2 },
+          {
+            content: `${getTranslation("month")} ${monthName}`,
+            colSpan: daysInMonth,
+          },
+          { content: getTranslation("grand_total"), colSpan: 4 },
         ];
 
-        // Simulating the comprehensive list of grades/classes
-        const DUMMY_GRADES = ['First', 'Arbitration', 'Fifth Year', 'Sania', 'Memorization', 'Takhassus', 'Nazra'];
+        const subHeaders = [
+          ...Array.from({ length: daysInMonth }, (_, i) => ({
+            content: i + 1,
+          })),
+          // Use only the Status letter for PDF columns
+          {
+            content: "P",
+            styles: { fillColor: "#d1fae5", textColor: "#059669" },
+          },
+          {
+            content: "A",
+            styles: { fillColor: "#fee2e2", textColor: "#dc2626" },
+          },
+          {
+            content: "L",
+            styles: { fillColor: "#ffedd5", textColor: "#f59e0b" },
+          },
+          {
+            content: "LV",
+            styles: { fillColor: "#bfdbfe", textColor: "#1e40af" },
+          },
+        ];
 
-        // Attendance Data Structure (from Academic Attendance module)
-        // Key: YYYY-MM-DD, Value: { studentId: { status: 'Present'/'Absent'/'Leave', remarks: '...' } }
-        let studentAttendance = {
-            '2025-11-01': { 1: { status: 'P', remarks: '' }, 2: { status: 'A' } },
-            '2025-11-05': { 1: { status: 'L', remarks: 'Late' }, 3: { status: 'P' } },
-            '2025-11-20': { 1: { status: 'P' }, 2: { status: 'LV', remarks: 'Sick leave' }, 3: { status: 'P' } },
-            '2025-11-29': { 1: { status: 'P' }, 2: { status: 'A' }, 3: { status: 'P' }, 4: { status: 'A' } }
-        };
+        const combinedHeaders = [mainHeaders, subHeaders];
 
-        const ATTENDANCE_STORAGE_KEY = 'madarsaAcademicAttendance';
+        // 3. Title Text
+        doc.setFontSize(14);
+        doc.text(
+          `${getTranslation("page_title").toUpperCase()} - ${getTranslation(
+            "month"
+          )} ${monthName} (${selectedGrade})`,
+          doc.internal.pageSize.getWidth() / 2,
+          20,
+          { align: "center" }
+        );
 
-        // --- Load/Save Logic (FIXED LOCATION) ---
-        function loadAttendance() {
-            const storedAttendance = localStorage.getItem(ATTENDANCE_STORAGE_KEY);
-            if (storedAttendance) {
-                try {
-                    studentAttendance = JSON.parse(storedAttendance);
-                } catch (e) {
-                    console.error("Error loading attendance:", e);
-                }
-            } else {
-                saveAttendance();
-            }
-        }
+        // 4. Generate Table
+        doc.autoTable({
+          head: combinedHeaders,
+          body: body,
+          startY: 35,
+          theme: "grid",
+          styles: {
+            fontSize: 6,
+            cellPadding: 2,
+            font: "Poppins",
+            overflow: "linebreak",
+            halign: "center",
+          },
+          headStyles: {
+            fillColor: "#f3f4f6",
+            textColor: "#1A1A1A",
+            fontStyle: "bold",
+          },
+          bodyStyles: { minCellHeight: 12 },
+          margin: { left: 5, right: 5 },
+          columnStyles: {
+            0: { cellWidth: 70, halign: "left", fillColor: "#f3f4f6" }, // Name column fixed width,
+            // Apply color styles to the Total columns in the PDF body
+            [daysInMonth + 1]: { fillColor: "#d1fae5", textColor: "#059669" }, // Total P
+            [daysInMonth + 2]: { fillColor: "#fee2e2", textColor: "#dc2626" }, // Total A
+            [daysInMonth + 3]: { fillColor: "#ffedd5", textColor: "#f59e0b" }, // Total L
+            [daysInMonth + 4]: { fillColor: "#bfdbfe", textColor: "#1e40af" }, // Total LV
+          },
+        });
 
-        function saveAttendance() {
-            localStorage.setItem(ATTENDANCE_STORAGE_KEY, JSON.stringify(studentAttendance));
-        }
-        // --- End Load/Save Logic ---
+        doc.save(`Attendance_Register_${selectedGrade}_${monthYear}.pdf`);
+      }
 
-        // --- Multilingual Data ---
-        const langData = {
-            'en': {
-                'academic_system': 'Academic System',
-                'page_title': 'Attendance Register',
-                'back_to_academic': 'Back to Academic',
-                'logout': 'Logout',
+      // Initialize content and language
+      window.onload = function () {
+        loadAttendance();
+        const storedLang = localStorage.getItem("madarsaSystemLang");
+        currentLang = storedLang && storedLang in langData ? storedLang : "en";
 
-                // Form/Labels
-                'select_month_year': 'Select month and year:',
-                'select_status': 'Select status:',
-                'please_select_grade': 'Please select a grade and month/year.',
-                'print': 'Print',
-                'month': 'Month',
+        // Initial content update and table render
+        updateContent();
 
-                // Table Headers
-                'student_name': 'Student\'s name',
-                'total_p': 'Total P',
-                'total_a': 'Total A',
-                'total_l': 'Total L',
-                'total_lv': 'Total LV',
-                'grand_total': 'Grand Total'
-            },
-            'ur': {
-                'academic_system': 'تعلیمی نظام',
-                'page_title': 'حاضری رجسٹر',
-                'back_to_academic': 'اکیڈمک پر واپس جائیں',
-                'logout': 'لاگ آؤٹ',
+        // Attach listeners
+        document
+          .getElementById("grade-select")
+          .addEventListener("change", renderStudentSummary);
+        document
+          .getElementById("month-year-select")
+          .addEventListener("change", renderStudentSummary);
+        document
+          .getElementById("print-btn")
+          .addEventListener("click", generatePDF);
 
-                // Form/Labels
-                'select_month_year': 'مہینہ اور سال منتخب کریں:',
-                'select_status': 'حالت منتخب کریں:',
-                'please_select_grade': 'براہ کرم ایک گریڈ اور مہینہ/سال منتخب کریں۔',
-                'print': 'پرنٹ کریں',
-                'month': 'مہینہ',
-
-                // Table Headers
-                'student_name': 'طالب علم کا نام',
-                'total_p': 'کل حاضر',
-                'total_a': 'کل غیر حاضر',
-                'total_l': 'کل دیر سے',
-                'total_lv': 'کل چھٹی',
-                'grand_total': 'کل مجموعہ'
-            }
-        };
-
-        let currentLang = 'en';
-
-        function getTranslation(key) {
-            return langData[currentLang][key] || langData['en'][key] || key;
-        }
-
-        // --- Core UI Update Functions ---
-        function updateContent() {
-            document.body.className = 'lang-' + currentLang;
-
-            document.querySelectorAll('[data-lang-key]').forEach(el => {
-                const key = el.getAttribute('data-lang-key');
-                el.textContent = getTranslation(key);
-            });
-
-            populateDropdowns();
-            renderAttendanceGrid();
-        }
-
-        function changeLanguage(lang) {
-            if (lang in langData) {
-                currentLang = lang;
-                localStorage.setItem('madarsaSystemLang', lang);
-                updateContent();
-            }
-        }
-
-        function populateDropdowns() {
-            const gradeDropdown = document.getElementById('grade-select');
-
-            gradeDropdown.innerHTML = `<option value="">${getTranslation('select_status')}</option>`;
-            DUMMY_GRADES.forEach(g => {
-                gradeDropdown.innerHTML += `<option value="${g}">${g}</option>`;
-            });
-
-            // Set default month to current month
-            const defaultMonth = new Date().toISOString().substring(0, 7);
-            document.getElementById('month-year-select').value = defaultMonth;
-        }
-
-        // --- Grid Rendering Logic ---
-        function getDaysInMonth(year, month) {
-            return new Date(year, month, 0).getDate();
-        }
-
-        function renderAttendanceGrid() {
-            const tableHead = document.getElementById('attendance-table-head');
-            const tbody = document.getElementById('attendance-table-body');
-
-            const monthYear = document.getElementById('month-year-select').value;
-            const selectedGrade = document.getElementById('grade-select').value;
-
-            tableHead.innerHTML = '';
-            tbody.innerHTML = '';
-
-            if (!monthYear || !selectedGrade) {
-                document.getElementById('attendance-register-title').textContent = getTranslation('page_title');
-                tbody.innerHTML = `<tr><td colspan="3" class="text-center text-red-600 font-semibold p-4">${getTranslation('please_select_grade')}</td></tr>`;
-                return;
-            }
-
-            const [year, month] = monthYear.split('-').map(Number);
-            const daysInMonth = getDaysInMonth(year, month);
-
-            // Update Title
-            const monthName = new Date(year, month - 1, 1).toLocaleString(currentLang === 'ur' ? 'ur' : 'en', { month: 'long' });
-            document.getElementById('attendance-register-title').textContent = `${getTranslation('page_title')} - ${monthName} ${year}`;
-
-            // 1. Build Headers (Dynamic Dates)
-            let headerRow = `<tr><th class="sticky-col" rowspan="2">${getTranslation('student_name')}</th><th colspan="${daysInMonth}">${getTranslation('month')} ${monthName}</th><th colspan="4" class="bg-gray-300">${getTranslation('grand_total')}</th></tr>`;
-
-            let dateRow = `<tr>`;
-            for (let i = 1; i <= daysInMonth; i++) {
-                dateRow += `<th class="day-header">${i}</th>`;
-            }
-            dateRow += `<th class="bg-green-200">${getTranslation('total_p')}</th>
-                        <th class="bg-red-200">${getTranslation('total_a')}</th>
-                        <th class="bg-yellow-200">${getTranslation('total_l')}</th>
-                        <th class="bg-blue-200">${getTranslation('total_lv')}</th>
-                        </tr>`;
-
-            tableHead.innerHTML = headerRow + dateRow;
-
-            // 2. Filter Students
-            const filteredStudents = DUMMY_STUDENTS_LIST.filter(s => s.class === selectedGrade);
-
-            // 3. Build Body Rows
-            filteredStudents.forEach(student => {
-                const tr = document.createElement('tr');
-                let rowHtml = `<td class="sticky-col font-semibold">${student.name}</td>`;
-                const totals = { P: 0, A: 0, L: 0, LV: 0 };
-
-                for (let day = 1; day <= daysInMonth; day++) {
-                    const dateKey = `${monthYear}-${String(day).padStart(2, '0')}`;
-                    const dailyRecord = studentAttendance[dateKey] ? studentAttendance[dateKey][student.id] : null;
-                    const status = dailyRecord ? dailyRecord.status : 'A'; // Default Absent if no record
-
-                    if (status === 'P') totals.P++;
-                    else if (status === 'A') totals.A++;
-                    else if (status === 'L') totals.L++;
-                    else if (status === 'LV') totals.LV++;
-
-                    rowHtml += `<td class="status-${status}" title="${dailyRecord?.remarks || ''}">${status}</td>`;
-                }
-
-                // Total Columns
-                rowHtml += `<td class="bg-green-200 font-bold">${totals.P}</td>
-                            <td class="bg-red-200 font-bold">${totals.A}</td>
-                            <td class="bg-yellow-200 font-bold">${totals.L}</td>
-                            <td class="bg-blue-200 font-bold">${totals.LV}</td>`;
-
-                tr.innerHTML = rowHtml;
-                tbody.appendChild(tr);
-            });
-        }
-
-        // --- PDF Generation Logic ---
-        function generatePDF() {
-            const { jsPDF } = window.jspdf;
-            if (!jsPDF || !jsPDF.autoTable) {
-                alert("PDF library (jsPDF Autotable) not loaded. Cannot generate PDF.");
-                return;
-            }
-
-            const table = document.getElementById('attendance-register-table');
-            const monthYear = document.getElementById('month-year-select').value;
-            const selectedGrade = document.getElementById('grade-select').value;
-
-            if (!monthYear || !selectedGrade || table.rows.length <= 2) {
-                alert(getTranslation('please_select_grade'));
-                return;
-            }
-
-            const doc = new jsPDF('l', 'pt', 'a4'); // Landscape for better fit
-
-            // Custom Header for AutoTable (requires manual setup for multi-row header)
-            const daysInMonth = table.rows[1].cells.length - 4; // Total columns minus fixed total columns
-            const mainHeaders = [
-                { content: getTranslation('student_name'), rowSpan: 2 },
-                { content: getTranslation('month'), colSpan: daysInMonth },
-                { content: getTranslation('grand_total'), colSpan: 4 }
-            ];
-
-            const subHeaders = [
-                ...Array.from({ length: daysInMonth }, (_, i) => ({ content: i + 1 })),
-                { content: getTranslation('total_p'), styles: { fillColor: '#d1fae5', textColor: '#059669' } },
-                { content: getTranslation('total_a'), styles: { fillColor: '#fee2e2', textColor: '#dc2626' } },
-                { content: getTranslation('total_l'), styles: { fillColor: '#ffedd5', textColor: '#f59e0b' } },
-                { content: getTranslation('total_lv'), styles: { fillColor: '#bfdbfe', textColor: '#1e40af' } }
-            ];
-
-            const combinedHeaders = [mainHeaders, subHeaders];
-
-            // Get Body data from visible table rows
-            const body = Array.from(table.tBodies[0].rows).map(row => {
-                return Array.from(row.cells).map(cell => cell.textContent);
-            });
-
-            // Title
-            const monthName = new Date(monthYear.split('-')[0], monthYear.split('-')[1] - 1, 1).toLocaleString(currentLang === 'ur' ? 'ur' : 'en', { month: 'long', year: 'numeric' });
-            doc.setFontSize(14);
-            doc.text(`${getTranslation('page_title').toUpperCase()} - ${getTranslation('month')} ${monthName} (${selectedGrade})`, doc.internal.pageSize.getWidth() / 2, 20, { align: 'center' });
-
-            // Generate Table
-            doc.autoTable({
-                head: combinedHeaders,
-                body: body,
-                startY: 35,
-                theme: 'grid',
-                styles: { fontSize: 6, cellPadding: 2, font: 'Poppins', overflow: 'linebreak' },
-                headStyles: { fillColor: '#f3f4f6', textColor: '#1A1A1A' },
-                bodyStyles: { minCellHeight: 12 },
-                margin: { left: 5, right: 5 },
-                columnStyles: {
-                    0: { cellWidth: 70, halign: 'left', fillColor: '#f3ff4f6' }, // Name column fixed width
-                    [daysInMonth + 1]: { fillColor: '#d1fae5', textColor: '#059669' }, // Total P
-                    [daysInMonth + 2]: { fillColor: '#fee2e2', textColor: '#dc2626' }, // Total A
-                    [daysInMonth + 3]: { fillColor: '#ffedd5', textColor: '#f59e0b' }, // Total L
-                    [daysInMonth + 4]: { fillColor: '#bfdbfe', textColor: '#1e40af' } // Total LV
-                }
-            });
-
-            doc.save(`Attendance_Register_${selectedGrade}_${monthYear}.pdf`);
-        }
-
-
-        // Initialize content and language
-        window.onload = function () {
-            loadAttendance();
-            const storedLang = localStorage.getItem('madarsaSystemLang');
-            currentLang = (storedLang && storedLang in langData) ? storedLang : 'en';
-
-            // Initial content update and table render
-            updateContent();
-
-            // Attach listeners
-            document.getElementById('grade-select').addEventListener('change', renderAttendanceGrid);
-            document.getElementById('month-year-select').addEventListener('change', renderAttendanceGrid);
-            document.getElementById('print-btn').addEventListener('click', generatePDF);
-        };
+        // Set initial dropdown values based on loaded content
+        document.getElementById("grade-select").value = DUMMY_GRADES[0] || "";
+        renderStudentSummary();
+      };
     </script>
 
     <!-- HEADER -->
     <header>
-        <div class="max-w-7xl mx-auto w-full flex justify-between items-center">
-            <!-- Left: Back Button & Title -->
-            <div class="flex items-center space-x-4">
-                <a href="academic_system.html" class="action-button bg-gray-100 text-gray-700 hover:bg-gray-200"
-                    data-lang-key="back_to_academic">Back to Academic</a>
-                <h1 class="text-xl font-bold" data-lang-key="page_title" style="color: var(--color-primary);">Attendance
-                    Register</h1>
-            </div>
-
-            <!-- Right: Language Switch -->
-            <div class="flex items-center space-x-2">
-                <select onchange="changeLanguage(this.value)" class="bg-gray-100 rounded-lg p-1 text-sm">
-                    <option value="en" selected>English</option>
-                    <option value="ur">اردو</option>
-                </select>
-                <button onclick="window.location.href='login.html'"
-                    class="text-sm font-semibold text-red-600 hover:text-red-800 transition-colors ml-4 action-button px-3 py-1"
-                    data-lang-key="logout">Logout</button>
-            </div>
+      <div class="max-w-7xl mx-auto w-full flex justify-between items-center">
+        <!-- Left: Back Button & Title -->
+        <div class="flex items-center space-x-4">
+          <a
+            href="academic_system.html"
+            class="action-button bg-gray-100 text-gray-700 hover:bg-gray-200"
+            data-lang-key="back_to_academic"
+            >Back to Academic</a
+          >
+          <h1
+            class="text-xl font-bold"
+            data-lang-key="page_title"
+            style="color: var(--color-primary)"
+          >
+            Attendance Register
+          </h1>
         </div>
+
+        <!-- Right: Language Switch -->
+        <div class="flex items-center space-x-2">
+          <select
+            onchange="changeLanguage(this.value)"
+            class="bg-gray-100 rounded-lg p-1 text-sm"
+          >
+            <option value="en" selected>English</option>
+            <option value="ur">اردو</option>
+          </select>
+          <button
+            onclick="window.location.href='login.html'"
+            class="text-sm font-semibold text-red-600 hover:text-red-800 transition-colors ml-4 action-button px-3 py-1"
+            data-lang-key="logout"
+          >
+            Logout
+          </button>
+        </div>
+      </div>
     </header>
 
     <!-- MAIN CONTENT AREA -->
-    <main class="max-w-7xl mx-auto w-full p-4 md:p-8">
+    <main class="max-w-4xl mx-auto w-full p-4 md:p-8">
+      <h2 id="attendance-register-title" class="main-title text-center">
+        Attendance Register
+      </h2>
 
-        <h2 id="attendance-register-title" class="main-title text-center">Attendance Register</h2>
+      <!-- Controls Card -->
+      <div class="centered-card">
+        <!-- Filter Controls -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+          <!-- Month/Year Selector -->
+          <div class="form-group">
+            <label
+              for="month-year-select"
+              class="form-label"
+              data-lang-key="select_month_year"
+              >Select month and year:</label
+            >
+            <input
+              type="month"
+              id="month-year-select"
+              class="form-input"
+              required
+            />
+          </div>
 
-        <!-- Controls Card -->
-        <div class="centered-card">
+          <!-- Grade/Class Filter -->
+          <div class="form-group">
+            <label
+              for="grade-select"
+              class="form-label"
+              data-lang-key="select_status"
+              >Select class/grade:</label
+            >
+            <select id="grade-select" class="form-input"></select>
+          </div>
 
-            <!-- Filter Controls -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8 text-left">
-
-                <!-- Month/Year Selector -->
-                <div class="form-group">
-                    <label for="month-year-select" class="form-label" data-lang-key="select_month_year">Select month and
-                        year:</label>
-                    <input type="month" id="month-year-select" class="form-input" required>
-                </div>
-
-                <!-- Grade/Class Filter -->
-                <div class="form-group">
-                    <label for="grade-select" class="form-label" data-lang-key="select_status">Select status:</label>
-                    <select id="grade-select" class="form-input"></select>
-                </div>
-
-                <!-- Print Button -->
-                <div class="form-group flex items-end">
-                    <button id="print-btn" type="button" class="primary-button w-full">
-                        <span data-lang-key="print">Print</span>
-                    </button>
-                </div>
-            </div>
+          <!-- Print Button -->
+          <div class="form-group flex items-end">
+            <button id="print-btn" type="button" class="primary-button w-full">
+              <span data-lang-key="print">Print Register (PDF)</span>
+            </button>
+          </div>
         </div>
+      </div>
 
-        <!-- Attendance Grid Table -->
-        <div class="bg-white p-6 md:p-8 rounded-xl shadow-2xl mt-4">
-            <div class="table-container">
-                <table id="attendance-register-table" class="attendance-grid">
-                    <thead>
-                        <tr id="attendance-table-head">
-                            <!-- Headers injected by JS (Student Name + 30 Date columns + 4 Total columns) -->
-                        </tr>
-                    </thead>
-                    <tbody id="attendance-table-body">
-                        <!-- Student attendance data injected by JS -->
-                    </tbody>
-                </table>
-            </div>
+      <!-- Attendance List View -->
+      <div class="mt-4">
+        <h3 class="text-xl font-bold text-gray-700 mb-4 text-left-ur">
+          Student Monthly Summary
+        </h3>
+        <div id="attendance-list-container" class="space-y-4">
+          <!-- Student summary cards will be injected here -->
         </div>
+      </div>
     </main>
-</body>
-
+  </body>
 </html>
