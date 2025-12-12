@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Curriculum Management</title>
+    <title data-lang-key="page_title">Curriculum Management</title>
     <script src="https://cdn.tailwindcss.com"></script>
 
     <style>
@@ -81,10 +81,13 @@
 
         .action-button {
             padding: 0.4rem 0.6rem;
-            border-radius: 0.25rem;
-            font-size: 0.7rem;
+            border-radius: 0.5rem;
+            /* Increased button radius */
+            font-size: 0.75rem;
+            /* Increased button text size */
             font-weight: 600;
             transition: background-color 0.2s;
+            cursor: pointer;
         }
 
         .btn-edit {
@@ -100,6 +103,12 @@
         .btn-config {
             background-color: #f59e0b;
             color: white;
+        }
+
+        .btn-edit:hover,
+        .btn-delete:hover,
+        .btn-config:hover {
+            opacity: 0.9;
         }
 
         /* Fixed Header */
@@ -121,7 +130,8 @@
         }
 
         .admin-table th {
-            background-color: var(--color-yellow);
+            background-color: var(--color-background);
+            /* White background for headers */
             color: var(--color-text-dark);
             text-align: left;
             padding: 0.75rem 1rem;
@@ -141,6 +151,9 @@
             font-size: 0.85rem;
             font-weight: 500;
             border: none;
+            /* Ensure text wraps correctly in responsive view */
+            word-wrap: break-word;
+            overflow-wrap: break-word;
         }
 
         .admin-table tbody tr:hover td {
@@ -164,6 +177,25 @@
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
             max-width: 900px;
             margin: 2rem auto 4rem auto;
+        }
+
+        /* Modal Styles */
+        .dialog-backdrop {
+            background-color: rgba(0, 0, 0, 0.6);
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-content {
+            background-color: var(--color-background);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            border-radius: 1rem;
+            max-width: 95%;
+            width: 550px;
+            max-height: 90vh;
+            overflow-y: auto;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            /* Fix: Explicit border for visibility */
+            border: 3px solid var(--color-primary);
         }
     </style>
 </head>
@@ -222,22 +254,22 @@
                 'logout': 'Logout',
 
                 // Form/Table
-                'select_status': 'Select status:',
+                'select_status': 'Select Grade:',
                 'subject_name_urdu': 'Subject name (Urdu):',
                 'subject_name_en': 'Subject Name (English):',
                 'book_name': 'Book name:',
                 'sequence_number': 'Sequence number:',
-                'add': 'Add',
+                'add': 'Add Subject',
                 'list_of_subjects': 'List of Subjects',
 
                 // Table Headers
                 'action': 'Action',
                 'status_col': 'Status',
-                'configuration': 'Configuration',
-                'book_col': 'Book name',
-                'subject_en_col': 'Subject Name (EN)',
-                'subject_urdu_col': 'Subject Name (Urdu)',
-                'identification_number': 'ID No.',
+                'configuration': 'Config',
+                'book_col': 'Book Name',
+                'subject_en_col': 'Subject (EN)',
+                'subject_urdu_col': 'Subject (Urdu)',
+                'identification': 'Sequence',
 
                 // Actions
                 'edit': 'Edit',
@@ -255,7 +287,7 @@
                 'cancel': 'Cancel',
 
                 // Messages
-                'validation_error': 'Please select Status and provide Subject Names, Book Name, and Sequence.',
+                'validation_error': 'Validation Error: Please fill all fields correctly.',
                 'subject_added': 'Subject successfully added to curriculum!',
                 'subject_updated': 'Subject successfully updated!',
                 'subject_deleted': 'Subject deleted.',
@@ -268,12 +300,12 @@
                 'logout': 'لاگ آؤٹ',
 
                 // Form/Table
-                'select_status': 'حالت منتخب کریں:',
+                'select_status': 'درجہ منتخب کریں:',
                 'subject_name_urdu': 'مضمون کا نام (اردو):',
                 'subject_name_en': 'مضمون کا نام (انگریزی):',
                 'book_name': 'کتاب کا نام:',
                 'sequence_number': 'ترتیب نمبر:',
-                'add': 'شامل کریں',
+                'add': 'مضمون شامل کریں',
                 'list_of_subjects': 'مضامین کی فہرست',
 
                 // Table Headers
@@ -281,9 +313,9 @@
                 'status_col': 'حالت',
                 'configuration': 'ترتیب',
                 'book_col': 'کتاب کا نام',
-                'subject_en_col': 'مضمون کا نام (EN)',
-                'subject_urdu_col': 'مضمون کا نام (اردو)',
-                'identification_number': 'شناختی نمبر',
+                'subject_en_col': 'مضمون (EN)',
+                'subject_urdu_col': 'مضمون (اردو)',
+                'identification': 'ترتیب',
 
                 // Actions
                 'edit': 'ترمیم کریں',
@@ -301,7 +333,7 @@
                 'cancel': 'منسوخ کریں',
 
                 // Messages
-                'validation_error': 'براہ کرم حالت منتخب کریں اور مضامین کے نام، کتاب کا نام، اور ترتیب فراہم کریں۔',
+                'validation_error': 'تصدیق کی خرابی: براہ کرم تمام فیلڈز کو صحیح طریقے سے پُر کریں۔',
                 'subject_added': 'مضمون کامیابی سے نصاب میں شامل کیا گیا!',
                 'subject_updated': 'مضمون کامیابی سے اپ ڈیٹ کیا گیا!',
                 'subject_deleted': 'مضمون حذف کر دیا گیا۔',
@@ -324,6 +356,9 @@
                 el.textContent = getTranslation(key);
             });
 
+            // Update placeholders if needed (optional)
+            document.querySelector('label[for="status-select-filter"]').textContent = getTranslation('select_status');
+
             populateDropdowns();
             renderCurriculumTable();
         }
@@ -331,19 +366,27 @@
         function changeLanguage(lang) {
             if (lang in langData) {
                 currentLang = lang;
-                localStorage.setItem('madarsaSystemLang', lang);
+                // localStorage.setItem('madarsaSystemLang', lang); // Keeping commented for Canvas
                 updateContent();
             }
         }
 
         function populateDropdowns() {
-            const statusDropdown = document.getElementById('status-select-filter');
+            const statusDropdownFilter = document.getElementById('status-select-filter');
+            // Using statusDropdownFilter for both filter and add functionality
 
-            // Populate Status/Grade Dropdown
-            statusDropdown.innerHTML = `<option value="" disabled selected data-lang-key="select_status">${getTranslation('select_status')}</option>`;
-            DUMMY_GRADES.forEach(grade => {
-                statusDropdown.innerHTML += `<option value="${grade}">${grade}</option>`;
-            });
+            // Set placeholder/default option text for dropdowns
+            const defaultOptionHtml = `<option value="" disabled selected data-lang-key="select_status">${getTranslation('select_status')}</option>`;
+
+            // Populate Filter/Add Dropdown (Single dropdown now)
+            if (statusDropdownFilter) {
+                const currentFilterValue = statusDropdownFilter.value;
+                statusDropdownFilter.innerHTML = defaultOptionHtml;
+                DUMMY_GRADES.forEach(grade => {
+                    statusDropdownFilter.innerHTML += `<option value="${grade}">${grade}</option>`;
+                });
+                statusDropdownFilter.value = currentFilterValue; // Restore filter value
+            }
         }
 
         // --- Table Rendering ---
@@ -351,6 +394,30 @@
             const tbody = document.getElementById('curriculum-table-body');
             const filterGrade = document.getElementById('status-select-filter').value;
             if (!tbody) return;
+
+            // Define keys in the desired display order (7 columns)
+            const DISPLAY_KEYS = ['id', 'status', 'config', 'book', 'subjectEn', 'subjectUrdu', 'sequence'];
+
+            // Map header keys to CSS widths (Index 0 is Action)
+            const HEADER_MAP = {
+                'action': '15%', 'status_col': '10%', 'configuration': '10%',
+                'book_col': '20%', 'subject_en_col': '15%', 'subject_urdu_col': '15%',
+                'identification': '10%'
+            };
+
+            // Update Headers based on current language
+            const thead = document.querySelector('.admin-table thead tr');
+            if (thead) {
+                thead.innerHTML = '';
+                const headerKeys = ['action', 'status_col', 'configuration', 'book_col', 'subject_en_col', 'subject_urdu_col', 'identification'];
+                headerKeys.forEach(key => {
+                    const th = document.createElement('th');
+                    th.setAttribute('data-lang-key', key);
+                    th.textContent = getTranslation(key);
+                    th.style.width = HEADER_MAP[key];
+                    thead.appendChild(th);
+                });
+            }
 
             tbody.innerHTML = '';
 
@@ -362,26 +429,32 @@
             }
 
             filteredCurriculum.sort((a, b) => a.sequence - b.sequence).forEach(subject => {
+
+                const statusColor = subject.status === 'Active' ? 'text-green-600' : 'text-red-600';
+                const translatedStatus = getTranslation(subject.status) || subject.status;
+                const deletePrompt = getTranslation('confirm_delete') + ' (' + subject.subjectEn + ')';
+
+                // We construct the cells based on the fixed header order (7 columns)
+                const cells = [
+                    // 1. Action Buttons
+                    `<button onclick="handleAction('edit', ${subject.id})" class="action-button btn-edit mr-1">${getTranslation('edit')}</button>
+                     <button onclick="handleAction('delete', ${subject.id}, '${deletePrompt}')" class="action-button btn-delete">${getTranslation('delete')}</button>`,
+                    // 2. Status
+                    `<span class="${statusColor}">${translatedStatus}</span>`,
+                    // 3. Configuration Button
+                    `<button onclick="handleAction('config', ${subject.id})" class="action-button btn-config">${getTranslation('configuration')}</button>`,
+                    // 4. Book Name
+                    `${subject.book}`,
+                    // 5. Subject Name (EN)
+                    `${subject.subjectEn}`,
+                    // 6. Subject Name (Urdu)
+                    `<span class="lang-ur" style="display: inline-block;">${subject.subjectUrdu}</span>`,
+                    // 7. ID No. / Sequence
+                    `${subject.sequence}`
+                ];
+
                 const tr = document.createElement('tr');
-
-                const statusClass = subject.status === 'Active' ? 'text-green-600' : 'text-red-600';
-
-                tr.innerHTML = `
-                    <td>
-                        <button onclick="handleAction('edit', ${subject.id})" class="action-button btn-edit mr-1">${getTranslation('edit')}</button>
-                        <button onclick="handleAction('delete', ${subject.id})" class="action-button btn-delete">${getTranslation('delete')}</button>
-                    </td>
-                    <td class="${statusClass}">${getTranslation(subject.status) || subject.status}</td>
-                    <td><button onclick="handleAction('config', ${subject.id})" class="action-button btn-config">${getTranslation('configuration') || 'Config'}</button></td>
-                    <td>${subject.book}</td>
-                    <td>${subject.subjectEn}</td>
-                    <td>${subject.subjectUrdu}</td>
-                    <td>${subject.sequence}</td>
-                `;
-
-                // Reorder columns to match the image: Action, Status, Configuration, Book, Subject EN, Subject URDU, Sequence
-                const cells = Array.from(tr.children).map(c => c.outerHTML);
-                tr.innerHTML = `${cells[0]}${cells[1]}${cells[2]}${cells[3]}${cells[4]}${cells[5]}${cells[6]}`;
+                tr.innerHTML = cells.map(content => `<td>${content}</td>`).join('');
                 tbody.appendChild(tr);
             });
         }
@@ -391,14 +464,16 @@
             event.preventDefault();
             const form = event.target;
 
-            const grade = form.querySelector('#status-select-add').value;
+            // **FIXED**: Read from the single, visible select element
+            const grade = form.querySelector('#status-select-filter').value;
+
             const subjectUrdu = form.querySelector('#subject-urdu-add').value.trim();
             const subjectEn = form.querySelector('#subject-en-add').value.trim();
             const book = form.querySelector('#book-name-add').value.trim();
             const sequence = parseInt(form.querySelector('#sequence-number-add').value);
 
             if (!grade || !subjectUrdu || !subjectEn || !book || isNaN(sequence)) {
-                alert(getTranslation('validation_error'));
+                console.error(getTranslation('validation_error'));
                 return false;
             }
 
@@ -416,24 +491,34 @@
             saveCurriculum();
 
             form.reset();
+            // Reset the filter/add dropdown value to the default option after submission
+            form.querySelector('#status-select-filter').value = '';
+
             updateContent();
-            alert(getTranslation('subject_added'));
+            console.log(getTranslation('subject_added'));
+
+            // Reset filter dropdown after adding
+            const statusDropdownFilter = document.getElementById('status-select-filter');
+            if (statusDropdownFilter) {
+                statusDropdownFilter.value = '';
+            }
 
             return false;
         }
 
-        function handleAction(action, id) {
+        function handleAction(action, id, message) {
             const subject = getSubjectById(id);
             if (!subject) return;
 
             if (action === 'edit') {
                 openEditModal(subject);
             } else if (action === 'delete') {
-                if (confirm(getTranslation('confirm_delete'))) {
+                // Using window.confirm for user interaction
+                if (window.confirm(message || getTranslation('confirm_delete'))) {
                     deleteSubject(id);
                 }
             } else if (action === 'config') {
-                alert(`Configuration for: ${subject.subjectEn} in Grade ${subject.grade}. (Logic not yet implemented)`);
+                console.log(`Configuration for: ${subject.subjectEn} in Grade ${subject.grade}. (Logic not yet implemented)`);
             }
         }
 
@@ -441,7 +526,7 @@
             DUMMY_CURRICULUM = DUMMY_CURRICULUM.filter(s => s.id !== id);
             saveCurriculum();
             updateContent();
-            alert(getTranslation('subject_deleted'));
+            console.log(getTranslation('subject_deleted'));
         }
 
         // --- Modal Handling for Edit ---
@@ -453,11 +538,11 @@
 
             const formHtml = `
                 <form id="edit-subject-form" onsubmit="return saveEditedSubject(event, ${subject.id})">
-                    <div class="form-group">
+                    <div class="form-group mb-4">
                         <label class="form-label">${getTranslation('select_status')}</label>
                         <input type="text" class="form-input bg-gray-100" value="${subject.grade}" disabled>
                     </div>
-                    <div class="grid grid-cols-2 gap-4 mt-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div class="form-group">
                             <label for="edit-subject-en" class="form-label">${getTranslation('subject_name_en')}</label>
                             <input type="text" id="edit-subject-en" class="form-input" value="${subject.subjectEn}" required>
@@ -466,8 +551,6 @@
                             <label for="edit-subject-urdu" class="form-label">${getTranslation('subject_name_urdu')}</label>
                             <input type="text" id="edit-subject-urdu" class="form-input" value="${subject.subjectUrdu}" required>
                         </div>
-                    </div>
-                    <div class="grid grid-cols-2 gap-4 mt-4">
                         <div class="form-group">
                             <label for="edit-book-name" class="form-label">${getTranslation('book_name')}</label>
                             <input type="text" id="edit-book-name" class="form-input" value="${subject.book}" required>
@@ -494,15 +577,18 @@
             `;
 
             document.getElementById('modal-body').innerHTML = formHtml;
+            // Set form directionality
             document.getElementById('edit-subject-form').style.textAlign = isRtl ? 'right' : 'left';
 
-
-            modal.classList.remove('hidden', 'opacity-0');
+            // Show modal with transition
+            modal.classList.remove('hidden');
+            setTimeout(() => { modal.classList.remove('opacity-0'); }, 10);
         }
 
         function closeEditModal() {
-            document.getElementById('edit-modal').classList.add('opacity-0');
-            setTimeout(() => { document.getElementById('edit-modal').classList.add('hidden'); }, 300);
+            const modal = document.getElementById('edit-modal');
+            modal.classList.add('opacity-0');
+            setTimeout(() => { modal.classList.add('hidden'); }, 300);
         }
 
         function saveEditedSubject(event, id) {
@@ -516,7 +602,7 @@
             const status = form.querySelector('#edit-status').value;
 
             if (!subjectEn || !subjectUrdu || !book || isNaN(sequence) || !status) {
-                alert(getTranslation('validation_error'));
+                console.error(getTranslation('validation_error'));
                 return false;
             }
 
@@ -534,7 +620,7 @@
                 saveCurriculum();
                 closeEditModal();
                 updateContent();
-                alert(getTranslation('subject_updated'));
+                console.log(getTranslation('subject_updated'));
             }
 
             return false;
@@ -547,7 +633,9 @@
             const storedLang = localStorage.getItem('madarsaSystemLang');
             currentLang = (storedLang && storedLang in langData) ? storedLang : 'en';
 
-            // Initial content update and table render
+            // **FIXED: Removed dynamic select element creation**
+            // The single select element is now #status-select-filter, used for both add and filter.
+
             updateContent();
 
             // Attach form listener for adding new item
@@ -593,9 +681,10 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6 items-end">
 
                     <!-- Status (Grade) Select - Row 1 -->
+                    <!-- This single select is now used for both filtering and adding subject grade -->
                     <div class="form-group md:col-span-2">
                         <label for="status-select-filter" class="form-label" data-lang-key="select_status">Select
-                            status:</label>
+                            Grade:</label>
                         <select id="status-select-filter" class="form-input" required></select>
                     </div>
 
@@ -630,7 +719,7 @@
 
                     <!-- Add Button (Full Width Bottom) -->
                     <div class="form-group md:col-span-2 flex justify-center mt-4">
-                        <button type="submit" class="primary-button w-40" data-lang-key="add">Add</button>
+                        <button type="submit" class="primary-button w-40" data-lang-key="add">Add Subject</button>
                     </div>
                 </div>
             </form>
@@ -638,20 +727,21 @@
 
 
         <!-- Curriculum Listing Table -->
-        <div class="bg-white p-6 md:p-8 rounded-xl shadow-2xl">
+        <div class="bg-white p-6 md:p-8 rounded-xl shadow-2xl mt-8">
             <h2 class="text-2xl font-bold text-gray-700 mb-6" data-lang-key="list_of_subjects">List of Subjects</h2>
 
             <div class="table-container">
                 <table class="admin-table">
                     <thead>
                         <tr>
+                            <!-- Column widths set using style attribute -->
                             <th style="width: 15%" data-lang-key="action">Action</th>
-                            <th style="width: 8%" data-lang-key="status_col">Status</th>
-                            <th style="width: 10%" data-lang-key="configuration">Configuration</th>
-                            <th style="width: 20%" data-lang-key="book_col">Book name</th>
-                            <th style="width: 15%" data-lang-key="subject_en_col">Subject Name (EN)</th>
-                            <th style="width: 15%" data-lang-key="subject_urdu_col">Subject Name (Urdu)</th>
-                            <th style="width: 10%" data-lang-key="identification">ID No.</th>
+                            <th style="width: 10%" data-lang-key="status_col">Status</th>
+                            <th style="width: 10%" data-lang-key="configuration">Config</th>
+                            <th style="width: 20%" data-lang-key="book_col">Book Name</th>
+                            <th style="width: 15%" data-lang-key="subject_en_col">Subject (EN)</th>
+                            <th style="width: 15%" data-lang-key="subject_urdu_col">Subject (Urdu)</th>
+                            <th style="width: 10%" data-lang-key="identification">Sequence</th>
                         </tr>
                     </thead>
                     <tbody id="curriculum-table-body">

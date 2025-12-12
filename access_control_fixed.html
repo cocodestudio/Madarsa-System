@@ -15,6 +15,7 @@
         --color-text-light: #ffffff;
       }
 
+      /* FONT IMPORTS */
       @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;700&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap");
 
       /* Language Styles */
@@ -186,7 +187,7 @@
         min-width: 900px;
       }
 
-      /* --- Accordion Styles --- */
+      /* --- Accordion Styles (New) --- */
       .accordion-header {
         background-color: #fff;
         padding: 1rem 1.5rem;
@@ -195,9 +196,6 @@
         border-radius: 0.5rem;
         margin-top: 0.5rem;
         transition: background-color 0.2s;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
       }
 
       .accordion-header:hover {
@@ -265,35 +263,77 @@
   </head>
 
   <body class="lang-en">
-    <!-- Full app script placed below so DOM elements exist -->
     <script>
-      /* ===========================
-           Configuration & Data
-           =========================== */
+      // --- GLOBAL PERMISSION STRUCTURE (Based on API Response) ---
+      const PERMISSION_STRUCTURE = {
+        Academic: [
+          { id: 5, name: "Manage Classes" },
+          { id: 6, name: "View Students" },
+          { id: 7, name: "Create Student" },
+          { id: 8, name: "Edit Student" },
+          { id: 9, name: "Delete Student" },
+        ],
+        Finance: [
+          { id: 10, name: "View Fees" },
+          { id: 11, name: "Collect Fee" },
+          { id: 12, name: "Manage Expenses" },
+        ],
+        Staff: [
+          { id: 1, name: "View Staff" },
+          { id: 2, name: "Create Staff" },
+          { id: 3, name: "Edit Staff" },
+          { id: 4, name: "Delete Staff" },
+          { id: 13, name: "Manage Roles" },
+          { id: 14, name: "Manage Staff" },
+        ],
+      };
 
-      const TOKEN_KEY = "authToken";
-      const API_BASE =
-        "https://www.sgemplusglobal.com/Madarsa-Management-Software/web-apis/auth";
-      const API_GET_ALL_ROLES = API_BASE + "/get_all_roles.php";
-      const API_CREATE_ROLE = API_BASE + "/create_role.php";
-      const API_GET_ALL_PERMISSIONS = API_BASE + "/get_all_permissions.php";
-
+      const MODULES = Object.keys(PERMISSION_STRUCTURE); // ["Academic", "Finance", "Staff"]
       const ACCESS_STORAGE_KEY = "madarsaAccessRoles";
 
-      // Global variable to store permissions fetched from API
-      let ALL_PERMISSIONS_DATA = {};
-
-      // Local fallback data (used if API fails or token missing)
+      // --- DUMMY DATA (Now storing Permission IDs) ---
       let dummyRoles = [
         {
           id: 1,
           name: "System Admin",
           description: "Full access to all modules and configurations.",
-          permissionIds: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
+          permissionIds: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14], // All 14 permissions
+        },
+        {
+          id: 2,
+          name: "Teacher",
+          description:
+            "Access to academic records of assigned classes (Read/Edit only).",
+          permissionIds: [5, 6, 8], // Manage Classes, View Students, Edit Student
+        },
+        {
+          id: 3,
+          name: "Accountant",
+          description: "Full access to financial and fee collection modules.",
+          permissionIds: [10, 11, 12], // View Fees, Collect Fee, Manage Expenses
         },
       ];
 
-      // Minimal translations
+      // Initialize/Load Roles from localStorage (Restored to load/save)
+      function loadRoles() {
+        const storedRoles = localStorage.getItem(ACCESS_STORAGE_KEY);
+        if (storedRoles) {
+          try {
+            dummyRoles = JSON.parse(storedRoles);
+          } catch (e) {
+            console.error("Error loading access roles:", e);
+          }
+        } else {
+          saveRoles();
+        }
+      }
+
+      // Save Roles to localStorage
+      function saveRoles() {
+        localStorage.setItem(ACCESS_STORAGE_KEY, JSON.stringify(dummyRoles));
+      }
+
+      // --- Multilingual Data (Updated to reflect API modules) ---
       const langData = {
         en: {
           admin_title: "Admin Panel",
@@ -304,7 +344,9 @@
           logout: "Logout",
           search_placeholder: "Search by Role Name...",
           add_new: "Add New Role",
-          permissions: "Permissions",
+          permissions: "Permissions", // New key for the count display
+
+          // Table Headers
           id: "ID",
           role_name: "Role Name",
           description_short: "Description",
@@ -312,8 +354,15 @@
           view: "View",
           edit: "Edit",
           delete: "Delete",
+
+          // Modules (API Categories)
+          Academic: "Academic",
+          Finance: "Finance", // NEW
+          Staff: "Staff", // NEW
           select_all: "Select All",
           deselect_all: "Deselect All",
+
+          // Modal
           modal_add_title: "Define New User Role",
           modal_edit_title: "Edit Role Permissions",
           modal_view_title: "View Role Permissions",
@@ -330,68 +379,86 @@
         },
         hi: {
           admin_title: "एडमिन पैनल",
-          page_title: "एक्सेस कंट्रोल",
+          page_title: "पहुँच नियंत्रण",
           description:
-            "उपयोगकर्ता भूमिकाओं (Roles) का प्रबंधन करें और मॉड्यूल अनुमतियों को परिभाषित करें (पढ़ें, बनाएं, अपडेट करें, हटाएं)।",
-          back_to_admin: "एडमिन पर वापस जाएं",
-          logout: "लॉग आउट",
+            "उपयोगकर्ता भूमिकाएँ प्रबंधित करें और मॉड्यूल अनुमतियाँ परिभाषित करें।",
+          back_to_admin: "एडमिन पर वापस",
+          logout: "लॉगआउट",
           search_placeholder: "भूमिका नाम से खोजें...",
           add_new: "नई भूमिका जोड़ें",
-          permissions: "अनुमतियाँ",
+          permissions: "अनुमतियां",
+
+          // Table Headers
           id: "आईडी",
           role_name: "भूमिका का नाम",
           description_short: "विवरण",
-          actions: "कार्रवाई",
+          actions: "कार्यवाही",
           view: "देखें",
           edit: "संपादित करें",
-          delete: "हटाएं",
+          delete: "हटाएँ",
+
+          // Modules (API Categories)
+          Academic: "शैक्षणिक",
+          Finance: "वित्त",
+          Staff: "कर्मचारी",
           select_all: "सभी चुनें",
-          deselect_all: "सभी को अचयनित करें",
+          deselect_all: "सभी हटाएँ",
+
+          // Modal
           modal_add_title: "नई उपयोगकर्ता भूमिका परिभाषित करें",
-          modal_edit_title: "भूमिका अनुमतियां संपादित करें",
-          modal_view_title: "भूमिका अनुमतियां देखें",
+          modal_edit_title: "भूमिका अनुमतियाँ संपादित करें",
+          modal_view_title: "भूमिका अनुमतियाँ देखें",
           role_name_form: "भूमिका का नाम",
-          role_description: "भूमिका विवरण",
-          permissions_matrix: "मॉड्यूल अनुमतियाँ",
+          role_description: "भूमिका का विवरण",
+          permissions_matrix: "माड्यूल अनुमतियाँ",
           save: "भूमिका सहेजें",
           cancel: "रद्द करें",
           form_success_add: "नई भूमिका सफलतापूर्वक परिभाषित की गई!",
           form_success_edit: "भूमिका सफलतापूर्वक अपडेट की गई!",
           confirm_delete:
-            "क्या आप वाकई इस भूमिका को हटाना चाहते हैं? इस भूमिका वाले सभी उपयोगकर्ता एक्सेस खो देंगे।",
+            "क्या आप निश्चित रूप से यह भूमिका हटाना चाहते हैं? इस भूमिका को सौंपे गए सभी उपयोगकर्ता पहुँच खो देंगे।",
           prompt_name: "कृपया भूमिका का नाम दर्ज करें।",
         },
         ur: {
           admin_title: "ایڈمن پینل",
           page_title: "رسائی کنٹرول",
           description:
-            "صارف کے کرداروں کا نظم کریں اور ماڈیول کی اجازتوں کی وضاحت کریں (پڑھیں، بنائیں، اپ ڈیٹ کریں، حذف کریں)۔",
+            "صارف کے کرداروں کا نظم کریں اور ماڈیول کی اجازتوں کی وضاحت کریں۔",
           back_to_admin: "ایڈمن پر واپس جائیں",
           logout: "لاگ آؤٹ",
           search_placeholder: "کردار کے نام سے تلاش کریں...",
           add_new: "نیا کردار شامل کریں",
           permissions: "اجازتیں",
+
+          // Table Headers
           id: "آئی ڈی",
           role_name: "کردار کا نام",
           description_short: "تفصیل",
-          actions: "اعمال",
+          actions: "عمل",
           view: "دیکھیں",
           edit: "ترمیم کریں",
           delete: "حذف کریں",
-          select_all: "سب کو منتخب کریں",
+
+          // Modules (API Categories)
+          Academic: "تعلیمی",
+          Finance: "فنانس",
+          Staff: "عملہ",
+          select_all: "تمام کو منتخب کریں",
           deselect_all: "تمام کو غیر منتخب کریں",
-          modal_add_title: "نئے صارف کے کردار کی وضاحت کریں",
+
+          // Modal
+          modal_add_title: "نیا صارف کردار متعین کریں",
           modal_edit_title: "کردار کی اجازتوں میں ترمیم کریں",
           modal_view_title: "کردار کی اجازتیں دیکھیں",
           role_name_form: "کردار کا نام",
           role_description: "کردار کی تفصیل",
-          permissions_matrix: "ماڈیول کی اجازتیں",
+          permissions_matrix: "ماڈیول اجازتیں",
           save: "کردار محفوظ کریں",
           cancel: "منسوخ کریں",
-          form_success_add: "نیا کردار کامیابی کے ساتھ متعین ہو گیا!",
-          form_success_edit: "کردار کامیابی کے ساتھ اپ ڈیٹ ہو گیا!",
+          form_success_add: "نیا کردار کامیابی سے بیان کیا گیا!",
+          form_success_edit: "کردار کامیابی سے اپ ڈیٹ ہو گیا!",
           confirm_delete:
-            "کیا آپ واقعی اس کردار کو حذف کرنا چاہتے ہیں؟ اس کردار کو تفویض کردہ تمام صارفین رسائی سے محروم ہو جائیں گے۔",
+            "کیا آپ واقعی یہ کردار حذف کرنا چاہتے ہیں؟ اس کردار کو تفویض کردہ تمام صارفین تک رسائی ختم ہو جائے گی۔",
           prompt_name: "براہ کرم کردار کا نام درج کریں۔",
         },
       };
@@ -399,79 +466,63 @@
       let currentLang = "en";
 
       function getTranslation(key) {
-        return (
-          (langData[currentLang] && langData[currentLang][key]) ||
-          (langData["en"] && langData["en"][key]) ||
-          key
-        );
+        return langData[currentLang][key] || langData["en"][key] || key;
       }
 
-      /* ===========================
-           Local storage helpers
-           =========================== */
-      function loadRolesFromLocal() {
-        const stored = localStorage.getItem(ACCESS_STORAGE_KEY);
-        if (stored) {
-          try {
-            dummyRoles = JSON.parse(stored);
-          } catch (e) {
-            console.error("Failed to parse local roles", e);
-          }
-        } else {
-          saveRolesToLocal();
-        }
+      // Helper to get role by ID
+      function getRoleById(id) {
+        return dummyRoles.find((role) => role.id === id);
       }
 
-      function saveRolesToLocal() {
-        localStorage.setItem(ACCESS_STORAGE_KEY, JSON.stringify(dummyRoles));
-      }
-
-      /* ===========================
-           DOM / Rendering
-           =========================== */
       function updateContent() {
         document.body.className = "lang-" + currentLang;
 
         document.querySelectorAll("[data-lang-key]").forEach((el) => {
           const key = el.getAttribute("data-lang-key");
-          if (key) el.textContent = getTranslation(key);
+          el.textContent = getTranslation(key);
         });
 
         renderTable(filterRoles());
       }
 
+      function changeLanguage(lang) {
+        if (lang in langData) {
+          currentLang = lang;
+          // localStorage.setItem('madarsaSystemLang', lang); // Keeping localStorage commented for Canvas environment
+          updateContent();
+        }
+      }
+
+      // --- Table Rendering ---
       function renderTable(roleList) {
         const tbody = document.getElementById("roles-table-body");
         if (!tbody) return;
         tbody.innerHTML = "";
 
-        if (!roleList || roleList.length === 0) {
-          tbody.innerHTML = `<tr><td colspan="3" class="p-4 text-center text-gray-500">No roles found</td></tr>`;
-          return;
-        }
-
         roleList.forEach((role) => {
           const tr = document.createElement("tr");
+          const descriptionDisplay =
+            role.description.substring(0, 70) +
+            (role.description.length > 70 ? "..." : "");
 
           tr.innerHTML = `
                     <td>${role.id}</td>
-                    <td class="font-bold text-gray-800">${escapeHtml(
-                      role.name
-                    )}</td>
+                    <td class="font-bold text-gray-800">${role.name}</td>
+                    <td>${descriptionDisplay}</td>
                     <td>
                         <button onclick="handleAction('view', ${
                           role.id
-                        })" class="action-button bg-blue-100 text-blue-700 hover:bg-blue-200 px-3 py-1 rounded">${getTranslation(
+                        })" class="action-button bg-blue-100 text-blue-700 hover:bg-blue-200">${getTranslation(
             "view"
           )}</button>
                         <button onclick="handleAction('edit', ${
                           role.id
-                        })" class="action-button bg-yellow-100 text-yellow-700 hover:bg-yellow-200 ml-2 px-3 py-1 rounded">${getTranslation(
+                        })" class="action-button bg-yellow-100 text-yellow-700 hover:bg-yellow-200 ml-2">${getTranslation(
             "edit"
           )}</button>
                         <button onclick="handleAction('delete', ${
                           role.id
-                        })" class="action-button delete-button ml-2 px-3 py-1 rounded">${getTranslation(
+                        })" class="action-button delete-button hover:bg-red-200 ml-2">${getTranslation(
             "delete"
           )}</button>
                     </td>
@@ -480,34 +531,24 @@
         });
       }
 
-      function escapeHtml(str) {
-        if (!str) return "";
-        return str.replace(/[&<>"'\/]/g, function (s) {
-          const entityMap = {
-            "&": "&amp;",
-            "<": "&lt;",
-            ">": "&gt;",
-            '"': "&quot;",
-            "'": "&#39;",
-            "/": "&#x2F;",
-          };
-          return entityMap[s];
-        });
-      }
-
+      // --- Filter Logic ---
       function filterRoles() {
         const searchInput = document.getElementById("search-input");
-        const q = searchInput ? (searchInput.value || "").toLowerCase() : "";
-        return dummyRoles.filter((r) => r.name.toLowerCase().includes(q));
+        const search = searchInput ? searchInput.value.toLowerCase() : "";
+
+        return dummyRoles.filter((role) => {
+          const matchesSearch =
+            role.name.toLowerCase().includes(search) ||
+            role.description.toLowerCase().includes(search);
+          return matchesSearch;
+        });
       }
 
       function handleFilter() {
         renderTable(filterRoles());
       }
 
-      /* ===========================
-           Modal & Permission Accordion (Dynamic)
-           =========================== */
+      // --- Modal Handling ---
       function openAccessModal(titleKey, contentHtml) {
         const modal = document.getElementById("access-modal");
         const modalTitle = document.getElementById("modal-title");
@@ -516,7 +557,6 @@
         modalTitle.textContent = getTranslation(titleKey);
         modalBody.innerHTML = contentHtml;
 
-        // Ensure select-all handlers are set
         modal.classList.remove("hidden");
         setTimeout(() => {
           modal.classList.remove("opacity-0");
@@ -531,75 +571,65 @@
         }, 300);
       }
 
-      // Toggle for Accordion Sections
+      // --- Accordion Logic ---
       function toggleAccordion(module) {
-        // Handle spaces in module names for IDs
-        const safeModule = module.replace(/\s+/g, "-");
-        const body = document.getElementById(`accordion-body-${safeModule}`);
-        const icon = document.getElementById(`accordion-icon-${safeModule}`);
+        const body = document.getElementById(`accordion-body-${module}`);
+        const icon = document.getElementById(`accordion-icon-${module}`);
 
-        if (!body) return;
-
-        if (body.classList.contains("hidden-content")) {
-          // Open
+        if (body && body.classList.contains("hidden-content")) {
+          // Expand
           body.classList.remove("hidden-content");
           body.style.maxHeight = body.scrollHeight + "px";
-          if (icon) icon.classList.add("rotate-180");
-        } else {
-          // Close
+          icon.classList.add("rotate-180");
+        } else if (body) {
+          // Collapse
           body.style.maxHeight = "0";
           setTimeout(() => {
             body.classList.add("hidden-content");
-          }, 300); // match transition
-          if (icon) icon.classList.remove("rotate-180");
+          }, 100);
+          icon.classList.remove("rotate-180");
         }
       }
 
-      // "Select All" Logic
-      function toggleModulePermissions(safeModule) {
+      function toggleModulePermissions(moduleKey) {
         const selectAllCheckbox = document.getElementById(
-          `select-all-${safeModule}`
+          `select-all-${moduleKey}`
         );
-        if (!selectAllCheckbox) return;
-
         const selectAll = selectAllCheckbox.checked;
         const form = document.getElementById("role-form");
-        if (!form) return;
 
-        // Find all checkboxes for this module within the form
-        // We use the safeModule (ID friendly) to group them
+        // Get all permission checkboxes for this module
         form
-          .querySelectorAll(
-            `input[data-module-safe="${safeModule}"][data-perm-id]`
-          )
-          .forEach((cb) => (cb.checked = selectAll));
+          .querySelectorAll(`input[data-module="${moduleKey}"][data-perm-id]`)
+          .forEach((checkbox) => {
+            checkbox.checked = selectAll;
+          });
+
+        // Update the text content of the select/deselect button
+        const selectAllSpan = selectAllCheckbox.nextElementSibling;
+        if (selectAllSpan) {
+          selectAllSpan.textContent = getTranslation(
+            selectAll ? "deselect_all" : "select_all"
+          );
+        }
       }
 
-      // --- DYNAMIC ACCORDION GENERATOR ---
-      // Uses ALL_PERMISSIONS_DATA fetched from API
+      // --- Content Creators ---
+
+      // NEW: Creates the Accordion structure based on API response
       function createPermissionAccordion(
-        rolePermissionIds = [],
+        rolePermissionIds,
         isReadOnly = false
       ) {
-        // If data isn't loaded yet
-        if (Object.keys(ALL_PERMISSIONS_DATA).length === 0) {
-          return `<div class="p-4 text-center text-gray-500">Loading permissions from server...</div>`;
-        }
-
         let accordionHtml = `<div class="space-y-2">`;
-        // Convert held IDs to Set for O(1) lookup
-        // Ensure IDs are numbers
-        const heldPermissions = new Set(rolePermissionIds.map(Number));
+        const heldPermissions = new Set(rolePermissionIds);
 
-        // Iterate over the API data keys (Modules: Staff, Academic, etc.)
-        for (const [moduleKey, modulePermissions] of Object.entries(
-          ALL_PERMISSIONS_DATA
-        )) {
-          const moduleTitle = moduleKey; // The API key serves as title
-          const safeModuleKey = moduleKey.replace(/\s+/g, "-"); // Safe for IDs
+        MODULES.forEach((moduleKey) => {
+          const modulePermissions = PERMISSION_STRUCTURE[moduleKey];
+          const moduleTitle = getTranslation(moduleKey);
 
-          // Calculate status
-          const modulePermIds = modulePermissions.map((p) => Number(p.id));
+          // Check how many permissions in this module the role holds
+          const modulePermIds = modulePermissions.map((p) => p.id);
           const heldCount = modulePermIds.filter((id) =>
             heldPermissions.has(id)
           ).length;
@@ -610,72 +640,72 @@
 
           // --- Accordion Header ---
           accordionHtml += `
-            <div class="accordion-header flex justify-between items-center transition-all duration-200 rounded-lg shadow-sm"
-                    onclick="toggleAccordion('${safeModuleKey}')">
-                <h4 class="font-semibold text-base" style="color: var(--color-text-dark);">${moduleTitle}</h4>
-                <div class="flex items-center space-x-4">
-                    ${
-                      !isReadOnly
-                        ? // Editable Select All
-                          `<label class="permission-checkbox-item text-sm font-medium mr-4" onclick="event.stopPropagation()">
-                                <input type="checkbox" id="select-all-${safeModuleKey}" 
-                                    class="form-checkbox h-4 w-4 text-primary rounded" ${checkboxStatus}
-                                    onchange="toggleModulePermissions('${safeModuleKey}')"
-                                    style="color: var(--color-primary);">
-                                <span class="ml-2 ${
-                                  currentLang === "ur" ? "mr-2" : ""
-                                }" data-lang-key="${displayActionText}">${getTranslation(
-                            displayActionText
-                          )}</span>
-                            </label>`
-                        : // Read-Only Count
-                          `<span class="text-sm font-medium text-gray-500">${heldCount} / ${
-                            modulePermIds.length
-                          } ${getTranslation("permissions")}</span>`
-                    }
-                    
-                    <svg id="accordion-icon-${safeModuleKey}" class="w-5 h-5 text-gray-500 transform transition-transform duration-300" 
-                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                    </svg>
-                </div>
-            </div>
-            `;
+                    <div class="accordion-header flex justify-between items-center transition-all duration-200 rounded-lg shadow-sm"
+                         onclick="toggleAccordion('${moduleKey}')">
+                        <h4 class="font-semibold text-base" style="color: var(--color-text-dark);">${moduleTitle}</h4>
+                        <div class="flex items-center space-x-4">
+                            ${
+                              !isReadOnly
+                                ? // Editable Select All Checkbox
+                                  `<label class="permission-checkbox-item text-sm font-medium mr-4" onclick="event.stopPropagation()">
+                                     <input type="checkbox" id="select-all-${moduleKey}" 
+                                            class="form-checkbox h-4 w-4 text-primary rounded" ${checkboxStatus}
+                                            onchange="toggleModulePermissions('${moduleKey}')" data-module-perms="${modulePermIds.join(
+                                    ","
+                                  )}" style="color: var(--color-primary);">
+                                     <span class="ml-2 ${
+                                       currentLang === "ur" ? "mr-2" : ""
+                                     }" data-lang-key="${displayActionText}">${getTranslation(
+                                    displayActionText
+                                  )}</span>
+                                 </label>`
+                                : // Read-Only Permission Count
+                                  `<span class="text-sm font-medium text-gray-500">${heldCount} / ${
+                                    modulePermIds.length
+                                  } ${getTranslation("permissions")}</span>`
+                            }
+                            
+                            <svg id="accordion-icon-${moduleKey}" class="w-5 h-5 text-gray-500 transform transition-transform duration-300" 
+                                 xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                    </div>
+                `;
 
-          // --- Accordion Body ---
-          accordionHtml += `<div id="accordion-body-${safeModuleKey}" class="accordion-body hidden-content">`;
-          accordionHtml += `<div class="permission-item-grid">`;
+          // --- Accordion Body (Specific Permissions) ---
+          accordionHtml += `<div id="accordion-body-${moduleKey}" class="accordion-body hidden-content">`;
+          accordionHtml += `<div class="permission-item-grid">`; // Use the custom grid
 
           modulePermissions.forEach((perm) => {
-            const permId = Number(perm.id);
-            const checked = heldPermissions.has(permId) ? "checked" : "";
-            const inputId = `perm-${permId}`;
+            const checked = heldPermissions.has(perm.id) ? "checked" : "";
+            const inputId = `perm-${perm.id}`;
 
             if (isReadOnly) {
-              const status = heldPermissions.has(permId) ? "✅" : "❌";
+              const status = heldPermissions.has(perm.id) ? "✅" : "❌";
               accordionHtml += `<div class="permission-checkbox-item text-sm font-medium">
-                                        <span class="mr-2 ${
-                                          currentLang === "ur" ? "ml-2" : ""
-                                        } text-lg">${status}</span>
-                                        <span>${perm.name}</span>
-                                      </div>`;
+                                            <span class="mr-2 ${
+                                              currentLang === "ur" ? "ml-2" : ""
+                                            } text-lg">${status}</span>
+                                            <span>${perm.name}</span>
+                                          </div>`;
             } else {
               accordionHtml += `
-                    <label for="${inputId}" class="permission-checkbox-item cursor-pointer">
-                        <input type="checkbox" id="${inputId}" 
-                               data-perm-id="${permId}" 
-                               data-module-safe="${safeModuleKey}"
-                               class="form-checkbox h-4 w-4 text-primary rounded" ${checked} style="color: var(--color-primary);">
-                        <span class="ml-2 ${
-                          currentLang === "ur" ? "mr-2" : "ml-2"
-                        } text-sm font-medium">${perm.name}</span>
-                    </label>
-                    `;
+                            <label for="${inputId}" class="permission-checkbox-item cursor-pointer">
+                                <input type="checkbox" id="${inputId}" data-perm-id="${
+                perm.id
+              }" data-module="${moduleKey}"
+                                       class="form-checkbox h-4 w-4 text-primary rounded" ${checked} style="color: var(--color-primary);">
+                                <span class="ml-2 ${
+                                  currentLang === "ur" ? "mr-2" : "ml-2"
+                                } text-sm font-medium">${perm.name}</span>
+                            </label>
+                        `;
             }
           });
 
-          accordionHtml += `</div></div>`; // End body & grid
-        }
+          accordionHtml += `</div></div>`;
+        });
 
         accordionHtml += `</div>`;
         return accordionHtml;
@@ -687,100 +717,86 @@
         const alignment = isRtl ? "text-right" : "text-left";
         const currentPermissionIds = isEdit ? role.permissionIds : [];
 
-        // Check if permissions are loaded
-        if (Object.keys(ALL_PERMISSIONS_DATA).length === 0) {
-          return `<div class="text-center p-8">
-                <p class="text-gray-600 mb-4">Loading Permission Data...</p>
-                <button onclick="closeAccessModal()" class="action-button bg-gray-200">Close</button>
-           </div>`;
-        }
-
         return `
-            <form id="role-form" onsubmit="return saveRoleDetails(event, ${
-              isEdit ? role.id : "null"
-            })" class="${alignment}">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4 mb-8">
-                    <!-- Role Name -->
-                    <div class="form-group">
-                        <label for="role-name" class="form-label">${getTranslation(
-                          "role_name_form"
-                        )}</label>
-                        <input type="text" id="role-name" class="form-input" value="${
-                          isEdit ? role.name : ""
-                        }" required>
-                    </div>
+                <form id="role-form" onsubmit="return saveRoleDetails(event, ${
+                  isEdit ? role.id : "null"
+                })" class="${alignment}">
                     
-                    <!-- Role Description -->
-                    <div class="form-group md:col-span-2">
-                        <label for="role-description" class="form-label">${getTranslation(
-                          "role_description"
-                        )}</label>
-                        <textarea id="role-description" class="form-textarea h-20">${
-                          isEdit ? role.description : ""
-                        }</textarea>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4 mb-8">
+                        
+                        <!-- Role Name -->
+                        <div class="form-group">
+                            <label for="role-name" class="form-label">${getTranslation(
+                              "role_name_form"
+                            )}</label>
+                            <input type="text" id="role-name" class="form-input" value="${
+                              isEdit ? role.name : ""
+                            }" required>
+                        </div>
+                        
+                        <!-- Role Description (Full Width) -->
+                        <div class="form-group md:col-span-2">
+                            <label for="role-description" class="form-label">${getTranslation(
+                              "role_description"
+                            )}</label>
+                            <textarea id="role-description" class="form-textarea h-20">${
+                              isEdit ? role.description : ""
+                            }</textarea>
+                        </div>
                     </div>
-                </div>
 
-                <!-- Permissions Matrix (Accordion) -->
-                <h3 class="text-lg font-bold text-gray-700 mb-4" data-lang-key="permissions_matrix">${getTranslation(
-                  "permissions_matrix"
-                )}</h3>
-                
-                ${createPermissionAccordion(currentPermissionIds, false)}
+                    <!-- Permissions Matrix (Accordion) -->
+                    <h3 class="text-lg font-bold text-gray-700 mb-4" data-lang-key="permissions_matrix">${getTranslation(
+                      "permissions_matrix"
+                    )}</h3>
+                    ${createPermissionAccordion(currentPermissionIds, false)}
 
-                <div class="flex justify-end space-x-4 mt-6">
-                    <button type="button" onclick="closeAccessModal()" class="action-button bg-gray-200 text-gray-700 hover:bg-gray-300">${getTranslation(
-                      "cancel"
-                    )}</button>
-                    <button type="submit" class="primary-button">${getTranslation(
-                      "save"
-                    )}</button>
-                </div>
-            </form>
-        `;
+                    <div class="flex justify-end space-x-4 mt-6">
+                        <button type="button" onclick="closeAccessModal()" class="action-button bg-gray-200 text-gray-700 hover:bg-gray-300">${getTranslation(
+                          "cancel"
+                        )}</button>
+                        <button type="submit" class="primary-button">${getTranslation(
+                          "save"
+                        )}</button>
+                    </div>
+                </form>
+            `;
       }
 
       function createViewContent(role) {
-        if (Object.keys(ALL_PERMISSIONS_DATA).length === 0) {
-          return `<div class="text-center p-8"><p class="text-gray-600">Loading Permission Data...</p></div>`;
-        }
+        const isRtl = currentLang === "ur";
+        const alignment = isRtl ? "text-right" : "text-left";
 
         return `
-            <div class="space-y-4">
-                <h2 class="text-2xl font-bold text-gray-800">${escapeHtml(
-                  role.name
-                )}</h2>
-                <p class="text-gray-500">${getTranslation(
-                  "role_description"
-                )}: ${escapeHtml(role.description || "")}</p>
-                <div class="border-t pt-4">
-                    <h3 class="text-lg font-bold mb-3 text-gray-700">${getTranslation(
-                      "permissions_matrix"
-                    )}</h3>
-                    ${createPermissionAccordion(role.permissionIds || [], true)}
-                </div>
-                <div class="flex justify-end pt-4 border-t">
-                    <button onclick="handleAction('edit', ${
-                      role.id
-                    })" class="action-button bg-yellow-100 text-yellow-700 hover:bg-yellow-200">${getTranslation(
+                <div class="space-y-4 ${alignment}">
+                    <h2 class="text-2xl font-bold text-gray-800">${
+                      role.name
+                    }</h2>
+                    <p class="text-gray-500">${getTranslation(
+                      "role_description"
+                    )}: ${role.description}</p>
+
+                    <div class="border-t pt-4">
+                        <h3 class="text-lg font-bold mb-3 text-gray-700">${getTranslation(
+                          "permissions_matrix"
+                        )}</h3>
+                        ${createPermissionAccordion(role.permissionIds, true)}
+                    </div>
+                    
+                    <div class="flex justify-end pt-4 border-t">
+                        <button onclick="handleAction('edit', ${
+                          role.id
+                        })" class="action-button bg-yellow-100 text-yellow-700 hover:bg-yellow-200">${getTranslation(
           "edit"
         )}</button>
+                    </div>
                 </div>
-            </div>
-        `;
+            `;
       }
 
-      /* ===========================
-           Actions: add / view / edit / delete
-           =========================== */
+      // --- Action Dispatcher (Add/View/Edit/Delete) ---
       function handleAction(action, id) {
         const role = id ? getRoleById(id) : null;
-
-        // If data isn't loaded yet, try to load it fast or warn
-        if (Object.keys(ALL_PERMISSIONS_DATA).length === 0) {
-          console.log("Permissions not loaded yet, waiting...");
-          // You could trigger a fetch here if needed, but fetchPermissionsFromApi runs on load
-        }
 
         if (action === "add") {
           openAccessModal("modal_add_title", createRoleForm(null));
@@ -793,204 +809,92 @@
           openAccessModal("modal_edit_title", createRoleForm(role));
         } else if (action === "delete") {
           if (confirm(getTranslation("confirm_delete"))) {
-            deleteRoleLocal(id);
+            deleteRole(id);
           }
         }
       }
 
-      function getRoleById(id) {
-        return dummyRoles.find((r) => r.id === id);
-      }
-
-      function deleteRoleLocal(id) {
+      // --- Delete Logic ---
+      function deleteRole(id) {
         dummyRoles = dummyRoles.filter((r) => r.id !== id);
-        saveRolesToLocal();
+        saveRoles();
         handleFilter();
+        console.log(`Role ID ${id} deleted successfully.`);
       }
 
-      /* ===========================
-           API: Fetch Permissions
-           =========================== */
-      async function fetchPermissionsFromApi() {
-        const token = localStorage.getItem(TOKEN_KEY);
-        if (!token) {
-          console.warn("No token found, cannot fetch permissions.");
-          return;
-        }
-
-        try {
-          const res = await fetch(API_GET_ALL_PERMISSIONS, {
-            method: "GET",
-            headers: { Authorization: "Bearer " + token },
-          });
-          const json = await res.json();
-
-          if (json.status && json.data) {
-            console.log("Permissions Fetched:", json.data);
-            // The API returns data like { "Staff": [...], "Academic": [...] }
-            ALL_PERMISSIONS_DATA = json.data;
-          } else {
-            console.error("Failed to load permissions:", json.message);
-          }
-        } catch (e) {
-          console.error("Error fetching permissions:", e);
-        }
-      }
-
-      /* ===========================
-           API: Fetch Roles
-           =========================== */
-      async function fetchRoles() {
-        const token = localStorage.getItem(TOKEN_KEY);
-
-        // If no token, fallback to local data
-        if (!token) {
-          loadRolesFromLocal();
-          updateContent();
-          return;
-        }
-
-        try {
-          const res = await fetch(API_GET_ALL_ROLES, {
-            method: "GET",
-            headers: { Authorization: "Bearer " + token },
-          });
-
-          if (!res.ok) {
-            console.warn("GET roles HTTP status", res.status);
-            loadRolesFromLocal();
-            updateContent();
-            return;
-          }
-
-          const json = await res.json();
-          console.log("GET ROLES API:", json);
-
-          if (json && json.status === true) {
-            // API returns nested object at data[""]
-            const apiRoles = json.data && json.data[""] ? json.data[""] : [];
-
-            dummyRoles = apiRoles.map((r) => ({
-              id: Number(r.id),
-              name: r.name,
-              description: "", // API doesn't seem to return description
-              permissionIds: [], // API doesn't return permissions in list view usually, requires separate fetch or detailed view
-            }));
-
-            saveRolesToLocal();
-            updateContent();
-          } else {
-            loadRolesFromLocal();
-            updateContent();
-          }
-        } catch (err) {
-          console.error("fetchRoles error", err);
-          loadRolesFromLocal();
-          updateContent();
-        }
-      }
-
-      /* ===========================
-           API: Create/Edit Role
-           =========================== */
-      async function saveRoleDetails(event, id) {
+      // --- Save Logic (Add/Edit) ---
+      function saveRoleDetails(event, id) {
         event.preventDefault();
+
         const form = event.target;
-        const nameEl = form.querySelector("#role-name");
-        const descEl = form.querySelector("#role-description");
-
-        const name = nameEl ? nameEl.value.trim() : "";
-        const description = descEl ? descEl.value.trim() : "";
-
-        // Gather permission IDs
-        const selectedPermissions = [];
-        form.querySelectorAll("input[data-perm-id]:checked").forEach((cb) => {
-          selectedPermissions.push(cb.getAttribute("data-perm-id"));
-        });
+        const name = form.querySelector("#role-name").value.trim();
+        const description = form
+          .querySelector("#role-description")
+          .value.trim();
 
         if (!name) {
-          alert(getTranslation("prompt_name"));
+          console.log(getTranslation("prompt_name"));
           return false;
         }
 
-        const token = localStorage.getItem(TOKEN_KEY);
-        if (!token) {
-          alert("Unauthorized. Please login.");
-          return false;
-        }
-
-        // Call create_role API
-        // NOTE: Does the API support sending permissions array?
-        // Based on provided code, it only sent {name, description}.
-        // You may need to adjust this body if the API expects permissions.
-        const payload = { name, description, permissions: selectedPermissions };
-
-        try {
-          const res = await fetch(API_CREATE_ROLE, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: "Bearer " + token,
-            },
-            body: JSON.stringify(payload),
+        // 1. Gather permission IDs from the form
+        const newPermissionIds = [];
+        form
+          .querySelectorAll('input[type="checkbox"][data-perm-id]:checked')
+          .forEach((input) => {
+            newPermissionIds.push(parseInt(input.getAttribute("data-perm-id")));
           });
 
-          const data = await res.json();
-          console.log("CREATE ROLE API:", data);
-
-          if (data && data.status === true) {
-            alert(data.message || "Role saved successfully");
-            await fetchRoles(); // Refresh list
-            closeAccessModal();
-          } else {
-            alert(data.message || "Failed to save role");
+        if (id) {
+          // EDIT LOGIC
+          const roleIndex = dummyRoles.findIndex((r) => r.id === id);
+          if (roleIndex !== -1) {
+            dummyRoles[roleIndex] = {
+              ...dummyRoles[roleIndex],
+              name,
+              description,
+              permissionIds: newPermissionIds, // Store IDs array
+            };
+            console.log(getTranslation("form_success_edit"));
           }
-        } catch (err) {
-          console.error("create role error", err);
-          alert("Network or server error");
+        } else {
+          // ADD LOGIC
+          const maxId =
+            dummyRoles.length > 0
+              ? Math.max(...dummyRoles.map((r) => r.id))
+              : 0;
+          const newId = maxId + 1;
+          const newRole = {
+            id: newId,
+            name,
+            description,
+            permissionIds: newPermissionIds, // Store IDs array
+          };
+          dummyRoles.unshift(newRole);
+          console.log(getTranslation("form_success_add"));
         }
 
+        saveRoles();
+        closeAccessModal();
+        updateContent(); // Update filters and table
         return false;
       }
 
-      function logOut() {
-        localStorage.removeItem("isUserLoggedIn");
-        localStorage.removeItem("authToken");
-        localStorage.removeItem("userData");
-        window.location.href = "index.html";
-      }
+      // Initialize content and language
+      window.onload = function () {
+        loadRoles(); // Load data
 
-      /* ===========================
-           Init
-           =========================== */
-      window.addEventListener("load", () => {
-        // Language init
+        // Load language from storage (if available)
         const storedLang = localStorage.getItem("madarsaSystemLang");
         currentLang = storedLang && storedLang in langData ? storedLang : "en";
 
-        // Attach search listener
-        const si = document.getElementById("search-input");
-        if (si) si.addEventListener("input", handleFilter);
+        // Initial content update and table render
+        updateContent();
 
-        // Load Data
-        fetchPermissionsFromApi(); // Load permissions first so modal works
-        fetchRoles(); // Load roles list
-      });
-
-      /* ===========================
-           Expose helpers
-           =========================== */
-      window.handleAction = handleAction;
-      window.openAccessModal = openAccessModal;
-      window.closeAccessModal = closeAccessModal;
-      window.toggleAccordion = toggleAccordion;
-      window.toggleModulePermissions = toggleModulePermissions;
-      window.saveRoleDetails = saveRoleDetails;
-      window.changeLanguage = function (lang) {
-        if (lang in langData) {
-          currentLang = lang;
-          localStorage.setItem("madarsaSystemLang", lang);
-          updateContent();
+        // Attach event listeners to filters
+        const searchInput = document.getElementById("search-input");
+        if (searchInput) {
+          searchInput.addEventListener("input", handleFilter);
         }
       };
     </script>
@@ -998,6 +902,7 @@
     <!-- HEADER -->
     <header>
       <div class="max-w-7xl mx-auto w-full flex justify-between items-center">
+        <!-- Left: Back Button & Title -->
         <div class="flex items-center space-x-4">
           <a
             href="administration.html"
@@ -1014,6 +919,7 @@
           </h1>
         </div>
 
+        <!-- Right: Language Switch -->
         <div class="flex items-center space-x-2">
           <select
             onchange="changeLanguage(this.value)"
@@ -1024,7 +930,7 @@
             <option value="ur">اردو</option>
           </select>
           <button
-            onclick="logOut()"
+            onclick="window.location.href='login.html'"
             class="text-sm font-semibold text-red-600 hover:text-red-800 transition-colors ml-4"
             data-lang-key="logout"
           >
@@ -1034,9 +940,10 @@
       </div>
     </header>
 
-    <!-- MAIN -->
+    <!-- MAIN CONTENT AREA -->
     <main class="max-w-7xl mx-auto w-full p-4 md:p-8">
       <div class="bg-white p-6 md:p-8 rounded-xl shadow-2xl">
+        <!-- Description and Action Button -->
         <div
           class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 space-y-4 md:space-y-0"
         >
@@ -1053,6 +960,7 @@
             </p>
           </div>
 
+          <!-- Add New Button - Opens Modal -->
           <button
             onclick="handleAction('add', null)"
             class="primary-button flex items-center space-x-2"
@@ -1075,8 +983,9 @@
           </button>
         </div>
 
-        <!-- Search -->
+        <!-- Filter and Search Controls -->
         <div class="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-8">
+          <!-- Search -->
           <div class="sm:col-span-4 relative">
             <input
               type="text"
@@ -1109,17 +1018,19 @@
               <tr class="bg-gray-100 rounded-lg">
                 <th data-lang-key="id">ID</th>
                 <th data-lang-key="role_name">Role Name</th>
+                <th data-lang-key="description_short">Description</th>
                 <th data-lang-key="actions">Actions</th>
               </tr>
             </thead>
             <tbody id="roles-table-body">
-              <!-- injected by JS -->
+              <!-- Roles data will be injected here by JS -->
             </tbody>
           </table>
         </div>
 
         <div class="text-center text-sm text-gray-500 mt-6">
-          Showing results
+          Showing 1 to 3 of 3 entries (Note: This text is static in this
+          version)
         </div>
       </div>
     </main>
@@ -1131,7 +1042,7 @@
     >
       <div
         class="modal-content p-6 md:p-8 transform scale-100 transition-transform duration-300"
-        style="border: 3px solid var(--color-primary); max-width: 920px"
+        style="border: 3px solid var(--color-primary)"
       >
         <div class="flex justify-between items-start pb-4 border-b mb-6">
           <h3 id="modal-title" class="text-xl font-bold text-gray-700">
@@ -1159,7 +1070,7 @@
           </button>
         </div>
         <div id="modal-body">
-          <!-- dynamic content -->
+          <!-- Dynamic content (View or Edit/Add Form) goes here -->
         </div>
       </div>
     </div>

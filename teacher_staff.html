@@ -1,444 +1,570 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Teacher/Staff Management - Admin</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title data-lang-key="page_title">Teacher/Staff Management - Admin</title>
     <script src="https://cdn.tailwindcss.com"></script>
 
     <style>
-        :root {
-            --color-primary: #00A693;
-            --color-background: #F2F3F4;
-            --color-accent: #E08A27;
-            --color-text-dark: #1A1A1A;
-            --color-text-light: #FFFFFF;
-        }
+      :root {
+        --color-primary: #00a693;
+        --color-background: #f2f3f4;
+        --color-accent: #e08a27;
+        --color-text-dark: #1a1a1a;
+        --color-text-light: #ffffff;
+      }
 
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;700&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap');
+      /* FONT IMPORTS (Updated as requested) */
+      @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;700&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap");
 
-        /* Language Styles */
-        body,
-        .lang-en {
-            font-family: 'Poppins', sans-serif;
-            direction: ltr;
-            background-color: var(--color-background);
-        }
+      /* Language Styles */
+      body,
+      .lang-en {
+        font-family: "Poppins", sans-serif;
+        direction: ltr;
+        background-color: var(--color-background);
+      }
 
-        .lang-hi {
-            font-family: 'Noto Sans Devanagari', sans-serif;
-            direction: ltr;
-        }
+      .lang-hi {
+        font-family: "Noto Sans Devanagari", sans-serif;
+        direction: ltr;
+      }
 
-        .lang-ur {
-            font-family: 'Noto Nastaliq Urdu', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
-            direction: rtl;
-            line-height: 1.8;
-            text-align: right;
-        }
+      .lang-ur {
+        font-family: "Noto Nastaliq Urdu", "Segoe UI", Tahoma, Geneva, Verdana,
+          sans-serif !important;
+        direction: rtl;
+        line-height: 1.8;
+        /* Improved line spacing for Nastaliq */
+        text-align: right;
+      }
 
-        /* Form & Table Inputs */
-        .form-input,
-        select,
-        .form-textarea {
-            padding: 0.75rem 1rem;
-            border-radius: 0.5rem;
-            border: 1px solid #ccc;
-            width: 100%;
-            font-family: inherit;
-        }
+      /* Form & Table Inputs */
+      .form-label {
+        display: block;
+        margin-bottom: 0.25rem;
+        font-weight: 500;
+        font-size: 0.875rem;
+        color: var(--color-text-dark);
+      }
 
-        .form-input:focus,
-        select:focus,
-        .form-textarea:focus {
-            outline: none;
-            border-color: var(--color-primary);
-            box-shadow: 0 0 0 3px rgba(0, 166, 147, 0.2);
-        }
+      .form-input,
+      select,
+      .form-textarea {
+        padding: 0.75rem 1rem;
+        border-radius: 0.75rem;
+        /* Slightly more rounded inputs */
+        border: 1px solid #ccc;
+        width: 100%;
+        font-family: inherit;
+      }
 
-        /* Buttons */
-        .primary-button {
-            padding: 0.8rem 1.5rem;
-            background-color: var(--color-primary);
-            color: var(--color-text-light);
-            font-weight: 600;
-            border-radius: 0.75rem;
-            transition: background-color 0.3s, transform 0.1s;
-            box-shadow: 0 4px 10px rgba(0, 166, 147, 0.4);
-            cursor: pointer;
-        }
+      .form-input:focus,
+      select:focus,
+      .form-textarea:focus {
+        outline: none;
+        border-color: var(--color-primary);
+        box-shadow: 0 0 0 3px rgba(0, 166, 147, 0.2);
+      }
 
-        .primary-button:hover {
-            background-color: #008f7d;
-            transform: translateY(-1px);
-        }
+      /* Buttons */
+      .primary-button {
+        padding: 0.8rem 1.5rem;
+        background-color: var(--color-primary);
+        color: var(--color-text-light);
+        font-weight: 600;
+        border-radius: 0.75rem;
+        transition: background-color 0.3s, transform 0.1s;
+        box-shadow: 0 4px 10px rgba(0, 166, 147, 0.4);
+        cursor: pointer;
+      }
 
-        .action-button {
-            padding: 0.5rem 0.75rem;
-            border-radius: 0.5rem;
-            font-size: 0.875rem;
-            font-weight: 600;
-            transition: background-color 0.2s;
-        }
+      .primary-button:hover {
+        background-color: #008f7d;
+        transform: translateY(-1px);
+      }
 
-        /* Table Styling */
-        .admin-table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0 10px;
-            /* Space between rows */
-        }
+      .action-button {
+        padding: 0.5rem 0.75rem;
+        border-radius: 0.5rem;
+        font-size: 0.875rem;
+        font-weight: 600;
+        transition: background-color 0.2s;
+      }
 
-        .admin-table th {
-            text-align: left;
-            padding: 1rem 1.5rem;
-            font-size: 0.875rem;
-            color: gray;
-            text-transform: uppercase;
-            font-weight: 700;
-        }
+      /* Table Styling */
+      .admin-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0 10px;
+      }
 
-        .lang-ur .admin-table th {
-            text-align: right;
-        }
+      .admin-table th {
+        text-align: left;
+        padding: 1rem 1.5rem;
+        font-size: 0.875rem;
+        color: gray;
+        text-transform: uppercase;
+        font-weight: 700;
+      }
 
-        .admin-table td {
-            padding: 1rem 1.5rem;
-            background-color: white;
-            border-top: 1px solid #eee;
-            border-bottom: 1px solid #eee;
-            font-size: 0.8775rem;
-            font-weight: 500;
-        }
+      .lang-ur .admin-table th {
+        text-align: right;
+      }
 
-        .admin-table tr:hover td {
-            background-color: #f7f7f7;
-        }
+      .admin-table td {
+        padding: 1rem 1.5rem;
+        background-color: white;
+        border-top: 1px solid #eee;
+        border-bottom: 1px solid #eee;
+        font-size: 0.8775rem;
+        font-weight: 500;
+      }
 
-        /* Rounded corners for first and last cells in a row */
-        .admin-table tr td:first-child {
-            border-top-left-radius: 0.75rem;
-            border-bottom-left-radius: 0.75rem;
-        }
+      .admin-table tr:hover td {
+        background-color: #f7f7f7;
+      }
 
-        .admin-table tr td:last-child {
-            border-top-right-radius: 0.75rem;
-            border-bottom-right-radius: 0.75rem;
-        }
+      /* Rounded corners for first and last cells in a row (LTR) */
+      .admin-table tr td:first-child {
+        border-top-left-radius: 0.75rem;
+        border-bottom-left-radius: 0.75rem;
+      }
 
-        .lang-ur .admin-table tr td:first-child {
-            border-radius: 0;
-            border-top-right-radius: 0.75rem;
-            border-bottom-right-radius: 0.75rem;
-        }
+      .admin-table tr td:last-child {
+        border-top-right-radius: 0.75rem;
+        border-bottom-right-radius: 0.75rem;
+      }
 
-        .lang-ur .admin-table tr td:last-child {
-            border-radius: 0;
-            border-top-left-radius: 0.75rem;
-            border-bottom-left-radius: 0.75rem;
-        }
+      /* Rounded corners for first and last cells in a row (RTL) */
+      .lang-ur .admin-table tr td:first-child {
+        border-radius: 0;
+        border-top-right-radius: 0.75rem;
+        border-bottom-right-radius: 0.75rem;
+      }
 
-        /* Status Pills */
-        .status-pill {
-            display: inline-block;
-            padding: 0.3rem 0.7rem;
-            border-radius: 9999px;
-            font-size: 0.75rem;
-            font-weight: 700;
-            text-transform: uppercase;
-        }
+      .lang-ur .admin-table tr td:last-child {
+        border-radius: 0;
+        border-top-left-radius: 0.75rem;
+        border-bottom-left-radius: 0.75rem;
+      }
 
-        /* Header Fix */
-        header {
-            background-color: var(--color-text-light);
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            position: sticky;
-            top: 0;
-            width: 100%;
-            z-index: 10;
-            padding: 1rem 2rem;
-        }
+      /* Status Pills */
+      .status-pill {
+        display: inline-block;
+        padding: 0.3rem 0.7rem;
+        border-radius: 9999px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+      }
 
-        /* Scrollable table container on mobile */
-        .table-container {
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-        }
+      /* Header Fix */
+      header {
+        background-color: var(--color-text-light);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        position: sticky;
+        top: 0;
+        width: 100%;
+        z-index: 10;
+        padding: 1rem 2rem;
+      }
 
-        .table-container table {
-            min-width: 800px;
-            /* Ensure horizontal scroll on small screens */
-        }
+      /* Scrollable table container on mobile */
+      .table-container {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
 
-        /* Modal Styles */
-        .modal-backdrop {
-            background-color: rgba(0, 0, 0, 0.6);
-            transition: opacity 0.3s ease;
-        }
+      .table-container table {
+        min-width: 800px;
+      }
 
-        .modal-content {
-            background-color: var(--color-background);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
-            border-radius: 1rem;
-            max-width: 90%;
-            width: 600px;
-            max-height: 90vh;
-            overflow-y: auto;
-            transition: transform 0.3s ease, opacity 0.3s ease;
-        }
+      /* Modal Styles */
+      .modal-backdrop {
+        background-color: rgba(0, 0, 0, 0.6);
+        transition: opacity 0.3s ease;
+      }
+
+      .modal-content {
+        background-color: var(--color-background);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+        border-radius: 1rem;
+        max-width: 90%;
+        width: 600px;
+        max-height: 90vh;
+        overflow-y: auto;
+        transition: transform 0.3s ease, opacity 0.3s ease;
+      }
+
+      /* Toast Notification Styles (Replacing alert()) */
+      #message-box {
+        position: fixed;
+        top: 1rem;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 1000;
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.5rem;
+        font-weight: 600;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        opacity: 0;
+        transition: opacity 0.3s, transform 0.3s;
+      }
     </style>
-</head>
+  </head>
 
-<body class="lang-en">
-
+  <body class="lang-en">
     <!-- Language Data and Logic -->
     <script>
-        const langData = {
-            'en': {
-                'admin_title': 'Admin Panel',
-                'page_title': 'Teacher/Staff Management',
-                'description': 'View, search, filter, and manage all academic and administrative personnel records.',
-                'back_to_admin': 'Back to Admin',
-                'search_placeholder': 'Search by Name, ID, or Designation...',
-                'filter_department': 'Filter by Department',
-                'status_filter': 'Status',
-                'active': 'Active',
-                'inactive': 'Inactive',
-                'pending': 'Pending',
-                'add_new': 'Add New Staff',
-                'logout': 'Logout',
+      const langData = {
+        en: {
+          admin_title: "Admin Panel",
+          page_title: "Teacher/Staff Management",
+          description:
+            "View, search, filter, and manage all academic and administrative personnel records.",
+          back_to_admin: "Back to Admin",
+          search_placeholder: "Search by Name, ID, or Designation...",
+          filter_department: "Filter by Department",
+          status_filter: "Status",
+          active: "Active",
+          inactive: "Inactive",
+          pending: "Pending",
+          add_new: "Add New Staff",
+          logout: "Logout",
 
-                // Table Headers
-                'id': 'ID',
-                'name': 'Name',
-                'designation_short': 'Designation',
-                'department': 'Department',
-                'contact': 'Contact',
-                'status': 'Status',
-                'actions': 'Actions',
-                'view': 'View',
-                'edit': 'Edit',
-                'save': 'Save Changes',
-                'cancel': 'Cancel',
+          // Table Headers
+          id: "ID",
+          name: "Name",
+          designation_short: "Designation",
+          department: "Department",
+          contact: "Contact (Email)",
+          status: "Status",
+          actions: "Actions",
+          view: "View",
+          edit: "Edit",
+          save: "Save Changes",
+          cancel: "Cancel",
 
-                // Departments (Example Data)
-                'hifz': 'Hifz',
-                'fiqh': 'Fiqh',
-                'hadith': 'Hadith',
-                'accounts': 'Accounts',
-                'kitchen': 'Kitchen',
+          // Departments (Example Data)
+          hifz: "Hifz",
+          fiqh: "Fiqh",
+          hadith: "Hadith",
+          accounts: "Accounts",
+          kitchen: "Kitchen",
 
-                // View/Edit Fields
-                'modal_view_title': 'Staff Details (Read-Only)',
-                'modal_edit_title': 'Edit Staff Details',
-                'full_name': 'Full Name',
-                'designation': 'Designation/Post',
-                'joining_date': 'Joining Date',
-                'email': 'Email',
-                'phone': 'Phone',
-                'address': 'Address',
-                'form_success': 'Details updated successfully.',
-                'form_error': 'Failed to save changes.'
-            },
-            'hi': {
-                'admin_title': 'एडमिन पैनल',
-                'page_title': 'शिक्षक/कर्मचारी प्रबंधन',
-                'description': 'सभी शैक्षणिक और प्रशासनिक कर्मियों के रिकॉर्ड देखें, खोजें और प्रबंधित करें।',
-                'back_to_admin': 'एडमिन पर वापस',
-                'search_placeholder': 'नाम, आईडी, या पदनाम से खोजें...',
-                'filter_department': 'विभाग द्वारा फ़िल्टर करें',
-                'status_filter': 'स्थिति',
-                'active': 'सक्रिय',
-                'inactive': 'निष्क्रिय',
-                'pending': 'विचाराधीन',
-                'add_new': 'नया कर्मचारी जोड़ें',
-                'logout': 'लॉगआउट',
+          // View/Edit Fields
+          modal_view_title: "Staff Details (Read-Only)",
+          modal_edit_title: "Edit Staff Details",
+          modal_add_title: "Add New Staff Record", // NEW
+          full_name: "Full Name",
+          designation: "Designation/Post",
+          joining_date: "Joining Date",
+          email: "Email",
+          phone: "Phone",
+          address: "Address",
+          form_success: "Details updated successfully.",
+          form_add_success: "New staff added successfully.", // NEW
+          form_error: "Failed to save changes.",
+          select_department_hint: "Select Department",
+        },
+        hi: {
+          admin_title: "एडमिन पैनल",
+          page_title: "शिक्षक/कर्मचारी प्रबंधन",
+          description:
+            "सभी शैक्षणिक और प्रशासनिक कर्मियों के रिकॉर्ड देखें, खोजें और प्रबंधित करें।",
+          back_to_admin: "एडमिन पर वापस",
+          search_placeholder: "नाम, आईडी, या पदनाम से खोजें...",
+          filter_department: "विभाग द्वारा फ़िल्टर करें",
+          status_filter: "स्थिति",
+          active: "सक्रिय",
+          inactive: "निष्क्रिय",
+          pending: "विचाराधीन",
+          add_new: "नया कर्मचारी जोड़ें",
+          logout: "लॉगआउट",
 
-                // Table Headers
-                'id': 'आईडी',
-                'name': 'नाम',
-                'designation_short': 'पदनाम',
-                'department': 'विभाग',
-                'contact': 'संपर्क',
-                'status': 'स्थिति',
-                'actions': 'कार्यवाही',
-                'view': 'देखें',
-                'edit': 'संपादित करें',
-                'save': 'परिवर्तन सहेजें',
-                'cancel': 'रद्द करें',
+          // Table Headers
+          id: "आईडी",
+          name: "नाम",
+          designation_short: "पदनाम",
+          department: "विभाग",
+          contact: "संपर्क (ईमेल)",
+          status: "स्थिति",
+          actions: "कार्यवाही",
+          view: "देखें",
+          edit: "संपादित करें",
+          save: "परिवर्तन सहेजें",
+          cancel: "रद्द करें",
 
-                // Departments (Example Data)
-                'hifz': 'हिफ्ज़',
-                'fiqh': 'फ़िक़्ह',
-                'hadith': 'हदीस',
-                'accounts': 'लेखा',
-                'kitchen': 'रसोईघर',
+          // Departments (Example Data)
+          hifz: "हिफ्ज़",
+          fiqh: "फ़िक़्ह",
+          hadith: "हदीस",
+          accounts: "लेखा",
+          kitchen: "रसोईघर",
 
-                // View/Edit Fields
-                'modal_view_title': 'कर्मचारी विवरण (केवल देखें)',
-                'modal_edit_title': 'कर्मचारी विवरण संपादित करें',
-                'full_name': 'पूरा नाम',
-                'designation': 'पदनाम/पद',
-                'joining_date': 'शामिल होने की तिथि',
-                'email': 'ईमेल',
-                'phone': 'फ़ोन',
-                'address': 'पता',
-                'form_success': 'विवरण सफलतापूर्वक अपडेट किए गए।',
-                'form_error': 'परिवर्तन सहेजने में विफल।',
-            },
-            'ur': {
-                'admin_title': 'ایڈمن پینل',
-                'page_title': 'اساتذہ/عملے کا انتظام',
-                'description': 'تمام تعلیمی اور انتظامی عملے کے ریکارڈ دیکھیں، تلاش کریں اور ان کا نظم کریں۔',
-                'back_to_admin': 'ایڈمن پر واپس جائیں',
-                'search_placeholder': 'نام، آئی ڈی، یا عہدہ کے ذریعے تلاش کریں...',
-                'filter_department': 'شعبہ کے لحاظ سے فلٹر کریں',
-                'status_filter': 'حیثیت',
-                'active': 'فعال',
-                'inactive': 'غیر فعال',
-                'pending': 'زیر التوا',
-                'add_new': 'نیا ملازم شامل کریں',
-                'logout': 'لاگ آؤٹ',
+          // View/Edit Fields
+          modal_view_title: "कर्मचारी विवरण (केवल देखें)",
+          modal_edit_title: "कर्मचारी विवरण संपादित करें",
+          modal_add_title: "नया कर्मचारी रिकॉर्ड जोड़ें", // NEW
+          full_name: "पूरा नाम",
+          designation: "पदनाम/पद",
+          joining_date: "शामिल होने की तिथि",
+          email: "ईमेल",
+          phone: "फ़ोन",
+          address: "पता",
+          form_success: "विवरण सफलतापूर्वक अपडेट किए गए।",
+          form_add_success: "नया कर्मचारी सफलतापूर्वक जोड़ा गया।", // NEW
+          form_error: "परिवर्तन सहेजने में विफल।",
+          select_department_hint: "विभाग चुनें",
+        },
+        ur: {
+          admin_title: "ایڈمن پینل",
+          page_title: "اساتذہ/عملے کا انتظام",
+          description:
+            "تمام تعلیمی اور انتظامی عملے کے ریکارڈ دیکھیں، تلاش کریں اور ان کا نظم کریں۔",
+          back_to_admin: "ایڈمن پر واپس جائیں",
+          search_placeholder: "نام، آئی ڈی، یا عہدہ کے ذریعے تلاش کریں...",
+          filter_department: "شعبہ کے لحاظ سے فلٹر کریں",
+          status_filter: "حیثیت",
+          active: "فعال",
+          inactive: "غیر فعال",
+          pending: "زیر التوا",
+          add_new: "نیا ملازم شامل کریں",
+          logout: "لاگ آؤٹ",
 
-                // Table Headers
-                'id': 'آئی ڈی',
-                'name': 'نام',
-                'designation_short': 'عہدہ',
-                'department': 'شعبہ',
-                'contact': 'رابطہ',
-                'status': 'حالت',
-                'actions': 'عمل',
-                'view': 'دیکھیں',
-                'edit': 'ترمیم کریں',
-                'save': 'تبدیلیاں محفوظ کریں',
-                'cancel': 'منسوخ کریں',
+          // Table Headers
+          id: "آئی ڈی",
+          name: "نام",
+          designation_short: "عہدہ",
+          department: "شعبہ",
+          contact: "رابطہ (ای میل)",
+          status: "حالت",
+          actions: "عمل",
+          view: "دیکھیں",
+          edit: "ترمیم کریں",
+          save: "تبدیلیاں محفوظ کریں",
+          cancel: "منسوخ کریں",
 
-                // Departments (Example Data)
-                'hifz': 'حفظ',
-                'fiqh': 'فقہ',
-                'hadith': 'حدیث',
-                'accounts': 'اکاؤنٹس',
-                'kitchen': 'باورچی خانہ',
+          // Departments (Example Data)
+          hifz: "حفظ",
+          fiqh: "فقہ",
+          hadith: "حدیث",
+          accounts: "اکاؤنٹس",
+          kitchen: "باورچی خانہ",
 
-                // View/Edit Fields
-                'modal_view_title': 'عملے کی تفصیلات (صرف دیکھیں)',
-                'modal_edit_title': 'عملے کی تفصیلات میں ترمیم کریں',
-                'full_name': 'پورا نام',
-                'designation': 'عہدہ/پوسٹ',
-                'joining_date': 'شمولیت کی تاریخ',
-                'email': 'ای میل',
-                'phone': 'فون',
-                'address': 'پتہ',
-                'form_success': 'تفصیلات کامیابی سے اپ ڈیٹ ہو گئیں۔',
-                'form_error': 'تبدیلیاں محفوظ کرنے میں ناکامی۔'
-            }
-        };
+          // View/Edit Fields
+          modal_view_title: "عملے کی تفصیلات (صرف دیکھیں)",
+          modal_edit_title: "عملے کی تفصیلات میں ترمیم کریں",
+          modal_add_title: "نیا عملہ کا ریکارڈ شامل کریں", // NEW
+          full_name: "پورا نام",
+          designation: "عہدہ/پوسٹ",
+          joining_date: "شمولیت کی تاریخ",
+          email: "ای میل",
+          phone: "فون",
+          address: "پتہ",
+          form_success: "تفصیلات کامیابی سے اپ ڈیٹ ہو گئیں۔",
+          form_add_success: "نیا عملہ کامیابی سے شامل کر لیا گیا۔", // NEW
+          form_error: "تبدیلیاں محفوظ کرنے میں ناکامی۔",
+          select_department_hint: "شعبہ منتخب کریں",
+        },
+      };
 
-        // --- Dummy Data (Staff List - Updated with more fields for editing) ---
-        let dummyStaff = [
-            { id: 'T001', name: 'Maulana Ahmed', designation: 'Head Teacher', department: 'hifz', contact: 'maulana@madarsa.com', phone: '9876543210', address: '12-A Block, Delhi', joiningDate: '2015-08-01', status: 'active' },
-            { id: 'A005', name: 'Zainab Begum', designation: 'Accounts Manager', department: 'accounts', contact: 'zainab@madarsa.com', phone: '9123456789', address: '45-B Lane, Mumbai', joiningDate: '2018-03-10', status: 'active' },
-            { id: 'T012', name: 'Hafiz Omar', designation: 'Teacher', department: 'fiqh', contact: 'hafiz@madarsa.com', phone: '8000111222', address: '78-C Street, Pune', joiningDate: '2022-06-20', status: 'inactive' },
-            { id: 'S023', name: 'Fatima Zahra', designation: 'Kitchen Staff', department: 'kitchen', contact: 'fatima@madarsa.com', phone: '7654321098', address: '90-D Road, Kolkata', joiningDate: '2023-11-05', status: 'pending' },
-            { id: 'T008', name: 'Mufti Imran', designation: 'Senior Mufti', department: 'hadith', contact: 'mufti@madarsa.com', phone: '8888777666', address: '32-E Avenue, Lucknow', joiningDate: '2010-01-01', status: 'active' },
-        ];
+      // --- Dummy Data (Staff List) ---
+      let dummyStaff = [
+        {
+          id: "T001",
+          name: "Maulana Ahmed",
+          designation: "Head Teacher",
+          department: "hifz",
+          contact: "maulana@madarsa.com",
+          phone: "9876543210",
+          address: "12-A Block, Delhi",
+          joiningDate: "2015-08-01",
+          status: "active",
+        },
+        {
+          id: "A005",
+          name: "Zainab Begum",
+          designation: "Accounts Manager",
+          department: "accounts",
+          contact: "zainab@madarsa.com",
+          phone: "9123456789",
+          address: "45-B Lane, Mumbai",
+          joiningDate: "2018-03-10",
+          status: "active",
+        },
+        {
+          id: "T012",
+          name: "Hafiz Omar",
+          designation: "Teacher",
+          department: "fiqh",
+          contact: "hafiz@madarsa.com",
+          phone: "8000111222",
+          address: "78-C Street, Pune",
+          joiningDate: "2022-06-20",
+          status: "inactive",
+        },
+        {
+          id: "S023",
+          name: "Fatima Zahra",
+          designation: "Kitchen Staff",
+          department: "kitchen",
+          contact: "fatima@madarsa.com",
+          phone: "7654321098",
+          address: "90-D Road, Kolkata",
+          joiningDate: "2023-11-05",
+          status: "pending",
+        },
+        {
+          id: "T008",
+          name: "Mufti Imran",
+          designation: "Senior Mufti",
+          department: "hadith",
+          contact: "mufti@madarsa.com",
+          phone: "8888777666",
+          address: "32-E Avenue, Lucknow",
+          joiningDate: "2010-01-01",
+          status: "active",
+        },
+      ];
 
+      let currentLang = "en";
 
-        let currentLang = 'en';
+      function getTranslation(key) {
+        return langData[currentLang][key] || langData["en"][key] || key;
+      }
 
-        function getTranslation(key) {
-            return langData[currentLang][key] || langData['en'][key] || key;
+      // Helper to get staff member by ID
+      function getStaffById(id) {
+        return dummyStaff.find((staff) => staff.id === id);
+      }
+
+      // Function to display a temporary notification/success message (replacing alert)
+      function showMessage(messageKey, isError = false) {
+        const message = getTranslation(messageKey);
+        const box = document.getElementById("message-box");
+
+        if (!box) {
+          isError ? console.error(message) : console.log(message);
+          return;
         }
 
-        // Helper to get staff member by ID
-        function getStaffById(id) {
-            return dummyStaff.find(staff => staff.id === id);
+        box.textContent = message;
+
+        box.classList.remove(
+          "bg-green-100",
+          "text-green-800",
+          "bg-red-100",
+          "text-red-800"
+        );
+        if (isError) {
+          box.classList.add("bg-red-100", "text-red-800");
+        } else {
+          box.classList.add("bg-green-100", "text-green-800");
         }
 
-        function updateContent() {
-            document.body.className = 'lang-' + currentLang;
-            const isRtl = currentLang === 'ur';
+        box.classList.remove("hidden", "opacity-0");
+        box.classList.add("opacity-100");
 
-            document.querySelectorAll('[data-lang-key]').forEach(el => {
-                const key = el.getAttribute('data-lang-key');
-                el.textContent = getTranslation(key);
-            });
+        setTimeout(() => {
+          box.classList.remove("opacity-100");
+          box.classList.add("opacity-0");
+          setTimeout(() => {
+            box.classList.add("hidden");
+          }, 300);
+        }, 3000);
+      }
 
-            // Re-render table to apply current language to department names and status pills
-            renderTable(filterStaff());
+      function updateContent() {
+        document.body.className = "lang-" + currentLang;
+        // Note: Directionality is handled via CSS classes applied to <body>
 
-            // Update department filters dropdown
-            const departmentFilter = document.getElementById('department-filter');
-            if (departmentFilter) {
-                // Save current selection to restore after update
-                const selectedDept = departmentFilter.value;
+        document.querySelectorAll("[data-lang-key]").forEach((el) => {
+          const key = el.getAttribute("data-lang-key");
+          el.textContent = getTranslation(key);
+        });
 
-                // Get department keys by checking which keys in langData['en'] are not basic keys
-                const basicKeys = new Set(Object.keys(langData['en']).filter(key => key.includes('_') || key.includes('title') || key.includes('filter') || key.includes('button') || key.length > 8));
+        // Re-render table to apply current language to department names and status pills
+        renderTable(filterStaff());
 
-                departmentFilter.innerHTML = `<option value="">${getTranslation('filter_department')}</option>`;
+        // Update department filters dropdown
+        const departmentFilter = document.getElementById("department-filter");
+        if (departmentFilter) {
+          const selectedDept = departmentFilter.value;
+          departmentFilter.innerHTML = `<option value="">${getTranslation(
+            "filter_department"
+          )}</option>`;
 
-                // Get only department keys from dummy staff departments
-                const deptKeys = [...new Set(dummyStaff.map(staff => staff.department))].sort();
+          const deptKeys = [
+            ...new Set(dummyStaff.map((staff) => staff.department)),
+          ].sort();
 
-                deptKeys.forEach(deptKey => {
-                    // Check if a translation key exists (e.g., 'hifz')
-                    const translationKey = Object.keys(langData['en']).find(key => langData['en'][key].toLowerCase() === deptKey.toLowerCase() || key === deptKey);
+          deptKeys.forEach((deptKey) => {
+            const option = document.createElement("option");
+            option.value = deptKey;
+            option.textContent = getTranslation(deptKey);
+            departmentFilter.appendChild(option);
+          });
 
-                    const option = document.createElement('option');
-                    option.value = deptKey;
-                    option.textContent = getTranslation(deptKey);
-                    departmentFilter.appendChild(option);
-                });
-
-                // Restore selection
-                departmentFilter.value = selectedDept;
-            }
-
-            document.getElementById('search-input').placeholder = getTranslation('search_placeholder');
+          // Restore selection
+          departmentFilter.value = selectedDept;
         }
 
-        function changeLanguage(lang) {
-            if (lang in langData) {
-                currentLang = lang;
-                localStorage.setItem('madarsaSystemLang', lang);
-                updateContent();
-            }
+        document.getElementById("search-input").placeholder =
+          getTranslation("search_placeholder");
+      }
+
+      function changeLanguage(lang) {
+        if (lang in langData) {
+          currentLang = lang;
+          // localStorage.setItem('madarsaSystemLang', lang); // Keeping localStorage commented for Canvas environment
+          updateContent();
+        }
+      }
+
+      // --- Table Rendering ---
+      function renderTable(staffList) {
+        const tbody = document.getElementById("staff-table-body");
+        if (!tbody) return;
+        tbody.innerHTML = "";
+
+        // Handle empty search results
+        if (staffList.length === 0) {
+          const message = document.createElement("tr");
+          message.innerHTML = `<td colspan="7" class="text-center text-gray-500 py-6">No staff records found matching the current filters.</td>`;
+          tbody.appendChild(message);
+          return;
         }
 
-        // --- Table Rendering ---
-        function renderTable(staffList) {
-            const tbody = document.getElementById('staff-table-body');
-            if (!tbody) return;
-            tbody.innerHTML = '';
+        staffList.forEach((staff) => {
+          const tr = document.createElement("tr");
 
-            staffList.forEach(staff => {
-                const tr = document.createElement('tr');
+          let statusColor;
+          let statusTextKey;
+          switch (staff.status) {
+            case "active":
+              statusColor = "bg-green-100 text-green-700";
+              statusTextKey = "active";
+              break;
+            case "inactive":
+              statusColor = "bg-red-100 text-red-700";
+              statusTextKey = "inactive";
+              break;
+            case "pending":
+            default:
+              statusColor = "bg-yellow-100 text-yellow-700";
+              statusTextKey = "pending";
+              break;
+          }
 
-                let statusColor;
-                let statusTextKey;
-                switch (staff.status) {
-                    case 'active':
-                        statusColor = 'bg-green-100 text-green-700';
-                        statusTextKey = 'active';
-                        break;
-                    case 'inactive':
-                        statusColor = 'bg-red-100 text-red-700';
-                        statusTextKey = 'inactive';
-                        break;
-                    case 'pending':
-                    default:
-                        statusColor = 'bg-yellow-100 text-yellow-700';
-                        statusTextKey = 'pending';
-                        break;
-                }
+          // Get translated department name (safe fallback to original key if not found)
+          const translatedDept =
+            getTranslation(staff.department) || staff.department;
+          const translatedStatus = getTranslation(statusTextKey);
 
-                // Get translated department name (safe fallback to original key if not found)
-                const translatedDept = getTranslation(staff.department) || staff.department;
-                const translatedStatus = getTranslation(statusTextKey);
-
-                tr.innerHTML = `
+          tr.innerHTML = `
                     <td>${staff.id}</td>
                     <td>${staff.name}</td>
                     <td>${staff.designation}</td>
@@ -446,398 +572,803 @@
                     <td>${staff.contact}</td>
                     <td><span class="status-pill ${statusColor}">${translatedStatus}</span></td>
                     <td>
-                        <button onclick="handleAction('view', '${staff.id}')" class="action-button bg-blue-100 text-blue-700 hover:bg-blue-200">${getTranslation('view')}</button>
-                        <button onclick="handleAction('edit', '${staff.id}')" class="action-button bg-yellow-100 text-yellow-700 hover:bg-yellow-200 ml-2">${getTranslation('edit')}</button>
+                        <button onclick="handleAction('view', '${
+                          staff.id
+                        }')" class="action-button bg-blue-100 text-blue-700 hover:bg-blue-200">${getTranslation(
+            "view"
+          )}</button>
+                        <button onclick="handleAction('edit', '${
+                          staff.id
+                        }')" class="action-button bg-yellow-100 text-yellow-700 hover:bg-yellow-200 ml-2">${getTranslation(
+            "edit"
+          )}</button>
                     </td>
                 `;
-                tbody.appendChild(tr);
-            });
-        }
+          tbody.appendChild(tr);
+        });
+      }
 
-        // --- Filter Logic ---
-        function filterStaff() {
-            const search = document.getElementById('search-input').value.toLowerCase();
-            const department = document.getElementById('department-filter').value;
-            const status = document.getElementById('status-filter').value;
+      // --- Filter Logic ---
+      function filterStaff() {
+        const search = document
+          .getElementById("search-input")
+          .value.toLowerCase();
+        const department = document.getElementById("department-filter").value;
+        const status = document.getElementById("status-filter").value;
 
-            return dummyStaff.filter(staff => {
-                const matchesSearch = staff.name.toLowerCase().includes(search) ||
-                    staff.id.toLowerCase().includes(search) ||
-                    staff.designation.toLowerCase().includes(search);
+        return dummyStaff.filter((staff) => {
+          const matchesSearch =
+            staff.name.toLowerCase().includes(search) ||
+            staff.id.toLowerCase().includes(search) ||
+            staff.designation.toLowerCase().includes(search);
 
-                const matchesDepartment = !department || staff.department === department;
-                const matchesStatus = !status || staff.status === status;
+          const matchesDepartment =
+            !department || staff.department === department;
+          const matchesStatus = !status || staff.status === status;
 
-                return matchesSearch && matchesDepartment && matchesStatus;
-            });
-        }
+          return matchesSearch && matchesDepartment && matchesStatus;
+        });
+      }
 
-        function handleFilter() {
-            const filteredList = filterStaff();
-            renderTable(filteredList);
-            console.log(`Filtered list: ${filteredList.length} results.`);
-        }
+      function handleFilter() {
+        const filteredList = filterStaff();
+        renderTable(filteredList);
+        // console.log(`Filtered list: ${filteredList.length} results.`);
+      }
 
-        // --- Modal Handling ---
-        function openStaffModal(titleKey, contentHtml) {
-            const modal = document.getElementById('staff-modal');
-            const modalTitle = document.getElementById('modal-title');
-            const modalBody = document.getElementById('modal-body');
+      // --- Modal Handling ---
+      function openStaffModal(titleKey, contentHtml) {
+        const modal = document.getElementById("staff-modal");
+        const modalTitle = document.getElementById("modal-title");
+        const modalBody = document.getElementById("modal-body");
 
-            modalTitle.textContent = getTranslation(titleKey);
-            modalBody.innerHTML = contentHtml;
+        modalTitle.textContent = getTranslation(titleKey);
+        modalBody.innerHTML = contentHtml;
 
-            modal.classList.remove('hidden');
-            setTimeout(() => { modal.classList.remove('opacity-0'); }, 10);
-        }
+        modal.classList.remove("hidden");
+        setTimeout(() => {
+          modal.classList.remove("opacity-0");
+        }, 10);
+      }
 
-        function closeStaffModal() {
-            const modal = document.getElementById('staff-modal');
-            modal.classList.add('opacity-0');
-            setTimeout(() => { modal.classList.add('hidden'); }, 300);
-        }
+      function closeStaffModal() {
+        const modal = document.getElementById("staff-modal");
+        modal.classList.add("opacity-0");
+        setTimeout(() => {
+          modal.classList.add("hidden");
+        }, 300);
+      }
 
-        // --- Content Creators ---
-        function createViewContent(staff) {
-            const isRtl = currentLang === 'ur';
-            const alignment = isRtl ? 'text-right' : 'text-left';
+      // --- New Staff ID Generator (for demo) ---
+      function generateNewId() {
+        // Find the maximum number used in the current IDs
+        const maxIdNum = dummyStaff
+          .map((s) => parseInt(s.id.replace(/[^0-9]/g, "")) || 0)
+          .reduce((max, current) => Math.max(max, current), 0);
 
-            return `
-                <div class="grid grid-cols-2 gap-x-8 gap-y-4 ${alignment}">
+        // Generate the next ID, padded with leading zeros
+        return "S" + String(maxIdNum + 1).padStart(3, "0");
+      }
+
+      // --- Content Creators ---
+      function createViewContent(staff) {
+        const isRtl = currentLang === "ur";
+        const alignment = isRtl ? "text-right" : "text-left";
+
+        return `
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4 ${alignment}">
                     <div class="col-span-2 border-b pb-2 mb-2">
-                        <h4 class="font-bold text-gray-600">${getTranslation('full_name')}</h4>
+                        <h4 class="font-bold text-gray-600">${getTranslation(
+                          "full_name"
+                        )}</h4>
                         <p class="text-lg">${staff.name}</p>
                     </div>
                     
                     <div>
-                        <h4 class="font-bold text-gray-600">${getTranslation('id')}</h4>
-                        <p>${staff.id}</p>
+                        <h4 class="font-bold text-gray-600">${getTranslation(
+                          "id"
+                        )}</h4>
+                        <p class="text-primary font-mono">${staff.id}</p>
                     </div>
                     <div>
-                        <h4 class="font-bold text-gray-600">${getTranslation('designation')}</h4>
+                        <h4 class="font-bold text-gray-600">${getTranslation(
+                          "designation"
+                        )}</h4>
                         <p>${staff.designation}</p>
                     </div>
 
                     <div>
-                        <h4 class="font-bold text-gray-600">${getTranslation('department')}</h4>
+                        <h4 class="font-bold text-gray-600">${getTranslation(
+                          "department"
+                        )}</h4>
                         <p>${getTranslation(staff.department)}</p>
                     </div>
                     <div>
-                        <h4 class="font-bold text-gray-600">${getTranslation('joining_date')}</h4>
+                        <h4 class="font-bold text-gray-600">${getTranslation(
+                          "joining_date"
+                        )}</h4>
                         <p>${staff.joiningDate}</p>
                     </div>
 
                     <div class="col-span-2 pt-4 border-t mt-4">
-                        <h3 class="text-lg font-bold text-gray-700 mb-2">${getTranslation('contact')}</h3>
+                        <h3 class="text-lg font-bold text-gray-700 mb-2">${getTranslation(
+                          "contact"
+                        )}</h3>
                     </div>
 
                     <div>
-                        <h4 class="font-bold text-gray-600">${getTranslation('email')}</h4>
+                        <h4 class="font-bold text-gray-600">${getTranslation(
+                          "email"
+                        )}</h4>
                         <p>${staff.contact}</p>
                     </div>
                     <div>
-                        <h4 class="font-bold text-gray-600">${getTranslation('phone')}</h4>
+                        <h4 class="font-bold text-gray-600">${getTranslation(
+                          "phone"
+                        )}</h4>
                         <p>${staff.phone}</p>
                     </div>
 
                     <div class="col-span-2">
-                        <h4 class="font-bold text-gray-600">${getTranslation('address')}</h4>
+                        <h4 class="font-bold text-gray-600">${getTranslation(
+                          "address"
+                        )}</h4>
                         <p>${staff.address}</p>
                     </div>
                 </div>
             `;
+      }
+
+      function createEditForm(staff) {
+        const isRtl = currentLang === "ur";
+        const alignment = isRtl ? "text-right" : "text-left";
+
+        // Generate department options dynamically
+        let deptOptions = "";
+        const deptKeys = ["hifz", "fiqh", "hadith", "accounts", "kitchen"];
+        deptKeys.forEach((key) => {
+          const selected = staff.department === key ? "selected" : "";
+          deptOptions += `<option value="${key}" ${selected}>${getTranslation(
+            key
+          )}</option>`;
+        });
+
+        return `
+                <form id="edit-staff-form" onsubmit="return saveStaffDetails(event, '${
+                  staff.id
+                }')" class="${alignment}">
+    
+    <div class="mb-4">
+        <h4 class="font-bold text-gray-600">
+            ID: <span class="text-lg text-primary">${staff.id}</span>
+        </h4>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+
+        <!-- First Name -->
+        <div class="form-group">
+            <label for="edit-first-name" class="form-label">First Name</label>
+            <input type="text" id="edit-first-name" class="form-input" 
+                   value="${staff.firstName || ""}" required>
+        </div>
+
+        <!-- Last Name -->
+        <div class="form-group">
+            <label for="edit-last-name" class="form-label">Last Name</label>
+            <input type="text" id="edit-last-name" class="form-input" 
+                   value="${staff.lastName || ""}" required>
+        </div>
+
+        <!-- Email -->
+        <div class="form-group">
+            <label for="edit-email" class="form-label">Email</label>
+            <input type="email" id="edit-email" class="form-input" 
+                   value="${staff.email || ""}" required>
+        </div>
+
+        <!-- Phone Number -->
+        <div class="form-group">
+            <label for="edit-phone" class="form-label">Phone Number</label>
+            <input type="tel" id="edit-phone" class="form-input" 
+                   value="${staff.phone || ""}" required>
+        </div>
+
+        <!-- Password -->
+        <div class="form-group">
+            <label for="edit-password" class="form-label">Password</label>
+            <input type="password" id="edit-password" class="form-input" required>
+        </div>
+
+        <!-- Select Field (Fetched from API) -->
+        <div class="form-group">
+            <label for="edit-api-select" class="form-label">Select Option</label>
+            <select id="edit-api-select" class="form-input" required>
+                ${apiOptions} 
+            </select>
+        </div>
+
+    </div>
+
+    <div class="flex justify-end space-x-4 mt-6">
+        <button type="button" onclick="closeStaffModal()" 
+                class="action-button bg-gray-200 text-gray-700 hover:bg-gray-300">
+            Cancel
+        </button>
+        <button type="submit" class="primary-button">
+            Save
+        </button>
+    </div>
+
+</form>
+
+            `;
+      }
+
+      async function fetchRoles() {
+        let roles = [];
+        const token = localStorage.getItem("authToken");
+
+        // If no token, fallback to local data
+        if (!token) {
+          loadRolesFromLocal();
+          updateContent();
+          return;
         }
 
-        function createEditForm(staff) {
-            const isRtl = currentLang === 'ur';
-            const alignment = isRtl ? 'text-right' : 'text-left';
+        try {
+          const res = await fetch(
+            "https://www.sgemplusglobal.com/Madarsa-Management-Software/web-apis/auth/get_all_roles.php",
+            {
+              method: "GET",
+              headers: { Authorization: "Bearer " + token },
+            }
+          );
 
-            // Generate department options dynamically
-            let deptOptions = '';
-            const deptKeys = ['hifz', 'fiqh', 'hadith', 'accounts', 'kitchen'];
-            deptKeys.forEach(key => {
-                const selected = staff.department === key ? 'selected' : '';
-                deptOptions += `<option value="${key}" ${selected}>${getTranslation(key)}</option>`;
+          // if HTTP not ok, fallback but inform
+          if (!res.ok) {
+            console.warn("GET roles HTTP status", res.status);
+            loadRolesFromLocal();
+            updateContent();
+            return;
+          }
+
+          const json = await res.json();
+          console.log("GET ROLES API:", json);
+
+          if (json && json.status === true) {
+            // API returns nested object at data[""]
+            const apiRoles = json.data && json.data[""] ? json.data[""] : [];
+            // Map to our structure; API lacks description & permissionIds, keep blank arrays
+            roles = apiRoles.map((r) => ({
+              id: Number(r.id),
+              name: r.name,
+              description: "",
+              permissionIds: [],
+            }));
+
+            let htmlData = "";
+
+            roles.forEach((item) => {
+              htmlData += `<option value="${item.id}">${item.name}</option>`;
             });
 
-            return `
-                <form id="edit-staff-form" onsubmit="return saveStaffDetails(event, '${staff.id}')" class="${alignment}">
-                    
-                    <!-- Hidden input to store original ID -->
-                    <input type="hidden" name="id" value="${staff.id}">
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
-                        
-                        <!-- Full Name -->
-                        <div class="form-group">
-                            <label for="edit-name" class="form-label">${getTranslation('full_name')}</label>
-                            <input type="text" id="edit-name" class="form-input" value="${staff.name}" required>
-                        </div>
-                        
-                        <!-- Designation -->
-                        <div class="form-group">
-                            <label for="edit-designation" class="form-label">${getTranslation('designation')}</label>
-                            <input type="text" id="edit-designation" class="form-input" value="${staff.designation}" required>
-                        </div>
+            document.getElementById("edit-api-select").innerHTML = htmlData;
+          } else {
+            // invalid token or server message
+            if (json && json.message) alert(json.message);
+          }
+        } catch (err) {
+          console.error("fetchRoles error", err);
+        }
+      }
 
-                        <!-- Department -->
-                        <div class="form-group">
-                            <label for="edit-department" class="form-label">${getTranslation('department')}</label>
-                            <select id="edit-department" class="form-input" required>
-                                ${deptOptions}
-                            </select>
-                        </div>
-                        
-                        <!-- Joining Date -->
-                        <div class="form-group">
-                            <label for="edit-joining-date" class="form-label">${getTranslation('joining_date')}</label>
-                            <input type="date" id="edit-joining-date" class="form-input" value="${staff.joiningDate}" required>
-                        </div>
+      // --- NEW: Function to create the empty form for adding new staff ---
+      function createAddForm() {
+        fetchRoles();
+        const isRtl = currentLang === "ur";
+        const alignment = isRtl ? "text-right" : "text-left";
+        const newId = generateNewId();
+        const today = new Date().toISOString().split("T")[0];
 
-                        <!-- Status -->
-                        <div class="form-group">
-                            <label for="edit-status" class="form-label">${getTranslation('status')}</label>
-                            <select id="edit-status" class="form-input" required>
-                                <option value="active" ${staff.status === 'active' ? 'selected' : ''}>${getTranslation('active')}</option>
-                                <option value="inactive" ${staff.status === 'inactive' ? 'selected' : ''}>${getTranslation('inactive')}</option>
-                                <option value="pending" ${staff.status === 'pending' ? 'selected' : ''}>${getTranslation('pending')}</option>
-                            </select>
-                        </div>
+        let deptOptions = "";
+        const deptKeys = ["hifz", "fiqh", "hadith", "accounts", "kitchen"];
+        deptKeys.forEach((key) => {
+          deptOptions += `<option value="${key}">${getTranslation(
+            key
+          )}</option>`;
+        });
 
-                        <!-- Email -->
-                        <div class="form-group">
-                            <label for="edit-contact" class="form-label">${getTranslation('email')}</label>
-                            <input type="email" id="edit-contact" class="form-input" value="${staff.contact}" required>
-                        </div>
+        return `
+                <form id="edit-staff-form" onsubmit="return createStaffAPI(event)" class="${alignment}">
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
 
-                         <!-- Phone -->
-                        <div class="form-group">
-                            <label for="edit-phone" class="form-label">${getTranslation('phone')}</label>
-                            <input type="tel" id="edit-phone" class="form-input" value="${staff.phone}" required>
-                        </div>
-                        
-                        <!-- Address -->
-                        <div class="form-group md:col-span-2">
-                            <label for="edit-address" class="form-label">${getTranslation('address')}</label>
-                            <textarea id="edit-address" class="form-textarea" required>${staff.address}</textarea>
-                        </div>
-                    </div>
+        <!-- First Name -->
+        <div class="form-group">
+            <label for="edit-first-name" class="form-label">First Name</label>
+            <input type="text" id="edit-first-name" class="form-input" required>
+        </div>
 
-                    <div class="flex justify-end space-x-4 mt-6">
-                        <button type="button" onclick="closeStaffModal()" class="action-button bg-gray-200 text-gray-700 hover:bg-gray-300" data-lang-key="cancel">${getTranslation('cancel')}</button>
-                        <button type="submit" class="primary-button" data-lang-key="save">${getTranslation('save')}</button>
-                    </div>
-                </form>
+        <!-- Last Name -->
+        <div class="form-group">
+            <label for="edit-last-name" class="form-label">Last Name</label>
+            <input type="text" id="edit-last-name" class="form-input" required>
+        </div>
+
+        <!-- Email -->
+        <div class="form-group">
+            <label for="edit-email" class="form-label">Email</label>
+            <input type="email" id="edit-email" class="form-input" required>
+        </div>
+
+        <!-- Phone Number -->
+        <div class="form-group">
+            <label for="edit-phone" class="form-label">Phone Number</label>
+            <input type="tel" pattern="[0-9]{6,15}" maxlength="15" id="edit-phone" class="form-input" required>
+        </div>
+
+        <!-- Password -->
+        <div class="form-group">
+            <label for="edit-password" class="form-label">Password</label>
+            <input type="password" id="edit-password" class="form-input" required>
+        </div>
+
+        <!-- Select Field (Fetched from API) -->
+        <div class="form-group">
+            <label for="edit-api-select" class="form-label">Select Option</label>
+            <select id="edit-api-select" class="form-input" required>
+            </select>
+        </div>
+
+    </div>
+
+    <div class="flex justify-end space-x-4 mt-6">
+        <button type="button" onclick="closeStaffModal()" 
+                class="action-button bg-gray-200 text-gray-700 hover:bg-gray-300">
+            Cancel
+        </button>
+        <button type="submit" class="primary-button">
+            Save
+        </button>
+    </div>
+
+</form>
             `;
+      }
+
+      function validateStaffForm() {
+        const firstName = document
+          .getElementById("edit-first-name")
+          .value.trim();
+        const lastName = document.getElementById("edit-last-name").value.trim();
+        const email = document.getElementById("edit-email").value.trim();
+        const phone = document.getElementById("edit-phone").value.trim();
+        const password = document.getElementById("edit-password").value.trim();
+
+        if (firstName.length < 2) {
+          alert("First name must be at least 2 characters");
+          return false;
+        }
+        if (lastName.length < 2) {
+          alert("Last name must be at least 2 characters");
+          return false;
         }
 
-        // --- Action Dispatcher ---
-        function handleAction(action, id) {
-            const staff = getStaffById(id);
-            if (!staff) {
-                console.error(`Staff not found with ID: ${id}`);
-                return;
-            }
-
-            if (action === 'view') {
-                const content = createViewContent(staff);
-                openStaffModal('modal_view_title', content);
-            } else if (action === 'edit') {
-                const content = createEditForm(staff);
-                openStaffModal('modal_edit_title', content);
-            }
+        // email validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+          alert("Invalid email format");
+          return false;
         }
 
-        // --- Save Logic ---
-        function saveStaffDetails(event, id) {
-            event.preventDefault();
-
-            const form = event.target;
-            const staffIndex = dummyStaff.findIndex(s => s.id === id);
-
-            if (staffIndex === -1) {
-                alert(getTranslation('form_error'));
-                return false;
-            }
-
-            const updatedStaff = {
-                ...dummyStaff[staffIndex],
-                name: form.querySelector('#edit-name').value,
-                designation: form.querySelector('#edit-designation').value,
-                department: form.querySelector('#edit-department').value,
-                joiningDate: form.querySelector('#edit-joining-date').value,
-                status: form.querySelector('#edit-status').value,
-                contact: form.querySelector('#edit-contact').value, // Email is stored here
-                phone: form.querySelector('#edit-phone').value,
-                address: form.querySelector('#edit-address').value
-            };
-
-            // Update dummy data and re-render
-            dummyStaff[staffIndex] = updatedStaff;
-            closeStaffModal();
-            renderTable(filterStaff());
-
-            // Log update (simulating DB interaction)
-            console.log('Staff Updated:', updatedStaff);
-            alert(getTranslation('form_success'));
-
-            return false;
+        // phone validation: numbers only, min 6 digits
+        const phoneRegex = /^[0-9]{6,15}$/;
+        if (!phoneRegex.test(phone)) {
+          alert("Phone must be numbers only (6–15 digits)");
+          return false;
         }
 
+        if (password.length < 6) {
+          alert("Password must be at least 6 characters");
+          return false;
+        }
 
-        // Initialize content and language
-        window.onload = function () {
-            const storedLang = localStorage.getItem('madarsaSystemLang');
-            currentLang = (storedLang && storedLang in langData) ? storedLang : 'en';
+        return true;
+      }
 
-            // Initial content update and table render
-            updateContent();
-            renderTable(dummyStaff);
+      async function createStaffAPI(event) {
+        event.preventDefault();
+        const token = localStorage.getItem("authToken");
 
-            // Attach event listeners to filters
-            document.getElementById('search-input').addEventListener('input', handleFilter);
-            document.getElementById('department-filter').addEventListener('change', handleFilter);
-            document.getElementById('status-filter').addEventListener('change', handleFilter);
+        if (!token) {
+          alert("Authentication token missing!");
+          return;
+        }
 
-            // Ensure initial language is applied to the dynamically generated department filters
-            const initialLang = localStorage.getItem('madarsaSystemLang') || 'en';
-            if (initialLang !== 'en') {
-                document.getElementById('department-filter').value = ''; // Reset to ensure full list loads before applying language
-                changeLanguage(initialLang);
-            }
+        // validate first
+        if (!validateStaffForm()) return;
+
+        const body = {
+          first_name: document.getElementById("edit-first-name").value.trim(),
+          last_name: document.getElementById("edit-last-name").value.trim(),
+          email: document.getElementById("edit-email").value.trim(),
+          phone: document.getElementById("edit-phone").value.trim(),
+          password: document.getElementById("edit-password").value.trim(),
+          role_id: document.getElementById("edit-api-select").value,
         };
+
+        let response;
+        try {
+          response = await fetch(
+            "https://www.sgemplusglobal.com/Madarsa-Management-Software/web-apis/auth/create_staff.php",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: "Bearer " + token,
+              },
+              body: JSON.stringify(body),
+            }
+          );
+        } catch (err) {
+          alert("Network Error: Unable to reach server");
+          return;
+        }
+
+        let data;
+        try {
+          data = await response.json();
+        } catch (e) {
+          alert("Invalid server response");
+          return;
+        }
+
+        if (data.status === true) {
+          alert("Staff created successfully!");
+          closeStaffModal();
+
+          // await for fetchStaffList() to avoid race condition
+          //   await fetchStaffList();
+        } else {
+          alert(data.message || "Server error");
+        }
+      }
+
+      // --- Action Dispatcher ---
+      function handleAction(action, id) {
+        const staff = getStaffById(id);
+        if (!staff) {
+          console.error(`Staff not found with ID: ${id}`);
+          showMessage("form_error", true);
+          return;
+        }
+
+        if (action === "view") {
+          const content = createViewContent(staff);
+          openStaffModal("modal_view_title", content);
+        } else if (action === "edit") {
+          const content = createEditForm(staff);
+          openStaffModal("modal_edit_title", content);
+        }
+      }
+
+      // --- NEW: Function to open the 'Add New Staff' modal ---
+      function openAddStaffModal() {
+        const content = createAddForm();
+        openStaffModal("modal_add_title", content);
+      }
+
+      // --- NEW: Logic to add new staff member ---
+      function addNewStaff(event, newId) {
+        event.preventDefault();
+
+        const form = event.target;
+        const departmentSelect = form.querySelector("#add-department");
+
+        if (!departmentSelect.value) {
+          console.error("Department must be selected.");
+          showMessage("form_error", true);
+          return false;
+        }
+
+        const newStaff = {
+          id: newId,
+          name: form.querySelector("#add-name").value,
+          designation: form.querySelector("#add-designation").value,
+          department: departmentSelect.value,
+          joiningDate: form.querySelector("#add-joining-date").value,
+          status: form.querySelector("#add-status").value,
+          contact: form.querySelector("#add-contact").value,
+          phone: form.querySelector("#add-phone").value,
+          address: form.querySelector("#add-address").value,
+        };
+
+        // Add new staff to the dummy array
+        dummyStaff.push(newStaff);
+
+        closeStaffModal();
+        // Re-render table, applying current filters
+        renderTable(filterStaff());
+
+        showMessage("form_add_success", false);
+
+        return false;
+      }
+
+      // --- Save Logic (Update Existing Staff) ---
+      function saveStaffDetails(event, id) {
+        event.preventDefault();
+
+        const form = event.target;
+        const staffIndex = dummyStaff.findIndex((s) => s.id === id);
+
+        if (staffIndex === -1) {
+          console.error(`Staff not found for update: ${id}`);
+          showMessage("form_error", true);
+          return false;
+        }
+
+        const updatedStaff = {
+          ...dummyStaff[staffIndex],
+          name: form.querySelector("#edit-name").value,
+          designation: form.querySelector("#edit-designation").value,
+          department: form.querySelector("#edit-department").value,
+          joiningDate: form.querySelector("#edit-joining-date").value,
+          status: form.querySelector("#edit-status").value,
+          contact: form.querySelector("#edit-contact").value, // Email is stored here
+          phone: form.querySelector("#edit-phone").value,
+          address: form.querySelector("#edit-address").value,
+        };
+
+        // Update dummy data and re-render
+        dummyStaff[staffIndex] = updatedStaff;
+        closeStaffModal();
+        renderTable(filterStaff());
+
+        console.log("Staff Updated:", updatedStaff);
+        showMessage("form_success", false);
+
+        return false;
+      }
+
+      function logOut() {
+        localStorage.removeItem("isUserLoggedIn");
+        localStorage.removeItem("authToken");
+        localStorage.removeItem("userData");
+        window.location.href = "index.html";
+      }
+
+      // Initialize content and language
+      window.onload = function () {
+        const storedLang = localStorage.getItem("madarsaSystemLang");
+        currentLang = storedLang && storedLang in langData ? storedLang : "en";
+
+        // Initial content update and table render
+        updateContent();
+        renderTable(dummyStaff);
+
+        // Attach event listeners to filters
+        document
+          .getElementById("search-input")
+          .addEventListener("input", handleFilter);
+        document
+          .getElementById("department-filter")
+          .addEventListener("change", handleFilter);
+        document
+          .getElementById("status-filter")
+          .addEventListener("change", handleFilter);
+
+        // Ensure initial language is applied to the dynamically generated department filters
+        const initialLang = localStorage.getItem("madarsaSystemLang") || "en";
+        if (initialLang !== "en") {
+          document.getElementById("department-filter").value = "";
+          changeLanguage(initialLang);
+        }
+      };
     </script>
+
+    <!-- TOAST NOTIFICATION BOX (Replacing alert) -->
+    <div id="message-box" class="hidden opacity-0 text-sm" role="alert">
+      <!-- Message content will be injected here -->
+    </div>
 
     <!-- HEADER -->
     <header>
-        <div class="max-w-7xl mx-auto w-full flex justify-between items-center">
-            <!-- Left: Back Button & Title -->
-            <div class="flex items-center space-x-4">
-                <a href="administration.html" class="action-button bg-gray-100 text-gray-700 hover:bg-gray-200"
-                    data-lang-key="back_to_admin">Back to Admin</a>
-                <h1 class="text-xl font-bold" data-lang-key="page_title" style="color: var(--color-primary);">
-                    Teacher/Staff Management</h1>
-            </div>
-
-            <!-- Right: Language Switch -->
-            <div class="flex items-center space-x-2">
-                <select onchange="changeLanguage(this.value)" class="bg-gray-100 rounded-lg p-1 text-sm">
-                    <option value="en">English</option>
-                    <option value="hi">हिन्दी</option>
-                    <option value="ur">اردو</option>
-                </select>
-                <button onclick="window.location.href='login.html'"
-                    class="text-sm font-semibold text-red-600 hover:text-red-800 transition-colors ml-4"
-                    data-lang-key="logout">Logout</button>
-            </div>
+      <div class="max-w-7xl mx-auto w-full flex justify-between items-center">
+        <!-- Left: Back Button & Title -->
+        <div class="flex items-center space-x-4">
+          <a
+            href="administration.html"
+            class="action-button bg-gray-100 text-gray-700 hover:bg-gray-200"
+            data-lang-key="back_to_admin"
+            >Back to Admin</a
+          >
+          <h1
+            class="text-xl font-bold"
+            data-lang-key="page_title"
+            style="color: var(--color-primary)"
+          >
+            Teacher/Staff Management
+          </h1>
         </div>
+
+        <!-- Right: Language Switch -->
+        <div class="flex items-center space-x-2">
+          <select
+            onchange="changeLanguage(this.value)"
+            class="bg-gray-100 rounded-lg p-1 text-sm"
+          >
+            <option value="en">English</option>
+            <option value="hi">हिन्दी</option>
+            <option value="ur">اردو</option>
+          </select>
+          <button
+            onclick="logOut()"
+            class="text-sm font-semibold text-red-600 hover:text-red-800 transition-colors ml-4"
+            data-lang-key="logout"
+          >
+            Logout
+          </button>
+        </div>
+      </div>
     </header>
 
     <!-- MAIN CONTENT AREA -->
     <main class="max-w-7xl mx-auto w-full p-4 md:p-8">
-        <div class="bg-white p-6 md:p-8 rounded-xl shadow-2xl">
-
-            <!-- Description and Action Button -->
-            <div
-                class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 space-y-4 md:space-y-0">
-                <div>
-                    <h2 class="text-2xl font-bold text-gray-700" data-lang-key="page_title">Teacher/Staff Management
-                    </h2>
-                    <p class="text-gray-500 mt-1 text-sm" data-lang-key="description">View, search, filter, and manage
-                        all academic and administrative personnel records.</p>
-                </div>
-                <!-- Link points to Administration page with specific query parameter -->
-                <a href="administration.html?page=add_employee" class="primary-button flex items-center space-x-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
-                    </svg>
-                    <span data-lang-key="add_new">Add New Staff</span>
-                </a>
-            </div>
-
-            <!-- Filter and Search Controls -->
-            <div class="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-8">
-
-                <!-- Search -->
-                <div class="sm:col-span-2 relative">
-                    <input type="text" id="search-input" class="form-input pl-10"
-                        placeholder="Search by Name, ID, or Designation...">
-                    <svg xmlns="http://www.w3.org/2000/svg"
-                        class="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" fill="none"
-                        viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
-                </div>
-
-                <!-- Department Filter -->
-                <div>
-                    <select id="department-filter" class="form-input">
-                        <option value="" data-lang-key="filter_department">Filter by Department</option>
-                        <!-- Options injected by JS -->
-                    </select>
-                </div>
-
-                <!-- Status Filter -->
-                <div>
-                    <select id="status-filter" class="form-input">
-                        <option value="" data-lang-key="status_filter">Status</option>
-                        <option value="active" data-lang-key="active">Active</option>
-                        <option value="inactive" data-lang-key="inactive">Inactive</option>
-                        <option value="pending" data-lang-key="pending">Pending</option>
-                    </select>
-                </div>
-            </div>
-
-            <!-- Staff Table -->
-            <div class="table-container">
-                <table class="admin-table">
-                    <thead>
-                        <tr class="bg-gray-100 rounded-lg">
-                            <th data-lang-key="id">ID</th>
-                            <th data-lang-key="name">Name</th>
-                            <th data-lang-key="designation_short">Designation</th>
-                            <th data-lang-key="department">Department</th>
-                            <th data-lang-key="contact">Contact</th>
-                            <th data-lang-key="status">Status</th>
-                            <th data-lang-key="actions">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="staff-table-body">
-                        <!-- Staff data will be injected here by JS -->
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="text-center text-sm text-gray-500 mt-6">
-                <!-- Pagination / Info -->
-                Showing 1 to 5 of 5 entries
-            </div>
-
+      <div class="bg-white p-6 md:p-8 rounded-xl shadow-2xl">
+        <!-- Description and Action Button -->
+        <div
+          class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 space-y-4 md:space-y-0"
+        >
+          <div>
+            <h2
+              class="text-2xl font-bold text-gray-700"
+              data-lang-key="page_title"
+            >
+              Teacher/Staff Management
+            </h2>
+            <p class="text-gray-500 mt-1 text-sm" data-lang-key="description">
+              View, search, filter, and manage all academic and administrative
+              personnel records.
+            </p>
+          </div>
+          <!-- UPDATED: Changed <a> to <button> to open modal -->
+          <button
+            onclick="openAddStaffModal()"
+            class="primary-button flex items-center space-x-2"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="w-5 h-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M12 4v16m8-8H4"
+              />
+            </svg>
+            <span data-lang-key="add_new">Add New Staff</span>
+          </button>
         </div>
+
+        <!-- Filter and Search Controls -->
+        <div class="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-8">
+          <!-- Search -->
+          <div class="sm:col-span-2 relative">
+            <input
+              type="text"
+              id="search-input"
+              class="form-input pl-10"
+              placeholder="Search by Name, ID, or Designation..."
+            />
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+              />
+            </svg>
+          </div>
+
+          <!-- Department Filter -->
+          <div>
+            <select id="department-filter" class="form-input">
+              <option value="" data-lang-key="filter_department">
+                Filter by Department
+              </option>
+              <!-- Options injected by JS -->
+            </select>
+          </div>
+
+          <!-- Status Filter -->
+          <div>
+            <select id="status-filter" class="form-input">
+              <option value="" data-lang-key="status_filter">Status</option>
+              <option value="active" data-lang-key="active">Active</option>
+              <option value="inactive" data-lang-key="inactive">
+                Inactive
+              </option>
+              <option value="pending" data-lang-key="pending">Pending</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Staff Table -->
+        <div class="table-container">
+          <table class="admin-table">
+            <thead>
+              <tr class="bg-gray-100 rounded-lg">
+                <th data-lang-key="id">ID</th>
+                <th data-lang-key="name">Name</th>
+                <th data-lang-key="designation_short">Designation</th>
+                <th data-lang-key="department">Department</th>
+                <th data-lang-key="contact">Contact</th>
+                <th data-lang-key="status">Status</th>
+                <th data-lang-key="actions">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="staff-table-body">
+              <!-- Staff data will be injected here by JS -->
+            </tbody>
+          </table>
+        </div>
+
+        <div class="text-center text-sm text-gray-500 mt-6">
+          <!-- Pagination / Info -->
+          Showing 1 to 5 of 5 entries (Note: This text is static in this
+          version)
+        </div>
+      </div>
     </main>
 
-    <!-- STAFF VIEW/EDIT MODAL -->
-    <div id="staff-modal"
-        class="hidden opacity-0 fixed inset-0 z-50 flex items-center justify-center modal-backdrop transition-opacity duration-300">
-        <div class="modal-content p-6 transform scale-100 transition-transform duration-300"
-            style="border: 3px solid var(--color-primary);">
-            <div class="flex justify-between items-center pb-4 border-b mb-6">
-                <h3 id="modal-title" class="text-xl font-bold text-gray-700">Staff Details</h3>
-                <button onclick="closeStaffModal()" class="text-gray-500 hover:text-gray-900 transition-colors p-1"
-                    aria-label="Close">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
-                        stroke="currentColor" class="w-6 h-6">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
-            </div>
-            <div id="modal-body">
-                <!-- Dynamic content (View or Edit Form) goes here -->
-            </div>
+    <!-- STAFF VIEW/EDIT/ADD MODAL -->
+    <div
+      id="staff-modal"
+      class="hidden opacity-0 fixed inset-0 z-50 flex items-center justify-center modal-backdrop transition-opacity duration-300"
+    >
+      <div
+        class="modal-content p-6 transform scale-100 transition-transform duration-300"
+        style="border: 3px solid var(--color-primary)"
+      >
+        <div class="flex justify-between items-center pb-4 border-b mb-6">
+          <h3 id="modal-title" class="text-xl font-bold text-gray-700">
+            Staff Details
+          </h3>
+          <button
+            onclick="closeStaffModal()"
+            class="text-gray-500 hover:text-gray-900 transition-colors p-1"
+            aria-label="Close"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="2"
+              stroke="currentColor"
+              class="w-6 h-6"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
         </div>
+        <div id="modal-body"></div>
+      </div>
     </div>
-</body>
-
+  </body>
 </html>
