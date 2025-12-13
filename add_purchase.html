@@ -1,442 +1,530 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Add Purchase - Library System</title>
     <script src="https://cdn.tailwindcss.com"></script>
 
     <style>
-        :root {
-            --color-primary: #00A693;
-            --color-background: #F2F3F4;
-            --color-accent: #E08A27;
-            --color-text-dark: #1A1A1A;
-            --color-text-light: #FFFFFF;
-        }
+      :root {
+        --color-primary: #00a693;
+        --color-background: #f2f3f4;
+        --color-accent: #e08a27;
+        --color-text-dark: #1a1a1a;
+        --color-text-light: #ffffff;
+      }
 
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;700&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap');
+      @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;700&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap");
 
-        /* Language Styles */
-        body,
-        .lang-en {
-            font-family: 'Poppins', sans-serif;
-            direction: ltr;
-            background-color: var(--color-background);
-        }
+      /* Language Styles */
+      body,
+      .lang-en {
+        font-family: "Poppins", sans-serif;
+        direction: ltr;
+        background-color: var(--color-background);
+      }
 
-        .lang-hi {
-            font-family: 'Noto Sans Devanagari', sans-serif;
-            direction: ltr;
-        }
+      .lang-hi {
+        font-family: "Noto Sans Devanagari", sans-serif;
+        direction: ltr;
+      }
 
-        .lang-ur {
-            font-family: 'Noto Nastaliq Urdu', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
-            direction: rtl;
-            line-height: 1.8;
-            text-align: right;
-        }
+      .lang-ur {
+        font-family: "Noto Nastaliq Urdu", "Segoe UI", Tahoma, Geneva, Verdana,
+          sans-serif !important;
+        direction: rtl;
+        line-height: 1.8;
+        text-align: right;
+      }
 
-        /* Form & Inputs */
-        .form-input,
-        select,
-        .form-textarea {
-            padding: 0.75rem 1rem;
-            border-radius: 0.5rem;
-            border: 1px solid #ccc;
-            width: 100%;
-            font-family: inherit;
-        }
+      /* Form & Inputs */
+      .form-input,
+      select,
+      .form-textarea {
+        padding: 0.75rem 1rem;
+        border-radius: 0.5rem;
+        border: 1px solid #ccc;
+        width: 100%;
+        font-family: inherit;
+      }
 
-        .form-input:focus,
-        select:focus,
-        .form-textarea:focus {
-            outline: none;
-            border-color: var(--color-primary);
-            box-shadow: 0 0 0 3px rgba(0, 166, 147, 0.2);
-        }
+      .form-input:focus,
+      select:focus,
+      .form-textarea:focus {
+        outline: none;
+        border-color: var(--color-primary);
+        box-shadow: 0 0 0 3px rgba(0, 166, 147, 0.2);
+      }
 
-        .form-label {
-            display: block;
-            font-weight: 600;
-            margin-bottom: 0.25rem;
-            font-size: 0.875rem;
-        }
+      .form-label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 0.25rem;
+        font-size: 0.875rem;
+      }
 
-        /* Buttons */
-        .primary-button {
-            padding: 0.8rem 1.5rem;
-            background-color: var(--color-primary);
-            color: var(--color-text-light);
-            font-weight: 600;
-            border-radius: 0.75rem;
-            transition: background-color 0.3s, transform 0.1s;
-            box-shadow: 0 4px 10px rgba(0, 166, 147, 0.4);
-            cursor: pointer;
-        }
+      /* Buttons */
+      .primary-button {
+        padding: 0.8rem 1.5rem;
+        background-color: var(--color-primary);
+        color: var(--color-text-light);
+        font-weight: 600;
+        border-radius: 0.75rem;
+        transition: background-color 0.3s, transform 0.1s;
+        box-shadow: 0 4px 10px rgba(0, 166, 147, 0.4);
+        cursor: pointer;
+      }
 
-        .primary-button:hover {
-            background-color: #008f7d;
-            transform: translateY(-1px);
-        }
+      .primary-button:hover {
+        background-color: #008f7d;
+        transform: translateY(-1px);
+      }
 
-        .action-button {
-            padding: 0.5rem 0.75rem;
-            border-radius: 0.5rem;
-            font-size: 0.875rem;
-            font-weight: 600;
-            transition: background-color 0.2s;
-        }
+      .action-button {
+        padding: 0.5rem 0.75rem;
+        border-radius: 0.5rem;
+        font-size: 0.875rem;
+        font-weight: 600;
+        transition: background-color 0.2s;
+      }
 
-        /* Fixed Header */
-        header {
-            background-color: var(--color-text-light);
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            position: sticky;
-            top: 0;
-            width: 100%;
-            z-index: 10;
-            padding: 1rem 2rem;
-        }
+      /* Fixed Header */
+      header {
+        background-color: var(--color-text-light);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        position: sticky;
+        top: 0;
+        width: 100%;
+        z-index: 10;
+        padding: 1rem 2rem;
+      }
     </style>
-</head>
+  </head>
 
-<body class="lang-en">
-
+  <body class="lang-en">
     <script>
-        // Helper to format date YYYY-MM-DD
-        function formatDate(date) {
-            const d = new Date(date);
-            let month = '' + (d.getMonth() + 1);
-            let day = '' + d.getDate();
-            const year = d.getFullYear();
+      // Helper to format date YYYY-MM-DD
+      function formatDate(date) {
+        const d = new Date(date);
+        let month = "" + (d.getMonth() + 1);
+        let day = "" + d.getDate();
+        const year = d.getFullYear();
 
-            if (month.length < 2) month = '0' + month;
-            if (day.length < 2) day = '0' + day;
+        if (month.length < 2) month = "0" + month;
+        if (day.length < 2) day = "0" + day;
 
-            return [year, month, day].join('-');
+        return [year, month, day].join("-");
+      }
+
+      // --- Dummy Item Data (To populate dropdown) ---
+      const DUMMY_ITEMS = [
+        { id: 1, name: "Tafsir Ibn Kathir" },
+        { id: 2, name: "Sahih Bukhari Vol 1" },
+        { id: 3, name: "Al-Qawaid al-Fiqhiyyah" },
+        { id: 4, name: "Madarsa Monthly Magazine" },
+      ];
+
+      // --- Multilingual Data ---
+      const langData = {
+        en: {
+          library_system: "Library System",
+          page_title: "Add Purchase",
+          back_to_library: "Back to Library",
+          logout: "Logout",
+          select_item: "Select Item",
+          cost_per_item: "Cost per Item",
+          quantity: "Quantity",
+          purchase_date: "Purchase Date",
+          purchase_source: "Purchase Source",
+          invoice_number: "Invoice Number",
+          condition: "Condition",
+          remarks: "Remarks",
+          save_purchase: "Save Purchase",
+
+          // Dropdown Options
+          select_item_placeholder: "-- Select Item --",
+          select_condition: "-- Select Condition --",
+          condition_new: "New",
+          condition_used: "Used (Good)",
+          condition_refurbished: "Refurbished",
+
+          form_success: "Purchase record successfully saved!",
+          form_error:
+            "Please fill all required fields (Cost, Quantity, Date, and Source).",
+        },
+        hi: {
+          library_system: "पुस्तकालय प्रणाली",
+          page_title: "खरीद जोड़ें",
+          back_to_library: "पुस्तकालय पर वापस",
+          logout: "लॉगआउट",
+          select_item: "आइटम चुनें",
+          cost_per_item: "प्रति आइटम लागत",
+          quantity: "मात्रा",
+          purchase_date: "खरीद की तारीख",
+          purchase_source: "खरीद का स्रोत",
+          invoice_number: "चालान संख्या",
+          condition: "स्थिति",
+          remarks: "टिप्पणियाँ",
+          save_purchase: "खरीद सहेजें",
+
+          // Dropdown Options
+          select_item_placeholder: "-- आइटम चुनें --",
+          select_condition: "-- स्थिति चुनें --",
+          condition_new: "नया",
+          condition_used: "प्रयुक्त (अच्छा)",
+          condition_refurbished: "नवीनीकृत",
+
+          form_success: "खरीद रिकॉर्ड सफलतापूर्वक सहेजा गया!",
+          form_error:
+            "कृपया सभी आवश्यक फ़ील्ड (लागत, मात्रा, तिथि और स्रोत) भरें।",
+        },
+        ur: {
+          library_system: "لائبریری نظام",
+          page_title: "خریداری شامل کریں",
+          back_to_library: "لائبریری پر واپس جائیں",
+          logout: "لاگ آؤٹ",
+          select_item: "آئٹم منتخب کریں",
+          cost_per_item: "فی آئٹم لاگت",
+          quantity: "مقدار",
+          purchase_date: "خریداری کی تاریخ",
+          purchase_source: "خریداری کا ذریعہ",
+          invoice_number: "انوائس نمبر",
+          condition: "حالت",
+          remarks: "ریمارکس",
+          save_purchase: "خریداری محفوظ کریں",
+
+          // Dropdown Options
+          select_item_placeholder: "-- آئٹم منتخب کریں --",
+          select_condition: "-- حالت منتخب کریں --",
+          condition_new: "نیا",
+          condition_used: "استعمال شدہ (اچھی)",
+          condition_refurbished: "تجدید شدہ",
+
+          form_success: "خریداری کا ریکارڈ کامیابی سے محفوظ ہو گیا!",
+          form_error:
+            "براہ کرم تمام مطلوبہ خانے (لاگت، مقدار، تاریخ اور ذریعہ) پُر کریں۔",
+        },
+      };
+
+      let currentLang = "en";
+
+      function getTranslation(key) {
+        return langData[currentLang][key] || langData["en"][key] || key;
+      }
+
+      // --- Core UI Update Functions ---
+      function updateContent() {
+        document.body.className = "lang-" + currentLang;
+        const isRtl = currentLang === "ur";
+
+        document.querySelectorAll("[data-lang-key]").forEach((el) => {
+          const key = el.getAttribute("data-lang-key");
+          el.textContent = getTranslation(key);
+        });
+
+        // Apply RTL alignment to form groups
+        document.querySelectorAll(".form-group").forEach((group) => {
+          group.style.textAlign = isRtl ? "right" : "left";
+        });
+        document
+          .querySelectorAll(".form-input, select, .form-textarea")
+          .forEach((input) => {
+            input.style.direction = isRtl ? "rtl" : "ltr";
+          });
+
+        // Re-populate dropdowns with current language translations
+        populateItemDropdown();
+      }
+
+      function changeLanguage(lang) {
+        if (lang in langData) {
+          currentLang = lang;
+          localStorage.setItem("madarsaSystemLang", lang);
+          updateContent();
+        }
+      }
+
+      function populateItemDropdown() {
+        const dropdown = document.getElementById("select-item");
+        const selectedValue = dropdown.value;
+
+        // Clear existing options
+        dropdown.innerHTML = "";
+
+        // Add placeholder
+        let placeholderOption = document.createElement("option");
+        placeholderOption.value = "";
+        placeholderOption.textContent = getTranslation(
+          "select_item_placeholder"
+        );
+        placeholderOption.disabled = true;
+        placeholderOption.selected = selectedValue === "";
+        dropdown.appendChild(placeholderOption);
+
+        // Add dummy items
+        DUMMY_ITEMS.forEach((item) => {
+          let option = document.createElement("option");
+          option.value = item.id;
+          option.textContent = item.name;
+          option.selected = selectedValue == item.id;
+          dropdown.appendChild(option);
+        });
+      }
+
+      // --- Form Submission Logic ---
+      function savePurchase(event) {
+        event.preventDefault();
+        const form = event.target;
+
+        // Simple validation check for required fields
+        const cost = form.querySelector("#cost-per-item").value;
+        const quantity = form.querySelector("#quantity").value;
+        const date = form.querySelector("#purchase-date").value;
+        const source = form.querySelector("#purchase-source").value;
+        const item = form.querySelector("#select-item").value;
+
+        if (!item || !cost || !quantity || !date || !source) {
+          alert(getTranslation("form_error"));
+          return false;
         }
 
-        // --- Dummy Item Data (To populate dropdown) ---
-        const DUMMY_ITEMS = [
-            { id: 1, name: "Tafsir Ibn Kathir" },
-            { id: 2, name: "Sahih Bukhari Vol 1" },
-            { id: 3, name: "Al-Qawaid al-Fiqhiyyah" },
-            { id: 4, name: "Madarsa Monthly Magazine" },
-        ];
-
-
-        // --- Multilingual Data ---
-        const langData = {
-            'en': {
-                'library_system': 'Library System',
-                'page_title': 'Add Purchase',
-                'back_to_library': 'Back to Library',
-                'logout': 'Logout',
-                'select_item': 'Select Item',
-                'cost_per_item': 'Cost per Item',
-                'quantity': 'Quantity',
-                'purchase_date': 'Purchase Date',
-                'purchase_source': 'Purchase Source',
-                'invoice_number': 'Invoice Number',
-                'condition': 'Condition',
-                'remarks': 'Remarks',
-                'save_purchase': 'Save Purchase',
-
-                // Dropdown Options
-                'select_item_placeholder': '-- Select Item --',
-                'select_condition': '-- Select Condition --',
-                'condition_new': 'New',
-                'condition_used': 'Used (Good)',
-                'condition_refurbished': 'Refurbished',
-
-                'form_success': 'Purchase record successfully saved!',
-                'form_error': 'Please fill all required fields (Cost, Quantity, Date, and Source).'
-            },
-            'hi': {
-                'library_system': 'पुस्तकालय प्रणाली',
-                'page_title': 'खरीद जोड़ें',
-                'back_to_library': 'पुस्तकालय पर वापस',
-                'logout': 'लॉगआउट',
-                'select_item': 'आइटम चुनें',
-                'cost_per_item': 'प्रति आइटम लागत',
-                'quantity': 'मात्रा',
-                'purchase_date': 'खरीद की तारीख',
-                'purchase_source': 'खरीद का स्रोत',
-                'invoice_number': 'चालान संख्या',
-                'condition': 'स्थिति',
-                'remarks': 'टिप्पणियाँ',
-                'save_purchase': 'खरीद सहेजें',
-
-                // Dropdown Options
-                'select_item_placeholder': '-- आइटम चुनें --',
-                'select_condition': '-- स्थिति चुनें --',
-                'condition_new': 'नया',
-                'condition_used': 'प्रयुक्त (अच्छा)',
-                'condition_refurbished': 'नवीनीकृत',
-
-                'form_success': 'खरीद रिकॉर्ड सफलतापूर्वक सहेजा गया!',
-                'form_error': 'कृपया सभी आवश्यक फ़ील्ड (लागत, मात्रा, तिथि और स्रोत) भरें।'
-            },
-            'ur': {
-                'library_system': 'لائبریری نظام',
-                'page_title': 'خریداری شامل کریں',
-                'back_to_library': 'لائبریری پر واپس جائیں',
-                'logout': 'لاگ آؤٹ',
-                'select_item': 'آئٹم منتخب کریں',
-                'cost_per_item': 'فی آئٹم لاگت',
-                'quantity': 'مقدار',
-                'purchase_date': 'خریداری کی تاریخ',
-                'purchase_source': 'خریداری کا ذریعہ',
-                'invoice_number': 'انوائس نمبر',
-                'condition': 'حالت',
-                'remarks': 'ریمارکس',
-                'save_purchase': 'خریداری محفوظ کریں',
-
-                // Dropdown Options
-                'select_item_placeholder': '-- آئٹم منتخب کریں --',
-                'select_condition': '-- حالت منتخب کریں --',
-                'condition_new': 'نیا',
-                'condition_used': 'استعمال شدہ (اچھی)',
-                'condition_refurbished': 'تجدید شدہ',
-
-                'form_success': 'خریداری کا ریکارڈ کامیابی سے محفوظ ہو گیا!',
-                'form_error': 'براہ کرم تمام مطلوبہ خانے (لاگت، مقدار، تاریخ اور ذریعہ) پُر کریں۔'
-            }
+        // Collect Data (Dummy Save)
+        const formData = {
+          itemId: item,
+          cost: parseFloat(cost),
+          quantity: parseInt(quantity),
+          purchaseDate: date,
+          purchaseSource: source,
+          invoiceNumber: form.querySelector("#invoice-number").value,
+          condition: form.querySelector("#item-condition").value,
+          remarks: form.querySelector("#item-remarks").value,
         };
 
-        let currentLang = 'en';
+        console.log("New Purchase Captured (Dummy Save):", formData);
+        alert(getTranslation("form_success"));
 
-        function getTranslation(key) {
-            return langData[currentLang][key] || langData['en'][key] || key;
-        }
+        // Reset form (keeping item and condition selected if not default)
+        form.reset();
 
-        // --- Core UI Update Functions ---
-        function updateContent() {
-            document.body.className = 'lang-' + currentLang;
-            const isRtl = currentLang === 'ur';
+        // Re-set date to today after reset
+        document.getElementById("purchase-date").value = formatDate(new Date());
+        return false;
+      }
 
-            document.querySelectorAll('[data-lang-key]').forEach(el => {
-                const key = el.getAttribute('data-lang-key');
-                el.textContent = getTranslation(key);
-            });
+      function logOut() {
+        localStorage.removeItem("isUserLoggedIn");
+        localStorage.removeItem("authToken");
+        localStorage.removeItem("userData");
+        window.location.href = "index.html";
+      }
 
-            // Apply RTL alignment to form groups
-            document.querySelectorAll('.form-group').forEach(group => {
-                group.style.textAlign = isRtl ? 'right' : 'left';
-            });
-            document.querySelectorAll('.form-input, select, .form-textarea').forEach(input => {
-                input.style.direction = isRtl ? 'rtl' : 'ltr';
-            });
+      // Initialize content and language
+      window.onload = function () {
+        const storedLang = localStorage.getItem("madarsaSystemLang");
+        currentLang = storedLang && storedLang in langData ? storedLang : "en";
 
-            // Re-populate dropdowns with current language translations
-            populateItemDropdown();
-        }
+        // Set default date to today
+        document.getElementById("purchase-date").value = formatDate(new Date());
 
-        function changeLanguage(lang) {
-            if (lang in langData) {
-                currentLang = lang;
-                localStorage.setItem('madarsaSystemLang', lang);
-                updateContent();
-            }
-        }
+        // Initial content update (includes populating dropdown)
+        updateContent();
 
-        function populateItemDropdown() {
-            const dropdown = document.getElementById('select-item');
-            const selectedValue = dropdown.value;
-
-            // Clear existing options
-            dropdown.innerHTML = '';
-
-            // Add placeholder
-            let placeholderOption = document.createElement('option');
-            placeholderOption.value = "";
-            placeholderOption.textContent = getTranslation('select_item_placeholder');
-            placeholderOption.disabled = true;
-            placeholderOption.selected = selectedValue === "";
-            dropdown.appendChild(placeholderOption);
-
-            // Add dummy items
-            DUMMY_ITEMS.forEach(item => {
-                let option = document.createElement('option');
-                option.value = item.id;
-                option.textContent = item.name;
-                option.selected = selectedValue == item.id;
-                dropdown.appendChild(option);
-            });
-        }
-
-        // --- Form Submission Logic ---
-        function savePurchase(event) {
-            event.preventDefault();
-            const form = event.target;
-
-            // Simple validation check for required fields
-            const cost = form.querySelector('#cost-per-item').value;
-            const quantity = form.querySelector('#quantity').value;
-            const date = form.querySelector('#purchase-date').value;
-            const source = form.querySelector('#purchase-source').value;
-            const item = form.querySelector('#select-item').value;
-
-            if (!item || !cost || !quantity || !date || !source) {
-                alert(getTranslation('form_error'));
-                return false;
-            }
-
-            // Collect Data (Dummy Save)
-            const formData = {
-                itemId: item,
-                cost: parseFloat(cost),
-                quantity: parseInt(quantity),
-                purchaseDate: date,
-                purchaseSource: source,
-                invoiceNumber: form.querySelector('#invoice-number').value,
-                condition: form.querySelector('#item-condition').value,
-                remarks: form.querySelector('#item-remarks').value,
-            };
-
-            console.log('New Purchase Captured (Dummy Save):', formData);
-            alert(getTranslation('form_success'));
-
-            // Reset form (keeping item and condition selected if not default)
-            form.reset();
-
-            // Re-set date to today after reset
-            document.getElementById('purchase-date').value = formatDate(new Date());
-            return false;
-        }
-
-
-        // Initialize content and language
-        window.onload = function () {
-            const storedLang = localStorage.getItem('madarsaSystemLang');
-            currentLang = (storedLang && storedLang in langData) ? storedLang : 'en';
-
-            // Set default date to today
-            document.getElementById('purchase-date').value = formatDate(new Date());
-
-            // Initial content update (includes populating dropdown)
-            updateContent();
-
-            // Attach form listener
-            document.getElementById('purchase-form').addEventListener('submit', savePurchase);
-        };
+        // Attach form listener
+        document
+          .getElementById("purchase-form")
+          .addEventListener("submit", savePurchase);
+      };
     </script>
 
     <!-- HEADER -->
     <header>
-        <div class="max-w-7xl mx-auto w-full flex justify-between items-center">
-            <!-- Left: Back Button & Title -->
-            <div class="flex items-center space-x-4">
-                <a href="library_system.html" class="action-button bg-gray-100 text-gray-700 hover:bg-gray-200"
-                    data-lang-key="back_to_library">Back to Library</a>
-                <h1 class="text-xl font-bold" data-lang-key="page_title" style="color: var(--color-primary);">Add
-                    Purchase</h1>
-            </div>
-
-            <!-- Right: Language Switch -->
-            <div class="flex items-center space-x-2">
-                <select onchange="changeLanguage(this.value)" class="bg-gray-100 rounded-lg p-1 text-sm">
-                    <option value="en" selected>English</option>
-                    <option value="hi">हिन्दी</option>
-                    <option value="ur">اردو</option>
-                </select>
-                <button onclick="window.location.href='login.html'"
-                    class="text-sm font-semibold text-red-600 hover:text-red-800 transition-colors ml-4"
-                    data-lang-key="logout">Logout</button>
-            </div>
+      <div class="max-w-7xl mx-auto w-full flex justify-between items-center">
+        <!-- Left: Back Button & Title -->
+        <div class="flex items-center space-x-4">
+          <a
+            href="library_system.html"
+            class="action-button bg-gray-100 text-gray-700 hover:bg-gray-200"
+            data-lang-key="back_to_library"
+            >Back to Library</a
+          >
+          <h1
+            class="text-xl font-bold"
+            data-lang-key="page_title"
+            style="color: var(--color-primary)"
+          >
+            Add Purchase
+          </h1>
         </div>
+
+        <!-- Right: Language Switch -->
+        <div class="flex items-center space-x-2">
+          <select
+            onchange="changeLanguage(this.value)"
+            class="bg-gray-100 rounded-lg p-1 text-sm"
+          >
+            <option value="en" selected>English</option>
+            <option value="hi">हिन्दी</option>
+            <option value="ur">اردو</option>
+          </select>
+          <button
+            onclick="logOut()"
+            class="text-sm font-semibold text-red-600 hover:text-red-800 transition-colors ml-4"
+            data-lang-key="logout"
+          >
+            Logout
+          </button>
+        </div>
+      </div>
     </header>
 
     <!-- MAIN CONTENT AREA -->
     <main class="max-w-4xl mx-auto w-full p-4 md:p-8">
-        <div class="bg-white p-6 md:p-10 rounded-xl shadow-2xl">
+      <div class="bg-white p-6 md:p-10 rounded-xl shadow-2xl">
+        <!-- Page Title -->
+        <h2
+          class="text-3xl font-bold mb-8 text-center"
+          data-lang-key="page_title"
+          style="color: var(--color-primary)"
+        >
+          Add Purchase
+        </h2>
 
-            <!-- Page Title -->
-            <h2 class="text-3xl font-bold mb-8 text-center" data-lang-key="page_title"
-                style="color: var(--color-primary);">Add Purchase</h2>
+        <!-- Purchase Registration Form -->
+        <form id="purchase-form">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+            <!-- Select Item (Full Width on Mobile, Left on Desktop) -->
+            <div class="form-group md:col-span-2">
+              <label for="select-item" class="form-label"
+                ><span class="text-red-500">*</span>
+                <span data-lang-key="select_item">Select Item</span></label
+              >
+              <select id="select-item" class="form-input" required>
+                <!-- Options injected by JS -->
+              </select>
+            </div>
 
-            <!-- Purchase Registration Form -->
-            <form id="purchase-form">
+            <!-- Cost per Item -->
+            <div class="form-group">
+              <label for="cost-per-item" class="form-label"
+                ><span class="text-red-500">*</span>
+                <span data-lang-key="cost_per_item">Cost per Item</span></label
+              >
+              <input
+                type="number"
+                id="cost-per-item"
+                class="form-input"
+                min="0.01"
+                step="0.01"
+                required
+              />
+            </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+            <!-- Quantity -->
+            <div class="form-group">
+              <label for="quantity" class="form-label"
+                ><span class="text-red-500">*</span>
+                <span data-lang-key="quantity">Quantity</span></label
+              >
+              <input
+                type="number"
+                id="quantity"
+                class="form-input"
+                min="1"
+                step="1"
+                required
+              />
+            </div>
 
-                    <!-- Select Item (Full Width on Mobile, Left on Desktop) -->
-                    <div class="form-group md:col-span-2">
-                        <label for="select-item" class="form-label"><span class="text-red-500">*</span> <span
-                                data-lang-key="select_item">Select Item</span></label>
-                        <select id="select-item" class="form-input" required>
-                            <!-- Options injected by JS -->
-                        </select>
-                    </div>
+            <!-- Purchase Date -->
+            <div class="form-group">
+              <label for="purchase-date" class="form-label"
+                ><span class="text-red-500">*</span>
+                <span data-lang-key="purchase_date">Purchase Date</span></label
+              >
+              <input
+                type="date"
+                id="purchase-date"
+                class="form-input"
+                required
+              />
+            </div>
 
-                    <!-- Cost per Item -->
-                    <div class="form-group">
-                        <label for="cost-per-item" class="form-label"><span class="text-red-500">*</span> <span
-                                data-lang-key="cost_per_item">Cost per Item</span></label>
-                        <input type="number" id="cost-per-item" class="form-input" min="0.01" step="0.01" required>
-                    </div>
+            <!-- Purchase Source -->
+            <div class="form-group">
+              <label for="purchase-source" class="form-label"
+                ><span class="text-red-500">*</span>
+                <span data-lang-key="purchase_source"
+                  >Purchase Source</span
+                ></label
+              >
+              <input
+                type="text"
+                id="purchase-source"
+                class="form-input"
+                required
+                placeholder="Vendor Name / Store Name"
+              />
+            </div>
 
-                    <!-- Quantity -->
-                    <div class="form-group">
-                        <label for="quantity" class="form-label"><span class="text-red-500">*</span> <span
-                                data-lang-key="quantity">Quantity</span></label>
-                        <input type="number" id="quantity" class="form-input" min="1" step="1" required>
-                    </div>
+            <!-- Invoice Number -->
+            <div class="form-group">
+              <label for="invoice-number" class="form-label"
+                ><span data-lang-key="invoice_number"
+                  >Invoice Number</span
+                ></label
+              >
+              <input type="text" id="invoice-number" class="form-input" />
+            </div>
 
-                    <!-- Purchase Date -->
-                    <div class="form-group">
-                        <label for="purchase-date" class="form-label"><span class="text-red-500">*</span> <span
-                                data-lang-key="purchase_date">Purchase Date</span></label>
-                        <input type="date" id="purchase-date" class="form-input" required>
-                    </div>
+            <!-- Condition -->
+            <div class="form-group">
+              <label for="item-condition" class="form-label"
+                ><span data-lang-key="condition">Condition</span></label
+              >
+              <select id="item-condition" class="form-input">
+                <option
+                  value=""
+                  disabled
+                  selected
+                  data-lang-key="select_condition"
+                >
+                  -- Select Condition --
+                </option>
+                <option value="new" data-lang-key="condition_new">New</option>
+                <option value="used" data-lang-key="condition_used">
+                  Used (Good)
+                </option>
+                <option
+                  value="refurbished"
+                  data-lang-key="condition_refurbished"
+                >
+                  Refurbished
+                </option>
+              </select>
+            </div>
 
-                    <!-- Purchase Source -->
-                    <div class="form-group">
-                        <label for="purchase-source" class="form-label"><span class="text-red-500">*</span> <span
-                                data-lang-key="purchase_source">Purchase Source</span></label>
-                        <input type="text" id="purchase-source" class="form-input" required
-                            placeholder="Vendor Name / Store Name">
-                    </div>
+            <!-- Remarks (Full Width) -->
+            <div class="form-group md:col-span-2">
+              <label for="item-remarks" class="form-label"
+                ><span data-lang-key="remarks">Remarks</span></label
+              >
+              <textarea id="item-remarks" class="form-textarea h-24"></textarea>
+            </div>
+          </div>
 
-                    <!-- Invoice Number -->
-                    <div class="form-group">
-                        <label for="invoice-number" class="form-label"><span data-lang-key="invoice_number">Invoice
-                                Number</span></label>
-                        <input type="text" id="invoice-number" class="form-input">
-                    </div>
-
-                    <!-- Condition -->
-                    <div class="form-group">
-                        <label for="item-condition" class="form-label"><span
-                                data-lang-key="condition">Condition</span></label>
-                        <select id="item-condition" class="form-input">
-                            <option value="" disabled selected data-lang-key="select_condition">-- Select Condition --
-                            </option>
-                            <option value="new" data-lang-key="condition_new">New</option>
-                            <option value="used" data-lang-key="condition_used">Used (Good)</option>
-                            <option value="refurbished" data-lang-key="condition_refurbished">Refurbished</option>
-                        </select>
-                    </div>
-
-                    <!-- Remarks (Full Width) -->
-                    <div class="form-group md:col-span-2">
-                        <label for="item-remarks" class="form-label"><span
-                                data-lang-key="remarks">Remarks</span></label>
-                        <textarea id="item-remarks" class="form-textarea h-24"></textarea>
-                    </div>
-
-                </div>
-
-                <!-- Save Button -->
-                <div class="flex justify-end mt-10">
-                    <button type="submit" class="primary-button" data-lang-key="save_purchase">Save Purchase</button>
-                </div>
-            </form>
-
-        </div>
+          <!-- Save Button -->
+          <div class="flex justify-end mt-10">
+            <button
+              type="submit"
+              class="primary-button"
+              data-lang-key="save_purchase"
+            >
+              Save Purchase
+            </button>
+          </div>
+        </form>
+      </div>
     </main>
-</body>
-
+  </body>
 </html>

@@ -1,550 +1,732 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Add New Employee - Admin</title>
     <script src="https://cdn.tailwindcss.com"></script>
 
     <style>
-        :root {
-            --color-primary: #00A693;
-            --color-background: #F2F3F4;
-            --color-accent: #E08A27;
-            --color-text-dark: #1A1A1A;
-            --color-text-light: #FFFFFF;
-        }
+      :root {
+        --color-primary: #00a693;
+        --color-background: #f2f3f4;
+        --color-accent: #e08a27;
+        --color-text-dark: #1a1a1a;
+        --color-text-light: #ffffff;
+      }
 
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;700&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap');
+      @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;700&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap");
 
-        /* Language Styles */
-        body,
-        .lang-en {
-            font-family: 'Poppins', sans-serif;
-            direction: ltr;
-        }
+      /* Language Styles */
+      body,
+      .lang-en {
+        font-family: "Poppins", sans-serif;
+        direction: ltr;
+      }
 
-        .lang-hi {
-            font-family: 'Noto Sans Devanagari', sans-serif;
-            direction: ltr;
-        }
+      .lang-hi {
+        font-family: "Noto Sans Devanagari", sans-serif;
+        direction: ltr;
+      }
 
-        .lang-ur {
-            font-family: 'Noto Nastaliq Urdu', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
-            direction: rtl;
-            line-height: 1.8;
-            text-align: right;
-        }
+      .lang-ur {
+        font-family: "Noto Nastaliq Urdu", "Segoe UI", Tahoma, Geneva, Verdana,
+          sans-serif !important;
+        direction: rtl;
+        line-height: 1.8;
+        text-align: right;
+      }
 
-        /* Form Inputs */
-        .form-input,
-        .form-textarea,
-        select {
-            padding: 0.75rem 1rem;
-            border-radius: 0.5rem;
-            border: 1px solid #ccc;
-            margin-top: 0.5rem;
-            width: 100%;
-            font-family: inherit;
-        }
+      /* Form Inputs */
+      .form-input,
+      .form-textarea,
+      select {
+        padding: 0.75rem 1rem;
+        border-radius: 0.5rem;
+        border: 1px solid #ccc;
+        margin-top: 0.5rem;
+        width: 100%;
+        font-family: inherit;
+      }
 
-        .form-input:focus,
-        .form-textarea:focus,
-        select:focus {
-            outline: none;
-            border-color: var(--color-primary);
-            box-shadow: 0 0 0 3px rgba(0, 166, 147, 0.2);
-        }
+      .form-input:focus,
+      .form-textarea:focus,
+      select:focus {
+        outline: none;
+        border-color: var(--color-primary);
+        box-shadow: 0 0 0 3px rgba(0, 166, 147, 0.2);
+      }
 
-        .form-label {
-            display: block;
-            font-weight: 600;
-            margin-bottom: 0.25rem;
-            font-size: 0.875rem;
-        }
+      .form-label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 0.25rem;
+        font-size: 0.875rem;
+      }
 
-        /* Buttons */
-        .primary-button {
-            padding: 0.8rem 2rem;
-            background-color: var(--color-primary);
-            color: var(--color-text-light);
-            font-weight: 600;
-            border-radius: 0.75rem;
-            transition: background-color 0.3s, transform 0.1s;
-            box-shadow: 0 4px 10px rgba(0, 166, 147, 0.4);
-            cursor: pointer;
-        }
+      /* Buttons */
+      .primary-button {
+        padding: 0.8rem 2rem;
+        background-color: var(--color-primary);
+        color: var(--color-text-light);
+        font-weight: 600;
+        border-radius: 0.75rem;
+        transition: background-color 0.3s, transform 0.1s;
+        box-shadow: 0 4px 10px rgba(0, 166, 147, 0.4);
+        cursor: pointer;
+      }
 
-        .primary-button:hover {
-            background-color: #008f7d;
-            transform: translateY(-1px);
-        }
+      .primary-button:hover {
+        background-color: #008f7d;
+        transform: translateY(-1px);
+      }
 
-        /* Custom Modal (for alerts) */
-        .custom-modal-backdrop {
-            background-color: rgba(0, 0, 0, 0.7);
-            transition: opacity 0.3s ease;
-        }
+      /* Custom Modal (for alerts) */
+      .custom-modal-backdrop {
+        background-color: rgba(0, 0, 0, 0.7);
+        transition: opacity 0.3s ease;
+      }
 
-        .custom-modal-content {
-            background-color: var(--color-background);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
-            border: 3px solid var(--color-primary);
-            border-radius: 1rem;
-        }
+      .custom-modal-content {
+        background-color: var(--color-background);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+        border: 3px solid var(--color-primary);
+        border-radius: 1rem;
+      }
 
-        /* RTL Adjustments */
-        .lang-ur .form-group {
-            text-align: right;
-        }
+      /* RTL Adjustments */
+      .lang-ur .form-group {
+        text-align: right;
+      }
 
-        .lang-ur .form-label {
-            text-align: right;
-        }
+      .lang-ur .form-label {
+        text-align: right;
+      }
 
-        .lang-ur .form-input,
-        .lang-ur .form-textarea,
-        .lang-ur select {
-            text-align: right;
-        }
+      .lang-ur .form-input,
+      .lang-ur .form-textarea,
+      .lang-ur select {
+        text-align: right;
+      }
     </style>
-</head>
+  </head>
 
-<body class="lang-en p-6 bg-gray-100 min-h-screen">
-
+  <body class="lang-en p-6 bg-gray-100 min-h-screen">
     <!-- Language Data Structure (Minimal for standalone use) -->
     <script>
-        const langData = {
-            'en': {
-                'add_employee': 'Add New Employee',
-                'description': 'Enter the full administrative and personal details for the new employee.',
-                'personal_info': 'Personal Information',
-                'official_info': 'Official Details',
-                'contact_address': 'Contact & Address',
-                'account_creation': 'Account Creation',
+      const langData = {
+        en: {
+          add_employee: "Add New Employee",
+          description:
+            "Enter the full administrative and personal details for the new employee.",
+          personal_info: "Personal Information",
+          official_info: "Official Details",
+          contact_address: "Contact & Address",
+          account_creation: "Account Creation",
 
-                'employee_id_auto': 'Employee ID (Auto Generated)',
-                'full_name': 'Full Name',
-                'father_name': "Father's Name",
-                'cnic': 'CNIC/Aadhaar Number',
-                'dob': 'Date of Birth',
-                'gender': 'Gender',
-                'male': 'Male',
-                'female': 'Female',
-                'other': 'Other',
+          employee_id_auto: "Employee ID (Auto Generated)",
+          full_name: "Full Name",
+          father_name: "Father's Name",
+          cnic: "CNIC/Aadhaar Number",
+          dob: "Date of Birth",
+          gender: "Gender",
+          male: "Male",
+          female: "Female",
+          other: "Other",
 
-                'designation': 'Designation/Post',
-                'joining_date': 'Joining Date',
-                'department': 'Department',
-                'salary_basis': 'Salary Basis',
-                'monthly': 'Monthly',
-                'daily': 'Daily',
+          designation: "Designation/Post",
+          joining_date: "Joining Date",
+          department: "Department",
+          salary_basis: "Salary Basis",
+          monthly: "Monthly",
+          daily: "Daily",
 
-                'email': 'Official Email (Login ID)',
-                'password': 'Temporary Password',
-                'confirm_password': 'Confirm Password',
-                'submit_button': 'Add Employee',
+          email: "Official Email (Login ID)",
+          password: "Temporary Password",
+          confirm_password: "Confirm Password",
+          submit_button: "Add Employee",
 
-                'address': 'Current Address',
-                'phone': 'Phone Number',
-                'emergency_contact': 'Emergency Contact',
-                'form_success': 'Employee Added Successfully!',
-                'pass_mismatch': 'Passwords do not match.',
-                'required_field': '* Required Field'
-            },
-            'hi': {
-                'add_employee': 'नया कर्मचारी जोड़ें',
-                'description': 'नए कर्मचारी के लिए पूर्ण प्रशासनिक और व्यक्तिगत विवरण दर्ज करें।',
-                'personal_info': 'व्यक्तिगत जानकारी',
-                'official_info': 'आधिकारिक विवरण',
-                'contact_address': 'संपर्क और पता',
-                'account_creation': 'खाता निर्माण',
+          address: "Current Address",
+          phone: "Phone Number",
+          emergency_contact: "Emergency Contact",
+          form_success: "Employee Added Successfully!",
+          pass_mismatch: "Passwords do not match.",
+          required_field: "* Required Field",
+        },
+        hi: {
+          add_employee: "नया कर्मचारी जोड़ें",
+          description:
+            "नए कर्मचारी के लिए पूर्ण प्रशासनिक और व्यक्तिगत विवरण दर्ज करें।",
+          personal_info: "व्यक्तिगत जानकारी",
+          official_info: "आधिकारिक विवरण",
+          contact_address: "संपर्क और पता",
+          account_creation: "खाता निर्माण",
 
-                'employee_id_auto': 'कर्मचारी आईडी (स्वचालित)',
-                'full_name': 'पूरा नाम',
-                'father_name': "पिता का नाम",
-                'cnic': 'सीएनआईसी/आधार संख्या',
-                'dob': 'जन्म तिथि',
-                'gender': 'लिंग',
-                'male': 'पुरुष',
-                'female': 'महिला',
-                'other': 'अन्य',
+          employee_id_auto: "कर्मचारी आईडी (स्वचालित)",
+          full_name: "पूरा नाम",
+          father_name: "पिता का नाम",
+          cnic: "सीएनआईसी/आधार संख्या",
+          dob: "जन्म तिथि",
+          gender: "लिंग",
+          male: "पुरुष",
+          female: "महिला",
+          other: "अन्य",
 
-                'designation': 'पदनाम/पद',
-                'joining_date': 'शामिल होने की तिथि',
-                'department': 'विभाग',
-                'salary_basis': 'वेतन आधार',
-                'monthly': 'मासिक',
-                'daily': 'दैनिक',
+          designation: "पदनाम/पद",
+          joining_date: "शामिल होने की तिथि",
+          department: "विभाग",
+          salary_basis: "वेतन आधार",
+          monthly: "मासिक",
+          daily: "दैनिक",
 
-                'email': 'आधिकारिक ईमेल (लॉगिन आईडी)',
-                'password': 'अस्थायी पासवर्ड',
-                'confirm_password': 'पासवर्ड पुष्टि करें',
-                'submit_button': 'कर्मचारी जोड़ें',
+          email: "आधिकारिक ईमेल (लॉगिन आईडी)",
+          password: "अस्थायी पासवर्ड",
+          confirm_password: "पासवर्ड पुष्टि करें",
+          submit_button: "कर्मचारी जोड़ें",
 
-                'address': 'वर्तमान पता',
-                'phone': 'फ़ोन नंबर',
-                'emergency_contact': 'आपातकालीन संपर्क',
-                'form_success': 'कर्मचारी सफलतापूर्वक जोड़ा गया!',
-                'pass_mismatch': 'पासवर्ड मेल नहीं खाते हैं।',
-                'required_field': '* आवश्यक फ़ील्ड'
-            },
-            'ur': {
-                'add_employee': 'نیا ملازم شامل کریں',
-                'description': 'نئے ملازم کے لیے مکمل انتظامی اور ذاتی تفصیلات درج کریں۔',
-                'personal_info': 'ذاتی معلومات',
-                'official_info': 'سرکاری تفصیلات',
-                'contact_address': 'رابطہ اور پتہ',
-                'account_creation': 'اکاؤنٹ بنانا',
+          address: "वर्तमान पता",
+          phone: "फ़ोन नंबर",
+          emergency_contact: "आपातकालीन संपर्क",
+          form_success: "कर्मचारी सफलतापूर्वक जोड़ा गया!",
+          pass_mismatch: "पासवर्ड मेल नहीं खाते हैं।",
+          required_field: "* आवश्यक फ़ील्ड",
+        },
+        ur: {
+          add_employee: "نیا ملازم شامل کریں",
+          description:
+            "نئے ملازم کے لیے مکمل انتظامی اور ذاتی تفصیلات درج کریں۔",
+          personal_info: "ذاتی معلومات",
+          official_info: "سرکاری تفصیلات",
+          contact_address: "رابطہ اور پتہ",
+          account_creation: "اکاؤنٹ بنانا",
 
-                'employee_id_auto': 'ملازمتی آئی ڈی (خودکار)',
-                'full_name': 'پورا نام',
-                'father_name': 'والد کا نام',
-                'cnic': 'شناختی کارڈ/آدھار نمبر',
-                'dob': 'تاریخ پیدائش',
-                'gender': 'جنس',
-                'male': 'مرد',
-                'female': 'عورت',
-                'other': 'دیگر',
+          employee_id_auto: "ملازمتی آئی ڈی (خودکار)",
+          full_name: "پورا نام",
+          father_name: "والد کا نام",
+          cnic: "شناختی کارڈ/آدھار نمبر",
+          dob: "تاریخ پیدائش",
+          gender: "جنس",
+          male: "مرد",
+          female: "عورت",
+          other: "دیگر",
 
-                'designation': 'عہدہ/پوسٹ',
-                'joining_date': 'شمولیت کی تاریخ',
-                'department': 'شعبہ',
-                'salary_basis': 'تنخواہ کی بنیاد',
-                'monthly': 'ماہانہ',
-                'daily': 'روزانہ',
+          designation: "عہدہ/پوسٹ",
+          joining_date: "شمولیت کی تاریخ",
+          department: "شعبہ",
+          salary_basis: "تنخواہ کی بنیاد",
+          monthly: "ماہانہ",
+          daily: "روزانہ",
 
-                'email': 'سرکاری ای میل (لاگ ان آئی ڈی)',
-                'password': 'عارضی پاس ورڈ',
-                'confirm_password': 'پاس ورڈ کی تصدیق کریں',
-                'submit_button': 'ملازم شامل کریں',
+          email: "سرکاری ای میل (لاگ ان آئی ڈی)",
+          password: "عارضی پاس ورڈ",
+          confirm_password: "پاس ورڈ کی تصدیق کریں",
+          submit_button: "ملازم شامل کریں",
 
-                'address': 'موجودہ پتہ',
-                'phone': 'فون نمبر',
-                'emergency_contact': 'ایمرجنسی رابطہ',
-                'form_success': 'ملازم کامیابی سے شامل کیا گیا!',
-                'pass_mismatch': 'پاس ورڈ مماثل نہیں ہیں۔',
-                'required_field': '* مطلوبہ خانہ'
-            }
+          address: "موجودہ پتہ",
+          phone: "فون نمبر",
+          emergency_contact: "ایمرجنسی رابطہ",
+          form_success: "ملازم کامیابی سے شامل کیا گیا!",
+          pass_mismatch: "پاس ورڈ مماثل نہیں ہیں۔",
+          required_field: "* مطلوبہ خانہ",
+        },
+      };
+
+      let currentLang = "en";
+
+      function getTranslation(key) {
+        return langData[currentLang][key] || langData["en"][key] || key;
+      }
+
+      // --- Core UI Update Functions ---
+      function updateContent() {
+        // This function applies language, direction, and specific text updates
+        document.body.className = "lang-" + currentLang;
+        const isRtl = currentLang === "ur";
+
+        document.querySelectorAll("[data-lang-key]").forEach((el) => {
+          const key = el.getAttribute("data-lang-key");
+          el.textContent = getTranslation(key);
+        });
+
+        // Handle RTL alignment for form elements
+        document.querySelectorAll(".form-group").forEach((group) => {
+          group.style.textAlign = isRtl ? "right" : "left";
+        });
+        document
+          .querySelectorAll(".form-input, .form-textarea, select")
+          .forEach((input) => {
+            input.style.direction = isRtl ? "rtl" : "ltr";
+          });
+      }
+
+      function changeLanguage(lang) {
+        if (lang in langData) {
+          currentLang = lang;
+          updateContent();
+        }
+      }
+
+      // --- Custom Modal Functions (Replacing alert) ---
+      function showMessage(title, message, isSuccess = true) {
+        const modal = document.getElementById("custom-message-modal");
+        const modalTitle = document.getElementById("modal-title");
+        const modalBody = document.getElementById("modal-body");
+        const modalIcon = document.getElementById("modal-icon");
+
+        modalTitle.textContent = title;
+        modalBody.textContent = message;
+
+        if (isSuccess) {
+          modalIcon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-8 h-8 text-green-500"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>`;
+        } else {
+          modalIcon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-8 h-8 text-red-500"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.021 3.373 1.8 3.373h14.714c1.77 0 2.644-1.873 1.799-3.376l-7.468-12.914a1.884 1.884 0 00-3.292 0l-7.468 12.914z" /><path stroke-linecap="round" stroke-linejoin="round" d="M12 15h.007v.008H12v-.008z" /></svg>`;
+        }
+
+        modal.classList.remove("hidden");
+        setTimeout(() => {
+          modal.classList.remove("opacity-0");
+        }, 10);
+      }
+
+      function closeMessageModal() {
+        const modal = document.getElementById("custom-message-modal");
+        modal.classList.add("opacity-0");
+        setTimeout(() => {
+          modal.classList.add("hidden");
+        }, 300);
+      }
+
+      // --- Form Submission Logic ---
+      function handleAddEmployee(event) {
+        event.preventDefault();
+        const form = document.getElementById("employee-form");
+        const password = document.getElementById("temp-password").value;
+        const confirmPassword = document.getElementById(
+          "confirm-temp-password"
+        ).value;
+
+        if (password !== confirmPassword) {
+          showMessage(
+            "Validation Error",
+            getTranslation("pass_mismatch"),
+            false
+          );
+          return false;
+        }
+
+        // Dummy Data Collection (for console log)
+        const formData = {
+          fullName: form.querySelector("#full-name").value,
+          designation: form.querySelector("#designation").value,
+          email: form.querySelector("#official-email").value,
+          password: password,
         };
 
-        let currentLang = 'en';
+        console.log("New Employee Data Captured (Dummy Save):", formData);
 
-        function getTranslation(key) {
-            return langData[currentLang][key] || langData['en'][key] || key;
-        }
+        showMessage("Success", getTranslation("form_success"), true);
 
-        // --- Core UI Update Functions ---
-        function updateContent() {
-            // This function applies language, direction, and specific text updates
-            document.body.className = 'lang-' + currentLang;
-            const isRtl = currentLang === 'ur';
+        // Reset form after successful submission
+        form.reset();
+        return false;
+      }
 
-            document.querySelectorAll('[data-lang-key]').forEach(el => {
-                const key = el.getAttribute('data-lang-key');
-                el.textContent = getTranslation(key);
-            });
+      // Initialize content and language
+      window.onload = function () {
+        const storedLang = localStorage.getItem("madarsaSystemLang");
+        currentLang = storedLang && storedLang in langData ? storedLang : "en";
 
-            // Handle RTL alignment for form elements
-            document.querySelectorAll('.form-group').forEach(group => {
-                group.style.textAlign = isRtl ? 'right' : 'left';
-            });
-            document.querySelectorAll('.form-input, .form-textarea, select').forEach(input => {
-                input.style.direction = isRtl ? 'rtl' : 'ltr';
-            });
-        }
+        // Attach modal close listener
+        document
+          .getElementById("modal-close-btn")
+          .addEventListener("click", closeMessageModal);
 
-        function changeLanguage(lang) {
-            if (lang in langData) {
-                currentLang = lang;
-                updateContent();
-            }
-        }
-
-        // --- Custom Modal Functions (Replacing alert) ---
-        function showMessage(title, message, isSuccess = true) {
-            const modal = document.getElementById('custom-message-modal');
-            const modalTitle = document.getElementById('modal-title');
-            const modalBody = document.getElementById('modal-body');
-            const modalIcon = document.getElementById('modal-icon');
-
-            modalTitle.textContent = title;
-            modalBody.textContent = message;
-
-            if (isSuccess) {
-                modalIcon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-8 h-8 text-green-500"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>`;
-            } else {
-                modalIcon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-8 h-8 text-red-500"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.021 3.373 1.8 3.373h14.714c1.77 0 2.644-1.873 1.799-3.376l-7.468-12.914a1.884 1.884 0 00-3.292 0l-7.468 12.914z" /><path stroke-linecap="round" stroke-linejoin="round" d="M12 15h.007v.008H12v-.008z" /></svg>`;
-            }
-
-            modal.classList.remove('hidden');
-            setTimeout(() => { modal.classList.remove('opacity-0'); }, 10);
-        }
-
-        function closeMessageModal() {
-            const modal = document.getElementById('custom-message-modal');
-            modal.classList.add('opacity-0');
-            setTimeout(() => { modal.classList.add('hidden'); }, 300);
-        }
-
-        // --- Form Submission Logic ---
-        function handleAddEmployee(event) {
-            event.preventDefault();
-            const form = document.getElementById('employee-form');
-            const password = document.getElementById('temp-password').value;
-            const confirmPassword = document.getElementById('confirm-temp-password').value;
-
-            if (password !== confirmPassword) {
-                showMessage("Validation Error", getTranslation('pass_mismatch'), false);
-                return false;
-            }
-
-            // Dummy Data Collection (for console log)
-            const formData = {
-                fullName: form.querySelector('#full-name').value,
-                designation: form.querySelector('#designation').value,
-                email: form.querySelector('#official-email').value,
-                password: password
-            };
-
-            console.log('New Employee Data Captured (Dummy Save):', formData);
-
-            showMessage("Success", getTranslation('form_success'), true);
-
-            // Reset form after successful submission
-            form.reset();
-            return false;
-        }
-
-        // Initialize content and language
-        window.onload = function () {
-            const storedLang = localStorage.getItem('madarsaSystemLang');
-            currentLang = (storedLang && storedLang in langData) ? storedLang : 'en';
-
-            // Attach modal close listener
-            document.getElementById('modal-close-btn').addEventListener('click', closeMessageModal);
-
-            updateContent();
-        };
+        updateContent();
+      };
     </script>
 
     <!-- MAIN FORM CONTAINER -->
     <div class="max-w-4xl mx-auto w-full">
-        <div class="bg-white p-6 md:p-10 rounded-xl shadow-2xl">
-            <div class="flex items-center space-x-4 mb-8">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                    stroke="currentColor" class="w-10 h-10" style="color: var(--color-primary);">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.722A7.5 7.5 0 002.25 12v3M4.5 9h-2.25m-2.25 3h2.25m10.5-6h-2.25m0 0H7.5" />
-                </svg>
-                <div>
-                    <h2 class="text-3xl font-bold" data-lang-key="add_employee" style="color: var(--color-primary);">Add
-                        New Employee</h2>
-                    <p class="text-gray-500" data-lang-key="description">Enter the full administrative and personal
-                        details for the new employee.</p>
-                </div>
-            </div>
-
-            <!-- Form -->
-            <form id="employee-form" onsubmit="return handleAddEmployee(event)">
-
-                <!-- Section 1: Personal Information -->
-                <div class="mb-8 border-b pb-4">
-                    <h3 class="text-xl font-bold mb-4 text-gray-700" data-lang-key="personal_info">Personal Information
-                    </h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
-
-                        <!-- Employee ID (Disabled) -->
-                        <div class="form-group">
-                            <label class="form-label" data-lang-key="employee_id_auto">Employee ID (Auto
-                                Generated)</label>
-                            <input type="text" value="ADMIN-AUTO-ID" class="form-input bg-gray-100 cursor-not-allowed"
-                                disabled>
-                        </div>
-
-                        <!-- Full Name -->
-                        <div class="form-group">
-                            <label for="full-name" class="form-label"><span data-lang-key="required_field">*</span>
-                                <span data-lang-key="full_name">Full Name</span></label>
-                            <input type="text" id="full-name" class="form-input" required>
-                        </div>
-
-                        <!-- Father's Name -->
-                        <div class="form-group">
-                            <label for="father-name" class="form-label"><span data-lang-key="required_field">*</span>
-                                <span data-lang-key="father_name">Father's Name</span></label>
-                            <input type="text" id="father-name" class="form-input" required>
-                        </div>
-
-                        <!-- CNIC/Aadhaar -->
-                        <div class="form-group">
-                            <label for="cnic" class="form-label"><span data-lang-key="required_field">*</span> <span
-                                    data-lang-key="cnic">CNIC/Aadhaar Number</span></label>
-                            <input type="text" id="cnic" class="form-input" required>
-                        </div>
-
-                        <!-- Date of Birth -->
-                        <div class="form-group">
-                            <label for="dob" class="form-label"><span data-lang-key="required_field">*</span> <span
-                                    data-lang-key="dob">Date of Birth</span></label>
-                            <input type="date" id="dob" class="form-input" required>
-                        </div>
-
-                        <!-- Gender -->
-                        <div class="form-group">
-                            <label class="form-label mb-2" data-lang-key="gender"><span
-                                    data-lang-key="required_field">*</span> Gender</label>
-                            <div class="flex space-x-4">
-                                <label class="inline-flex items-center"><input type="radio" name="gender" value="male"
-                                        class="form-radio text-primary" style="color: var(--color-primary);"
-                                        required><span class="ml-2 mr-2" data-lang-key="male">Male</span></label>
-                                <label class="inline-flex items-center"><input type="radio" name="gender" value="female"
-                                        class="form-radio text-primary" style="color: var(--color-primary);"
-                                        required><span class="ml-2 mr-2" data-lang-key="female">Female</span></label>
-                                <label class="inline-flex items-center"><input type="radio" name="gender" value="other"
-                                        class="form-radio text-primary" style="color: var(--color-primary);"
-                                        required><span class="ml-2 mr-2" data-lang-key="other">Other</span></label>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-
-                <!-- Section 2: Official Details -->
-                <div class="mb-8 border-b pb-4">
-                    <h3 class="text-xl font-bold mb-4 text-gray-700" data-lang-key="official_info">Official Details</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
-
-                        <!-- Designation -->
-                        <div class="form-group">
-                            <label for="designation" class="form-label"><span data-lang-key="required_field">*</span>
-                                <span data-lang-key="designation">Designation/Post</span></label>
-                            <input type="text" id="designation" class="form-input" required>
-                        </div>
-
-                        <!-- Department -->
-                        <div class="form-group">
-                            <label for="department" class="form-label"><span data-lang-key="required_field">*</span>
-                                <span data-lang-key="department">Department</span></label>
-                            <input type="text" id="department" class="form-input" required>
-                        </div>
-
-                        <!-- Joining Date -->
-                        <div class="form-group">
-                            <label for="joining-date" class="form-label"><span data-lang-key="required_field">*</span>
-                                <span data-lang-key="joining_date">Joining Date</span></label>
-                            <input type="date" id="joining-date" class="form-input" required>
-                        </div>
-
-                        <!-- Salary Basis -->
-                        <div class="form-group">
-                            <label class="form-label mb-2" data-lang-key="salary_basis"><span
-                                    data-lang-key="required_field">*</span> Salary Basis</label>
-                            <div class="flex space-x-4">
-                                <label class="inline-flex items-center"><input type="radio" name="salary_basis"
-                                        value="monthly" class="form-radio text-primary"
-                                        style="color: var(--color-primary);" required><span class="ml-2 mr-2"
-                                        data-lang-key="monthly">Monthly</span></label>
-                                <label class="inline-flex items-center"><input type="radio" name="salary_basis"
-                                        value="daily" class="form-radio text-primary"
-                                        style="color: var(--color-primary);" required><span class="ml-2 mr-2"
-                                        data-lang-key="daily">Daily</span></label>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-
-                <!-- Section 3: Contact & Address -->
-                <div class="mb-8 border-b pb-4">
-                    <h3 class="text-xl font-bold mb-4 text-gray-700" data-lang-key="contact_address">Contact & Address
-                    </h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
-
-                        <!-- Phone Number -->
-                        <div class="form-group">
-                            <label for="phone-number" class="form-label"><span data-lang-key="required_field">*</span>
-                                <span data-lang-key="phone">Phone Number</span></label>
-                            <input type="tel" id="phone-number" class="form-input" required>
-                        </div>
-
-                        <!-- Emergency Contact -->
-                        <div class="form-group">
-                            <label for="emergency-contact" class="form-label"><span
-                                    data-lang-key="emergency_contact">Emergency Contact</span></label>
-                            <input type="tel" id="emergency-contact" class="form-input">
-                        </div>
-
-                        <!-- Current Address (Full Width) -->
-                        <div class="form-group md:col-span-2">
-                            <label for="address" class="form-label"><span data-lang-key="required_field">*</span> <span
-                                    data-lang-key="address">Current Address</span></label>
-                            <textarea id="address" class="form-textarea h-24" required></textarea>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Section 4: Account Creation -->
-                <div class="mb-8 pb-4">
-                    <h3 class="text-xl font-bold mb-4 text-gray-700" data-lang-key="account_creation">Account Creation
-                    </h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
-
-                        <!-- Official Email (Used as Login ID) -->
-                        <div class="form-group">
-                            <label for="official-email" class="form-label"><span data-lang-key="required_field">*</span>
-                                <span data-lang-key="email">Official Email (Login ID)</span></label>
-                            <input type="email" id="official-email" class="form-input" required>
-                        </div>
-
-                        <!-- Empty placeholder -->
-                        <div class="form-group hidden md:block"></div>
-
-                        <!-- Temporary Password -->
-                        <div class="form-group">
-                            <label for="temp-password" class="form-label"><span data-lang-key="required_field">*</span>
-                                <span data-lang-key="password">Temporary Password</span></label>
-                            <input type="password" id="temp-password" class="form-input" required>
-                        </div>
-
-                        <!-- Confirm Password -->
-                        <div class="form-group">
-                            <label for="confirm-temp-password" class="form-label"><span
-                                    data-lang-key="required_field">*</span> <span
-                                    data-lang-key="confirm_password">Confirm Password</span></label>
-                            <input type="password" id="confirm-temp-password" class="form-input" required>
-                        </div>
-
-                    </div>
-                </div>
-
-                <!-- Submit Button -->
-                <div class="flex justify-end mt-6">
-                    <button type="submit" class="primary-button" data-lang-key="submit_button">Add Employee</button>
-                </div>
-            </form>
+      <div class="bg-white p-6 md:p-10 rounded-xl shadow-2xl">
+        <div class="flex items-center space-x-4 mb-8">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="w-10 h-10"
+            style="color: var(--color-primary)"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.722A7.5 7.5 0 002.25 12v3M4.5 9h-2.25m-2.25 3h2.25m10.5-6h-2.25m0 0H7.5"
+            />
+          </svg>
+          <div>
+            <h2
+              class="text-3xl font-bold"
+              data-lang-key="add_employee"
+              style="color: var(--color-primary)"
+            >
+              Add New Employee
+            </h2>
+            <p class="text-gray-500" data-lang-key="description">
+              Enter the full administrative and personal details for the new
+              employee.
+            </p>
+          </div>
         </div>
+
+        <!-- Form -->
+        <form id="employee-form" onsubmit="return handleAddEmployee(event)">
+          <!-- Section 1: Personal Information -->
+          <div class="mb-8 border-b pb-4">
+            <h3
+              class="text-xl font-bold mb-4 text-gray-700"
+              data-lang-key="personal_info"
+            >
+              Personal Information
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+              <!-- Employee ID (Disabled) -->
+              <div class="form-group">
+                <label class="form-label" data-lang-key="employee_id_auto"
+                  >Employee ID (Auto Generated)</label
+                >
+                <input
+                  type="text"
+                  value="ADMIN-AUTO-ID"
+                  class="form-input bg-gray-100 cursor-not-allowed"
+                  disabled
+                />
+              </div>
+
+              <!-- Full Name -->
+              <div class="form-group">
+                <label for="full-name" class="form-label"
+                  ><span>*</span>
+                  <span data-lang-key="full_name">Full Name</span></label
+                >
+                <input type="text" id="full-name" class="form-input" required />
+              </div>
+
+              <!-- Father's Name -->
+              <div class="form-group">
+                <label for="father-name" class="form-label"
+                  ><span>*</span>
+                  <span data-lang-key="father_name">Father's Name</span></label
+                >
+                <input
+                  type="text"
+                  id="father-name"
+                  class="form-input"
+                  required
+                />
+              </div>
+
+              <!-- CNIC/Aadhaar -->
+              <div class="form-group">
+                <label for="cnic" class="form-label"
+                  ><span>*</span>
+                  <span data-lang-key="cnic">CNIC/Aadhaar Number</span></label
+                >
+                <input type="tel" id="cnic" class="form-input" required />
+              </div>
+
+              <!-- Date of Birth -->
+              <div class="form-group">
+                <label for="dob" class="form-label"
+                  ><span>*</span>
+                  <span data-lang-key="dob">Date of Birth</span></label
+                >
+                <input type="date" id="dob" class="form-input" required />
+              </div>
+
+              <!-- Gender -->
+              <div class="form-group">
+                <label class="form-label mb-2" data-lang-key="gender"
+                  ><span>*</span> Gender</label
+                >
+                <div class="flex space-x-4">
+                  <label class="inline-flex items-center"
+                    ><input
+                      type="radio"
+                      name="gender"
+                      value="male"
+                      class="form-radio text-primary"
+                      style="color: var(--color-primary)"
+                      required
+                    /><span class="ml-2 mr-2" data-lang-key="male"
+                      >Male</span
+                    ></label
+                  >
+                  <label class="inline-flex items-center"
+                    ><input
+                      type="radio"
+                      name="gender"
+                      value="female"
+                      class="form-radio text-primary"
+                      style="color: var(--color-primary)"
+                      required
+                    /><span class="ml-2 mr-2" data-lang-key="female"
+                      >Female</span
+                    ></label
+                  >
+                  <label class="inline-flex items-center"
+                    ><input
+                      type="radio"
+                      name="gender"
+                      value="other"
+                      class="form-radio text-primary"
+                      style="color: var(--color-primary)"
+                      required
+                    /><span class="ml-2 mr-2" data-lang-key="other"
+                      >Other</span
+                    ></label
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 2: Official Details -->
+          <div class="mb-8 border-b pb-4">
+            <h3
+              class="text-xl font-bold mb-4 text-gray-700"
+              data-lang-key="official_info"
+            >
+              Official Details
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+              <!-- Designation -->
+              <div class="form-group">
+                <label for="designation" class="form-label"
+                  ><span>*</span>
+                  <span data-lang-key="designation"
+                    >Designation/Post</span
+                  ></label
+                >
+                <input
+                  type="text"
+                  id="designation"
+                  class="form-input"
+                  required
+                />
+              </div>
+
+              <!-- Department -->
+              <div class="form-group">
+                <label for="department" class="form-label"
+                  ><span>*</span>
+                  <span data-lang-key="department">Department</span></label
+                >
+                <input
+                  type="text"
+                  id="department"
+                  class="form-input"
+                  required
+                />
+              </div>
+
+              <!-- Joining Date -->
+              <div class="form-group">
+                <label for="joining-date" class="form-label"
+                  ><span>*</span>
+                  <span data-lang-key="joining_date">Joining Date</span></label
+                >
+                <input
+                  type="date"
+                  id="joining-date"
+                  class="form-input"
+                  required
+                />
+              </div>
+
+              <!-- Salary Basis -->
+              <div class="form-group">
+                <label class="form-label mb-2" data-lang-key="salary_basis"
+                  ><span>*</span> Salary Basis</label
+                >
+                <div class="flex space-x-4">
+                  <label class="inline-flex items-center"
+                    ><input
+                      type="radio"
+                      name="salary_basis"
+                      value="monthly"
+                      class="form-radio text-primary"
+                      style="color: var(--color-primary)"
+                      required
+                    /><span class="ml-2 mr-2" data-lang-key="monthly"
+                      >Monthly</span
+                    ></label
+                  >
+                  <label class="inline-flex items-center"
+                    ><input
+                      type="radio"
+                      name="salary_basis"
+                      value="daily"
+                      class="form-radio text-primary"
+                      style="color: var(--color-primary)"
+                      required
+                    /><span class="ml-2 mr-2" data-lang-key="daily"
+                      >Daily</span
+                    ></label
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 3: Contact & Address -->
+          <div class="mb-8 border-b pb-4">
+            <h3
+              class="text-xl font-bold mb-4 text-gray-700"
+              data-lang-key="contact_address"
+            >
+              Contact & Address
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+              <!-- Phone Number -->
+              <div class="form-group">
+                <label for="phone-number" class="form-label"
+                  ><span>*</span>
+                  <span data-lang-key="phone">Phone Number</span></label
+                >
+                <input
+                  type="tel"
+                  id="phone-number"
+                  class="form-input"
+                  required
+                />
+              </div>
+
+              <!-- Emergency Contact -->
+              <div class="form-group">
+                <label for="emergency-contact" class="form-label"
+                  ><span data-lang-key="emergency_contact"
+                    >Emergency Contact</span
+                  ></label
+                >
+                <input type="tel" id="emergency-contact" class="form-input" />
+              </div>
+
+              <!-- Current Address (Full Width) -->
+              <div class="form-group md:col-span-2">
+                <label for="address" class="form-label"
+                  ><span>*</span>
+                  <span data-lang-key="address">Current Address</span></label
+                >
+                <textarea
+                  id="address"
+                  class="form-textarea h-24"
+                  required
+                ></textarea>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 4: Account Creation -->
+          <div class="mb-8 pb-4">
+            <h3
+              class="text-xl font-bold mb-4 text-gray-700"
+              data-lang-key="account_creation"
+            >
+              Account Creation
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+              <!-- Official Email (Used as Login ID) -->
+              <div class="form-group">
+                <label for="official-email" class="form-label"
+                  ><span>*</span>
+                  <span data-lang-key="email"
+                    >Official Email (Login ID)</span
+                  ></label
+                >
+                <input
+                  type="email"
+                  id="official-email"
+                  class="form-input"
+                  required
+                />
+              </div>
+
+              <!-- Empty placeholder -->
+              <div class="form-group hidden md:block"></div>
+
+              <!-- Temporary Password -->
+              <div class="form-group">
+                <label for="temp-password" class="form-label"
+                  ><span>*</span>
+                  <span data-lang-key="password"
+                    >Temporary Password</span
+                  ></label
+                >
+                <input
+                  type="password"
+                  id="temp-password"
+                  class="form-input"
+                  required
+                />
+              </div>
+
+              <!-- Confirm Password -->
+              <div class="form-group">
+                <label for="confirm-temp-password" class="form-label"
+                  ><span>*</span>
+                  <span data-lang-key="confirm_password"
+                    >Confirm Password</span
+                  ></label
+                >
+                <input
+                  type="password"
+                  id="confirm-temp-password"
+                  class="form-input"
+                  required
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- Submit Button -->
+          <div class="flex justify-end mt-6">
+            <button
+              type="submit"
+              class="primary-button"
+              data-lang-key="submit_button"
+            >
+              Add Employee
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
 
     <!-- Custom Message Modal -->
-    <div id="custom-message-modal"
-        class="hidden opacity-0 fixed inset-0 z-50 flex items-center justify-center custom-modal-backdrop transition-opacity duration-300">
-        <div class="custom-modal-content p-8 max-w-sm w-11/12 transform scale-100 transition-transform duration-300">
-            <div class="flex items-center space-x-3 mb-4">
-                <span id="modal-icon"></span>
-                <h3 id="modal-title" class="text-xl font-bold">Message</h3>
-            </div>
-            <p id="modal-body" class="text-gray-700 mb-6"></p>
-            <div class="flex justify-end">
-                <button id="modal-close-btn" class="primary-button w-full" style="width: auto;"
-                    onclick="closeMessageModal()">
-                    OK
-                </button>
-            </div>
+    <div
+      id="custom-message-modal"
+      class="hidden opacity-0 fixed inset-0 z-50 flex items-center justify-center custom-modal-backdrop transition-opacity duration-300"
+    >
+      <div
+        class="custom-modal-content p-8 max-w-sm w-11/12 transform scale-100 transition-transform duration-300"
+      >
+        <div class="flex items-center space-x-3 mb-4">
+          <span id="modal-icon"></span>
+          <h3 id="modal-title" class="text-xl font-bold">Message</h3>
         </div>
+        <p id="modal-body" class="text-gray-700 mb-6"></p>
+        <div class="flex justify-end">
+          <button
+            id="modal-close-btn"
+            class="primary-button w-full"
+            style="width: auto"
+            onclick="closeMessageModal()"
+          >
+            OK
+          </button>
+        </div>
+      </div>
     </div>
-
-</body>
-
+  </body>
 </html>

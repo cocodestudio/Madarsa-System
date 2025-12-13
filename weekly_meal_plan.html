@@ -1,523 +1,562 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Weekly Meal Plan Management</title>
     <script src="https://cdn.tailwindcss.com"></script>
 
     <style>
-        :root {
-            --color-primary: #00A693;
-            --color-background: #F2F3F4;
-            --color-accent: #E08A27;
-            --color-text-dark: #1A1A1A;
-            --color-text-light: #FFFFFF;
-        }
+      :root {
+        --color-primary: #00a693;
+        --color-background: #f2f3f4;
+        --color-accent: #e08a27;
+        --color-text-dark: #1a1a1a;
+        --color-text-light: #ffffff;
+      }
 
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;700&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap');
+      @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;700&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap");
 
-        /* Language Styles */
-        body,
-        .lang-en {
-            font-family: 'Poppins', sans-serif;
-            direction: ltr;
-            background-color: var(--color-background);
-        }
+      /* Language Styles */
+      body,
+      .lang-en {
+        font-family: "Poppins", sans-serif;
+        direction: ltr;
+        background-color: var(--color-background);
+      }
 
-        .lang-hi {
-            font-family: 'Noto Sans Devanagari', sans-serif;
-            direction: ltr;
-        }
+      .lang-hi {
+        font-family: "Noto Sans Devanagari", sans-serif;
+        direction: ltr;
+      }
 
-        .lang-ur {
-            font-family: 'Noto Nastaliq Urdu', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
-            direction: rtl;
-            line-height: 1.8;
-            text-align: right;
-        }
+      .lang-ur {
+        font-family: "Noto Nastaliq Urdu", "Segoe UI", Tahoma, Geneva, Verdana,
+          sans-serif !important;
+        direction: rtl;
+        line-height: 1.8;
+        text-align: right;
+      }
 
-        /* Form & Table Inputs */
-        .form-input,
-        select,
-        .form-textarea {
-            padding: 0.75rem 1rem;
-            border-radius: 0.5rem;
-            border: 1px solid #ccc;
-            width: 100%;
-            font-family: inherit;
-        }
+      /* Form & Table Inputs */
+      .form-input,
+      select,
+      .form-textarea {
+        padding: 0.75rem 1rem;
+        border-radius: 0.5rem;
+        border: 1px solid #ccc;
+        width: 100%;
+        font-family: inherit;
+      }
 
-        .form-input:focus,
-        select:focus,
-        .form-textarea:focus {
-            outline: none;
-            border-color: var(--color-primary);
-            box-shadow: 0 0 0 3px rgba(0, 166, 147, 0.2);
-        }
+      .form-input:focus,
+      select:focus,
+      .form-textarea:focus {
+        outline: none;
+        border-color: var(--color-primary);
+        box-shadow: 0 0 0 3px rgba(0, 166, 147, 0.2);
+      }
 
-        .form-label {
-            display: block;
-            font-weight: 600;
-            margin-bottom: 0.25rem;
-            font-size: 0.875rem;
-        }
+      .form-label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 0.25rem;
+        font-size: 0.875rem;
+      }
 
-        /* Buttons */
-        .primary-button {
-            padding: 0.8rem 1.5rem;
-            background-color: var(--color-primary);
-            color: var(--color-text-light);
-            font-weight: 600;
-            border-radius: 0.75rem;
-            transition: background-color 0.3s, transform 0.1s;
-            cursor: pointer;
-        }
+      /* Buttons */
+      .primary-button {
+        padding: 0.8rem 1.5rem;
+        background-color: var(--color-primary);
+        color: var(--color-text-light);
+        font-weight: 600;
+        border-radius: 0.75rem;
+        transition: background-color 0.3s, transform 0.1s;
+        cursor: pointer;
+      }
 
-        .primary-button:hover {
-            background-color: #008f7d;
-            transform: translateY(-1px);
-        }
+      .primary-button:hover {
+        background-color: #008f7d;
+        transform: translateY(-1px);
+      }
 
-        .action-button {
-            padding: 0.5rem 0.75rem;
-            border-radius: 0.25rem;
-            font-size: 0.75rem;
-            font-weight: 600;
-            transition: background-color 0.2s;
-        }
+      .action-button {
+        padding: 0.5rem 0.75rem;
+        border-radius: 0.25rem;
+        font-size: 0.75rem;
+        font-weight: 600;
+        transition: background-color 0.2s;
+      }
 
-        /* Fixed Header */
-        header {
-            background-color: var(--color-text-light);
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            position: sticky;
-            top: 0;
-            width: 100%;
-            z-index: 10;
-            padding: 1rem 2rem;
-        }
+      /* Fixed Header */
+      header {
+        background-color: var(--color-text-light);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        position: sticky;
+        top: 0;
+        width: 100%;
+        z-index: 10;
+        padding: 1rem 2rem;
+      }
 
-        /* --- Meal Plan Grid Styling (Professional Look) --- */
-        .grid-container {
-            max-width: 1280px;
-            margin: 0 auto;
-        }
+      /* --- Meal Plan Grid Styling (Professional Look) --- */
+      .grid-container {
+        max-width: 1280px;
+        margin: 0 auto;
+      }
 
-        #meal-plan-grid {
-            border-collapse: collapse;
-            width: 100%;
-            min-width: 1000px;
-            table-layout: fixed;
-        }
+      #meal-plan-grid {
+        border-collapse: collapse;
+        width: 100%;
+        min-width: 1000px;
+        table-layout: fixed;
+      }
 
-        #meal-plan-grid th,
-        #meal-plan-grid td {
-            border: 1px solid #ddd;
-            padding: 0;
-            vertical-align: top;
-        }
+      #meal-plan-grid th,
+      #meal-plan-grid td {
+        border: 1px solid #ddd;
+        padding: 0;
+        vertical-align: top;
+      }
 
-        #meal-plan-grid th {
-            background-color: var(--color-primary);
-            color: var(--color-text-light);
-            font-weight: 700;
-            padding: 0.75rem;
-            text-align: center;
-        }
+      #meal-plan-grid th {
+        background-color: var(--color-primary);
+        color: var(--color-text-light);
+        font-weight: 700;
+        padding: 0.75rem;
+        text-align: center;
+      }
 
-        #meal-plan-grid th:first-child {
-            background-color: var(--color-text-dark);
-        }
+      #meal-plan-grid th:first-child {
+        background-color: var(--color-text-dark);
+      }
 
-        .timeslot-header {
-            background-color: #f3f4f6;
-            color: var(--color-text-dark);
-            font-weight: 700;
-            padding: 1rem;
-            text-align: center;
-        }
+      .timeslot-header {
+        background-color: #f3f4f6;
+        color: var(--color-text-dark);
+        font-weight: 700;
+        padding: 1rem;
+        text-align: center;
+      }
 
-        .day-cell {
-            background-color: white;
-            min-height: 200px;
-            /* Increased Height for better spacing */
-            padding: 0.5rem;
-            position: relative;
-        }
+      .day-cell {
+        background-color: white;
+        min-height: 200px;
+        /* Increased Height for better spacing */
+        padding: 0.5rem;
+        position: relative;
+      }
 
-        .meal-item-wrapper {
-            max-height: 140px;
-            /* Scrollable area for items */
-            overflow-y: auto;
-            padding: 0.25rem;
-        }
+      .meal-item-wrapper {
+        max-height: 140px;
+        /* Scrollable area for items */
+        overflow-y: auto;
+        padding: 0.25rem;
+      }
 
-        .meal-item {
-            display: flex;
-            flex-direction: column;
-            padding: 0.6rem;
-            /* More padding inside item */
-            margin-bottom: 0.5rem;
-            background-color: #e6fffa;
-            border-radius: 0.5rem;
-            /* Slightly more rounded */
-            border: 1px solid #c1f1e1;
-            font-size: 0.85rem;
-        }
+      .meal-item {
+        display: flex;
+        flex-direction: column;
+        padding: 0.6rem;
+        /* More padding inside item */
+        margin-bottom: 0.5rem;
+        background-color: #e6fffa;
+        border-radius: 0.5rem;
+        /* Slightly more rounded */
+        border: 1px solid #c1f1e1;
+        font-size: 0.85rem;
+      }
 
-        .item-display {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            font-weight: 500;
-        }
+      .item-display {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        font-weight: 500;
+      }
 
-        .item-name-text {
-            color: #1A1A1A;
-            font-weight: 600;
-        }
+      .item-name-text {
+        color: #1a1a1a;
+        font-weight: 600;
+      }
 
-        .item-qty {
-            color: #059669;
-            margin-left: 0.5rem;
-            flex-shrink: 0;
-        }
+      .item-qty {
+        color: #059669;
+        margin-left: 0.5rem;
+        flex-shrink: 0;
+      }
 
-        .meal-item-actions {
-            margin-top: 0.4rem;
-            display: flex;
-            justify-content: flex-end;
-        }
+      .meal-item-actions {
+        margin-top: 0.4rem;
+        display: flex;
+        justify-content: flex-end;
+      }
 
-        .meal-item-actions button {
-            background-color: #f5f5f5;
-            /* Light background for actions */
-            color: #1A1A1A;
-            padding: 0.2rem 0.5rem;
-            border-radius: 0.25rem;
-            margin-left: 0.4rem;
-            font-size: 0.7rem;
-            line-height: 1;
-            transition: background-color 0.2s;
-        }
+      .meal-item-actions button {
+        background-color: #f5f5f5;
+        /* Light background for actions */
+        color: #1a1a1a;
+        padding: 0.2rem 0.5rem;
+        border-radius: 0.25rem;
+        margin-left: 0.4rem;
+        font-size: 0.7rem;
+        line-height: 1;
+        transition: background-color 0.2s;
+      }
 
-        .meal-item-actions .remove-btn {
-            background-color: #fee2e2;
-            /* Light red */
-            color: #ef4444;
-        }
+      .meal-item-actions .remove-btn {
+        background-color: #fee2e2;
+        /* Light red */
+        color: #ef4444;
+      }
 
-        .day-cell-footer {
-            position: absolute;
-            bottom: 0.5rem;
-            right: 0.5rem;
-            left: 0.5rem;
-            display: flex;
-            justify-content: flex-end;
-            align-items: center;
-        }
+      .day-cell-footer {
+        position: absolute;
+        bottom: 0.5rem;
+        right: 0.5rem;
+        left: 0.5rem;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+      }
 
-        /* RTL Adjustments */
-        .lang-ur #meal-plan-grid th {
-            text-align: center;
-        }
+      /* RTL Adjustments */
+      .lang-ur #meal-plan-grid th {
+        text-align: center;
+      }
 
-        .lang-ur .meal-item {
-            text-align: right;
-        }
+      .lang-ur .meal-item {
+        text-align: right;
+      }
 
-        .lang-ur .item-display {
-            flex-direction: row-reverse;
-            justify-content: flex-start;
-        }
+      .lang-ur .item-display {
+        flex-direction: row-reverse;
+        justify-content: flex-start;
+      }
 
-        .lang-ur .item-qty {
-            margin-left: 0;
-            margin-right: 0.5rem;
-        }
+      .lang-ur .item-qty {
+        margin-left: 0;
+        margin-right: 0.5rem;
+      }
 
-        .lang-ur .meal-item-actions {
-            display: flex;
-            flex-direction: row-reverse;
-            justify-content: flex-start;
-        }
+      .lang-ur .meal-item-actions {
+        display: flex;
+        flex-direction: row-reverse;
+        justify-content: flex-start;
+      }
 
-        .lang-ur .meal-item-actions button {
-            margin-left: 0;
-            margin-right: 0.25rem;
-        }
+      .lang-ur .meal-item-actions button {
+        margin-left: 0;
+        margin-right: 0.25rem;
+      }
 
-        .lang-ur .day-cell-footer {
-            justify-content: flex-start;
-        }
+      .lang-ur .day-cell-footer {
+        justify-content: flex-start;
+      }
     </style>
-</head>
+  </head>
 
-<body class="lang-en">
-
+  <body class="lang-en">
     <script>
-        // --- Dummy Data ---
-        const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-        const TIME_SLOTS = ['Nashta', 'Lunch', 'Dinner'];
+      // --- Dummy Data ---
+      const DAYS = [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday",
+      ];
+      const TIME_SLOTS = ["Nashta", "Lunch", "Dinner"];
 
-        // Items for dropdown (using previous item names)
-        const DUMMY_FOOD_ITEMS = [
-            { id: 1, name: 'Chane', unit: 'g' },
-            { id: 2, name: 'Doodh', unit: 'ml' },
-            { id: 3, name: 'Aaloo', unit: 'kg' },
-            { id: 4, name: 'Chawal', unit: 'kg' },
-        ];
+      // Items for dropdown (using previous item names)
+      const DUMMY_FOOD_ITEMS = [
+        { id: 1, name: "Chane", unit: "g" },
+        { id: 2, name: "Doodh", unit: "ml" },
+        { id: 3, name: "Aaloo", unit: "kg" },
+        { id: 4, name: "Chawal", unit: "kg" },
+      ];
 
-        // Structure: mealPlan['Monday']['Nashta'] = [{itemId: 1, qty: 50, unit: 'g', id: 101}, ...]
-        let mealPlan = {
-            'Monday': {
-                'Nashta': [{ id: 101, itemId: 1, name: 'Chane', qty: 20, unit: 'g' }, { id: 102, itemId: 2, name: 'Doodh', qty: 20, unit: 'ml' }],
-                'Lunch': [],
-                'Dinner': [{ id: 103, itemId: 3, name: 'Aaloo', qty: 50, unit: 'kg' }]
-            },
-            'Tuesday': {
-                'Nashta': [{ id: 104, itemId: 1, name: 'Chane', qty: 50, unit: 'g' }, { id: 105, itemId: 2, name: 'Doodh', qty: 100, unit: 'ml' }],
-                'Lunch': [],
-                'Dinner': []
-            },
-            'Wednesday': {
-                'Nashta': [{ id: 106, itemId: 1, name: 'Chane', qty: 20, unit: 'g' }, { id: 107, itemId: 2, name: 'Doodh', qty: 20, unit: 'ml' }],
-                'Lunch': [],
-                'Dinner': []
-            },
-            'Thursday': {
-                'Nashta': [{ id: 108, itemId: 1, name: 'Chane', qty: 20, unit: 'g' }],
-                'Lunch': [],
-                'Dinner': []
-            },
-            'Friday': {
-                'Nashta': [],
-                'Lunch': [],
-                'Dinner': []
-            },
-            'Saturday': {
-                'Nashta': [],
-                'Lunch': [{ id: 109, itemId: 4, name: 'Chawal', qty: 50, unit: 'kg' }],
-                'Dinner': []
-            },
-            'Sunday': {
-                'Nashta': [],
-                'Lunch': [{ id: 110, itemId: 4, name: 'Chawal', qty: 30, unit: 'kg' }],
-                'Dinner': []
-            }
-        };
+      // Structure: mealPlan['Monday']['Nashta'] = [{itemId: 1, qty: 50, unit: 'g', id: 101}, ...]
+      let mealPlan = {
+        Monday: {
+          Nashta: [
+            { id: 101, itemId: 1, name: "Chane", qty: 20, unit: "g" },
+            { id: 102, itemId: 2, name: "Doodh", qty: 20, unit: "ml" },
+          ],
+          Lunch: [],
+          Dinner: [{ id: 103, itemId: 3, name: "Aaloo", qty: 50, unit: "kg" }],
+        },
+        Tuesday: {
+          Nashta: [
+            { id: 104, itemId: 1, name: "Chane", qty: 50, unit: "g" },
+            { id: 105, itemId: 2, name: "Doodh", qty: 100, unit: "ml" },
+          ],
+          Lunch: [],
+          Dinner: [],
+        },
+        Wednesday: {
+          Nashta: [
+            { id: 106, itemId: 1, name: "Chane", qty: 20, unit: "g" },
+            { id: 107, itemId: 2, name: "Doodh", qty: 20, unit: "ml" },
+          ],
+          Lunch: [],
+          Dinner: [],
+        },
+        Thursday: {
+          Nashta: [{ id: 108, itemId: 1, name: "Chane", qty: 20, unit: "g" }],
+          Lunch: [],
+          Dinner: [],
+        },
+        Friday: {
+          Nashta: [],
+          Lunch: [],
+          Dinner: [],
+        },
+        Saturday: {
+          Nashta: [],
+          Lunch: [{ id: 109, itemId: 4, name: "Chawal", qty: 50, unit: "kg" }],
+          Dinner: [],
+        },
+        Sunday: {
+          Nashta: [],
+          Lunch: [{ id: 110, itemId: 4, name: "Chawal", qty: 30, unit: "kg" }],
+          Dinner: [],
+        },
+      };
 
-        const MEAL_PLAN_STORAGE_KEY = 'madarsaWeeklyMealPlan';
-        let currentItemCounter = 0; // Counter for multiple items in the form
-        let nextMealItemId = 111; // Unique ID generator
+      const MEAL_PLAN_STORAGE_KEY = "madarsaWeeklyMealPlan";
+      let currentItemCounter = 0; // Counter for multiple items in the form
+      let nextMealItemId = 111; // Unique ID generator
 
-        // Load/Save Logic
-        function loadMealPlan() {
-            const storedPlan = localStorage.getItem(MEAL_PLAN_STORAGE_KEY);
-            if (storedPlan) {
-                try {
-                    mealPlan = JSON.parse(storedPlan);
-                    // Update nextMealItemId based on loaded data
-                    let maxId = 0;
-                    DAYS.forEach(day => {
-                        TIME_SLOTS.forEach(slot => {
-                            if (mealPlan[day] && mealPlan[day][slot]) {
-                                mealPlan[day][slot].forEach(meal => {
-                                    if (meal.id > maxId) maxId = meal.id;
-                                });
-                            }
-                        });
-                    });
-                    nextMealItemId = maxId + 1;
-
-                } catch (e) {
-                    console.error("Error loading meal plan:", e);
+      // Load/Save Logic
+      function loadMealPlan() {
+        const storedPlan = localStorage.getItem(MEAL_PLAN_STORAGE_KEY);
+        if (storedPlan) {
+          try {
+            mealPlan = JSON.parse(storedPlan);
+            // Update nextMealItemId based on loaded data
+            let maxId = 0;
+            DAYS.forEach((day) => {
+              TIME_SLOTS.forEach((slot) => {
+                if (mealPlan[day] && mealPlan[day][slot]) {
+                  mealPlan[day][slot].forEach((meal) => {
+                    if (meal.id > maxId) maxId = meal.id;
+                  });
                 }
-            } else {
-                saveMealPlan();
-            }
-        }
-
-        function saveMealPlan() {
-            localStorage.setItem(MEAL_PLAN_STORAGE_KEY, JSON.stringify(mealPlan));
-        }
-
-
-        // --- Multilingual Data ---
-        const langData = {
-            'en': {
-                'kitchen_system': 'Kitchen System',
-                'page_title': 'Weekly Meal Plan Management',
-                'back_to_kitchen': 'Back to Kitchen',
-                'logout': 'Logout',
-
-                // Slots/Days
-                'Nashta': 'Breakfast',
-                'Lunch': 'Lunch',
-                'Dinner': 'Dinner',
-                'Monday': 'Monday', 'Tuesday': 'Tuesday', 'Wednesday': 'Wednesday',
-                'Thursday': 'Thursday', 'Friday': 'Friday', 'Saturday': 'Saturday', 'Sunday': 'Sunday',
-
-                // Table Headers
-                'time_slot': 'Time Slot | Day',
-                'day_of_week': 'Day of Week',
-                'none_add': 'None',
-                'add': 'Add',
-                'edit': 'Edit',
-
-                // Form Labels
-                'add_meal_plan': 'Add/Update Meal Plan',
-                'time_slot_form': 'Time Slot',
-                'items_quantities': 'Items and Quantities',
-                'select_day': '-- Select Day --',
-                'select_slot': '-- Select Time Slot --',
-                'select_item_form': '-- Select Item --',
-                'quantity_placeholder': 'Quantity (e.g., 20.5)',
-                'add_item_btn': '+ Add Item',
-                'remove_btn': 'Remove',
-                'save_meal_btn': 'Save Meal Plan',
-                'save': 'Save',
-
-                // Messages
-                'meal_added_success': 'Meal successfully added to the plan!',
-                'meal_updated_success': 'Meal successfully updated!',
-                'meal_removed_success': 'Meal item removed.',
-                'validation_error': 'Please select Day, Time Slot, and at least one Item with quantity.'
-            },
-            'hi': {
-                'kitchen_system': 'रसोई प्रणाली',
-                'page_title': 'साप्ताहिक भोजन योजना प्रबंधन',
-                'back_to_kitchen': 'रसोई पर वापस',
-                'logout': 'लॉगआउट',
-
-                // Slots/Days
-                'Nashta': 'नाश्ता',
-                'Lunch': 'दोपहर का भोजन',
-                'Dinner': 'रात का भोजन',
-                'Monday': 'सोमवार', 'Tuesday': 'मंगलवार', 'Wednesday': 'बुधवार',
-                'Thursday': 'गुरुवार', 'Friday': 'शुक्रवार', 'Saturday': 'शनिवार', 'Sunday': 'रविवार',
-
-                // Table Headers
-                'time_slot': 'समय स्लॉट | दिन',
-                'day_of_week': 'सप्ताह का दिन',
-                'none_add': 'कोई नहीं',
-                'add': 'जोड़ें',
-
-                // Form Labels
-                'add_meal_plan': 'भोजन योजना जोड़ें/अपडेट करें',
-                'time_slot_form': 'समय स्लॉट',
-                'items_quantities': 'आइटम और मात्रा',
-                'select_day': '-- दिन चुनें --',
-                'select_slot': '-- समय स्लॉट चुनें --',
-                'select_item_form': '-- आइटम चुनें --',
-                'quantity_placeholder': 'मात्रा (उदा. 20.5)',
-                'add_item_btn': '+ आइटम जोड़ें',
-                'remove_btn': 'हटाएँ',
-                'save_meal_btn': 'भोजन योजना सहेजें',
-                'save': 'सहेजें',
-
-                // Messages
-                'meal_added_success': 'भोजन सफलतापूर्वक योजना में जोड़ा गया!',
-                'meal_updated_success': 'भोजन सफलतापूर्वक अपडेट किया गया!',
-                'meal_removed_success': 'भोजन आइटम हटा दिया गया।',
-                'validation_error': 'कृपया दिन, समय स्लॉट, और मात्रा के साथ कम से कम एक आइटम चुनें।'
-            },
-            'ur': {
-                'kitchen_system': 'باورچی خانہ نظام',
-                'page_title': 'ہفتہ وار کھانے کے منصوبے کا انتظام',
-                'back_to_kitchen': 'باورچی خانے پر واپس جائیں',
-                'logout': 'لاگ آؤٹ',
-
-                // Slots/Days
-                'Nashta': 'ناشتہ',
-                'Lunch': 'لنچ',
-                'Dinner': 'ڈنر',
-                'Monday': 'پیر', 'Tuesday': 'منگل', 'Wednesday': 'بدھ',
-                'Thursday': 'جمعرات', 'Friday': 'جمعہ', 'Saturday': 'ہفتہ', 'Sunday': 'اتوار',
-
-                // Table Headers
-                'time_slot': 'وقت سلاٹ | دن',
-                'day_of_week': 'ہفتے کا دن',
-                'none_add': 'کوئی نہیں',
-                'add': 'شامل کریں',
-
-                // Form Labels
-                'add_meal_plan': 'کھانے کا منصوبہ شامل/اپ ڈیٹ کریں',
-                'time_slot_form': 'وقت سلاٹ',
-                'items_quantities': 'آئٹمز اور مقداریں',
-                'select_day': '-- دن منتخب کریں --',
-                'select_slot': '-- وقت سلاٹ منتخب کریں --',
-                'select_item_form': '-- آئٹم منتخب کریں --',
-                'quantity_placeholder': 'مقدار (مثلاً 20.5)',
-                'add_item_btn': '+ آئٹم شامل کریں',
-                'remove_btn': 'ہٹائیں',
-                'save_meal_btn': 'کھانے کا منصوبہ محفوظ کریں',
-                'save': 'محفوظ کریں',
-
-                // Messages
-                'meal_added_success': 'کھانے کا منصوبہ کامیابی سے شامل ہو گیا!',
-                'meal_updated_success': 'کھانے کا منصوبہ کامیابی سے اپ ڈیٹ ہو گیا!',
-                'meal_removed_success': 'کھانے کی آئٹم ہٹا دی گئی ہے۔',
-                'validation_error': 'براہ کرم دن، وقت سلاٹ، اور مقدار کے ساتھ کم از کم ایک آئٹم منتخب کریں۔'
-            }
-        };
-
-        let currentLang = 'en';
-
-        function getTranslation(key) {
-            return langData[currentLang][key] || langData['en'][key] || key;
-        }
-
-        // --- Core UI Update Functions ---
-        function updateContent() {
-            document.body.className = 'lang-' + currentLang;
-
-            document.querySelectorAll('[data-lang-key]').forEach(el => {
-                const key = el.getAttribute('data-lang-key');
-                el.textContent = getTranslation(key);
+              });
             });
-
-            renderMealPlanGrid();
-            populateFormDropdowns();
+            nextMealItemId = maxId + 1;
+          } catch (e) {
+            console.error("Error loading meal plan:", e);
+          }
+        } else {
+          saveMealPlan();
         }
+      }
 
-        function changeLanguage(lang) {
-            if (lang in langData) {
-                currentLang = lang;
-                localStorage.setItem('madarsaSystemLang', lang);
-                updateContent();
-            }
+      function saveMealPlan() {
+        localStorage.setItem(MEAL_PLAN_STORAGE_KEY, JSON.stringify(mealPlan));
+      }
+
+      // --- Multilingual Data ---
+      const langData = {
+        en: {
+          kitchen_system: "Kitchen System",
+          page_title: "Weekly Meal Plan Management",
+          back_to_kitchen: "Back to Kitchen",
+          logout: "Logout",
+
+          // Slots/Days
+          Nashta: "Breakfast",
+          Lunch: "Lunch",
+          Dinner: "Dinner",
+          Monday: "Monday",
+          Tuesday: "Tuesday",
+          Wednesday: "Wednesday",
+          Thursday: "Thursday",
+          Friday: "Friday",
+          Saturday: "Saturday",
+          Sunday: "Sunday",
+
+          // Table Headers
+          time_slot: "Time Slot | Day",
+          day_of_week: "Day of Week",
+          none_add: "None",
+          add: "Add",
+          edit: "Edit",
+
+          // Form Labels
+          add_meal_plan: "Add/Update Meal Plan",
+          time_slot_form: "Time Slot",
+          items_quantities: "Items and Quantities",
+          select_day: "-- Select Day --",
+          select_slot: "-- Select Time Slot --",
+          select_item_form: "-- Select Item --",
+          quantity_placeholder: "Quantity (e.g., 20.5)",
+          add_item_btn: "+ Add Item",
+          remove_btn: "Remove",
+          save_meal_btn: "Save Meal Plan",
+          save: "Save",
+
+          // Messages
+          meal_added_success: "Meal successfully added to the plan!",
+          meal_updated_success: "Meal successfully updated!",
+          meal_removed_success: "Meal item removed.",
+          validation_error:
+            "Please select Day, Time Slot, and at least one Item with quantity.",
+        },
+        hi: {
+          kitchen_system: "रसोई प्रणाली",
+          page_title: "साप्ताहिक भोजन योजना प्रबंधन",
+          back_to_kitchen: "रसोई पर वापस",
+          logout: "लॉगआउट",
+
+          // Slots/Days
+          Nashta: "नाश्ता",
+          Lunch: "दोपहर का भोजन",
+          Dinner: "रात का भोजन",
+          Monday: "सोमवार",
+          Tuesday: "मंगलवार",
+          Wednesday: "बुधवार",
+          Thursday: "गुरुवार",
+          Friday: "शुक्रवार",
+          Saturday: "शनिवार",
+          Sunday: "रविवार",
+
+          // Table Headers
+          time_slot: "समय स्लॉट | दिन",
+          day_of_week: "सप्ताह का दिन",
+          none_add: "कोई नहीं",
+          add: "जोड़ें",
+
+          // Form Labels
+          add_meal_plan: "भोजन योजना जोड़ें/अपडेट करें",
+          time_slot_form: "समय स्लॉट",
+          items_quantities: "आइटम और मात्रा",
+          select_day: "-- दिन चुनें --",
+          select_slot: "-- समय स्लॉट चुनें --",
+          select_item_form: "-- आइटम चुनें --",
+          quantity_placeholder: "मात्रा (उदा. 20.5)",
+          add_item_btn: "+ आइटम जोड़ें",
+          remove_btn: "हटाएँ",
+          save_meal_btn: "भोजन योजना सहेजें",
+          save: "सहेजें",
+
+          // Messages
+          meal_added_success: "भोजन सफलतापूर्वक योजना में जोड़ा गया!",
+          meal_updated_success: "भोजन सफलतापूर्वक अपडेट किया गया!",
+          meal_removed_success: "भोजन आइटम हटा दिया गया।",
+          validation_error:
+            "कृपया दिन, समय स्लॉट, और मात्रा के साथ कम से कम एक आइटम चुनें।",
+        },
+        ur: {
+          kitchen_system: "باورچی خانہ نظام",
+          page_title: "ہفتہ وار کھانے کے منصوبے کا انتظام",
+          back_to_kitchen: "باورچی خانے پر واپس جائیں",
+          logout: "لاگ آؤٹ",
+
+          // Slots/Days
+          Nashta: "ناشتہ",
+          Lunch: "لنچ",
+          Dinner: "ڈنر",
+          Monday: "پیر",
+          Tuesday: "منگل",
+          Wednesday: "بدھ",
+          Thursday: "جمعرات",
+          Friday: "جمعہ",
+          Saturday: "ہفتہ",
+          Sunday: "اتوار",
+
+          // Table Headers
+          time_slot: "وقت سلاٹ | دن",
+          day_of_week: "ہفتے کا دن",
+          none_add: "کوئی نہیں",
+          add: "شامل کریں",
+
+          // Form Labels
+          add_meal_plan: "کھانے کا منصوبہ شامل/اپ ڈیٹ کریں",
+          time_slot_form: "وقت سلاٹ",
+          items_quantities: "آئٹمز اور مقداریں",
+          select_day: "-- دن منتخب کریں --",
+          select_slot: "-- وقت سلاٹ منتخب کریں --",
+          select_item_form: "-- آئٹم منتخب کریں --",
+          quantity_placeholder: "مقدار (مثلاً 20.5)",
+          add_item_btn: "+ آئٹم شامل کریں",
+          remove_btn: "ہٹائیں",
+          save_meal_btn: "کھانے کا منصوبہ محفوظ کریں",
+          save: "محفوظ کریں",
+
+          // Messages
+          meal_added_success: "کھانے کا منصوبہ کامیابی سے شامل ہو گیا!",
+          meal_updated_success: "کھانے کا منصوبہ کامیابی سے اپ ڈیٹ ہو گیا!",
+          meal_removed_success: "کھانے کی آئٹم ہٹا دی گئی ہے۔",
+          validation_error:
+            "براہ کرم دن، وقت سلاٹ، اور مقدار کے ساتھ کم از کم ایک آئٹم منتخب کریں۔",
+        },
+      };
+
+      let currentLang = "en";
+
+      function getTranslation(key) {
+        return langData[currentLang][key] || langData["en"][key] || key;
+      }
+
+      // --- Core UI Update Functions ---
+      function updateContent() {
+        document.body.className = "lang-" + currentLang;
+
+        document.querySelectorAll("[data-lang-key]").forEach((el) => {
+          const key = el.getAttribute("data-lang-key");
+          el.textContent = getTranslation(key);
+        });
+
+        renderMealPlanGrid();
+        populateFormDropdowns();
+      }
+
+      function changeLanguage(lang) {
+        if (lang in langData) {
+          currentLang = lang;
+          localStorage.setItem("madarsaSystemLang", lang);
+          updateContent();
         }
+      }
 
-        function getMealSlotId(day, slot) {
-            return `${day.toLowerCase().replace(' ', '_')}-${slot.toLowerCase().replace(' ', '_')}`;
-        }
+      function getMealSlotId(day, slot) {
+        return `${day.toLowerCase().replace(" ", "_")}-${slot
+          .toLowerCase()
+          .replace(" ", "_")}`;
+      }
 
-        // --- Grid Rendering ---
-        function renderMealPlanGrid() {
-            const tbody = document.getElementById('meal-plan-body');
-            if (!tbody) return;
-            tbody.innerHTML = '';
+      // --- Grid Rendering ---
+      function renderMealPlanGrid() {
+        const tbody = document.getElementById("meal-plan-body");
+        if (!tbody) return;
+        tbody.innerHTML = "";
 
-            TIME_SLOTS.forEach(slot => {
-                const tr = document.createElement('tr');
-                let rowHtml = `<td class="timeslot-header" data-lang-key="${slot}">${getTranslation(slot)}</td>`;
+        TIME_SLOTS.forEach((slot) => {
+          const tr = document.createElement("tr");
+          let rowHtml = `<td class="timeslot-header" data-lang-key="${slot}">${getTranslation(
+            slot
+          )}</td>`;
 
-                DAYS.forEach(day => {
-                    const meals = mealPlan[day][slot];
-                    const slotId = getMealSlotId(day, slot);
+          DAYS.forEach((day) => {
+            const meals = mealPlan[day][slot];
+            const slotId = getMealSlotId(day, slot);
 
-                    let cellContent = '';
-                    if (meals && meals.length > 0) {
-                        const itemsHtml = meals.map((meal, index) => {
-                            const itemId = meal.itemId;
-                            const itemDetails = DUMMY_FOOD_ITEMS.find(i => i.id === itemId);
-                            const itemName = itemDetails ? itemDetails.name : 'Unknown';
-                            const itemUnit = itemDetails ? itemDetails.unit : '';
+            let cellContent = "";
+            if (meals && meals.length > 0) {
+              const itemsHtml = meals
+                .map((meal, index) => {
+                  const itemId = meal.itemId;
+                  const itemDetails = DUMMY_FOOD_ITEMS.find(
+                    (i) => i.id === itemId
+                  );
+                  const itemName = itemDetails ? itemDetails.name : "Unknown";
+                  const itemUnit = itemDetails ? itemDetails.unit : "";
 
-                            return `
+                  return `
                                 <div id="meal-item-${slotId}-${meal.id}" class="meal-item">
                                     <div class="item-display">
                                         <span class="item-name-text">${itemName}</span>
@@ -528,336 +567,441 @@
                                     </div>
                                 </div>
                             `;
-                        }).join('');
-                        cellContent = `<div class="meal-item-wrapper">${itemsHtml}</div>`;
-                    } else {
-                        cellContent = `<p class="text-gray-500 text-center text-xs mt-2" data-lang-key="none_add">${getTranslation('none_add')}</p>`;
-                    }
+                })
+                .join("");
+              cellContent = `<div class="meal-item-wrapper">${itemsHtml}</div>`;
+            } else {
+              cellContent = `<p class="text-gray-500 text-center text-xs mt-2" data-lang-key="none_add">${getTranslation(
+                "none_add"
+              )}</p>`;
+            }
 
-                    rowHtml += `<td class="day-cell" id="cell-${slotId}">
+            rowHtml += `<td class="day-cell" id="cell-${slotId}">
                                     ${cellContent}
                                     <div class="day-cell-footer">
                                         <button onclick="openFormForEdit('${day}', '${slot}')" class="action-button primary-button px-2 py-0.5 text-xs">
-                                            ${meals && meals.length > 0 ? getTranslation('edit') : getTranslation('add')}
+                                            ${
+                                              meals && meals.length > 0
+                                                ? getTranslation("edit")
+                                                : getTranslation("add")
+                                            }
                                         </button>
                                     </div>
                                 </td>`;
-                });
-                tr.innerHTML = rowHtml;
-                tbody.appendChild(tr);
+          });
+          tr.innerHTML = rowHtml;
+          tbody.appendChild(tr);
+        });
+      }
+
+      // --- Form Dropdown Population (Day/Slot/Items) ---
+      function populateFormDropdowns() {
+        const dayDropdown = document.getElementById("meal-day");
+        const slotDropdown = document.getElementById("meal-slot");
+
+        // Populate Days
+        dayDropdown.innerHTML = `<option value="" disabled selected data-lang-key="select_day">${getTranslation(
+          "select_day"
+        )}</option>`;
+        DAYS.forEach((day) => {
+          dayDropdown.innerHTML += `<option value="${day}" data-lang-key="${day}">${getTranslation(
+            day
+          )}</option>`;
+        });
+
+        // Populate Slots
+        slotDropdown.innerHTML = `<option value="" disabled selected data-lang-key="select_slot">${getTranslation(
+          "select_slot"
+        )}</option>`;
+        TIME_SLOTS.forEach((slot) => {
+          slotDropdown.innerHTML += `<option value="${slot}" data-lang-key="${slot}">${getTranslation(
+            slot
+          )}</option>`;
+        });
+
+        // Populate Items in dynamic rows
+        document
+          .querySelectorAll('[id^="item-select-"]')
+          .forEach((dropdown) => {
+            const selectedId = dropdown.value;
+            let itemOptions = `<option value="" disabled selected data-lang-key="select_item_form">${getTranslation(
+              "select_item_form"
+            )}</option>`;
+            DUMMY_FOOD_ITEMS.forEach((item) => {
+              itemOptions += `<option value="${item.id}" data-unit="${
+                item.unit
+              }" ${item.id == selectedId ? "selected" : ""}>${
+                item.name
+              }</option>`;
             });
-        }
+            dropdown.innerHTML = itemOptions;
+          });
+      }
 
-        // --- Form Dropdown Population (Day/Slot/Items) ---
-        function populateFormDropdowns() {
-            const dayDropdown = document.getElementById('meal-day');
-            const slotDropdown = document.getElementById('meal-slot');
+      // --- Dynamic Item Addition in Form ---
+      function addItemField(meal = null) {
+        currentItemCounter++;
+        const container = document.getElementById("items-container");
+        const itemKey = `item-select-${currentItemCounter}`;
+        const qtyKey = `item-qty-${currentItemCounter}`;
+        const rowId = `item-row-${currentItemCounter}`;
 
-            // Populate Days
-            dayDropdown.innerHTML = `<option value="" disabled selected data-lang-key="select_day">${getTranslation('select_day')}</option>`;
-            DAYS.forEach(day => {
-                dayDropdown.innerHTML += `<option value="${day}" data-lang-key="${day}">${getTranslation(day)}</option>`;
-            });
+        const newItemHtml = document.createElement("div");
+        newItemHtml.className = `flex space-x-3 items-center mt-3`;
+        newItemHtml.id = rowId;
 
-            // Populate Slots
-            slotDropdown.innerHTML = `<option value="" disabled selected data-lang-key="select_slot">${getTranslation('select_slot')}</option>`;
-            TIME_SLOTS.forEach(slot => {
-                slotDropdown.innerHTML += `<option value="${slot}" data-lang-key="${slot}">${getTranslation(slot)}</option>`;
-            });
+        const isMeal = meal !== null;
+        const itemUnit = isMeal ? meal.unit : "";
 
-            // Populate Items in dynamic rows
-            document.querySelectorAll('[id^="item-select-"]').forEach(dropdown => {
-                const selectedId = dropdown.value;
-                let itemOptions = `<option value="" disabled selected data-lang-key="select_item_form">${getTranslation('select_item_form')}</option>`;
-                DUMMY_FOOD_ITEMS.forEach(item => {
-                    itemOptions += `<option value="${item.id}" data-unit="${item.unit}" ${item.id == selectedId ? 'selected' : ''}>${item.name}</option>`;
-                });
-                dropdown.innerHTML = itemOptions;
-            });
-        }
+        let itemOptions = `<option value="" disabled ${
+          !isMeal ? "selected" : ""
+        } data-lang-key="select_item_form">${getTranslation(
+          "select_item_form"
+        )}</option>`;
+        DUMMY_FOOD_ITEMS.forEach((item) => {
+          itemOptions += `<option value="${item.id}" data-unit="${item.unit}" ${
+            isMeal && item.itemId === meal.itemId ? "selected" : ""
+          }>${item.name}</option>`;
+        });
 
-        // --- Dynamic Item Addition in Form ---
-        function addItemField(meal = null) {
-            currentItemCounter++;
-            const container = document.getElementById('items-container');
-            const itemKey = `item-select-${currentItemCounter}`;
-            const qtyKey = `item-qty-${currentItemCounter}`;
-            const rowId = `item-row-${currentItemCounter}`;
-
-            const newItemHtml = document.createElement('div');
-            newItemHtml.className = `flex space-x-3 items-center mt-3`;
-            newItemHtml.id = rowId;
-
-            const isMeal = meal !== null;
-            const itemUnit = isMeal ? meal.unit : '';
-
-            let itemOptions = `<option value="" disabled ${!isMeal ? 'selected' : ''} data-lang-key="select_item_form">${getTranslation('select_item_form')}</option>`;
-            DUMMY_FOOD_ITEMS.forEach(item => {
-                itemOptions += `<option value="${item.id}" data-unit="${item.unit}" ${isMeal && item.itemId === meal.itemId ? 'selected' : ''}>${item.name}</option>`;
-            });
-
-            newItemHtml.innerHTML = `
+        newItemHtml.innerHTML = `
                 <select id="${itemKey}" class="form-input w-2/5" required>
                     ${itemOptions}
                 </select>
-                <input type="number" id="${qtyKey}" class="form-input w-1/5" placeholder="${getTranslation('quantity_placeholder')}" min="0.01" step="0.01" value="${isMeal ? meal.qty : ''}">
+                <input type="number" id="${qtyKey}" class="form-input w-1/5" placeholder="${getTranslation(
+          "quantity_placeholder"
+        )}" min="0.01" step="0.01" value="${isMeal ? meal.qty : ""}">
                 <span id="unit-display-${currentItemCounter}" class="w-1/12 text-sm text-gray-600">${itemUnit}</span>
-                <button type="button" onclick="removeItemField('${rowId}')" class="action-button bg-red-500 text-white hover:bg-red-600 px-3 py-2 remove-btn" data-lang-key="remove_btn">${getTranslation('remove_btn')}</button>
+                <button type="button" onclick="removeItemField('${rowId}')" class="action-button bg-red-500 text-white hover:bg-red-600 px-3 py-2 remove-btn" data-lang-key="remove_btn">${getTranslation(
+          "remove_btn"
+        )}</button>
             `;
 
-            // Attach unit display listener
-            const selectElement = newItemHtml.querySelector(`#${itemKey}`);
-            selectElement.addEventListener('change', (e) => {
-                const selectedOption = e.target.options[e.target.selectedIndex];
-                const unit = selectedOption.dataset.unit || '';
-                document.getElementById(`unit-display-${currentItemCounter}`).textContent = unit;
-            });
+        // Attach unit display listener
+        const selectElement = newItemHtml.querySelector(`#${itemKey}`);
+        selectElement.addEventListener("change", (e) => {
+          const selectedOption = e.target.options[e.target.selectedIndex];
+          const unit = selectedOption.dataset.unit || "";
+          document.getElementById(
+            `unit-display-${currentItemCounter}`
+          ).textContent = unit;
+        });
 
-            container.appendChild(newItemHtml);
+        container.appendChild(newItemHtml);
+      }
+
+      function removeItemField(rowId) {
+        const row = document.getElementById(rowId);
+        if (row) {
+          row.remove();
+        }
+      }
+
+      // --- Save/Update Meal Plan Logic ---
+      function saveMealPlanChanges(event) {
+        event.preventDefault();
+        const form = document.getElementById("add-meal-form");
+
+        const day = form.querySelector("#meal-day").value;
+        const slot = form.querySelector("#meal-slot").value;
+        const itemRows = form.querySelectorAll('[id^="item-row-"]');
+
+        if (
+          !day ||
+          !slot ||
+          itemRows.length === 0 ||
+          form.querySelectorAll("select:invalid, input:invalid").length > 0
+        ) {
+          alert(getTranslation("validation_error"));
+          return false;
         }
 
-        function removeItemField(rowId) {
-            const row = document.getElementById(rowId);
-            if (row) {
-                row.remove();
-            }
+        const newMeals = [];
+        itemRows.forEach((row) => {
+          const itemId = row.querySelector("select").value;
+          const qty = parseFloat(row.querySelector("input").value);
+
+          if (itemId && qty > 0) {
+            const itemDetails = DUMMY_FOOD_ITEMS.find((i) => i.id == itemId);
+            newMeals.push({
+              id: nextMealItemId++, // Assign unique ID
+              itemId: parseInt(itemId),
+              name: itemDetails.name,
+              qty: qty,
+              unit: itemDetails.unit,
+            });
+          }
+        });
+
+        if (newMeals.length === 0) {
+          alert(getTranslation("validation_error"));
+          return false;
         }
 
-        // --- Save/Update Meal Plan Logic ---
-        function saveMealPlanChanges(event) {
-            event.preventDefault();
-            const form = document.getElementById('add-meal-form');
+        // Update global plan object
+        if (!mealPlan[day]) mealPlan[day] = {};
+        mealPlan[day][slot] = newMeals;
 
-            const day = form.querySelector('#meal-day').value;
-            const slot = form.querySelector('#meal-slot').value;
-            const itemRows = form.querySelectorAll('[id^="item-row-"]');
+        saveMealPlan();
 
-            if (!day || !slot || itemRows.length === 0 || form.querySelectorAll('select:invalid, input:invalid').length > 0) {
-                alert(getTranslation('validation_error'));
-                return false;
-            }
+        alert(getTranslation("meal_updated_success"));
 
-            const newMeals = [];
-            itemRows.forEach(row => {
-                const itemId = row.querySelector('select').value;
-                const qty = parseFloat(row.querySelector('input').value);
+        // Reset form/UI state
+        form.reset();
+        const itemsContainer = document.getElementById("items-container");
+        itemsContainer.innerHTML = "";
+        currentItemCounter = -1;
+        addItemField(); // Add back one empty field
 
-                if (itemId && qty > 0) {
-                    const itemDetails = DUMMY_FOOD_ITEMS.find(i => i.id == itemId);
-                    newMeals.push({
-                        id: nextMealItemId++, // Assign unique ID
-                        itemId: parseInt(itemId),
-                        name: itemDetails.name,
-                        qty: qty,
-                        unit: itemDetails.unit
-                    });
-                }
-            });
+        // Reset button text
+        document.getElementById("save-meal-btn").textContent =
+          getTranslation("save_meal_btn");
 
-            if (newMeals.length === 0) {
-                alert(getTranslation('validation_error'));
-                return false;
-            }
+        updateContent();
+        return false;
+      }
 
-            // Update global plan object
-            if (!mealPlan[day]) mealPlan[day] = {};
-            mealPlan[day][slot] = newMeals;
+      // --- Grid Actions (Edit/Remove) ---
+      function handleGridAction(action, day, slot, mealId) {
+        const slotMeals = mealPlan[day][slot];
+        const mealIndex = slotMeals.findIndex((m) => m.id === mealId);
 
+        if (mealIndex === -1) return;
+
+        if (action === "remove") {
+          if (confirm(getTranslation("confirm_delete") || "Confirm removal?")) {
+            mealPlan[day][slot].splice(mealIndex, 1);
             saveMealPlan();
-
-            alert(getTranslation('meal_updated_success'));
-
-            // Reset form/UI state
-            form.reset();
-            const itemsContainer = document.getElementById('items-container');
-            itemsContainer.innerHTML = '';
-            currentItemCounter = -1;
-            addItemField(); // Add back one empty field
-
-            // Reset button text
-            document.getElementById('save-meal-btn').textContent = getTranslation('save_meal_btn');
-
             updateContent();
-            return false;
+            alert(getTranslation("meal_removed_success"));
+          }
+        }
+        // Edit action is handled via openFormForEdit
+      }
+
+      function openFormForEdit(day, slot) {
+        const meals = mealPlan[day][slot];
+
+        // 1. Set the dropdowns
+        document.getElementById("meal-day").value = day;
+        document.getElementById("meal-slot").value = slot;
+
+        // 2. Clear old dynamic fields
+        const itemsContainer = document.getElementById("items-container");
+        itemsContainer.innerHTML = "";
+        currentItemCounter = -1; // Reset counter for addItemField
+
+        // 3. Populate form with existing meals
+        meals.forEach((meal) => {
+          addItemField(meal);
+          // The item ID is set inside addItemField based on the provided meal object
+        });
+
+        if (meals.length === 0) {
+          addItemField(); // Add one blank row if empty
         }
 
-        // --- Grid Actions (Edit/Remove) ---
-        function handleGridAction(action, day, slot, mealId) {
-            const slotMeals = mealPlan[day][slot];
-            const mealIndex = slotMeals.findIndex(m => m.id === mealId);
+        // Change button text to save
+        document.getElementById("save-meal-btn").textContent =
+          getTranslation("save");
+        document.getElementById("save-meal-btn").onclick = (e) =>
+          saveMealPlanChanges(e); // Use update logic
 
-            if (mealIndex === -1) return;
+        // Scroll to form
+        document
+          .getElementById("add-meal-section")
+          .scrollIntoView({ behavior: "smooth" });
+      }
 
-            if (action === 'remove') {
-                if (confirm(getTranslation('confirm_delete') || "Confirm removal?")) {
-                    mealPlan[day][slot].splice(mealIndex, 1);
-                    saveMealPlan();
-                    updateContent();
-                    alert(getTranslation('meal_removed_success'));
-                }
-            }
-            // Edit action is handled via openFormForEdit
+      function logOut() {
+        localStorage.removeItem("isUserLoggedIn");
+        localStorage.removeItem("authToken");
+        localStorage.removeItem("userData");
+        window.location.href = "index.html";
+      }
+
+      // Initialize content and language
+      window.onload = function () {
+        loadMealPlan(); // Load data
+        const storedLang = localStorage.getItem("madarsaSystemLang");
+        currentLang = storedLang && storedLang in langData ? storedLang : "en";
+
+        // Initial content update and render
+        updateContent();
+
+        // Initial setup of the Add Meal Form's dynamic fields
+        const form = document.getElementById("add-meal-form");
+        if (form) {
+          // Attach main listener for submission (it handles both add/edit based on state)
+          form.addEventListener("submit", saveMealPlanChanges);
+
+          document
+            .getElementById("add-item-field-btn")
+            .addEventListener("click", addItemField);
+
+          // Add first item row only if container is empty (during initial load)
+          if (
+            document.getElementById("items-container").children.length === 0
+          ) {
+            addItemField();
+          }
+
+          document.getElementById("save-meal-btn").textContent =
+            getTranslation("save_meal_btn");
         }
-
-        function openFormForEdit(day, slot) {
-            const meals = mealPlan[day][slot];
-
-            // 1. Set the dropdowns
-            document.getElementById('meal-day').value = day;
-            document.getElementById('meal-slot').value = slot;
-
-            // 2. Clear old dynamic fields
-            const itemsContainer = document.getElementById('items-container');
-            itemsContainer.innerHTML = '';
-            currentItemCounter = -1; // Reset counter for addItemField
-
-            // 3. Populate form with existing meals
-            meals.forEach(meal => {
-                addItemField(meal);
-                // The item ID is set inside addItemField based on the provided meal object
-            });
-
-            if (meals.length === 0) {
-                addItemField(); // Add one blank row if empty
-            }
-
-            // Change button text to save
-            document.getElementById('save-meal-btn').textContent = getTranslation('save');
-            document.getElementById('save-meal-btn').onclick = (e) => saveMealPlanChanges(e); // Use update logic
-
-            // Scroll to form
-            document.getElementById('add-meal-section').scrollIntoView({ behavior: 'smooth' });
-        }
-
-
-        // Initialize content and language
-        window.onload = function () {
-            loadMealPlan(); // Load data
-            const storedLang = localStorage.getItem('madarsaSystemLang');
-            currentLang = (storedLang && storedLang in langData) ? storedLang : 'en';
-
-            // Initial content update and render
-            updateContent();
-
-            // Initial setup of the Add Meal Form's dynamic fields
-            const form = document.getElementById('add-meal-form');
-            if (form) {
-                // Attach main listener for submission (it handles both add/edit based on state)
-                form.addEventListener('submit', saveMealPlanChanges);
-
-                document.getElementById('add-item-field-btn').addEventListener('click', addItemField);
-
-                // Add first item row only if container is empty (during initial load)
-                if (document.getElementById('items-container').children.length === 0) {
-                    addItemField();
-                }
-
-                document.getElementById('save-meal-btn').textContent = getTranslation('save_meal_btn');
-            }
-        };
+      };
     </script>
 
     <!-- HEADER -->
     <header>
-        <div class="max-w-7xl mx-auto w-full flex justify-between items-center">
-            <!-- Left: Back Button & Title -->
-            <div class="flex items-center space-x-4">
-                <a href="kitchen_system.html" class="action-button bg-gray-100 text-gray-700 hover:bg-gray-200"
-                    data-lang-key="back_to_kitchen">Back to Kitchen</a>
-                <h1 class="text-xl font-bold" data-lang-key="page_title" style="color: var(--color-primary);">Weekly
-                    Meal Plan Management</h1>
-            </div>
-
-            <!-- Right: Language Switch -->
-            <div class="flex items-center space-x-2">
-                <select onchange="changeLanguage(this.value)" class="bg-gray-100 rounded-lg p-1 text-sm">
-                    <option value="en" selected>English</option>
-                    <option value="hi">हिन्दी</option>
-                    <option value="ur">اردو</option>
-                </select>
-                <button onclick="window.location.href='login.html'"
-                    class="text-sm font-semibold text-red-600 hover:text-red-800 transition-colors ml-4"
-                    data-lang-key="logout">Logout</button>
-            </div>
+      <div class="max-w-7xl mx-auto w-full flex justify-between items-center">
+        <!-- Left: Back Button & Title -->
+        <div class="flex items-center space-x-4">
+          <a
+            href="kitchen_system.html"
+            class="action-button bg-gray-100 text-gray-700 hover:bg-gray-200"
+            data-lang-key="back_to_kitchen"
+            >Back to Kitchen</a
+          >
+          <h1
+            class="text-xl font-bold"
+            data-lang-key="page_title"
+            style="color: var(--color-primary)"
+          >
+            Weekly Meal Plan Management
+          </h1>
         </div>
+
+        <!-- Right: Language Switch -->
+        <div class="flex items-center space-x-2">
+          <select
+            onchange="changeLanguage(this.value)"
+            class="bg-gray-100 rounded-lg p-1 text-sm"
+          >
+            <option value="en" selected>English</option>
+            <option value="hi">हिन्दी</option>
+            <option value="ur">اردو</option>
+          </select>
+          <button
+            onclick="logOut()"
+            class="text-sm font-semibold text-red-600 hover:text-red-800 transition-colors ml-4"
+            data-lang-key="logout"
+          >
+            Logout
+          </button>
+        </div>
+      </div>
     </header>
 
     <!-- MAIN CONTENT AREA -->
     <main class="w-full p-4 md:p-8">
-        <div class="max-w-7xl mx-auto">
+      <div class="max-w-7xl mx-auto">
+        <!-- Meal Plan Grid Container -->
+        <div
+          class="bg-white p-6 md:p-8 rounded-xl shadow-2xl overflow-x-auto mb-8 grid-container"
+        >
+          <!-- Page Header -->
+          <h2
+            class="text-2xl font-bold text-gray-700 mb-6"
+            data-lang-key="page_title"
+          >
+            Weekly Meal Plan Management
+          </h2>
 
-            <!-- Meal Plan Grid Container -->
-            <div class="bg-white p-6 md:p-8 rounded-xl shadow-2xl overflow-x-auto mb-8 grid-container">
-
-                <!-- Page Header -->
-                <h2 class="text-2xl font-bold text-gray-700 mb-6" data-lang-key="page_title">Weekly Meal Plan Management
-                </h2>
-
-                <!-- Meal Plan Grid -->
-                <div class="table-container">
-                    <table id="meal-plan-grid" class="w-full">
-                        <thead>
-                            <tr>
-                                <th data-lang-key="time_slot" class="w-1/12">Time Slot | Day</th>
-                                <th data-lang-key="Monday" class="w-1/7">Monday</th>
-                                <th data-lang-key="Tuesday" class="w-1/7">Tuesday</th>
-                                <th data-lang-key="Wednesday" class="w-1/7">Wednesday</th>
-                                <th data-lang-key="Thursday" class="w-1/7">Thursday</th>
-                                <th data-lang-key="Friday" class="w-1/7">Friday</th>
-                                <th data-lang-key="Saturday" class="w-1/7">Saturday</th>
-                                <th data-lang-key="Sunday" class="w-1/7">Sunday</th>
-                            </tr>
-                        </thead>
-                        <tbody id="meal-plan-body">
-                            <!-- Dynamic Meal Plan Grid Rows -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Add Meal Plan Form Section -->
-            <div id="add-meal-section"
-                class="max-w-7xl mx-auto bg-white p-6 md:p-8 rounded-xl shadow-2xl grid-container">
-                <h2 class="text-xl font-bold text-gray-700 mb-6" data-lang-key="add_meal_plan">Add/Update Meal Plan</h2>
-
-                <form id="add-meal-form">
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
-
-                        <!-- Day of Week -->
-                        <div class="form-group">
-                            <label for="meal-day" class="form-label" data-lang-key="day_of_week">Day of Week</label>
-                            <select id="meal-day" class="form-input" required></select>
-                        </div>
-
-                        <!-- Time Slot -->
-                        <div class="form-group">
-                            <label for="meal-slot" class="form-label" data-lang-key="time_slot_form">Time Slot</label>
-                            <select id="meal-slot" class="form-input" required></select>
-                        </div>
-
-                        <!-- Items and Quantities Container -->
-                        <div class="form-group md:col-span-2">
-                            <label class="form-label" data-lang-key="items_quantities">Items and Quantities</label>
-                            <div id="items-container">
-                                <!-- Dynamic Item Input Fields go here -->
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Action Buttons for Form -->
-                    <div class="flex justify-between mt-6 md:col-span-2">
-                        <button type="button" id="add-item-field-btn"
-                            class="action-button primary-button px-3 py-2 text-sm" data-lang-key="add_item_btn">+ Add
-                            Item</button>
-
-                        <button type="submit" id="save-meal-btn" class="primary-button"
-                            data-lang-key="save_meal_btn">Add Meal Plan</button>
-                    </div>
-                </form>
-            </div>
+          <!-- Meal Plan Grid -->
+          <div class="table-container">
+            <table id="meal-plan-grid" class="w-full">
+              <thead>
+                <tr>
+                  <th data-lang-key="time_slot" class="w-1/12">
+                    Time Slot | Day
+                  </th>
+                  <th data-lang-key="Monday" class="w-1/7">Monday</th>
+                  <th data-lang-key="Tuesday" class="w-1/7">Tuesday</th>
+                  <th data-lang-key="Wednesday" class="w-1/7">Wednesday</th>
+                  <th data-lang-key="Thursday" class="w-1/7">Thursday</th>
+                  <th data-lang-key="Friday" class="w-1/7">Friday</th>
+                  <th data-lang-key="Saturday" class="w-1/7">Saturday</th>
+                  <th data-lang-key="Sunday" class="w-1/7">Sunday</th>
+                </tr>
+              </thead>
+              <tbody id="meal-plan-body">
+                <!-- Dynamic Meal Plan Grid Rows -->
+              </tbody>
+            </table>
+          </div>
         </div>
-    </main>
-</body>
 
+        <!-- Add Meal Plan Form Section -->
+        <div
+          id="add-meal-section"
+          class="max-w-7xl mx-auto bg-white p-6 md:p-8 rounded-xl shadow-2xl grid-container"
+        >
+          <h2
+            class="text-xl font-bold text-gray-700 mb-6"
+            data-lang-key="add_meal_plan"
+          >
+            Add/Update Meal Plan
+          </h2>
+
+          <form id="add-meal-form">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+              <!-- Day of Week -->
+              <div class="form-group">
+                <label
+                  for="meal-day"
+                  class="form-label"
+                  data-lang-key="day_of_week"
+                  >Day of Week</label
+                >
+                <select id="meal-day" class="form-input" required></select>
+              </div>
+
+              <!-- Time Slot -->
+              <div class="form-group">
+                <label
+                  for="meal-slot"
+                  class="form-label"
+                  data-lang-key="time_slot_form"
+                  >Time Slot</label
+                >
+                <select id="meal-slot" class="form-input" required></select>
+              </div>
+
+              <!-- Items and Quantities Container -->
+              <div class="form-group md:col-span-2">
+                <label class="form-label" data-lang-key="items_quantities"
+                  >Items and Quantities</label
+                >
+                <div id="items-container">
+                  <!-- Dynamic Item Input Fields go here -->
+                </div>
+              </div>
+            </div>
+
+            <!-- Action Buttons for Form -->
+            <div class="flex justify-between mt-6 md:col-span-2">
+              <button
+                type="button"
+                id="add-item-field-btn"
+                class="action-button primary-button px-3 py-2 text-sm"
+                data-lang-key="add_item_btn"
+              >
+                + Add Item
+              </button>
+
+              <button
+                type="submit"
+                id="save-meal-btn"
+                class="primary-button"
+                data-lang-key="save_meal_btn"
+              >
+                Add Meal Plan
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </main>
+  </body>
 </html>

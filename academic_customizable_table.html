@@ -1,400 +1,505 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Customizable Table Display - Academic</title>
     <script src="https://cdn.tailwindcss.com"></script>
 
     <style>
-        :root {
-            --color-primary: #00A693;
-            --color-background: #F2F3F4;
-            --color-accent: #E08A27;
-            --color-text-dark: #1A1A1A;
-            --color-text-light: #FFFFFF;
-            --color-success: #10b981;
-            --color-danger: #ef4444;
-        }
+      :root {
+        --color-primary: #00a693;
+        --color-background: #f2f3f4;
+        --color-accent: #e08a27;
+        --color-text-dark: #1a1a1a;
+        --color-text-light: #ffffff;
+        --color-success: #10b981;
+        --color-danger: #ef4444;
+      }
 
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;700&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap');
+      @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;700&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap");
 
-        /* Language Styles */
-        body,
-        .lang-en {
-            font-family: 'Poppins', sans-serif;
-            direction: ltr;
-            background-color: var(--color-background);
-        }
+      /* Language Styles */
+      body,
+      .lang-en {
+        font-family: "Poppins", sans-serif;
+        direction: ltr;
+        background-color: var(--color-background);
+      }
 
-        .lang-hi {
-            font-family: 'Noto Sans Devanagari', sans-serif;
-            direction: ltr;
-        }
+      .lang-hi {
+        font-family: "Noto Sans Devanagari", sans-serif;
+        direction: ltr;
+      }
 
-        .lang-ur {
-            font-family: 'Noto Nastaliq Urdu', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
-            direction: rtl;
-            line-height: 1.8;
-            text-align: right;
-        }
+      .lang-ur {
+        font-family: "Noto Nastaliq Urdu", "Segoe UI", Tahoma, Geneva, Verdana,
+          sans-serif !important;
+        direction: rtl;
+        line-height: 1.8;
+        text-align: right;
+      }
 
-        /* Form & Inputs */
-        .form-input {
-            padding: 0.75rem 1rem;
-            border-radius: 0.5rem;
-            border: 1px solid #ccc;
-            width: 100%;
-            font-family: inherit;
-        }
+      /* Form & Inputs */
+      .form-input {
+        padding: 0.75rem 1rem;
+        border-radius: 0.5rem;
+        border: 1px solid #ccc;
+        width: 100%;
+        font-family: inherit;
+      }
 
-        .form-input:focus {
-            outline: none;
-            border-color: var(--color-primary);
-            box-shadow: 0 0 0 3px rgba(0, 166, 147, 0.2);
-        }
+      .form-input:focus {
+        outline: none;
+        border-color: var(--color-primary);
+        box-shadow: 0 0 0 3px rgba(0, 166, 147, 0.2);
+      }
 
-        .form-label {
-            display: block;
-            font-weight: 600;
-            margin-bottom: 0.25rem;
-            font-size: 0.875rem;
-            color: var(--color-text-dark);
-        }
+      .form-label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 0.25rem;
+        font-size: 0.875rem;
+        color: var(--color-text-dark);
+      }
 
-        /* Buttons */
-        .select-button {
-            background-color: var(--color-success);
-            color: white;
-            padding: 0.75rem 1.5rem;
-            font-weight: 600;
-            border-radius: 0.5rem;
-            transition: background-color 0.2s;
-        }
+      /* Buttons */
+      .select-button {
+        background-color: var(--color-success);
+        color: white;
+        padding: 0.75rem 1.5rem;
+        font-weight: 600;
+        border-radius: 0.5rem;
+        transition: background-color 0.2s;
+      }
 
-        .select-button:hover {
-            background-color: #059669;
-        }
+      .select-button:hover {
+        background-color: #059669;
+      }
 
-        .reset-button {
-            background-color: var(--color-danger);
-            color: white;
-            padding: 0.75rem 1.5rem;
-            font-weight: 600;
-            border-radius: 0.5rem;
-            transition: background-color 0.2s;
-        }
+      .reset-button {
+        background-color: var(--color-danger);
+        color: white;
+        padding: 0.75rem 1.5rem;
+        font-weight: 600;
+        border-radius: 0.5rem;
+        transition: background-color 0.2s;
+      }
 
-        .reset-button:hover {
-            background-color: #dc2626;
-        }
+      .reset-button:hover {
+        background-color: #dc2626;
+      }
 
-        .action-button {
-            padding: 0.4rem 0.6rem;
-            border-radius: 0.25rem;
-            font-size: 0.7rem;
-            font-weight: 600;
-            transition: background-color 0.2s;
-        }
+      .action-button {
+        padding: 0.4rem 0.6rem;
+        border-radius: 0.25rem;
+        font-size: 0.7rem;
+        font-weight: 600;
+        transition: background-color 0.2s;
+      }
 
-        /* Fixed Header */
-        header {
-            background-color: var(--color-text-light);
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            position: sticky;
-            top: 0;
-            width: 100%;
-            z-index: 10;
-            padding: 1rem 2rem;
-        }
+      /* Fixed Header */
+      header {
+        background-color: var(--color-text-light);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        position: sticky;
+        top: 0;
+        width: 100%;
+        z-index: 10;
+        padding: 1rem 2rem;
+      }
 
-        /* Card Structure */
-        .centered-card {
-            background-color: white;
-            border-radius: 1rem;
-            padding: 2rem;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-            max-width: 800px;
-            width: 100%;
-            margin: 2rem auto;
-            text-align: center;
-        }
+      /* Card Structure */
+      .centered-card {
+        background-color: white;
+        border-radius: 1rem;
+        padding: 2rem;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        max-width: 800px;
+        width: 100%;
+        margin: 2rem auto;
+        text-align: center;
+      }
 
-        .main-title {
-            color: var(--color-text-dark);
-            font-size: 2.25rem;
-            font-weight: 700;
-            margin-bottom: 2rem;
-        }
+      .main-title {
+        color: var(--color-text-dark);
+        font-size: 2.25rem;
+        font-weight: 700;
+        margin-bottom: 2rem;
+      }
 
-        /* Checkbox List Styling */
-        .checkbox-label {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0.5rem 0;
-            border-bottom: 1px solid #eee;
-            font-size: 0.95rem;
-            font-weight: 500;
-        }
+      /* Checkbox List Styling */
+      .checkbox-label {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.5rem 0;
+        border-bottom: 1px solid #eee;
+        font-size: 0.95rem;
+        font-weight: 500;
+      }
 
-        .checkbox-input {
-            width: 1.25rem;
-            height: 1.25rem;
-            accent-color: var(--color-primary);
-            cursor: pointer;
-        }
+      .checkbox-input {
+        width: 1.25rem;
+        height: 1.25rem;
+        accent-color: var(--color-primary);
+        cursor: pointer;
+      }
     </style>
-</head>
+  </head>
 
-<body class="lang-en">
-
+  <body class="lang-en">
     <script>
-        // --- Dummy Data (All potential columns for the student record) ---
-        const ALL_COLUMNS = [
-            { key: 'entry_number', label: 'Entry number', default: true },
-            { key: 'admission_date', label: 'Admission date', default: true },
-            { key: 'status', label: 'Status (Grade)', default: true },
-            { key: 'section', label: 'Section', default: false },
-            { key: 'ancient_modern', label: 'Ancient / Modern', default: true },
-            { key: 'residential_non', label: 'Resident / Non-Resident', default: true },
-            { key: 'aided_unaided', label: 'Aided/Unaided', default: false },
-            { key: 'hostel_name', label: 'Hostel name', default: false },
-            { key: 'father_name', label: 'Father\'s Name', default: true },
-            { key: 'mobile', label: 'Mobile', default: true },
-            { key: 'aadhaar', label: 'Aadhaar', default: false },
-            { key: 'district', label: 'District', default: false },
-            { key: 'dob', label: 'Date of Birth', default: false },
-            { key: 'seat_number', label: 'Seat Number', default: false }
-        ];
+      // --- Dummy Data (All potential columns for the student record) ---
+      const ALL_COLUMNS = [
+        { key: "entry_number", label: "Entry number", default: true },
+        { key: "admission_date", label: "Admission date", default: true },
+        { key: "status", label: "Status (Grade)", default: true },
+        { key: "section", label: "Section", default: false },
+        { key: "ancient_modern", label: "Ancient / Modern", default: true },
+        {
+          key: "residential_non",
+          label: "Resident / Non-Resident",
+          default: true,
+        },
+        { key: "aided_unaided", label: "Aided/Unaided", default: false },
+        { key: "hostel_name", label: "Hostel name", default: false },
+        { key: "father_name", label: "Father's Name", default: true },
+        { key: "mobile", label: "Mobile", default: true },
+        { key: "aadhaar", label: "Aadhaar", default: false },
+        { key: "district", label: "District", default: false },
+        { key: "dob", label: "Date of Birth", default: false },
+        { key: "seat_number", label: "Seat Number", default: false },
+      ];
 
-        // --- Multilingual Data ---
-        const langData = {
-            'en': {
-                'academic_system': 'Academic System',
-                'page_title': 'Select columns',
-                'back_to_academic': 'Back to Academic',
-                'logout': 'Logout',
+      // --- Multilingual Data ---
+      const langData = {
+        en: {
+          academic_system: "Academic System",
+          page_title: "Select columns",
+          back_to_academic: "Back to Academic",
+          logout: "Logout",
 
-                // Form/Labels
-                'select_columns_prompt': 'Select the columns you want to display:',
-                'select_and_view': 'Select and view',
-                'reset': 'Reset',
-                'select_empty_columns': 'Select the number of empty columns:',
+          // Form/Labels
+          select_columns_prompt: "Select the columns you want to display:",
+          select_and_view: "Select and view",
+          reset: "Reset",
+          select_empty_columns: "Select the number of empty columns:",
 
-                // Column Labels (Keys match ALL_COLUMNS)
-                'entry_number': 'Entry number',
-                'admission_date': 'Admission date',
-                'status': 'Status (Grade)',
-                'section': 'Section',
-                'ancient_modern': 'Ancient / Modern',
-                'residential_non': 'Resident / Non-Resident',
-                'aided_unaided': 'Aided/Unaided',
-                'hostel_name': 'Hostel name',
-                'father_name': 'Father\'s Name',
-                'mobile': 'Mobile',
-                'aadhaar': 'Aadhaar',
-                'district': 'District',
-                'dob': 'Date of Birth',
-                'seat_number': 'Seat Number'
-            },
-            'ur': {
-                'academic_system': 'تعلیمی نظام',
-                'page_title': 'کالمر منتخب کریں',
-                'back_to_academic': 'اکیڈمک پر واپس جائیں',
-                'logout': 'لاگ آؤٹ',
+          // Column Labels (Keys match ALL_COLUMNS)
+          entry_number: "Entry number",
+          admission_date: "Admission date",
+          status: "Status (Grade)",
+          section: "Section",
+          ancient_modern: "Ancient / Modern",
+          residential_non: "Resident / Non-Resident",
+          aided_unaided: "Aided/Unaided",
+          hostel_name: "Hostel name",
+          father_name: "Father's Name",
+          mobile: "Mobile",
+          aadhaar: "Aadhaar",
+          district: "District",
+          dob: "Date of Birth",
+          seat_number: "Seat Number",
+        },
+        hi: {
+          academic_system: "शैक्षणिक प्रणाली",
+          page_title: "कॉलम चुनें",
+          back_to_academic: "अकादमिक पर वापस जाएं",
+          logout: "लॉग आउट",
 
-                // Form/Labels
-                'select_columns_prompt': 'وہ کالم منتخب کریں جنہیں آپ ڈسپلے کرنا چاہتے ہیں:',
-                'select_and_view': 'منتخب کریں اور دیکھیں',
-                'reset': 'ری سیٹ کریں',
-                'select_empty_columns': 'خالی کالموں کی تعداد منتخب کریں:',
+          // Form/Labels
+          select_columns_prompt:
+            "वे कॉलम चुनें जिन्हें आप प्रदर्शित करना चाहते हैं:",
+          select_and_view: "चुनें और देखें",
+          reset: "रीसेट",
+          select_empty_columns: "खाली कॉलम की संख्या चुनें:",
 
-                // Column Labels (Keys match ALL_COLUMNS)
-                'entry_number': 'انٹری نمبر',
-                'admission_date': 'داخلہ کی تاریخ',
-                'status': 'حالت (گریڈ)',
-                'section': 'سیکشن',
-                'ancient_modern': 'قدیم / جدید',
-                'residential_non': 'رہائشی / غیر رہائشی',
-                'aided_unaided': 'معاونت یافتہ / غیر معاونت یافتہ',
-                'hostel_name': 'ہاسٹل کا نام',
-                'father_name': 'والد کا نام',
-                'mobile': 'موبائل',
-                'aadhaar': 'آدھار',
-                'district': 'ضلع',
-                'dob': 'تاریخ پیدائش',
-                'seat_number': 'سیٹ نمبر'
-            }
-        };
+          // Column Labels (Keys match ALL_COLUMNS)
+          entry_number: "प्रविष्टि संख्या (Entry No)",
+          admission_date: "प्रवेश तिथि",
+          status: "स्थिति (ग्रेड)",
+          section: "अनुभाग (Section)",
+          ancient_modern: "प्राचीन / आधुनिक",
+          residential_non: "आवासीय / गैर-आवासीय",
+          aided_unaided: "सहायता प्राप्त / गैर-सहायता प्राप्त",
+          hostel_name: "छात्रावास का नाम",
+          father_name: "पिता का नाम",
+          mobile: "मोबाइल",
+          aadhaar: "आधार",
+          district: "ज़िला",
+          dob: "जन्म तिथि",
+          seat_number: "सीट नंबर",
+        },
+        ur: {
+          academic_system: "تعلیمی نظام",
+          page_title: "کالمر منتخب کریں",
+          back_to_academic: "اکیڈمک پر واپس جائیں",
+          logout: "لاگ آؤٹ",
 
-        let currentLang = 'en';
+          // Form/Labels
+          select_columns_prompt:
+            "وہ کالم منتخب کریں جنہیں آپ ڈسپلے کرنا چاہتے ہیں:",
+          select_and_view: "منتخب کریں اور دیکھیں",
+          reset: "ری سیٹ کریں",
+          select_empty_columns: "خالی کالموں کی تعداد منتخب کریں:",
 
-        function getTranslation(key) {
-            return langData[currentLang][key] || langData['en'][key] || key;
+          // Column Labels (Keys match ALL_COLUMNS)
+          entry_number: "انٹری نمبر",
+          admission_date: "داخلہ کی تاریخ",
+          status: "حالت (گریڈ)",
+          section: "سیکشن",
+          ancient_modern: "قدیم / جدید",
+          residential_non: "رہائشی / غیر رہائشی",
+          aided_unaided: "معاونت یافتہ / غیر معاونت یافتہ",
+          hostel_name: "ہاسٹل کا نام",
+          father_name: "والد کا نام",
+          mobile: "موبائل",
+          aadhaar: "آدھار",
+          district: "ضلع",
+          dob: "تاریخ پیدائش",
+          seat_number: "سیٹ نمبر",
+        },
+      };
+
+      let currentLang = "en";
+
+      function getTranslation(key) {
+        return langData[currentLang][key] || langData["en"][key] || key;
+      }
+
+      // --- Core UI Update Functions ---
+      function updateContent() {
+        document.body.className = "lang-" + currentLang;
+
+        document.querySelectorAll("[data-lang-key]").forEach((el) => {
+          const key = el.getAttribute("data-lang-key");
+          el.textContent = getTranslation(key);
+        });
+
+        renderCheckboxes();
+      }
+
+      function changeLanguage(lang) {
+        if (lang in langData) {
+          currentLang = lang;
+          localStorage.setItem("madarsaSystemLang", lang);
+          updateContent();
         }
+      }
 
-        // --- Core UI Update Functions ---
-        function updateContent() {
-            document.body.className = 'lang-' + currentLang;
+      // --- Checkbox Rendering Logic ---
+      function renderCheckboxes(resetDefaults = false) {
+        const container = document.getElementById("columns-checkbox-container");
+        if (!container) return;
 
-            document.querySelectorAll('[data-lang-key]').forEach(el => {
-                const key = el.getAttribute('data-lang-key');
-                el.textContent = getTranslation(key);
-            });
+        container.innerHTML = "";
 
-            renderCheckboxes();
-        }
+        const savedSelections = JSON.parse(
+          localStorage.getItem("academicSelectedColumns") || "[]"
+        );
 
-        function changeLanguage(lang) {
-            if (lang in langData) {
-                currentLang = lang;
-                localStorage.setItem('madarsaSystemLang', lang);
-                updateContent();
-            }
-        }
+        ALL_COLUMNS.forEach((col) => {
+          const isChecked = resetDefaults
+            ? col.default
+            : savedSelections.length > 0
+            ? savedSelections.includes(col.key)
+            : col.default;
 
-        // --- Checkbox Rendering Logic ---
-        function renderCheckboxes(resetDefaults = false) {
-            const container = document.getElementById('columns-checkbox-container');
-            if (!container) return;
+          const label = getTranslation(col.key) || col.label;
 
-            container.innerHTML = '';
-
-            const savedSelections = JSON.parse(localStorage.getItem('academicSelectedColumns') || '[]');
-
-            ALL_COLUMNS.forEach(col => {
-                const isChecked = resetDefaults ? col.default : (savedSelections.length > 0 ? savedSelections.includes(col.key) : col.default);
-
-                const label = getTranslation(col.key) || col.label;
-
-                const checkboxHtml = `
+          const checkboxHtml = `
                     <label class="checkbox-label" for="col-${col.key}">
                         <span class="font-medium">${label}</span>
                         <input type="checkbox" 
                                id="col-${col.key}" 
                                name="column-${col.key}" 
                                value="${col.key}"
-                               ${isChecked ? 'checked' : ''}
+                               ${isChecked ? "checked" : ""}
                                class="checkbox-input">
                     </label>
                 `;
-                container.innerHTML += checkboxHtml;
-            });
+          container.innerHTML += checkboxHtml;
+        });
 
-            // Set empty columns input value
-            const savedEmpty = localStorage.getItem('academicEmptyColumns') || 0;
-            document.getElementById('empty-columns-input').value = resetDefaults ? 0 : savedEmpty;
+        // Set empty columns input value
+        const savedEmpty = localStorage.getItem("academicEmptyColumns") || 0;
+        document.getElementById("empty-columns-input").value = resetDefaults
+          ? 0
+          : savedEmpty;
+      }
+
+      // --- Action Logic ---
+      function applySelection(event) {
+        event.preventDefault();
+        const selectedKeys = Array.from(
+          document.querySelectorAll("#columns-checkbox-container input:checked")
+        ).map((cb) => cb.value);
+        const emptyCols =
+          parseInt(document.getElementById("empty-columns-input").value) || 0;
+
+        // Save current selection
+        localStorage.setItem(
+          "academicSelectedColumns",
+          JSON.stringify(selectedKeys)
+        );
+        localStorage.setItem("academicEmptyColumns", emptyCols);
+
+        console.log("--- Column Selection Saved ---");
+        console.log("Selected Columns:", selectedKeys);
+        console.log("Number of Empty Columns:", emptyCols);
+
+        alert(
+          `Selection Saved! Table will display ${selectedKeys.length} columns plus ${emptyCols} empty columns.`
+        );
+        return false;
+      }
+
+      function resetSelection() {
+        if (
+          confirm("Are you sure you want to reset column selection to default?")
+        ) {
+          localStorage.removeItem("academicSelectedColumns");
+          localStorage.removeItem("academicEmptyColumns");
+          renderCheckboxes(true); // Re-render with default settings
+          alert("Settings have been reset to default!");
         }
+      }
 
-        // --- Action Logic ---
-        function applySelection(event) {
-            event.preventDefault();
-            const selectedKeys = Array.from(document.querySelectorAll('#columns-checkbox-container input:checked')).map(cb => cb.value);
-            const emptyCols = parseInt(document.getElementById('empty-columns-input').value) || 0;
+      function logOut() {
+        localStorage.removeItem("isUserLoggedIn");
+        localStorage.removeItem("authToken");
+        localStorage.removeItem("userData");
+        window.location.href = "index.html";
+      }
 
-            // Save current selection
-            localStorage.setItem('academicSelectedColumns', JSON.stringify(selectedKeys));
-            localStorage.setItem('academicEmptyColumns', emptyCols);
+      // Initialize content and language
+      window.onload = function () {
+        const storedLang = localStorage.getItem("madarsaSystemLang");
+        currentLang = storedLang && storedLang in langData ? storedLang : "en";
 
-            console.log("--- Column Selection Saved ---");
-            console.log("Selected Columns:", selectedKeys);
-            console.log("Number of Empty Columns:", emptyCols);
+        // Initial content update
+        updateContent();
 
-            alert(`Selection Saved! Table will display ${selectedKeys.length} columns plus ${emptyCols} empty columns.`);
-            return false;
-        }
-
-        function resetSelection() {
-            if (confirm("Are you sure you want to reset column selection to default?")) {
-                localStorage.removeItem('academicSelectedColumns');
-                localStorage.removeItem('academicEmptyColumns');
-                renderCheckboxes(true); // Re-render with default settings
-                alert("Settings have been reset to default!");
-            }
-        }
-
-
-        // Initialize content and language
-        window.onload = function () {
-            const storedLang = localStorage.getItem('madarsaSystemLang');
-            currentLang = (storedLang && storedLang in langData) ? storedLang : 'en';
-
-            // Initial content update
-            updateContent();
-
-            // Attach form listeners
-            document.getElementById('selection-form').addEventListener('submit', applySelection);
-            document.getElementById('reset-btn').addEventListener('click', resetSelection);
-        };
+        // Attach form listeners
+        document
+          .getElementById("selection-form")
+          .addEventListener("submit", applySelection);
+        document
+          .getElementById("reset-btn")
+          .addEventListener("click", resetSelection);
+      };
     </script>
 
     <!-- HEADER -->
     <header>
-        <div class="max-w-7xl mx-auto w-full flex justify-between items-center">
-            <!-- Left: Back Button & Title -->
-            <div class="flex items-center space-x-4">
-                <a href="academic_system.html" class="action-button bg-gray-100 text-gray-700 hover:bg-gray-200"
-                    data-lang-key="back_to_academic">Back to Academic</a>
-                <h1 class="text-xl font-bold" data-lang-key="page_title" style="color: var(--color-primary);">
-                    Customizable Table Display</h1>
-            </div>
-
-            <!-- Right: Language Switch -->
-            <div class="flex items-center space-x-2">
-                <select onchange="changeLanguage(this.value)" class="bg-gray-100 rounded-lg p-1 text-sm">
-                    <option value="en" selected>English</option>
-                    <option value="ur">اردو</option>
-                </select>
-                <button onclick="window.location.href='login.html'"
-                    class="text-sm font-semibold text-red-600 hover:text-red-800 transition-colors ml-4 action-button px-3 py-1"
-                    data-lang-key="logout">Logout</button>
-            </div>
+      <div class="max-w-7xl mx-auto w-full flex justify-between items-center">
+        <!-- Left: Back Button & Title -->
+        <div class="flex items-center space-x-4">
+          <a
+            href="academic_system.html"
+            class="action-button bg-gray-100 text-gray-700 hover:bg-gray-200"
+            data-lang-key="back_to_academic"
+            >Back to Academic</a
+          >
+          <h1
+            class="text-xl font-bold"
+            data-lang-key="page_title"
+            style="color: var(--color-primary)"
+          >
+            Customizable Table Display
+          </h1>
         </div>
+
+        <!-- Right: Language Switch -->
+        <div class="flex items-center space-x-2">
+          <select
+            onchange="changeLanguage(this.value)"
+            class="bg-gray-100 rounded-lg p-1 text-sm"
+          >
+            <option value="en" selected>English</option>
+            <option value="hi">हिन्दी</option>
+            <option value="ur">اردو</option>
+          </select>
+          <button
+            onclick="logOut()"
+            class="text-sm font-semibold text-red-600 hover:text-red-800 transition-colors ml-4 action-button px-3 py-1"
+            data-lang-key="logout"
+          >
+            Logout
+          </button>
+        </div>
+      </div>
     </header>
 
     <!-- MAIN CONTENT AREA -->
     <main class="w-full p-4 md:p-8">
+      <h2 class="main-title text-center" data-lang-key="page_title">
+        Customizable Table Display
+      </h2>
 
-        <h2 class="main-title text-center" data-lang-key="page_title">Customizable Table Display</h2>
+      <!-- Customization Card -->
+      <div class="centered-card">
+        <form id="selection-form">
+          <!-- Section 1: Column Selection -->
+          <div class="border-b pb-6 mb-6">
+            <h3
+              class="text-lg font-bold text-gray-700 mb-4"
+              data-lang-key="select_columns_prompt"
+            >
+              Select the columns you want to display:
+            </h3>
 
-        <!-- Customization Card -->
-        <div class="centered-card">
+            <div
+              id="columns-checkbox-container"
+              class="grid grid-cols-1 md:grid-cols-2 gap-x-8"
+            >
+              <!-- Checkboxes injected by JS -->
+            </div>
+          </div>
 
-            <form id="selection-form">
+          <!-- Section 2: Empty Columns -->
+          <div class="border-b pb-6 mb-8">
+            <h3
+              class="text-lg font-bold text-gray-700 mb-4"
+              data-lang-key="select_empty_columns"
+            >
+              Select the number of empty columns:
+            </h3>
 
-                <!-- Section 1: Column Selection -->
-                <div class="border-b pb-6 mb-6">
-                    <h3 class="text-lg font-bold text-gray-700 mb-4" data-lang-key="select_columns_prompt">Select the
-                        columns you want to display:</h3>
+            <div class="max-w-xs mx-auto">
+              <input
+                type="number"
+                id="empty-columns-input"
+                class="form-input text-center"
+                value="0"
+                min="0"
+              />
+            </div>
+          </div>
 
-                    <div id="columns-checkbox-container" class="grid grid-cols-1 md:grid-cols-2 gap-x-8">
-                        <!-- Checkboxes injected by JS -->
-                    </div>
-                </div>
-
-                <!-- Section 2: Empty Columns -->
-                <div class="border-b pb-6 mb-8">
-                    <h3 class="text-lg font-bold text-gray-700 mb-4" data-lang-key="select_empty_columns">Select the
-                        number of empty columns:</h3>
-
-                    <div class="max-w-xs mx-auto">
-                        <input type="number" id="empty-columns-input" class="form-input text-center" value="0" min="0">
-                    </div>
-                </div>
-
-                <!-- Action Buttons -->
-                <div class="flex flex-col sm:flex-row justify-center space-y-3 sm:space-y-0 sm:space-x-4">
-                    <button type="submit" class="select-button w-full sm:w-auto" data-lang-key="select_and_view">Select
-                        and view</button>
-                    <button type="button" id="reset-btn" class="reset-button w-full sm:w-auto"
-                        data-lang-key="reset">Reset</button>
-                </div>
-            </form>
-        </div>
-
+          <!-- Action Buttons -->
+          <div
+            class="flex flex-col sm:flex-row justify-center space-y-3 sm:space-y-0 sm:space-x-4"
+          >
+            <button
+              type="submit"
+              class="select-button w-full sm:w-auto"
+              data-lang-key="select_and_view"
+            >
+              Select and view
+            </button>
+            <button
+              type="button"
+              id="reset-btn"
+              class="reset-button w-full sm:w-auto"
+              data-lang-key="reset"
+            >
+              Reset
+            </button>
+          </div>
+        </form>
+      </div>
     </main>
-</body>
-
+  </body>
 </html>

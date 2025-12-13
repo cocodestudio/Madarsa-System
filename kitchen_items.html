@@ -1,760 +1,928 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Kitchen Item Management</title>
     <script src="https://cdn.tailwindcss.com"></script>
 
     <style>
-        :root {
-            --color-primary: #00A693;
-            --color-background: #F2F3F4;
-            --color-accent: #E08A27;
-            --color-text-dark: #1A1A1A;
-            --color-text-light: #FFFFFF;
-        }
+      :root {
+        --color-primary: #00a693;
+        --color-background: #f2f3f4;
+        --color-accent: #e08a27;
+        --color-text-dark: #1a1a1a;
+        --color-text-light: #ffffff;
+      }
 
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;700&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap');
+      @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;700&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap");
 
-        /* Language Styles */
-        body,
-        .lang-en {
-            font-family: 'Poppins', sans-serif;
-            direction: ltr;
-            background-color: var(--color-background);
-        }
+      /* Language Styles */
+      body,
+      .lang-en {
+        font-family: "Poppins", sans-serif;
+        direction: ltr;
+        background-color: var(--color-background);
+      }
 
-        .lang-hi {
-            font-family: 'Noto Sans Devanagari', sans-serif;
-            direction: ltr;
-        }
+      .lang-hi {
+        font-family: "Noto Sans Devanagari", sans-serif;
+        direction: ltr;
+      }
 
-        .lang-ur {
-            font-family: 'Noto Nastaliq Urdu', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
-            direction: rtl;
-            line-height: 1.8;
-            text-align: right;
-        }
+      .lang-ur {
+        font-family: "Noto Nastaliq Urdu", "Segoe UI", Tahoma, Geneva, Verdana,
+          sans-serif !important;
+        direction: rtl;
+        line-height: 1.8;
+        text-align: right;
+      }
 
-        /* Form & Table Inputs */
-        .form-input,
-        select,
-        .form-textarea {
-            padding: 0.75rem 1rem;
-            border-radius: 0.5rem;
-            border: 1px solid #ccc;
-            width: 100%;
-            font-family: inherit;
-        }
+      /* Form & Table Inputs */
+      .form-input,
+      select,
+      .form-textarea {
+        padding: 0.75rem 1rem;
+        border-radius: 0.5rem;
+        border: 1px solid #ccc;
+        width: 100%;
+        font-family: inherit;
+      }
 
-        .form-input:focus,
-        select:focus,
-        .form-textarea:focus {
-            outline: none;
-            border-color: var(--color-primary);
-            box-shadow: 0 0 0 3px rgba(0, 166, 147, 0.2);
-        }
+      .form-input:focus,
+      select:focus,
+      .form-textarea:focus {
+        outline: none;
+        border-color: var(--color-primary);
+        box-shadow: 0 0 0 3px rgba(0, 166, 147, 0.2);
+      }
 
-        .form-label {
-            display: block;
-            font-weight: 600;
-            margin-bottom: 0.25rem;
-            font-size: 0.875rem;
-        }
+      .form-label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 0.25rem;
+        font-size: 0.875rem;
+      }
 
-        /* Buttons */
-        .primary-button {
-            padding: 0.8rem 1.5rem;
-            background-color: var(--color-primary);
-            color: var(--color-text-light);
-            font-weight: 600;
-            border-radius: 0.75rem;
-            transition: background-color 0.3s, transform 0.1s;
-            cursor: pointer;
-        }
+      /* Buttons */
+      .primary-button {
+        padding: 0.8rem 1.5rem;
+        background-color: var(--color-primary);
+        color: var(--color-text-light);
+        font-weight: 600;
+        border-radius: 0.75rem;
+        transition: background-color 0.3s, transform 0.1s;
+        cursor: pointer;
+      }
 
-        .primary-button:hover {
-            background-color: #008f7d;
-            transform: translateY(-1px);
-        }
+      .primary-button:hover {
+        background-color: #008f7d;
+        transform: translateY(-1px);
+      }
 
-        .action-button {
-            padding: 0.5rem 0.75rem;
-            border-radius: 0.25rem;
-            font-size: 0.75rem;
-            font-weight: 600;
-            transition: background-color 0.2s;
-        }
+      .action-button {
+        padding: 0.5rem 0.75rem;
+        border-radius: 0.25rem;
+        font-size: 0.75rem;
+        font-weight: 600;
+        transition: background-color 0.2s;
+      }
 
-        .btn-edit {
-            background-color: #3b82f6;
-            color: white;
-        }
+      .btn-edit {
+        background-color: #3b82f6;
+        color: white;
+      }
 
-        .btn-delete {
-            background-color: #ef4444;
-            color: white;
-        }
+      .btn-delete {
+        background-color: #ef4444;
+        color: white;
+      }
 
-        .btn-disable {
-            background-color: #9ca3af;
-            color: white;
-        }
+      .btn-disable {
+        background-color: #9ca3af;
+        color: white;
+      }
 
-        .btn-enable {
-            background-color: #10b981;
-            color: white;
-        }
+      .btn-enable {
+        background-color: #10b981;
+        color: white;
+      }
 
-        /* Fixed Header */
-        header {
-            background-color: var(--color-text-light);
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            position: sticky;
-            top: 0;
-            width: 100%;
-            z-index: 10;
-            padding: 1rem 2rem;
-        }
+      /* Fixed Header */
+      header {
+        background-color: var(--color-text-light);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        position: sticky;
+        top: 0;
+        width: 100%;
+        z-index: 10;
+        padding: 1rem 2rem;
+      }
 
-        /* Table Styling */
-        .admin-table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0 10px;
-        }
+      /* Table Styling */
+      .admin-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0 10px;
+      }
 
-        .admin-table th {
-            text-align: left;
-            padding: 1rem 1.5rem;
-            font-size: 0.875rem;
-            color: gray;
-            text-transform: uppercase;
-            font-weight: 700;
-        }
+      .admin-table th {
+        text-align: left;
+        padding: 1rem 1.5rem;
+        font-size: 0.875rem;
+        color: gray;
+        text-transform: uppercase;
+        font-weight: 700;
+      }
 
-        .lang-ur .admin-table th {
-            text-align: right;
-        }
+      .lang-ur .admin-table th {
+        text-align: right;
+      }
 
-        .admin-table td {
-            padding: 0.75rem 1.5rem;
-            background-color: white;
-            border-top: 1px solid #eee;
-            border-bottom: 1px solid #eee;
-            font-size: 0.8775rem;
-            font-weight: 500;
-        }
+      .admin-table td {
+        padding: 0.75rem 1.5rem;
+        background-color: white;
+        border-top: 1px solid #eee;
+        border-bottom: 1px solid #eee;
+        font-size: 0.8775rem;
+        font-weight: 500;
+      }
 
-        .admin-table tr td:first-child {
-            border-top-left-radius: 0.75rem;
-            border-bottom-left-radius: 0.75rem;
-        }
+      .admin-table tr td:first-child {
+        border-top-left-radius: 0.75rem;
+        border-bottom-left-radius: 0.75rem;
+      }
 
-        .admin-table tr td:last-child {
-            border-top-right-radius: 0.75rem;
-            border-bottom-right-radius: 0.75rem;
-        }
+      .admin-table tr td:last-child {
+        border-top-right-radius: 0.75rem;
+        border-bottom-right-radius: 0.75rem;
+      }
 
-        .lang-ur .admin-table tr td:first-child {
-            border-radius: 0;
-            border-top-right-radius: 0.75rem;
-            border-bottom-right-radius: 0.75rem;
-        }
+      .lang-ur .admin-table tr td:first-child {
+        border-radius: 0;
+        border-top-right-radius: 0.75rem;
+        border-bottom-right-radius: 0.75rem;
+      }
 
-        .lang-ur .admin-table tr td:last-child {
-            border-radius: 0;
-            border-top-left-radius: 0.75rem;
-            border-bottom-left-radius: 0.75rem;
-        }
+      .lang-ur .admin-table tr td:last-child {
+        border-radius: 0;
+        border-top-left-radius: 0.75rem;
+        border-bottom-left-radius: 0.75rem;
+      }
 
-        .table-container {
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-        }
+      .table-container {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
 
-        .table-container table {
-            min-width: 900px;
-        }
+      .table-container table {
+        min-width: 900px;
+      }
 
-        /* Modal Styles */
-        .modal-backdrop {
-            background-color: rgba(0, 0, 0, 0.6);
-            transition: opacity 0.3s ease;
-        }
+      /* Modal Styles */
+      .modal-backdrop {
+        background-color: rgba(0, 0, 0, 0.6);
+        transition: opacity 0.3s ease;
+      }
 
-        .modal-content {
-            background-color: var(--color-background);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
-            border-radius: 1rem;
-            max-width: 95%;
-            width: 500px;
-            max-height: 90vh;
-            overflow-y: auto;
-        }
+      .modal-content {
+        background-color: var(--color-background);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+        border-radius: 1rem;
+        max-width: 95%;
+        width: 500px;
+        max-height: 90vh;
+        overflow-y: auto;
+      }
 
-        .status-active {
-            color: #10b981;
-            font-weight: 600;
-        }
+      .status-active {
+        color: #10b981;
+        font-weight: 600;
+      }
 
-        .status-disabled {
-            color: #9ca3af;
-            font-weight: 600;
-        }
+      .status-disabled {
+        color: #9ca3af;
+        font-weight: 600;
+      }
     </style>
-</head>
+  </head>
 
-<body class="lang-en">
-
+  <body class="lang-en">
     <script>
-        // --- Dummy Data ---
-        let dummyItems = [
-            { id: 1, name: 'Aaloo', unit: 'kg', currentStock: 50.00, status: 'Active' },
-            { id: 2, name: 'Aata', unit: 'kg', currentStock: 100.00, status: 'Active' },
-            { id: 3, name: 'Chawal', unit: 'kg', currentStock: 345.00, status: 'Active' },
-            { id: 4, name: 'Dal', unit: 'kg', currentStock: 984.00, status: 'Active' },
-            { id: 5, name: 'Doodh', unit: 'liter', currentStock: 66.00, status: 'Active' },
-            { id: 6, name: 'Mirch', unit: 'grams', currentStock: 490.00, status: 'Active' },
-            { id: 7, name: 'Chai Patti', unit: 'kg', currentStock: 0.00, status: 'Disabled' },
-        ];
+      // --- Dummy Data ---
+      let dummyItems = [
+        {
+          id: 1,
+          name: "Aaloo",
+          unit: "kg",
+          currentStock: 50.0,
+          status: "Active",
+        },
+        {
+          id: 2,
+          name: "Aata",
+          unit: "kg",
+          currentStock: 100.0,
+          status: "Active",
+        },
+        {
+          id: 3,
+          name: "Chawal",
+          unit: "kg",
+          currentStock: 345.0,
+          status: "Active",
+        },
+        {
+          id: 4,
+          name: "Dal",
+          unit: "kg",
+          currentStock: 984.0,
+          status: "Active",
+        },
+        {
+          id: 5,
+          name: "Doodh",
+          unit: "liter",
+          currentStock: 66.0,
+          status: "Active",
+        },
+        {
+          id: 6,
+          name: "Mirch",
+          unit: "grams",
+          currentStock: 490.0,
+          status: "Active",
+        },
+        {
+          id: 7,
+          name: "Chai Patti",
+          unit: "kg",
+          currentStock: 0.0,
+          status: "Disabled",
+        },
+      ];
 
-        const ITEM_STORAGE_KEY = 'madarsaKitchenItems';
-        const AVAILABLE_UNITS = ['kg', 'grams', 'liter', 'pieces', 'dozen'];
+      const ITEM_STORAGE_KEY = "madarsaKitchenItems";
+      const AVAILABLE_UNITS = ["kg", "grams", "liter", "pieces", "dozen"];
 
-        // Initialize/Load Items from localStorage
-        function loadItems() {
-            const storedItems = localStorage.getItem(ITEM_STORAGE_KEY);
-            if (storedItems) {
-                try {
-                    // Load and ensure numbers are parsed correctly
-                    dummyItems = JSON.parse(storedItems).map(item => ({
-                        ...item,
-                        currentStock: parseFloat(item.currentStock)
-                    }));
-                } catch (e) {
-                    console.error("Error loading kitchen items:", e);
-                }
-            } else {
-                saveItems();
-            }
+      // Initialize/Load Items from localStorage
+      function loadItems() {
+        const storedItems = localStorage.getItem(ITEM_STORAGE_KEY);
+        if (storedItems) {
+          try {
+            // Load and ensure numbers are parsed correctly
+            dummyItems = JSON.parse(storedItems).map((item) => ({
+              ...item,
+              currentStock: parseFloat(item.currentStock),
+            }));
+          } catch (e) {
+            console.error("Error loading kitchen items:", e);
+          }
+        } else {
+          saveItems();
         }
+      }
 
-        // Save Items to localStorage
-        function saveItems() {
-            localStorage.setItem(ITEM_STORAGE_KEY, JSON.stringify(dummyItems));
+      // Save Items to localStorage
+      function saveItems() {
+        localStorage.setItem(ITEM_STORAGE_KEY, JSON.stringify(dummyItems));
+      }
+
+      // Helper to get item by ID
+      function getItemById(id) {
+        return dummyItems.find((item) => item.id === id);
+      }
+
+      // --- Multilingual Data ---
+      const langData = {
+        en: {
+          kitchen_system: "Kitchen System",
+          page_title: "Item Management",
+          back_to_kitchen: "Back to Kitchen",
+          logout: "Logout",
+          add_new_item: "Add new item",
+
+          // Table Headers
+          name: "Name",
+          current_stock: "Current Stock",
+          status: "Status",
+          unit: "Unit",
+          process: "Process",
+
+          // Actions
+          edit: "Edit",
+          delete: "Delete",
+          disable: "Disable",
+          enable: "Enable",
+          add_item_btn: "Add Item",
+
+          // Form Fields
+          item_name: "Name",
+          item_unit: "Unit",
+          item_status: "Status",
+          status_active: "Active",
+          status_disabled: "Disabled",
+
+          // Modal
+          modal_edit_title: "Edit Item Details",
+          save: "Save Changes",
+          cancel: "Cancel",
+
+          // Messages
+          confirm_delete:
+            "Are you sure you want to DELETE this item? This is permanent.",
+          confirm_disable:
+            "Are you sure you want to DISABLE this item? It will be archived.",
+          confirm_enable: "Are you sure you want to ENABLE this item?",
+          item_deleted: "Item deleted successfully!",
+          item_status_updated: "Item status updated.",
+          item_saved: "Item successfully updated!",
+          item_added: "New item successfully added!",
+          validation_error: "Please provide Name, Unit, and Status.",
+          name_exists_error: "Item name already exists.",
+        },
+        hi: {
+          kitchen_system: "रसोई प्रणाली",
+          page_title: "आइटम प्रबंधन",
+          back_to_kitchen: "रसोई पर वापस",
+          logout: "लॉगआउट",
+          add_new_item: "नया आइटम जोड़ें",
+
+          // Table Headers
+          name: "नाम",
+          current_stock: "वर्तमान स्टॉक",
+          status: "स्थिति",
+          unit: "इकाई",
+          process: "प्रक्रिया",
+
+          // Actions
+          edit: "संपादित करें",
+          delete: "हटाएँ",
+          disable: "अक्षम करें",
+          enable: "सक्षम करें",
+          add_item_btn: "आइटम जोड़ें",
+
+          // Form Fields
+          item_name: "नाम",
+          item_unit: "इकाई",
+          item_status: "स्थिति",
+          status_active: "सक्रिय",
+          status_disabled: "अक्षम",
+
+          // Modal
+          modal_edit_title: "आइटम विवरण संपादित करें",
+          save: "परिवर्तन सहेजें",
+          cancel: "रद्द करें",
+
+          // Messages
+          confirm_delete:
+            "क्या आप निश्चित रूप से इस आइटम को हटाना चाहते हैं? यह स्थायी है।",
+          confirm_disable:
+            "क्या आप निश्चित रूप से इस आइटम को अक्षम करना चाहते हैं? इसे संग्रह में डाल दिया जाएगा।",
+          confirm_enable:
+            "क्या आप निश्चित रूप से इस आइटम को सक्षम करना चाहते हैं?",
+          item_deleted: "आइटम सफलतापूर्वक हटा दिया गया!",
+          item_status_updated: "आइटम की स्थिति अपडेट की गई।",
+          item_saved: "आइटम सफलतापूर्वक अपडेट किया गया!",
+          item_added: "नया आइटम सफलतापूर्वक जोड़ा गया!",
+          validation_error: "कृपया नाम, इकाई और स्थिति प्रदान करें।",
+          name_exists_error: "आइटम का नाम पहले से मौजूद है।",
+        },
+        ur: {
+          kitchen_system: "باورچی خانہ نظام",
+          page_title: "آئٹم کا انتظام",
+          back_to_kitchen: "باورچی خانے پر واپس جائیں",
+          logout: "لاگ آؤٹ",
+          add_new_item: "نئی آئٹم شامل کریں",
+
+          // Table Headers
+          name: "نام",
+          current_stock: "موجودہ اسٹاک",
+          status: "حالت",
+          unit: "یونٹ",
+          process: "عمل",
+
+          // Actions
+          edit: "ترمیم کریں",
+          delete: "حذف کریں",
+          disable: "غیر فعال کریں",
+          enable: "فعال کریں",
+          add_item_btn: "آئٹم شامل کریں",
+
+          // Form Fields
+          item_name: "نام",
+          item_unit: "یونٹ",
+          item_status: "حالت",
+          status_active: "فعال",
+          status_disabled: "غیر فعال",
+
+          // Modal
+          modal_edit_title: "آئٹم کی تفصیلات میں ترمیم کریں",
+          save: "تبدیلیاں محفوظ کریں",
+          cancel: "منسوخ کریں",
+
+          // Messages
+          confirm_delete:
+            "کیا آپ واقعی اس آئٹم کو حذف کرنا چاہتے ہیں؟ یہ مستقل ہے۔",
+          confirm_disable:
+            "کیا آپ واقعی اس آئٹم کو غیر فعال کرنا چاہتے ہیں؟ اسے محفوظ کیا جائے گا۔",
+          confirm_enable: "کیا آپ واقعی اس آئٹم کو فعال کرنا چاہتے ہیں؟",
+          item_deleted: "آئٹم کامیابی سے حذف ہو گیا!",
+          item_status_updated: "آئٹم کی حیثیت اپ ڈیٹ ہو گئی۔",
+          item_saved: "آئٹم کامیابی سے اپ ڈیٹ ہو گیا!",
+          item_added: "نئی آئٹم کامیابی سے شامل کر دی گئی!",
+          validation_error: "براہ کرم نام، یونٹ، اور حیثیت فراہم کریں۔",
+          name_exists_error: "آئٹم کا نام پہلے سے موجود ہے۔",
+        },
+      };
+
+      let currentLang = "en";
+
+      function getTranslation(key) {
+        return langData[currentLang][key] || langData["en"][key] || key;
+      }
+
+      // --- Core UI Update Functions ---
+      function updateContent() {
+        document.body.className = "lang-" + currentLang;
+
+        document.querySelectorAll("[data-lang-key]").forEach((el) => {
+          const key = el.getAttribute("data-lang-key");
+          el.textContent = getTranslation(key);
+        });
+
+        renderTable(dummyItems);
+        populateUnitDropdown("item-unit-add");
+      }
+
+      function changeLanguage(lang) {
+        if (lang in langData) {
+          currentLang = lang;
+          localStorage.setItem("madarsaSystemLang", lang);
+          updateContent();
         }
+      }
 
-        // Helper to get item by ID
-        function getItemById(id) {
-            return dummyItems.find(item => item.id === id);
-        }
+      function populateUnitDropdown(elementId, selectedUnit = "") {
+        const dropdown = document.getElementById(elementId);
+        if (!dropdown) return;
 
-        // --- Multilingual Data ---
-        const langData = {
-            'en': {
-                'kitchen_system': 'Kitchen System',
-                'page_title': 'Item Management',
-                'back_to_kitchen': 'Back to Kitchen',
-                'logout': 'Logout',
-                'add_new_item': 'Add new item',
+        dropdown.innerHTML = "";
 
-                // Table Headers
-                'name': 'Name',
-                'current_stock': 'Current Stock',
-                'status': 'Status',
-                'unit': 'Unit',
-                'process': 'Process',
+        AVAILABLE_UNITS.forEach((unit) => {
+          const option = document.createElement("option");
+          option.value = unit;
+          option.textContent = unit;
+          option.selected = unit === selectedUnit;
+          dropdown.appendChild(option);
+        });
+      }
 
-                // Actions
-                'edit': 'Edit',
-                'delete': 'Delete',
-                'disable': 'Disable',
-                'enable': 'Enable',
-                'add_item_btn': 'Add Item',
+      // --- Table Rendering ---
+      function renderTable(itemList) {
+        const tbody = document.getElementById("items-table-body");
+        if (!tbody) return;
 
-                // Form Fields
-                'item_name': 'Name',
-                'item_unit': 'Unit',
-                'item_status': 'Status',
-                'status_active': 'Active',
-                'status_disabled': 'Disabled',
+        tbody.innerHTML = "";
 
-                // Modal
-                'modal_edit_title': 'Edit Item Details',
-                'save': 'Save Changes',
-                'cancel': 'Cancel',
+        itemList.forEach((item) => {
+          const tr = document.createElement("tr");
 
-                // Messages
-                'confirm_delete': 'Are you sure you want to DELETE this item? This is permanent.',
-                'confirm_disable': 'Are you sure you want to DISABLE this item? It will be archived.',
-                'confirm_enable': 'Are you sure you want to ENABLE this item?',
-                'item_deleted': 'Item deleted successfully!',
-                'item_status_updated': 'Item status updated.',
-                'item_saved': 'Item successfully updated!',
-                'item_added': 'New item successfully added!',
-                'validation_error': 'Please provide Name, Unit, and Status.',
-                'name_exists_error': 'Item name already exists.'
-            },
-            'hi': {
-                'kitchen_system': 'रसोई प्रणाली',
-                'page_title': 'आइटम प्रबंधन',
-                'back_to_kitchen': 'रसोई पर वापस',
-                'logout': 'लॉगआउट',
-                'add_new_item': 'नया आइटम जोड़ें',
+          const statusKey = `status_${item.status.toLowerCase()}`;
+          const statusText = getTranslation(statusKey);
+          const statusClass =
+            item.status === "Active" ? "status-active" : "status-disabled";
 
-                // Table Headers
-                'name': 'नाम',
-                'current_stock': 'वर्तमान स्टॉक',
-                'status': 'स्थिति',
-                'unit': 'इकाई',
-                'process': 'प्रक्रिया',
+          // Process Buttons
+          let processButtons;
+          const disableEnableBtn =
+            item.status === "Active"
+              ? `<button onclick="handleAction('disable', ${
+                  item.id
+                })" class="action-button btn-disable mr-1" data-lang-key="disable">${getTranslation(
+                  "disable"
+                )}</button>`
+              : `<button onclick="handleAction('enable', ${
+                  item.id
+                })" class="action-button btn-enable mr-1" data-lang-key="enable">${getTranslation(
+                  "enable"
+                )}</button>`;
 
-                // Actions
-                'edit': 'संपादित करें',
-                'delete': 'हटाएँ',
-                'disable': 'अक्षम करें',
-                'enable': 'सक्षम करें',
-                'add_item_btn': 'आइटम जोड़ें',
-
-                // Form Fields
-                'item_name': 'नाम',
-                'item_unit': 'इकाई',
-                'item_status': 'स्थिति',
-                'status_active': 'सक्रिय',
-                'status_disabled': 'अक्षम',
-
-                // Modal
-                'modal_edit_title': 'आइटम विवरण संपादित करें',
-                'save': 'परिवर्तन सहेजें',
-                'cancel': 'रद्द करें',
-
-                // Messages
-                'confirm_delete': 'क्या आप निश्चित रूप से इस आइटम को हटाना चाहते हैं? यह स्थायी है।',
-                'confirm_disable': 'क्या आप निश्चित रूप से इस आइटम को अक्षम करना चाहते हैं? इसे संग्रह में डाल दिया जाएगा।',
-                'confirm_enable': 'क्या आप निश्चित रूप से इस आइटम को सक्षम करना चाहते हैं?',
-                'item_deleted': 'आइटम सफलतापूर्वक हटा दिया गया!',
-                'item_status_updated': 'आइटम की स्थिति अपडेट की गई।',
-                'item_saved': 'आइटम सफलतापूर्वक अपडेट किया गया!',
-                'item_added': 'नया आइटम सफलतापूर्वक जोड़ा गया!',
-                'validation_error': 'कृपया नाम, इकाई और स्थिति प्रदान करें।',
-                'name_exists_error': 'आइटम का नाम पहले से मौजूद है।'
-            },
-            'ur': {
-                'kitchen_system': 'باورچی خانہ نظام',
-                'page_title': 'آئٹم کا انتظام',
-                'back_to_kitchen': 'باورچی خانے پر واپس جائیں',
-                'logout': 'لاگ آؤٹ',
-                'add_new_item': 'نئی آئٹم شامل کریں',
-
-                // Table Headers
-                'name': 'نام',
-                'current_stock': 'موجودہ اسٹاک',
-                'status': 'حالت',
-                'unit': 'یونٹ',
-                'process': 'عمل',
-
-                // Actions
-                'edit': 'ترمیم کریں',
-                'delete': 'حذف کریں',
-                'disable': 'غیر فعال کریں',
-                'enable': 'فعال کریں',
-                'add_item_btn': 'آئٹم شامل کریں',
-
-                // Form Fields
-                'item_name': 'نام',
-                'item_unit': 'یونٹ',
-                'item_status': 'حالت',
-                'status_active': 'فعال',
-                'status_disabled': 'غیر فعال',
-
-                // Modal
-                'modal_edit_title': 'آئٹم کی تفصیلات میں ترمیم کریں',
-                'save': 'تبدیلیاں محفوظ کریں',
-                'cancel': 'منسوخ کریں',
-
-                // Messages
-                'confirm_delete': 'کیا آپ واقعی اس آئٹم کو حذف کرنا چاہتے ہیں؟ یہ مستقل ہے۔',
-                'confirm_disable': 'کیا آپ واقعی اس آئٹم کو غیر فعال کرنا چاہتے ہیں؟ اسے محفوظ کیا جائے گا۔',
-                'confirm_enable': 'کیا آپ واقعی اس آئٹم کو فعال کرنا چاہتے ہیں؟',
-                'item_deleted': 'آئٹم کامیابی سے حذف ہو گیا!',
-                'item_status_updated': 'آئٹم کی حیثیت اپ ڈیٹ ہو گئی۔',
-                'item_saved': 'آئٹم کامیابی سے اپ ڈیٹ ہو گیا!',
-                'item_added': 'نئی آئٹم کامیابی سے شامل کر دی گئی!',
-                'validation_error': 'براہ کرم نام، یونٹ، اور حیثیت فراہم کریں۔',
-                'name_exists_error': 'آئٹم کا نام پہلے سے موجود ہے۔'
-            }
-        };
-
-        let currentLang = 'en';
-
-        function getTranslation(key) {
-            return langData[currentLang][key] || langData['en'][key] || key;
-        }
-
-        // --- Core UI Update Functions ---
-        function updateContent() {
-            document.body.className = 'lang-' + currentLang;
-
-            document.querySelectorAll('[data-lang-key]').forEach(el => {
-                const key = el.getAttribute('data-lang-key');
-                el.textContent = getTranslation(key);
-            });
-
-            renderTable(dummyItems);
-            populateUnitDropdown('item-unit-add');
-        }
-
-        function changeLanguage(lang) {
-            if (lang in langData) {
-                currentLang = lang;
-                localStorage.setItem('madarsaSystemLang', lang);
-                updateContent();
-            }
-        }
-
-        function populateUnitDropdown(elementId, selectedUnit = '') {
-            const dropdown = document.getElementById(elementId);
-            if (!dropdown) return;
-
-            dropdown.innerHTML = '';
-
-            AVAILABLE_UNITS.forEach(unit => {
-                const option = document.createElement('option');
-                option.value = unit;
-                option.textContent = unit;
-                option.selected = unit === selectedUnit;
-                dropdown.appendChild(option);
-            });
-        }
-
-        // --- Table Rendering ---
-        function renderTable(itemList) {
-            const tbody = document.getElementById('items-table-body');
-            if (!tbody) return;
-
-            tbody.innerHTML = '';
-
-            itemList.forEach(item => {
-                const tr = document.createElement('tr');
-
-                const statusKey = `status_${item.status.toLowerCase()}`;
-                const statusText = getTranslation(statusKey);
-                const statusClass = item.status === 'Active' ? 'status-active' : 'status-disabled';
-
-                // Process Buttons
-                let processButtons;
-                const disableEnableBtn = item.status === 'Active'
-                    ? `<button onclick="handleAction('disable', ${item.id})" class="action-button btn-disable mr-1" data-lang-key="disable">${getTranslation('disable')}</button>`
-                    : `<button onclick="handleAction('enable', ${item.id})" class="action-button btn-enable mr-1" data-lang-key="enable">${getTranslation('enable')}</button>`;
-
-                processButtons = `
+          processButtons = `
                     ${disableEnableBtn}
-                    <button onclick="handleAction('delete', ${item.id})" class="action-button btn-delete mr-1" data-lang-key="delete">${getTranslation('delete')}</button>
-                    <button onclick="handleAction('edit', ${item.id})" class="action-button btn-edit" data-lang-key="edit">${getTranslation('edit')}</button>
+                    <button onclick="handleAction('delete', ${
+                      item.id
+                    })" class="action-button btn-delete mr-1" data-lang-key="delete">${getTranslation(
+            "delete"
+          )}</button>
+                    <button onclick="handleAction('edit', ${
+                      item.id
+                    })" class="action-button btn-edit" data-lang-key="edit">${getTranslation(
+            "edit"
+          )}</button>
                 `;
 
-                tr.innerHTML = `
+          tr.innerHTML = `
                     <td class="font-bold text-gray-800">${item.name}</td>
                     <td>${item.unit}</td>
                     <td class="${statusClass}">${statusText}</td>
                     <td>${item.currentStock.toFixed(2)}</td>
                     <td>${processButtons}</td>
                 `;
-                tbody.appendChild(tr);
-            });
+          tbody.appendChild(tr);
+        });
+      }
+
+      // --- Action Dispatcher ---
+      function handleAction(action, id) {
+        const item = getItemById(id);
+        if (!item) return;
+
+        if (action === "edit") {
+          openItemModal(item);
+        } else if (action === "delete") {
+          if (confirm(`${getTranslation("confirm_delete")} (${item.name})`)) {
+            deleteItem(id);
+          }
+        } else if (action === "disable" || action === "enable") {
+          const confirmationKey =
+            action === "disable" ? "confirm_disable" : "confirm_enable";
+          if (confirm(`${getTranslation(confirmationKey)} (${item.name})`)) {
+            updateItemStatus(id, action === "enable" ? "Active" : "Disabled");
+          }
         }
+      }
 
-        // --- Action Dispatcher ---
-        function handleAction(action, id) {
-            const item = getItemById(id);
-            if (!item) return;
+      function deleteItem(id) {
+        dummyItems = dummyItems.filter((item) => item.id !== id);
+        saveItems();
+        updateContent();
+        alert(getTranslation("item_deleted"));
+      }
 
-            if (action === 'edit') {
-                openItemModal(item);
-            } else if (action === 'delete') {
-                if (confirm(`${getTranslation('confirm_delete')} (${item.name})`)) {
-                    deleteItem(id);
-                }
-            } else if (action === 'disable' || action === 'enable') {
-                const confirmationKey = action === 'disable' ? 'confirm_disable' : 'confirm_enable';
-                if (confirm(`${getTranslation(confirmationKey)} (${item.name})`)) {
-                    updateItemStatus(id, action === 'enable' ? 'Active' : 'Disabled');
-                }
-            }
+      function updateItemStatus(id, status) {
+        const itemIndex = dummyItems.findIndex((item) => item.id === id);
+        if (itemIndex !== -1) {
+          dummyItems[itemIndex].status = status;
+          saveItems();
+          updateContent();
+          alert(getTranslation("item_status_updated"));
         }
+      }
 
-        function deleteItem(id) {
-            dummyItems = dummyItems.filter(item => item.id !== id);
-            saveItems();
-            updateContent();
-            alert(getTranslation('item_deleted'));
-        }
+      // --- Modal Handling ---
+      function openItemModal(item) {
+        const modal = document.getElementById("item-modal");
+        const isRtl = currentLang === "ur";
 
-        function updateItemStatus(id, status) {
-            const itemIndex = dummyItems.findIndex(item => item.id === id);
-            if (itemIndex !== -1) {
-                dummyItems[itemIndex].status = status;
-                saveItems();
-                updateContent();
-                alert(getTranslation('item_status_updated'));
-            }
-        }
+        document.getElementById("modal-title").textContent =
+          getTranslation("modal_edit_title") + `: ${item.name}`;
 
-        // --- Modal Handling ---
-        function openItemModal(item) {
-            const modal = document.getElementById('item-modal');
-            const isRtl = currentLang === 'ur';
-
-            document.getElementById('modal-title').textContent = getTranslation('modal_edit_title') + `: ${item.name}`;
-
-            const formHtml = `
-                <form id="edit-item-form" onsubmit="return saveEditedItem(event, ${item.id})">
+        const formHtml = `
+                <form id="edit-item-form" onsubmit="return saveEditedItem(event, ${
+                  item.id
+                })">
                     <div class="form-group">
-                        <label for="edit-name" class="form-label">${getTranslation('item_name')}</label>
-                        <input type="text" id="edit-name" class="form-input" value="${item.name}" required>
+                        <label for="edit-name" class="form-label">${getTranslation(
+                          "item_name"
+                        )}</label>
+                        <input type="text" id="edit-name" class="form-input" value="${
+                          item.name
+                        }" required>
                     </div>
                     
                     <div class="grid grid-cols-2 gap-4 mt-4">
                         <div class="form-group">
-                            <label for="edit-unit" class="form-label">${getTranslation('item_unit')}</label>
+                            <label for="edit-unit" class="form-label">${getTranslation(
+                              "item_unit"
+                            )}</label>
                             <select id="edit-unit" class="form-input"></select>
                         </div>
                         <div class="form-group">
-                            <label for="edit-stock" class="form-label">${getTranslation('current_stock')}</label>
-                            <input type="number" id="edit-stock" class="form-input bg-gray-100" value="${item.currentStock.toFixed(2)}" step="0.01" disabled>
+                            <label for="edit-stock" class="form-label">${getTranslation(
+                              "current_stock"
+                            )}</label>
+                            <input type="number" id="edit-stock" class="form-input bg-gray-100" value="${item.currentStock.toFixed(
+                              2
+                            )}" step="0.01" disabled>
                         </div>
                     </div>
                     
                     <div class="form-group mt-4">
-                        <label for="edit-status" class="form-label">${getTranslation('item_status')}</label>
+                        <label for="edit-status" class="form-label">${getTranslation(
+                          "item_status"
+                        )}</label>
                         <select id="edit-status" class="form-input">
-                            <option value="Active" ${item.status === 'Active' ? 'selected' : ''}>${getTranslation('status_active')}</option>
-                            <option value="Disabled" ${item.status === 'Disabled' ? 'selected' : ''}>${getTranslation('status_disabled')}</option>
+                            <option value="Active" ${
+                              item.status === "Active" ? "selected" : ""
+                            }>${getTranslation("status_active")}</option>
+                            <option value="Disabled" ${
+                              item.status === "Disabled" ? "selected" : ""
+                            }>${getTranslation("status_disabled")}</option>
                         </select>
                     </div>
 
                     <div class="flex justify-end space-x-4 mt-6">
-                        <button type="button" onclick="closeItemModal()" class="action-button secondary">${getTranslation('cancel')}</button>
-                        <button type="submit" class="primary-button">${getTranslation('save')}</button>
+                        <button type="button" onclick="closeItemModal()" class="action-button secondary">${getTranslation(
+                          "cancel"
+                        )}</button>
+                        <button type="submit" class="primary-button">${getTranslation(
+                          "save"
+                        )}</button>
                     </div>
                 </form>
             `;
 
-            document.getElementById('modal-body').innerHTML = formHtml;
+        document.getElementById("modal-body").innerHTML = formHtml;
 
-            // Populate unit dropdown for the modal
-            populateUnitDropdown('edit-unit', item.unit);
+        // Populate unit dropdown for the modal
+        populateUnitDropdown("edit-unit", item.unit);
 
-            // Ensure form alignment is respected for RTL/LTL
-            document.getElementById('edit-item-form').style.textAlign = isRtl ? 'right' : 'left';
+        // Ensure form alignment is respected for RTL/LTL
+        document.getElementById("edit-item-form").style.textAlign = isRtl
+          ? "right"
+          : "left";
 
+        modal.classList.remove("hidden", "opacity-0");
+      }
 
-            modal.classList.remove('hidden', 'opacity-0');
+      function closeItemModal() {
+        document.getElementById("item-modal").classList.add("opacity-0");
+        setTimeout(() => {
+          document.getElementById("item-modal").classList.add("hidden");
+        }, 300);
+      }
+
+      function saveEditedItem(event, id) {
+        event.preventDefault();
+        const form = event.target;
+        const newName = form.querySelector("#edit-name").value.trim();
+        const newUnit = form.querySelector("#edit-unit").value;
+        const newStatus = form.querySelector("#edit-status").value;
+
+        if (!newName || !newUnit || !newStatus) {
+          alert(getTranslation("validation_error"));
+          return false;
         }
 
-        function closeItemModal() {
-            document.getElementById('item-modal').classList.add('opacity-0');
-            setTimeout(() => { document.getElementById('item-modal').classList.add('hidden'); }, 300);
+        const itemIndex = dummyItems.findIndex((item) => item.id === id);
+
+        // Check for name conflict (excluding current item)
+        const nameConflict = dummyItems.some(
+          (item, index) => item.name === newName && index !== itemIndex
+        );
+        if (nameConflict) {
+          alert(getTranslation("name_exists_error"));
+          return false;
         }
 
-        function saveEditedItem(event, id) {
-            event.preventDefault();
-            const form = event.target;
-            const newName = form.querySelector('#edit-name').value.trim();
-            const newUnit = form.querySelector('#edit-unit').value;
-            const newStatus = form.querySelector('#edit-status').value;
-
-            if (!newName || !newUnit || !newStatus) {
-                alert(getTranslation('validation_error'));
-                return false;
-            }
-
-            const itemIndex = dummyItems.findIndex(item => item.id === id);
-
-            // Check for name conflict (excluding current item)
-            const nameConflict = dummyItems.some((item, index) => item.name === newName && index !== itemIndex);
-            if (nameConflict) {
-                alert(getTranslation('name_exists_error'));
-                return false;
-            }
-
-            if (itemIndex !== -1) {
-                dummyItems[itemIndex] = {
-                    ...dummyItems[itemIndex],
-                    name: newName,
-                    unit: newUnit,
-                    status: newStatus
-                };
-                saveItems();
-                closeItemModal();
-                updateContent();
-                alert(getTranslation('item_saved'));
-            }
-
-            return false;
+        if (itemIndex !== -1) {
+          dummyItems[itemIndex] = {
+            ...dummyItems[itemIndex],
+            name: newName,
+            unit: newUnit,
+            status: newStatus,
+          };
+          saveItems();
+          closeItemModal();
+          updateContent();
+          alert(getTranslation("item_saved"));
         }
 
-        // --- Add New Item Logic ---
-        function addNewItem(event) {
-            event.preventDefault();
-            const form = event.target;
-            const name = form.querySelector('#item-name-add').value.trim();
-            const unit = form.querySelector('#item-unit-add').value;
+        return false;
+      }
 
-            if (!name || !unit) {
-                alert(getTranslation('validation_error'));
-                return false;
-            }
+      // --- Add New Item Logic ---
+      function addNewItem(event) {
+        event.preventDefault();
+        const form = event.target;
+        const name = form.querySelector("#item-name-add").value.trim();
+        const unit = form.querySelector("#item-unit-add").value;
 
-            // Check for name conflict
-            const nameConflict = dummyItems.some(item => item.name === name);
-            if (nameConflict) {
-                alert(getTranslation('name_exists_error'));
-                return false;
-            }
-
-            const newId = dummyItems.length > 0 ? Math.max(...dummyItems.map(i => i.id)) + 1 : 1;
-
-            const newItem = {
-                id: newId,
-                name: name,
-                unit: unit,
-                currentStock: 0.00,
-                status: 'Active'
-            };
-
-            dummyItems.push(newItem);
-            saveItems();
-
-            form.reset();
-            updateContent();
-            alert(getTranslation('item_added'));
-
-            return false;
+        if (!name || !unit) {
+          alert(getTranslation("validation_error"));
+          return false;
         }
 
+        // Check for name conflict
+        const nameConflict = dummyItems.some((item) => item.name === name);
+        if (nameConflict) {
+          alert(getTranslation("name_exists_error"));
+          return false;
+        }
 
-        // Initialize content and language
-        window.onload = function () {
-            loadItems(); // Load data
-            const storedLang = localStorage.getItem('madarsaSystemLang');
-            currentLang = (storedLang && storedLang in langData) ? storedLang : 'en';
+        const newId =
+          dummyItems.length > 0
+            ? Math.max(...dummyItems.map((i) => i.id)) + 1
+            : 1;
 
-            // Initial content update and table render
-            updateContent();
-
-            // Attach form listener for adding new item
-            document.getElementById('add-new-item-form').addEventListener('submit', addNewItem);
+        const newItem = {
+          id: newId,
+          name: name,
+          unit: unit,
+          currentStock: 0.0,
+          status: "Active",
         };
+
+        dummyItems.push(newItem);
+        saveItems();
+
+        form.reset();
+        updateContent();
+        alert(getTranslation("item_added"));
+
+        return false;
+      }
+
+      function logOut() {
+        localStorage.removeItem("isUserLoggedIn");
+        localStorage.removeItem("authToken");
+        localStorage.removeItem("userData");
+        window.location.href = "index.html";
+      }
+
+      // Initialize content and language
+      window.onload = function () {
+        loadItems(); // Load data
+        const storedLang = localStorage.getItem("madarsaSystemLang");
+        currentLang = storedLang && storedLang in langData ? storedLang : "en";
+
+        // Initial content update and table render
+        updateContent();
+
+        // Attach form listener for adding new item
+        document
+          .getElementById("add-new-item-form")
+          .addEventListener("submit", addNewItem);
+      };
     </script>
 
     <!-- HEADER -->
     <header>
-        <div class="max-w-7xl mx-auto w-full flex justify-between items-center">
-            <!-- Left: Back Button & Title -->
-            <div class="flex items-center space-x-4">
-                <a href="kitchen_system.html" class="action-button bg-gray-100 text-gray-700 hover:bg-gray-200"
-                    data-lang-key="back_to_kitchen">Back to Kitchen</a>
-                <h1 class="text-xl font-bold" data-lang-key="page_title" style="color: var(--color-primary);">Item
-                    Management</h1>
-            </div>
-
-            <!-- Right: Language Switch -->
-            <div class="flex items-center space-x-2">
-                <select onchange="changeLanguage(this.value)" class="bg-gray-100 rounded-lg p-1 text-sm">
-                    <option value="en" selected>English</option>
-                    <option value="hi">हिन्दी</option>
-                    <option value="ur">اردو</option>
-                </select>
-                <button onclick="window.location.href='login.html'"
-                    class="text-sm font-semibold text-red-600 hover:text-red-800 transition-colors ml-4"
-                    data-lang-key="logout">Logout</button>
-            </div>
+      <div class="max-w-7xl mx-auto w-full flex justify-between items-center">
+        <!-- Left: Back Button & Title -->
+        <div class="flex items-center space-x-4">
+          <a
+            href="kitchen_system.html"
+            class="action-button bg-gray-100 text-gray-700 hover:bg-gray-200"
+            data-lang-key="back_to_kitchen"
+            >Back to Kitchen</a
+          >
+          <h1
+            class="text-xl font-bold"
+            data-lang-key="page_title"
+            style="color: var(--color-primary)"
+          >
+            Item Management
+          </h1>
         </div>
+
+        <!-- Right: Language Switch -->
+        <div class="flex items-center space-x-2">
+          <select
+            onchange="changeLanguage(this.value)"
+            class="bg-gray-100 rounded-lg p-1 text-sm"
+          >
+            <option value="en" selected>English</option>
+            <option value="hi">हिन्दी</option>
+            <option value="ur">اردو</option>
+          </select>
+          <button
+            onclick="logOut()"
+            class="text-sm font-semibold text-red-600 hover:text-red-800 transition-colors ml-4"
+            data-lang-key="logout"
+          >
+            Logout
+          </button>
+        </div>
+      </div>
     </header>
 
     <!-- MAIN CONTENT AREA -->
     <main class="max-w-7xl mx-auto w-full p-4 md:p-8">
+      <!-- Add New Item Form -->
+      <div class="bg-white p-6 md:p-8 rounded-xl shadow-2xl mb-8">
+        <h2
+          class="text-2xl font-bold text-gray-700 mb-6"
+          data-lang-key="add_new_item"
+        >
+          Add new item
+        </h2>
 
-        <!-- Add New Item Form -->
-        <div class="bg-white p-6 md:p-8 rounded-xl shadow-2xl mb-8">
-            <h2 class="text-2xl font-bold text-gray-700 mb-6" data-lang-key="add_new_item">Add new item</h2>
-
-            <form id="add-new-item-form">
-                <div class="grid grid-cols-1 sm:grid-cols-4 gap-4 items-end">
-
-                    <!-- Item Name -->
-                    <div class="form-group">
-                        <label for="item-name-add" class="form-label" data-lang-key="item_name">Name</label>
-                        <input type="text" id="item-name-add" class="form-input" required>
-                    </div>
-
-                    <!-- Unit -->
-                    <div class="form-group">
-                        <label for="item-unit-add" class="form-label" data-lang-key="item_unit">Unit</label>
-                        <select id="item-unit-add" class="form-input" required>
-                            <!-- Options populated by JS -->
-                        </select>
-                    </div>
-
-                    <!-- Placeholder to align button -->
-                    <div class="hidden sm:block"></div>
-
-                    <!-- Add Button -->
-                    <div class="flex justify-end">
-                        <button type="submit" class="primary-button" data-lang-key="add_item_btn">Add Item</button>
-                    </div>
-                </div>
-            </form>
-        </div>
-
-
-        <!-- Item Management Table -->
-        <div class="bg-white p-6 md:p-8 rounded-xl shadow-2xl">
-            <h2 class="text-2xl font-bold text-gray-700 mb-6" data-lang-key="page_title">Item Management</h2>
-
-            <div class="table-container">
-                <table class="admin-table">
-                    <thead>
-                        <tr class="bg-gray-100 rounded-lg">
-                            <th data-lang-key="name">Name</th>
-                            <th data-lang-key="unit">Unit</th>
-                            <th data-lang-key="status">Status</th>
-                            <th data-lang-key="current_stock">Current Stock</th>
-                            <th data-lang-key="process">Process</th>
-                        </tr>
-                    </thead>
-                    <tbody id="items-table-body">
-                        <!-- Item data will be injected here by JS -->
-                    </tbody>
-                </table>
+        <form id="add-new-item-form">
+          <div class="grid grid-cols-1 sm:grid-cols-4 gap-4 items-end">
+            <!-- Item Name -->
+            <div class="form-group">
+              <label
+                for="item-name-add"
+                class="form-label"
+                data-lang-key="item_name"
+                >Name</label
+              >
+              <input
+                type="text"
+                id="item-name-add"
+                class="form-input"
+                required
+              />
             </div>
+
+            <!-- Unit -->
+            <div class="form-group">
+              <label
+                for="item-unit-add"
+                class="form-label"
+                data-lang-key="item_unit"
+                >Unit</label
+              >
+              <select id="item-unit-add" class="form-input" required>
+                <!-- Options populated by JS -->
+              </select>
+            </div>
+
+            <!-- Placeholder to align button -->
+            <div class="hidden sm:block"></div>
+
+            <!-- Add Button -->
+            <div class="flex justify-end">
+              <button
+                type="submit"
+                class="primary-button"
+                data-lang-key="add_item_btn"
+              >
+                Add Item
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- Item Management Table -->
+      <div class="bg-white p-6 md:p-8 rounded-xl shadow-2xl">
+        <h2
+          class="text-2xl font-bold text-gray-700 mb-6"
+          data-lang-key="page_title"
+        >
+          Item Management
+        </h2>
+
+        <div class="table-container">
+          <table class="admin-table">
+            <thead>
+              <tr class="bg-gray-100 rounded-lg">
+                <th data-lang-key="name">Name</th>
+                <th data-lang-key="unit">Unit</th>
+                <th data-lang-key="status">Status</th>
+                <th data-lang-key="current_stock">Current Stock</th>
+                <th data-lang-key="process">Process</th>
+              </tr>
+            </thead>
+            <tbody id="items-table-body">
+              <!-- Item data will be injected here by JS -->
+            </tbody>
+          </table>
         </div>
+      </div>
     </main>
 
     <!-- ITEM EDIT MODAL -->
-    <div id="item-modal"
-        class="hidden opacity-0 fixed inset-0 z-50 flex items-center justify-center modal-backdrop transition-opacity duration-300">
-        <div class="modal-content p-6 md:p-8 transform scale-100 transition-transform duration-300"
-            style="border: 3px solid var(--color-primary);">
-            <div class="flex justify-between items-start pb-4 border-b mb-6">
-                <h3 id="modal-title" class="text-xl font-bold text-gray-700">Edit Item Details</h3>
-                <button onclick="closeItemModal()" class="text-gray-500 hover:text-gray-900 transition-colors p-1"
-                    aria-label="Close">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
-                        stroke="currentColor" class="w-6 h-6">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
-            </div>
-            <div id="modal-body">
-                <!-- Dynamic form content goes here -->
-            </div>
+    <div
+      id="item-modal"
+      class="hidden opacity-0 fixed inset-0 z-50 flex items-center justify-center modal-backdrop transition-opacity duration-300"
+    >
+      <div
+        class="modal-content p-6 md:p-8 transform scale-100 transition-transform duration-300"
+        style="border: 3px solid var(--color-primary)"
+      >
+        <div class="flex justify-between items-start pb-4 border-b mb-6">
+          <h3 id="modal-title" class="text-xl font-bold text-gray-700">
+            Edit Item Details
+          </h3>
+          <button
+            onclick="closeItemModal()"
+            class="text-gray-500 hover:text-gray-900 transition-colors p-1"
+            aria-label="Close"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="2"
+              stroke="currentColor"
+              class="w-6 h-6"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
         </div>
+        <div id="modal-body">
+          <!-- Dynamic form content goes here -->
+        </div>
+      </div>
     </div>
-</body>
-
+  </body>
 </html>

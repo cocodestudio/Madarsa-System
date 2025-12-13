@@ -1,812 +1,1032 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Responsibilities - Admin</title>
     <script src="https://cdn.tailwindcss.com"></script>
 
     <style>
-        :root {
-            --color-primary: #00A693;
-            --color-background: #F2F3F4;
-            --color-accent: #E08A27;
-            --color-text-dark: #1A1A1A;
-            --color-text-light: #FFFFFF;
-        }
+      :root {
+        --color-primary: #00a693;
+        --color-background: #f2f3f4;
+        --color-accent: #e08a27;
+        --color-text-dark: #1a1a1a;
+        --color-text-light: #ffffff;
+      }
 
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;700&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap');
+      @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;700&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap");
 
-        /* Language Styles */
-        body,
-        .lang-en {
-            font-family: 'Poppins', sans-serif;
-            direction: ltr;
-            background-color: var(--color-background);
-        }
+      /* Language Styles */
+      body,
+      .lang-en {
+        font-family: "Poppins", sans-serif;
+        direction: ltr;
+        background-color: var(--color-background);
+      }
 
-        .lang-hi {
-            font-family: 'Noto Sans Devanagari', sans-serif;
-            direction: ltr;
-        }
+      .lang-hi {
+        font-family: "Noto Sans Devanagari", sans-serif;
+        direction: ltr;
+      }
 
-        .lang-ur {
-            font-family: 'Noto Nastaliq Urdu', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
-            direction: rtl;
-            line-height: 1.8;
-            text-align: right;
-        }
+      .lang-ur {
+        font-family: "Noto Nastaliq Urdu", "Segoe UI", Tahoma, Geneva, Verdana,
+          sans-serif !important;
+        direction: rtl;
+        line-height: 1.8;
+        text-align: right;
+      }
 
-        /* Form & Table Inputs */
-        .form-input,
-        select,
-        .form-textarea {
-            padding: 0.75rem 1rem;
-            border-radius: 0.5rem;
-            border: 1px solid #ccc;
-            width: 100%;
-            font-family: inherit;
-        }
+      /* Form & Table Inputs */
+      .form-input,
+      select,
+      .form-textarea {
+        padding: 0.75rem 1rem;
+        border-radius: 0.5rem;
+        border: 1px solid #ccc;
+        width: 100%;
+        font-family: inherit;
+      }
 
-        .form-input:focus,
-        select:focus,
-        .form-textarea:focus {
-            outline: none;
-            border-color: var(--color-primary);
-            box-shadow: 0 0 0 3px rgba(0, 166, 147, 0.2);
-        }
+      .form-input:focus,
+      select:focus,
+      .form-textarea:focus {
+        outline: none;
+        border-color: var(--color-primary);
+        box-shadow: 0 0 0 3px rgba(0, 166, 147, 0.2);
+      }
 
-        .form-label {
-            display: block;
-            font-weight: 600;
-            margin-bottom: 0.25rem;
-            font-size: 0.875rem;
-        }
+      .form-label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 0.25rem;
+        font-size: 0.875rem;
+      }
 
-        /* Buttons */
-        .primary-button {
-            padding: 0.8rem 1.5rem;
-            background-color: var(--color-primary);
-            color: var(--color-text-light);
-            font-weight: 600;
-            border-radius: 0.75rem;
-            transition: background-color 0.3s, transform 0.1s;
-            box-shadow: 0 4px 10px rgba(0, 166, 147, 0.4);
-            cursor: pointer;
-        }
+      /* Buttons */
+      .primary-button {
+        padding: 0.8rem 1.5rem;
+        background-color: var(--color-primary);
+        color: var(--color-text-light);
+        font-weight: 600;
+        border-radius: 0.75rem;
+        transition: background-color 0.3s, transform 0.1s;
+        box-shadow: 0 4px 10px rgba(0, 166, 147, 0.4);
+        cursor: pointer;
+      }
 
-        .primary-button:hover {
-            background-color: #008f7d;
-            transform: translateY(-1px);
-        }
+      .primary-button:hover {
+        background-color: #008f7d;
+        transform: translateY(-1px);
+      }
 
-        .action-button {
-            padding: 0.5rem 0.75rem;
-            border-radius: 0.5rem;
-            font-size: 0.875rem;
-            font-weight: 600;
-            transition: background-color 0.2s;
-        }
+      .action-button {
+        padding: 0.5rem 0.75rem;
+        border-radius: 0.5rem;
+        font-size: 0.875rem;
+        font-weight: 600;
+        transition: background-color 0.2s;
+      }
 
-        .delete-button {
-            background-color: #fce8e8;
-            color: #cc0000;
-        }
+      .delete-button {
+        background-color: #fce8e8;
+        color: #cc0000;
+      }
 
-        .delete-button:hover {
-            background-color: #fcc;
-        }
+      .delete-button:hover {
+        background-color: #fcc;
+      }
 
-        /* Table Styling */
-        .admin-table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0 10px;
-        }
+      /* Table Styling */
+      .admin-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0 10px;
+      }
 
-        .admin-table th {
-            text-align: left;
-            padding: 1rem 1.5rem;
-            font-size: 0.875rem;
-            color: gray;
-            text-transform: uppercase;
-            font-weight: 700;
-        }
+      .admin-table th {
+        text-align: left;
+        padding: 1rem 1.5rem;
+        font-size: 0.875rem;
+        color: gray;
+        text-transform: uppercase;
+        font-weight: 700;
+      }
 
-        .lang-ur .admin-table th {
-            text-align: right;
-        }
+      .lang-ur .admin-table th {
+        text-align: right;
+      }
 
-        .admin-table td {
-            padding: 1rem 1.5rem;
-            background-color: white;
-            border-top: 1px solid #eee;
-            border-bottom: 1px solid #eee;
-            font-size: 0.8775rem;
-            font-weight: 500;
-        }
+      .admin-table td {
+        padding: 1rem 1.5rem;
+        background-color: white;
+        border-top: 1px solid #eee;
+        border-bottom: 1px solid #eee;
+        font-size: 0.8775rem;
+        font-weight: 500;
+      }
 
-        .admin-table tr td:first-child {
-            border-top-left-radius: 0.75rem;
-            border-bottom-left-radius: 0.75rem;
-        }
+      .admin-table tr td:first-child {
+        border-top-left-radius: 0.75rem;
+        border-bottom-left-radius: 0.75rem;
+      }
 
-        .admin-table tr td:last-child {
-            border-top-right-radius: 0.75rem;
-            border-bottom-right-radius: 0.75rem;
-        }
+      .admin-table tr td:last-child {
+        border-top-right-radius: 0.75rem;
+        border-bottom-right-radius: 0.75rem;
+      }
 
-        .lang-ur .admin-table tr td:first-child {
-            border-radius: 0;
-            border-top-right-radius: 0.75rem;
-            border-bottom-right-radius: 0.75rem;
-        }
+      .lang-ur .admin-table tr td:first-child {
+        border-radius: 0;
+        border-top-right-radius: 0.75rem;
+        border-bottom-right-radius: 0.75rem;
+      }
 
-        .lang-ur .admin-table tr td:last-child {
-            border-radius: 0;
-            border-top-left-radius: 0.75rem;
-            border-bottom-left-radius: 0.75rem;
-        }
+      .lang-ur .admin-table tr td:last-child {
+        border-radius: 0;
+        border-top-left-radius: 0.75rem;
+        border-bottom-left-radius: 0.75rem;
+      }
 
-        .status-pill {
-            display: inline-block;
-            padding: 0.3rem 0.7rem;
-            border-radius: 9999px;
-            font-size: 0.75rem;
-            font-weight: 700;
-            text-transform: uppercase;
-        }
+      .status-pill {
+        display: inline-block;
+        padding: 0.3rem 0.7rem;
+        border-radius: 9999px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+      }
 
-        /* Modal Styles */
-        .modal-backdrop {
-            background-color: rgba(0, 0, 0, 0.6);
-            transition: opacity 0.3s ease;
-        }
+      /* Modal Styles */
+      .modal-backdrop {
+        background-color: rgba(0, 0, 0, 0.6);
+        transition: opacity 0.3s ease;
+      }
 
-        .modal-content {
-            background-color: var(--color-background);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
-            border-radius: 1rem;
-            max-width: 90%;
-            width: 650px;
-            max-height: 90vh;
-            overflow-y: auto;
-            transition: transform 0.3s ease, opacity 0.3s ease;
-        }
+      .modal-content {
+        background-color: var(--color-background);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+        border-radius: 1rem;
+        max-width: 90%;
+        width: 650px;
+        max-height: 90vh;
+        overflow-y: auto;
+        transition: transform 0.3s ease, opacity 0.3s ease;
+      }
 
-        /* Fixed Header */
-        header {
-            background-color: var(--color-text-light);
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            position: sticky;
-            top: 0;
-            width: 100%;
-            z-index: 10;
-            padding: 1rem 2rem;
-        }
+      /* Fixed Header */
+      header {
+        background-color: var(--color-text-light);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        position: sticky;
+        top: 0;
+        width: 100%;
+        z-index: 10;
+        padding: 1rem 2rem;
+      }
 
-        .table-container {
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-        }
+      .table-container {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
 
-        .table-container table {
-            min-width: 900px;
-        }
+      .table-container table {
+        min-width: 900px;
+      }
     </style>
-</head>
+  </head>
 
-<body class="lang-en">
-
+  <body class="lang-en">
     <script>
-        // --- Dummy Data ---
-        let dummyResponsibilities = [
-            { id: 1, designation: 'Head Teacher', department: 'Hifz', scope: 'Daily Management', description: 'Supervise curriculum implementation, manage teacher performance, and ensure student discipline in the Hifz department.', points: ["Curriculum oversight", "Performance reviews", "Discipline enforcement"] },
-            { id: 2, designation: 'Accounts Manager', department: 'Accounts', scope: 'Financial Control', description: 'Manage fee collection, handle vendor payments, and generate monthly financial reports.', points: ["Fee processing", "Vendor payments", "Monthly reporting"] },
-            { id: 3, designation: 'Kitchen Staff', department: 'Kitchen', scope: 'Daily Operations', description: 'Ensure timely and hygienic preparation of all meals for students and staff.', points: ["Meal preparation", "Inventory check", "Hygiene maintenance"] },
-        ];
+      // --- Dummy Data ---
+      let dummyResponsibilities = [
+        {
+          id: 1,
+          designation: "Head Teacher",
+          department: "Hifz",
+          scope: "Daily Management",
+          description:
+            "Supervise curriculum implementation, manage teacher performance, and ensure student discipline in the Hifz department.",
+          points: [
+            "Curriculum oversight",
+            "Performance reviews",
+            "Discipline enforcement",
+          ],
+        },
+        {
+          id: 2,
+          designation: "Accounts Manager",
+          department: "Accounts",
+          scope: "Financial Control",
+          description:
+            "Manage fee collection, handle vendor payments, and generate monthly financial reports.",
+          points: ["Fee processing", "Vendor payments", "Monthly reporting"],
+        },
+        {
+          id: 3,
+          designation: "Kitchen Staff",
+          department: "Kitchen",
+          scope: "Daily Operations",
+          description:
+            "Ensure timely and hygienic preparation of all meals for students and staff.",
+          points: [
+            "Meal preparation",
+            "Inventory check",
+            "Hygiene maintenance",
+          ],
+        },
+      ];
 
-        const RESP_STORAGE_KEY = 'madarsaResponsibilities';
-        const DEPARTMENTS = ['Hifz', 'Fiqh', 'Hadith', 'Accounts', 'Kitchen', 'General Administration'];
+      const RESP_STORAGE_KEY = "madarsaResponsibilities";
+      const DEPARTMENTS = [
+        "Hifz",
+        "Fiqh",
+        "Hadith",
+        "Accounts",
+        "Kitchen",
+        "General Administration",
+      ];
 
-        // Initialize/Load Responsibilities from localStorage
-        function loadResponsibilities() {
-            const storedResps = localStorage.getItem(RESP_STORAGE_KEY);
-            if (storedResps) {
-                try {
-                    dummyResponsibilities = JSON.parse(storedResps);
-                } catch (e) {
-                    console.error("Error loading responsibilities:", e);
-                }
-            } else {
-                // Save initial dummy data if storage is empty
-                saveResponsibilities();
-            }
+      // Initialize/Load Responsibilities from localStorage
+      function loadResponsibilities() {
+        const storedResps = localStorage.getItem(RESP_STORAGE_KEY);
+        if (storedResps) {
+          try {
+            dummyResponsibilities = JSON.parse(storedResps);
+          } catch (e) {
+            console.error("Error loading responsibilities:", e);
+          }
+        } else {
+          // Save initial dummy data if storage is empty
+          saveResponsibilities();
         }
+      }
 
-        // Save Responsibilities to localStorage
-        function saveResponsibilities() {
-            localStorage.setItem(RESP_STORAGE_KEY, JSON.stringify(dummyResponsibilities));
+      // Save Responsibilities to localStorage
+      function saveResponsibilities() {
+        localStorage.setItem(
+          RESP_STORAGE_KEY,
+          JSON.stringify(dummyResponsibilities)
+        );
+      }
+
+      // --- Multilingual Data ---
+      const langData = {
+        en: {
+          admin_title: "Admin Panel",
+          page_title: "Responsibilities Management",
+          description:
+            "Define job roles, key duties, and responsibilities for different designations and departments.",
+          back_to_admin: "Back to Admin",
+          logout: "Logout",
+          search_placeholder: "Search by Designation or Duties...",
+          add_new: "Add New Responsibility",
+
+          // Table Headers
+          id: "ID",
+          designation: "Designation",
+          department: "Department",
+          scope: "Scope",
+          key_duties: "Key Duties",
+          actions: "Actions",
+          view: "View",
+          edit: "Edit",
+          delete: "Delete",
+
+          // Categories
+          Hifz: "Hifz",
+          Fiqh: "Fiqh",
+          Hadith: "Hadith",
+          Accounts: "Accounts",
+          Kitchen: "Kitchen",
+          "General Administration": "General Administration",
+          all_designations: "All Designations",
+          all_departments: "All Departments",
+          modal_add_title: "Define New Responsibility",
+          modal_edit_title: "Edit Responsibility",
+          modal_view_title: "View Responsibility",
+
+          // Form Fields
+          resp_designation: "Target Designation",
+          resp_department: "Target Department",
+          resp_scope: "Responsibility Scope (e.g., Daily, Quarterly)",
+          resp_description: "Detailed Description of Role",
+          resp_points: "Key Duty Points (One per line)",
+          save: "Save Responsibility",
+          cancel: "Cancel",
+          form_success_add: "New responsibility defined successfully!",
+          form_success_edit: "Responsibility updated successfully!",
+          confirm_delete:
+            "Are you sure you want to delete this responsibility definition?",
+        },
+        hi: {
+          admin_title: "एडमिन पैनल",
+          page_title: "जिम्मेदारियां प्रबंधन",
+          description:
+            "विभिन्न पदनामों और विभागों के लिए नौकरी की भूमिकाओं, मुख्य कर्तव्यों और जिम्मेदारियों को परिभाषित करें।",
+          back_to_admin: "एडमिन पर वापस",
+          logout: "लॉगआउट",
+          search_placeholder: "पदनाम या कर्तव्यों से खोजें...",
+          add_new: "नई जिम्मेदारी जोड़ें",
+
+          // Table Headers
+          id: "आईडी",
+          designation: "पदनाम",
+          department: "विभाग",
+          scope: "दायरा",
+          key_duties: "मुख्य कर्तव्य",
+          actions: "कार्यवाही",
+          view: "देखें",
+          edit: "संपादित करें",
+          delete: "हटाएँ",
+
+          // Categories
+          Hifz: "हिफ्ज़",
+          Fiqh: "फ़िक़्ह",
+          Hadith: "हदीस",
+          Accounts: "लेखा",
+          Kitchen: "रसोईघर",
+          "General Administration": "सामान्य प्रशासन",
+          all_designations: "सभी पदनाम",
+          all_departments: "सभी विभाग",
+          modal_add_title: "नई जिम्मेदारी परिभाषित करें",
+          modal_edit_title: "जिम्मेदारी संपादित करें",
+          modal_view_title: "जिम्मेदारी देखें",
+
+          // Form Fields
+          resp_designation: "लक्षित पदनाम",
+          resp_department: "लक्षित विभाग",
+          resp_scope: "जिम्मेदारी का दायरा (उदा. दैनिक, त्रैमासिक)",
+          resp_description: "भूमिका का विस्तृत विवरण",
+          resp_points: "मुख्य कर्तव्य बिंदु (प्रत्येक पंक्ति में एक)",
+          save: "जिम्मेदारी सहेजें",
+          cancel: "रद्द करें",
+          form_success_add: "नई जिम्मेदारी सफलतापूर्वक परिभाषित की गई!",
+          form_success_edit: "जिम्मेदारी सफलतापूर्वक अपडेट की गई!",
+          confirm_delete:
+            "क्या आप निश्चित रूप से यह जिम्मेदारी परिभाषा हटाना चाहते हैं?",
+        },
+        ur: {
+          admin_title: "ایڈمن پینل",
+          page_title: "ذمہ داریاں کا انتظام",
+          description:
+            "مختلف عہدوں اور شعبوں کے لیے ملازمت کے کردار، کلیدی فرائض اور ذمہ داریوں کی وضاحت کریں۔",
+          back_to_admin: "ایڈمن پر واپس جائیں",
+          logout: "لاگ آؤٹ",
+          search_placeholder: "عہدہ یا فرائض کے ذریعے تلاش کریں...",
+          add_new: "نئی ذمہ داری شامل کریں",
+
+          // Table Headers
+          id: "آئی ڈی",
+          designation: "عہدہ",
+          department: "شعبہ",
+          scope: "دائرہ کار",
+          key_duties: "کلیدی فرائض",
+          actions: "عمل",
+          view: "دیکھیں",
+          edit: "ترمیم کریں",
+          delete: "حذف کریں",
+
+          // Categories
+          Hifz: "حفظ",
+          Fiqh: "فقہ",
+          Hadith: "حدیث",
+          Accounts: "اکاؤنٹس",
+          Kitchen: "باورچی خانہ",
+          "General Administration": "جنرل انتظامیہ",
+          all_designations: "تمام عہدے",
+          all_departments: "تمام شعبے",
+          modal_add_title: "نئی ذمہ داری کی وضاحت کریں",
+          modal_edit_title: "ذمہ داری میں ترمیم کریں",
+          modal_view_title: "ذمہ داری دیکھیں",
+
+          // Form Fields
+          resp_designation: "ہدف عہدہ",
+          resp_department: "ہدف شعبہ",
+          resp_scope: "ذمہ داری کا دائرہ کار (مثلاً، یومیہ، سہ ماہی)",
+          resp_description: "کردار کی تفصیلی وضاحت",
+          resp_points: "کلیدی فرائض کے نکات (ہر لائن پر ایک)",
+          save: "ذمہ داری محفوظ کریں",
+          cancel: "منسوخ کریں",
+          form_success_add: "نئی ذمہ داری کامیابی سے بیان کی گئی!",
+          form_success_edit: "ذمہ داری کامیابی سے اپ ڈیٹ ہو گئی!",
+          confirm_delete:
+            "کیا آپ واقعی اس ذمہ داری کی تعریف کو حذف کرنا چاہتے ہیں؟",
+        },
+      };
+
+      let currentLang = "en";
+
+      function getTranslation(key) {
+        return langData[currentLang][key] || langData["en"][key] || key;
+      }
+
+      // Helper to get responsibility by ID
+      function getResponsibilityById(id) {
+        return dummyResponsibilities.find((resp) => resp.id === id);
+      }
+
+      function updateContent() {
+        document.body.className = "lang-" + currentLang;
+
+        document.querySelectorAll("[data-lang-key]").forEach((el) => {
+          const key = el.getAttribute("data-lang-key");
+          el.textContent = getTranslation(key);
+        });
+
+        // Re-render table and filters
+        renderTable(filterResponsibilities());
+        updateFilterOptions();
+      }
+
+      function changeLanguage(lang) {
+        if (lang in langData) {
+          currentLang = lang;
+          localStorage.setItem("madarsaSystemLang", lang);
+          updateContent();
         }
+      }
 
-        // --- Multilingual Data ---
-        const langData = {
-            'en': {
-                'admin_title': 'Admin Panel',
-                'page_title': 'Responsibilities Management',
-                'description': 'Define job roles, key duties, and responsibilities for different designations and departments.',
-                'back_to_admin': 'Back to Admin',
-                'logout': 'Logout',
-                'search_placeholder': 'Search by Designation or Duties...',
-                'add_new': 'Add New Responsibility',
+      function updateFilterOptions() {
+        const designationFilter = document.getElementById("designation-filter");
+        const departmentFilter = document.getElementById("department-filter");
 
-                // Table Headers
-                'id': 'ID',
-                'designation': 'Designation',
-                'department': 'Department',
-                'scope': 'Scope',
-                'key_duties': 'Key Duties',
-                'actions': 'Actions',
-                'view': 'View',
-                'edit': 'Edit',
-                'delete': 'Delete',
+        const selectedDesignation = designationFilter.value;
+        const selectedDept = departmentFilter.value;
 
-                // Categories
-                'Hifz': 'Hifz',
-                'Fiqh': 'Fiqh',
-                'Hadith': 'Hadith',
-                'Accounts': 'Accounts',
-                'Kitchen': 'Kitchen',
-                'General Administration': 'General Administration',
-                'all_designations': 'All Designations',
-                'all_departments': 'All Departments',
-                'modal_add_title': 'Define New Responsibility',
-                'modal_edit_title': 'Edit Responsibility',
-                'modal_view_title': 'View Responsibility',
+        // Collect unique designations and departments from dummy data
+        const uniqueDesignations = [
+          ...new Set(dummyResponsibilities.map((r) => r.designation)),
+        ].sort();
+        const uniqueDepartments = [
+          ...new Set(dummyResponsibilities.map((r) => r.department)),
+        ].sort();
 
-                // Form Fields
-                'resp_designation': 'Target Designation',
-                'resp_department': 'Target Department',
-                'resp_scope': 'Responsibility Scope (e.g., Daily, Quarterly)',
-                'resp_description': 'Detailed Description of Role',
-                'resp_points': 'Key Duty Points (One per line)',
-                'save': 'Save Responsibility',
-                'cancel': 'Cancel',
-                'form_success_add': 'New responsibility defined successfully!',
-                'form_success_edit': 'Responsibility updated successfully!',
-                'confirm_delete': 'Are you sure you want to delete this responsibility definition?'
-            },
-            'hi': {
-                'admin_title': 'एडमिन पैनल',
-                'page_title': 'जिम्मेदारियां प्रबंधन',
-                'description': 'विभिन्न पदनामों और विभागों के लिए नौकरी की भूमिकाओं, मुख्य कर्तव्यों और जिम्मेदारियों को परिभाषित करें।',
-                'back_to_admin': 'एडमिन पर वापस',
-                'logout': 'लॉगआउट',
-                'search_placeholder': 'पदनाम या कर्तव्यों से खोजें...',
-                'add_new': 'नई जिम्मेदारी जोड़ें',
+        // Populate Designation Filter
+        designationFilter.innerHTML = `<option value="">${getTranslation(
+          "all_designations"
+        )}</option>`;
+        uniqueDesignations.forEach((designation) => {
+          const option = document.createElement("option");
+          option.value = designation;
+          option.textContent = designation;
+          designationFilter.appendChild(option);
+        });
+        designationFilter.value = selectedDesignation;
 
-                // Table Headers
-                'id': 'आईडी',
-                'designation': 'पदनाम',
-                'department': 'विभाग',
-                'scope': 'दायरा',
-                'key_duties': 'मुख्य कर्तव्य',
-                'actions': 'कार्यवाही',
-                'view': 'देखें',
-                'edit': 'संपादित करें',
-                'delete': 'हटाएँ',
+        // Populate Department Filter
+        departmentFilter.innerHTML = `<option value="">${getTranslation(
+          "all_departments"
+        )}</option>`;
+        uniqueDepartments.forEach((dept) => {
+          const option = document.createElement("option");
+          option.value = dept;
+          option.textContent = getTranslation(dept) || dept;
+          departmentFilter.appendChild(option);
+        });
+        departmentFilter.value = selectedDept;
+      }
 
-                // Categories
-                'Hifz': 'हिफ्ज़',
-                'Fiqh': 'फ़िक़्ह',
-                'Hadith': 'हदीस',
-                'Accounts': 'लेखा',
-                'Kitchen': 'रसोईघर',
-                'General Administration': 'सामान्य प्रशासन',
-                'all_designations': 'सभी पदनाम',
-                'all_departments': 'सभी विभाग',
-                'modal_add_title': 'नई जिम्मेदारी परिभाषित करें',
-                'modal_edit_title': 'जिम्मेदारी संपादित करें',
-                'modal_view_title': 'जिम्मेदारी देखें',
+      // --- Table Rendering ---
+      function renderTable(respList) {
+        const tbody = document.getElementById("resp-table-body");
+        if (!tbody) return;
+        tbody.innerHTML = "";
 
-                // Form Fields
-                'resp_designation': 'लक्षित पदनाम',
-                'resp_department': 'लक्षित विभाग',
-                'resp_scope': 'जिम्मेदारी का दायरा (उदा. दैनिक, त्रैमासिक)',
-                'resp_description': 'भूमिका का विस्तृत विवरण',
-                'resp_points': 'मुख्य कर्तव्य बिंदु (प्रत्येक पंक्ति में एक)',
-                'save': 'जिम्मेदारी सहेजें',
-                'cancel': 'रद्द करें',
-                'form_success_add': 'नई जिम्मेदारी सफलतापूर्वक परिभाषित की गई!',
-                'form_success_edit': 'जिम्मेदारी सफलतापूर्वक अपडेट की गई!',
-                'confirm_delete': 'क्या आप निश्चित रूप से यह जिम्मेदारी परिभाषा हटाना चाहते हैं?'
-            },
-            'ur': {
-                'admin_title': 'ایڈمن پینل',
-                'page_title': 'ذمہ داریاں کا انتظام',
-                'description': 'مختلف عہدوں اور شعبوں کے لیے ملازمت کے کردار، کلیدی فرائض اور ذمہ داریوں کی وضاحت کریں۔',
-                'back_to_admin': 'ایڈمن پر واپس جائیں',
-                'logout': 'لاگ آؤٹ',
-                'search_placeholder': 'عہدہ یا فرائض کے ذریعے تلاش کریں...',
-                'add_new': 'نئی ذمہ داری شامل کریں',
+        respList.forEach((resp) => {
+          const tr = document.createElement("tr");
 
-                // Table Headers
-                'id': 'آئی ڈی',
-                'designation': 'عہدہ',
-                'department': 'شعبہ',
-                'scope': 'دائرہ کار',
-                'key_duties': 'کلیدی فرائض',
-                'actions': 'عمل',
-                'view': 'دیکھیں',
-                'edit': 'ترمیم کریں',
-                'delete': 'حذف کریں',
+          // Display first 2 key duties
+          const keyDuties =
+            resp.points.slice(0, 2).join("; ") +
+            (resp.points.length > 2 ? "..." : "");
 
-                // Categories
-                'Hifz': 'حفظ',
-                'Fiqh': 'فقہ',
-                'Hadith': 'حدیث',
-                'Accounts': 'اکاؤنٹس',
-                'Kitchen': 'باورچی خانہ',
-                'General Administration': 'جنرل انتظامیہ',
-                'all_designations': 'تمام عہدے',
-                'all_departments': 'تمام شعبے',
-                'modal_add_title': 'نئی ذمہ داری کی وضاحت کریں',
-                'modal_edit_title': 'ذمہ داری میں ترمیم کریں',
-                'modal_view_title': 'ذمہ داری دیکھیں',
+          const translatedDept =
+            getTranslation(resp.department) || resp.department;
 
-                // Form Fields
-                'resp_designation': 'ہدف عہدہ',
-                'resp_department': 'ہدف شعبہ',
-                'resp_scope': 'ذمہ داری کا دائرہ کار (مثلاً، یومیہ، سہ ماہی)',
-                'resp_description': 'کردار کی تفصیلی وضاحت',
-                'resp_points': 'کلیدی فرائض کے نکات (ہر لائن پر ایک)',
-                'save': 'ذمہ داری محفوظ کریں',
-                'cancel': 'منسوخ کریں',
-                'form_success_add': 'نئی ذمہ داری کامیابی سے بیان کی گئی!',
-                'form_success_edit': 'ذمہ داری کامیابی سے اپ ڈیٹ ہو گئی!',
-                'confirm_delete': 'کیا آپ واقعی اس ذمہ داری کی تعریف کو حذف کرنا چاہتے ہیں؟'
-            }
-        };
-
-        let currentLang = 'en';
-
-        function getTranslation(key) {
-            return langData[currentLang][key] || langData['en'][key] || key;
-        }
-
-        // Helper to get responsibility by ID
-        function getResponsibilityById(id) {
-            return dummyResponsibilities.find(resp => resp.id === id);
-        }
-
-        function updateContent() {
-            document.body.className = 'lang-' + currentLang;
-
-            document.querySelectorAll('[data-lang-key]').forEach(el => {
-                const key = el.getAttribute('data-lang-key');
-                el.textContent = getTranslation(key);
-            });
-
-            // Re-render table and filters
-            renderTable(filterResponsibilities());
-            updateFilterOptions();
-        }
-
-        function changeLanguage(lang) {
-            if (lang in langData) {
-                currentLang = lang;
-                localStorage.setItem('madarsaSystemLang', lang);
-                updateContent();
-            }
-        }
-
-        function updateFilterOptions() {
-            const designationFilter = document.getElementById('designation-filter');
-            const departmentFilter = document.getElementById('department-filter');
-
-            const selectedDesignation = designationFilter.value;
-            const selectedDept = departmentFilter.value;
-
-            // Collect unique designations and departments from dummy data
-            const uniqueDesignations = [...new Set(dummyResponsibilities.map(r => r.designation))].sort();
-            const uniqueDepartments = [...new Set(dummyResponsibilities.map(r => r.department))].sort();
-
-            // Populate Designation Filter
-            designationFilter.innerHTML = `<option value="">${getTranslation('all_designations')}</option>`;
-            uniqueDesignations.forEach(designation => {
-                const option = document.createElement('option');
-                option.value = designation;
-                option.textContent = designation;
-                designationFilter.appendChild(option);
-            });
-            designationFilter.value = selectedDesignation;
-
-            // Populate Department Filter
-            departmentFilter.innerHTML = `<option value="">${getTranslation('all_departments')}</option>`;
-            uniqueDepartments.forEach(dept => {
-                const option = document.createElement('option');
-                option.value = dept;
-                option.textContent = getTranslation(dept) || dept;
-                departmentFilter.appendChild(option);
-            });
-            departmentFilter.value = selectedDept;
-        }
-
-        // --- Table Rendering ---
-        function renderTable(respList) {
-            const tbody = document.getElementById('resp-table-body');
-            if (!tbody) return;
-            tbody.innerHTML = '';
-
-            respList.forEach(resp => {
-                const tr = document.createElement('tr');
-
-                // Display first 2 key duties
-                const keyDuties = resp.points.slice(0, 2).join('; ') + (resp.points.length > 2 ? '...' : '');
-
-                const translatedDept = getTranslation(resp.department) || resp.department;
-
-                tr.innerHTML = `
+          tr.innerHTML = `
                     <td>${resp.id}</td>
                     <td class="font-bold text-gray-800">${resp.designation}</td>
                     <td>${translatedDept}</td>
                     <td>${resp.scope}</td>
                     <td>${keyDuties}</td>
                     <td>
-                        <button onclick="handleAction('view', ${resp.id})" class="action-button bg-blue-100 text-blue-700 hover:bg-blue-200">${getTranslation('view')}</button>
-                        <button onclick="handleAction('edit', ${resp.id})" class="action-button bg-yellow-100 text-yellow-700 hover:bg-yellow-200 ml-2">${getTranslation('edit')}</button>
-                        <button onclick="handleAction('delete', ${resp.id})" class="action-button delete-button hover:bg-red-200 ml-2">${getTranslation('delete')}</button>
+                        <button onclick="handleAction('view', ${
+                          resp.id
+                        })" class="action-button bg-blue-100 text-blue-700 hover:bg-blue-200">${getTranslation(
+            "view"
+          )}</button>
+                        <button onclick="handleAction('edit', ${
+                          resp.id
+                        })" class="action-button bg-yellow-100 text-yellow-700 hover:bg-yellow-200 ml-2">${getTranslation(
+            "edit"
+          )}</button>
+                        <button onclick="handleAction('delete', ${
+                          resp.id
+                        })" class="action-button delete-button hover:bg-red-200 ml-2">${getTranslation(
+            "delete"
+          )}</button>
                     </td>
                 `;
-                tbody.appendChild(tr);
-            });
-        }
+          tbody.appendChild(tr);
+        });
+      }
 
-        // --- Filter Logic ---
-        function filterResponsibilities() {
-            const search = document.getElementById('search-input').value.toLowerCase();
-            const designation = document.getElementById('designation-filter').value;
-            const department = document.getElementById('department-filter').value;
+      // --- Filter Logic ---
+      function filterResponsibilities() {
+        const search = document
+          .getElementById("search-input")
+          .value.toLowerCase();
+        const designation = document.getElementById("designation-filter").value;
+        const department = document.getElementById("department-filter").value;
 
-            return dummyResponsibilities.filter(resp => {
-                const matchesSearch = resp.designation.toLowerCase().includes(search) ||
-                    resp.description.toLowerCase().includes(search) ||
-                    resp.points.some(p => p.toLowerCase().includes(search));
+        return dummyResponsibilities.filter((resp) => {
+          const matchesSearch =
+            resp.designation.toLowerCase().includes(search) ||
+            resp.description.toLowerCase().includes(search) ||
+            resp.points.some((p) => p.toLowerCase().includes(search));
 
-                const matchesDesignation = !designation || resp.designation === designation;
-                const matchesDepartment = !department || resp.department === department;
+          const matchesDesignation =
+            !designation || resp.designation === designation;
+          const matchesDepartment =
+            !department || resp.department === department;
 
-                return matchesSearch && matchesDesignation && matchesDepartment;
-            });
-        }
+          return matchesSearch && matchesDesignation && matchesDepartment;
+        });
+      }
 
-        function handleFilter() {
-            renderTable(filterResponsibilities());
-        }
+      function handleFilter() {
+        renderTable(filterResponsibilities());
+      }
 
-        // --- Modal Handling ---
-        function openRespModal(titleKey, contentHtml) {
-            const modal = document.getElementById('resp-modal');
-            const modalTitle = document.getElementById('modal-title');
-            const modalBody = document.getElementById('modal-body');
+      // --- Modal Handling ---
+      function openRespModal(titleKey, contentHtml) {
+        const modal = document.getElementById("resp-modal");
+        const modalTitle = document.getElementById("modal-title");
+        const modalBody = document.getElementById("modal-body");
 
-            modalTitle.textContent = getTranslation(titleKey);
-            modalBody.innerHTML = contentHtml;
+        modalTitle.textContent = getTranslation(titleKey);
+        modalBody.innerHTML = contentHtml;
 
-            modal.classList.remove('hidden');
-            setTimeout(() => { modal.classList.remove('opacity-0'); }, 10);
-        }
+        modal.classList.remove("hidden");
+        setTimeout(() => {
+          modal.classList.remove("opacity-0");
+        }, 10);
+      }
 
-        function closeRespModal() {
-            const modal = document.getElementById('resp-modal');
-            modal.classList.add('opacity-0');
-            setTimeout(() => { modal.classList.add('hidden'); }, 300);
-        }
+      function closeRespModal() {
+        const modal = document.getElementById("resp-modal");
+        modal.classList.add("opacity-0");
+        setTimeout(() => {
+          modal.classList.add("hidden");
+        }, 300);
+      }
 
-        // --- Content Creators ---
-        function createRespForm(resp = null) {
-            const isEdit = resp !== null;
-            const isRtl = currentLang === 'ur';
-            const alignment = isRtl ? 'text-right' : 'text-left';
+      // --- Content Creators ---
+      function createRespForm(resp = null) {
+        const isEdit = resp !== null;
+        const isRtl = currentLang === "ur";
+        const alignment = isRtl ? "text-right" : "text-left";
 
-            let deptOptions = '';
-            DEPARTMENTS.forEach(dept => {
-                const selected = isEdit && resp.department === dept ? 'selected' : '';
-                deptOptions += `<option value="${dept}" ${selected}>${getTranslation(dept) || dept}</option>`;
-            });
+        let deptOptions = "";
+        DEPARTMENTS.forEach((dept) => {
+          const selected = isEdit && resp.department === dept ? "selected" : "";
+          deptOptions += `<option value="${dept}" ${selected}>${
+            getTranslation(dept) || dept
+          }</option>`;
+        });
 
-            const pointsValue = isEdit ? resp.points.join('\n') : '';
+        const pointsValue = isEdit ? resp.points.join("\n") : "";
 
-            return `
-                <form id="resp-form" onsubmit="return saveRespDetails(event, ${isEdit ? resp.id : 'null'})" class="${alignment}">
+        return `
+                <form id="resp-form" onsubmit="return saveRespDetails(event, ${
+                  isEdit ? resp.id : "null"
+                })" class="${alignment}">
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
                         
                         <!-- Target Designation -->
                         <div class="form-group">
-                            <label for="resp-designation" class="form-label">${getTranslation('resp_designation')}</label>
-                            <input type="text" id="resp-designation" class="form-input" value="${isEdit ? resp.designation : ''}" required>
+                            <label for="resp-designation" class="form-label">${getTranslation(
+                              "resp_designation"
+                            )}</label>
+                            <input type="text" id="resp-designation" class="form-input" value="${
+                              isEdit ? resp.designation : ""
+                            }" required>
                         </div>
                         
                         <!-- Target Department -->
                         <div class="form-group">
-                            <label for="resp-department" class="form-label">${getTranslation('resp_department')}</label>
+                            <label for="resp-department" class="form-label">${getTranslation(
+                              "resp_department"
+                            )}</label>
                             <select id="resp-department" class="form-input" required>${deptOptions}</select>
                         </div>
 
                         <!-- Responsibility Scope -->
                         <div class="form-group md:col-span-2">
-                            <label for="resp-scope" class="form-label">${getTranslation('resp_scope')}</label>
-                            <input type="text" id="resp-scope" class="form-input" value="${isEdit ? resp.scope : ''}" required>
+                            <label for="resp-scope" class="form-label">${getTranslation(
+                              "resp_scope"
+                            )}</label>
+                            <input type="text" id="resp-scope" class="form-input" value="${
+                              isEdit ? resp.scope : ""
+                            }" required>
                         </div>
 
                         <!-- Detailed Description -->
                         <div class="form-group md:col-span-2">
-                            <label for="resp-description" class="form-label">${getTranslation('resp_description')}</label>
-                            <textarea id="resp-description" class="form-textarea h-24" required>${isEdit ? resp.description : ''}</textarea>
+                            <label for="resp-description" class="form-label">${getTranslation(
+                              "resp_description"
+                            )}</label>
+                            <textarea id="resp-description" class="form-textarea h-24" required>${
+                              isEdit ? resp.description : ""
+                            }</textarea>
                         </div>
 
                         <!-- Key Duty Points -->
                         <div class="form-group md:col-span-2">
-                            <label for="resp-points" class="form-label">${getTranslation('resp_points')}</label>
+                            <label for="resp-points" class="form-label">${getTranslation(
+                              "resp_points"
+                            )}</label>
                             <textarea id="resp-points" class="form-textarea h-32" placeholder="Enter each duty on a new line" required>${pointsValue}</textarea>
                         </div>
                     </div>
 
                     <div class="flex justify-end space-x-4 mt-6">
-                        <button type="button" onclick="closeRespModal()" class="action-button bg-gray-200 text-gray-700 hover:bg-gray-300">${getTranslation('cancel')}</button>
-                        <button type="submit" class="primary-button">${getTranslation('save')}</button>
+                        <button type="button" onclick="closeRespModal()" class="action-button bg-gray-200 text-gray-700 hover:bg-gray-300">${getTranslation(
+                          "cancel"
+                        )}</button>
+                        <button type="submit" class="primary-button">${getTranslation(
+                          "save"
+                        )}</button>
                     </div>
                 </form>
             `;
-        }
+      }
 
-        function createViewContent(resp) {
-            const isRtl = currentLang === 'ur';
-            const alignment = isRtl ? 'text-right' : 'text-left';
+      function createViewContent(resp) {
+        const isRtl = currentLang === "ur";
+        const alignment = isRtl ? "text-right" : "text-left";
 
-            const translatedDept = getTranslation(resp.department) || resp.department;
-            const dutiesList = resp.points.map(p => `<li>${p}</li>`).join('');
+        const translatedDept =
+          getTranslation(resp.department) || resp.department;
+        const dutiesList = resp.points.map((p) => `<li>${p}</li>`).join("");
 
-            return `
+        return `
                 <div class="space-y-4 ${alignment}">
-                    <h2 class="text-2xl font-bold text-gray-800">${resp.designation} (${translatedDept})</h2>
-                    <p class="text-sm text-gray-500">${getTranslation('scope')}: ${resp.scope}</p>
+                    <h2 class="text-2xl font-bold text-gray-800">${
+                      resp.designation
+                    } (${translatedDept})</h2>
+                    <p class="text-sm text-gray-500">${getTranslation(
+                      "scope"
+                    )}: ${resp.scope}</p>
 
                     <div class="border-t pt-4">
-                        <h3 class="text-lg font-bold mb-2 text-gray-700">${getTranslation('resp_description')}</h3>
-                        <p class="text-gray-800 whitespace-pre-wrap">${resp.description}</p>
+                        <h3 class="text-lg font-bold mb-2 text-gray-700">${getTranslation(
+                          "resp_description"
+                        )}</h3>
+                        <p class="text-gray-800 whitespace-pre-wrap">${
+                          resp.description
+                        }</p>
                     </div>
                     
                     <div class="border-t pt-4">
-                        <h3 class="text-lg font-bold mb-2 text-gray-700">${getTranslation('key_duties')}</h3>
+                        <h3 class="text-lg font-bold mb-2 text-gray-700">${getTranslation(
+                          "key_duties"
+                        )}</h3>
                         <ul class="list-disc ml-6 space-y-1 text-gray-800">
                             ${dutiesList}
                         </ul>
                     </div>
                     
                     <div class="flex justify-end pt-4 border-t">
-                        <button onclick="handleAction('edit', ${resp.id})" class="action-button bg-yellow-100 text-yellow-700 hover:bg-yellow-200">${getTranslation('edit')}</button>
+                        <button onclick="handleAction('edit', ${
+                          resp.id
+                        })" class="action-button bg-yellow-100 text-yellow-700 hover:bg-yellow-200">${getTranslation(
+          "edit"
+        )}</button>
                     </div>
                 </div>
             `;
+      }
+
+      // --- Action Dispatcher (Add/View/Edit/Delete) ---
+      function handleAction(action, id) {
+        const resp = id ? getResponsibilityById(id) : null;
+
+        if (action === "add") {
+          openRespModal("modal_add_title", createRespForm(null));
+        } else if (!resp && action !== "add") {
+          console.error(`Responsibility not found with ID: ${id}`);
+          return;
+        } else if (action === "view") {
+          openRespModal("modal_view_title", createViewContent(resp));
+        } else if (action === "edit") {
+          openRespModal("modal_edit_title", createRespForm(resp));
+        } else if (action === "delete") {
+          if (confirm(getTranslation("confirm_delete"))) {
+            deleteResponsibility(id);
+          }
+        }
+      }
+
+      // --- Delete Logic ---
+      function deleteResponsibility(id) {
+        dummyResponsibilities = dummyResponsibilities.filter(
+          (r) => r.id !== id
+        );
+        saveResponsibilities();
+        handleFilter();
+        alert(`Responsibility ID ${id} deleted successfully.`);
+      }
+
+      // --- Save Logic (Add/Edit) ---
+      function saveRespDetails(event, id) {
+        event.preventDefault();
+
+        const form = event.target;
+        const designation = form.querySelector("#resp-designation").value;
+        const department = form.querySelector("#resp-department").value;
+        const scope = form.querySelector("#resp-scope").value;
+        const description = form.querySelector("#resp-description").value;
+        const pointsText = form.querySelector("#resp-points").value;
+        const points = pointsText
+          .split("\n")
+          .map((p) => p.trim())
+          .filter((p) => p.length > 0);
+
+        if (
+          !designation ||
+          !department ||
+          !scope ||
+          !description ||
+          points.length === 0
+        ) {
+          alert(
+            "Please fill all required fields, including at least one key duty point."
+          );
+          return false;
         }
 
-        // --- Action Dispatcher (Add/View/Edit/Delete) ---
-        function handleAction(action, id) {
-            const resp = id ? getResponsibilityById(id) : null;
-
-            if (action === 'add') {
-                openRespModal('modal_add_title', createRespForm(null));
-            } else if (!resp && action !== 'add') {
-                console.error(`Responsibility not found with ID: ${id}`);
-                return;
-            } else if (action === 'view') {
-                openRespModal('modal_view_title', createViewContent(resp));
-            } else if (action === 'edit') {
-                openRespModal('modal_edit_title', createRespForm(resp));
-            } else if (action === 'delete') {
-                if (confirm(getTranslation('confirm_delete'))) {
-                    deleteResponsibility(id);
-                }
-            }
+        if (id) {
+          // EDIT LOGIC
+          const respIndex = dummyResponsibilities.findIndex((r) => r.id === id);
+          if (respIndex !== -1) {
+            dummyResponsibilities[respIndex] = {
+              ...dummyResponsibilities[respIndex],
+              designation,
+              department,
+              scope,
+              description,
+              points,
+            };
+            alert(getTranslation("form_success_edit"));
+          }
+        } else {
+          // ADD LOGIC
+          const newId = Math.max(...dummyResponsibilities.map((r) => r.id)) + 1;
+          const newResponsibility = {
+            id: newId,
+            designation,
+            department,
+            scope,
+            description,
+            points,
+          };
+          dummyResponsibilities.unshift(newResponsibility);
+          alert(getTranslation("form_success_add"));
         }
 
-        // --- Delete Logic ---
-        function deleteResponsibility(id) {
-            dummyResponsibilities = dummyResponsibilities.filter(r => r.id !== id);
-            saveResponsibilities();
-            handleFilter();
-            alert(`Responsibility ID ${id} deleted successfully.`);
-        }
+        saveResponsibilities();
+        closeRespModal();
+        updateContent(); // Update filters and table
+        return false;
+      }
 
-        // --- Save Logic (Add/Edit) ---
-        function saveRespDetails(event, id) {
-            event.preventDefault();
+      function logOut() {
+        localStorage.removeItem("isUserLoggedIn");
+        localStorage.removeItem("authToken");
+        localStorage.removeItem("userData");
+        window.location.href = "index.html";
+      }
 
-            const form = event.target;
-            const designation = form.querySelector('#resp-designation').value;
-            const department = form.querySelector('#resp-department').value;
-            const scope = form.querySelector('#resp-scope').value;
-            const description = form.querySelector('#resp-description').value;
-            const pointsText = form.querySelector('#resp-points').value;
-            const points = pointsText.split('\n').map(p => p.trim()).filter(p => p.length > 0);
+      // Initialize content and language
+      window.onload = function () {
+        loadResponsibilities(); // Load data
+        const storedLang = localStorage.getItem("madarsaSystemLang");
+        currentLang = storedLang && storedLang in langData ? storedLang : "en";
 
-            if (!designation || !department || !scope || !description || points.length === 0) {
-                alert("Please fill all required fields, including at least one key duty point.");
-                return false;
-            }
+        // Initial content update and table render
+        updateContent();
 
-            if (id) {
-                // EDIT LOGIC
-                const respIndex = dummyResponsibilities.findIndex(r => r.id === id);
-                if (respIndex !== -1) {
-                    dummyResponsibilities[respIndex] = {
-                        ...dummyResponsibilities[respIndex],
-                        designation, department, scope, description, points
-                    };
-                    alert(getTranslation('form_success_edit'));
-                }
-            } else {
-                // ADD LOGIC
-                const newId = Math.max(...dummyResponsibilities.map(r => r.id)) + 1;
-                const newResponsibility = {
-                    id: newId, designation, department, scope, description, points
-                };
-                dummyResponsibilities.unshift(newResponsibility);
-                alert(getTranslation('form_success_add'));
-            }
-
-            saveResponsibilities();
-            closeRespModal();
-            updateContent(); // Update filters and table
-            return false;
-        }
-
-        // Initialize content and language
-        window.onload = function () {
-            loadResponsibilities(); // Load data
-            const storedLang = localStorage.getItem('madarsaSystemLang');
-            currentLang = (storedLang && storedLang in langData) ? storedLang : 'en';
-
-            // Initial content update and table render
-            updateContent();
-
-            // Attach event listeners to filters
-            document.getElementById('search-input').addEventListener('input', handleFilter);
-            document.getElementById('designation-filter').addEventListener('change', handleFilter);
-            document.getElementById('department-filter').addEventListener('change', handleFilter);
-        };
+        // Attach event listeners to filters
+        document
+          .getElementById("search-input")
+          .addEventListener("input", handleFilter);
+        document
+          .getElementById("designation-filter")
+          .addEventListener("change", handleFilter);
+        document
+          .getElementById("department-filter")
+          .addEventListener("change", handleFilter);
+      };
     </script>
 
     <!-- HEADER -->
     <header>
-        <div class="max-w-7xl mx-auto w-full flex justify-between items-center">
-            <!-- Left: Back Button & Title -->
-            <div class="flex items-center space-x-4">
-                <a href="administration.html" class="action-button bg-gray-100 text-gray-700 hover:bg-gray-200"
-                    data-lang-key="back_to_admin">Back to Admin</a>
-                <h1 class="text-xl font-bold" data-lang-key="page_title" style="color: var(--color-primary);">
-                    Responsibilities Management</h1>
-            </div>
-
-            <!-- Right: Language Switch -->
-            <div class="flex items-center space-x-2">
-                <select onchange="changeLanguage(this.value)" class="bg-gray-100 rounded-lg p-1 text-sm">
-                    <option value="en" selected>English</option>
-                    <option value="hi">हिन्दी</option>
-                    <option value="ur">اردو</option>
-                </select>
-                <button onclick="window.location.href='login.html'"
-                    class="text-sm font-semibold text-red-600 hover:text-red-800 transition-colors ml-4"
-                    data-lang-key="logout">Logout</button>
-            </div>
+      <div class="max-w-7xl mx-auto w-full flex justify-between items-center">
+        <!-- Left: Back Button & Title -->
+        <div class="flex items-center space-x-4">
+          <a
+            href="administration.html"
+            class="action-button bg-gray-100 text-gray-700 hover:bg-gray-200"
+            data-lang-key="back_to_admin"
+            >Back to Admin</a
+          >
+          <h1
+            class="text-xl font-bold"
+            data-lang-key="page_title"
+            style="color: var(--color-primary)"
+          >
+            Responsibilities Management
+          </h1>
         </div>
+
+        <!-- Right: Language Switch -->
+        <div class="flex items-center space-x-2">
+          <select
+            onchange="changeLanguage(this.value)"
+            class="bg-gray-100 rounded-lg p-1 text-sm"
+          >
+            <option value="en" selected>English</option>
+            <option value="hi">हिन्दी</option>
+            <option value="ur">اردو</option>
+          </select>
+          <button
+            onclick="logOut()"
+            class="text-sm font-semibold text-red-600 hover:text-red-800 transition-colors ml-4"
+            data-lang-key="logout"
+          >
+            Logout
+          </button>
+        </div>
+      </div>
     </header>
 
     <!-- MAIN CONTENT AREA -->
     <main class="max-w-7xl mx-auto w-full p-4 md:p-8">
-        <div class="bg-white p-6 md:p-8 rounded-xl shadow-2xl">
+      <div class="bg-white p-6 md:p-8 rounded-xl shadow-2xl">
+        <!-- Description and Action Button -->
+        <div
+          class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 space-y-4 md:space-y-0"
+        >
+          <div>
+            <h2
+              class="text-2xl font-bold text-gray-700"
+              data-lang-key="page_title"
+            >
+              Responsibilities Management
+            </h2>
+            <p class="text-gray-500 mt-1 text-sm" data-lang-key="description">
+              Define job roles, key duties, and responsibilities for different
+              designations and departments.
+            </p>
+          </div>
 
-            <!-- Description and Action Button -->
-            <div
-                class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 space-y-4 md:space-y-0">
-                <div>
-                    <h2 class="text-2xl font-bold text-gray-700" data-lang-key="page_title">Responsibilities Management
-                    </h2>
-                    <p class="text-gray-500 mt-1 text-sm" data-lang-key="description">Define job roles, key duties, and
-                        responsibilities for different designations and departments.</p>
-                </div>
-
-                <!-- Add New Button - Opens Modal -->
-                <button onclick="handleAction('add', null)" class="primary-button flex items-center space-x-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
-                    </svg>
-                    <span data-lang-key="add_new">Add New Responsibility</span>
-                </button>
-            </div>
-
-            <!-- Filter and Search Controls -->
-            <div class="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-8">
-
-                <!-- Search -->
-                <div class="sm:col-span-2 relative">
-                    <input type="text" id="search-input" class="form-input pl-10"
-                        placeholder="Search by Designation or Duties...">
-                    <svg xmlns="http://www.w3.org/2000/svg"
-                        class="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" fill="none"
-                        viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
-                </div>
-
-                <!-- Designation Filter -->
-                <div>
-                    <select id="designation-filter" class="form-input">
-                        <option value="" data-lang-key="all_designations">All Designations</option>
-                        <!-- Options injected by JS -->
-                    </select>
-                </div>
-
-                <!-- Department Filter -->
-                <div>
-                    <select id="department-filter" class="form-input">
-                        <option value="" data-lang-key="all_departments">All Departments</option>
-                        <!-- Options injected by JS -->
-                    </select>
-                </div>
-            </div>
-
-            <!-- Responsibilities Table -->
-            <div class="table-container">
-                <table class="admin-table">
-                    <thead>
-                        <tr class="bg-gray-100 rounded-lg">
-                            <th data-lang-key="id">ID</th>
-                            <th data-lang-key="designation">Designation</th>
-                            <th data-lang-key="department">Department</th>
-                            <th data-lang-key="scope">Scope</th>
-                            <th data-lang-key="key_duties">Key Duties</th>
-                            <th data-lang-key="actions">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="resp-table-body">
-                        <!-- Responsibility data will be injected here by JS -->
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="text-center text-sm text-gray-500 mt-6">
-                Showing 1 to 3 of 3 entries
-            </div>
-
+          <!-- Add New Button - Opens Modal -->
+          <button
+            onclick="handleAction('add', null)"
+            class="primary-button flex items-center space-x-2"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="w-5 h-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M12 4v16m8-8H4"
+              />
+            </svg>
+            <span data-lang-key="add_new">Add New Responsibility</span>
+          </button>
         </div>
+
+        <!-- Filter and Search Controls -->
+        <div class="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-8">
+          <!-- Search -->
+          <div class="sm:col-span-2 relative">
+            <input
+              type="text"
+              id="search-input"
+              class="form-input pl-10"
+              placeholder="Search by Designation or Duties..."
+            />
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+              />
+            </svg>
+          </div>
+
+          <!-- Designation Filter -->
+          <div>
+            <select id="designation-filter" class="form-input">
+              <option value="" data-lang-key="all_designations">
+                All Designations
+              </option>
+              <!-- Options injected by JS -->
+            </select>
+          </div>
+
+          <!-- Department Filter -->
+          <div>
+            <select id="department-filter" class="form-input">
+              <option value="" data-lang-key="all_departments">
+                All Departments
+              </option>
+              <!-- Options injected by JS -->
+            </select>
+          </div>
+        </div>
+
+        <!-- Responsibilities Table -->
+        <div class="table-container">
+          <table class="admin-table">
+            <thead>
+              <tr class="bg-gray-100 rounded-lg">
+                <th data-lang-key="id">ID</th>
+                <th data-lang-key="designation">Designation</th>
+                <th data-lang-key="department">Department</th>
+                <th data-lang-key="scope">Scope</th>
+                <th data-lang-key="key_duties">Key Duties</th>
+                <th data-lang-key="actions">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="resp-table-body">
+              <!-- Responsibility data will be injected here by JS -->
+            </tbody>
+          </table>
+        </div>
+
+        <div class="text-center text-sm text-gray-500 mt-6">
+          Showing 1 to 3 of 3 entries
+        </div>
+      </div>
     </main>
 
     <!-- RESPONSIBILITY VIEW/EDIT/ADD MODAL -->
-    <div id="resp-modal"
-        class="hidden opacity-0 fixed inset-0 z-50 flex items-center justify-center modal-backdrop transition-opacity duration-300">
-        <div class="modal-content p-6 md:p-8 transform scale-100 transition-transform duration-300"
-            style="border: 3px solid var(--color-primary);">
-            <div class="flex justify-between items-start pb-4 border-b mb-6">
-                <h3 id="modal-title" class="text-xl font-bold text-gray-700">Responsibility Details</h3>
-                <button onclick="closeRespModal()" class="text-gray-500 hover:text-gray-900 transition-colors p-1"
-                    aria-label="Close">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
-                        stroke="currentColor" class="w-6 h-6">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
-            </div>
-            <div id="modal-body">
-                <!-- Dynamic content (View or Edit/Add Form) goes here -->
-            </div>
+    <div
+      id="resp-modal"
+      class="hidden opacity-0 fixed inset-0 z-50 flex items-center justify-center modal-backdrop transition-opacity duration-300"
+    >
+      <div
+        class="modal-content p-6 md:p-8 transform scale-100 transition-transform duration-300"
+        style="border: 3px solid var(--color-primary)"
+      >
+        <div class="flex justify-between items-start pb-4 border-b mb-6">
+          <h3 id="modal-title" class="text-xl font-bold text-gray-700">
+            Responsibility Details
+          </h3>
+          <button
+            onclick="closeRespModal()"
+            class="text-gray-500 hover:text-gray-900 transition-colors p-1"
+            aria-label="Close"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="2"
+              stroke="currentColor"
+              class="w-6 h-6"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
         </div>
+        <div id="modal-body">
+          <!-- Dynamic content (View or Edit/Add Form) goes here -->
+        </div>
+      </div>
     </div>
-</body>
-
+  </body>
 </html>

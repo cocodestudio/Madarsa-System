@@ -1,789 +1,1031 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Daily Purchases - Kitchen System</title>
     <script src="https://cdn.tailwindcss.com"></script>
 
     <style>
-        :root {
-            --color-primary: #00A693;
-            --color-background: #F2F3F4;
-            --color-accent: #E08A27;
-            --color-text-dark: #1A1A1A;
-            --color-text-light: #FFFFFF;
-        }
+      :root {
+        --color-primary: #00a693;
+        --color-background: #f2f3f4;
+        --color-accent: #e08a27;
+        --color-text-dark: #1a1a1a;
+        --color-text-light: #ffffff;
+      }
 
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;700&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap');
+      @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;700&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap");
 
-        /* Language Styles */
-        body,
-        .lang-en {
-            font-family: 'Poppins', sans-serif;
-            direction: ltr;
-            background-color: var(--color-background);
-        }
+      /* Language Styles */
+      body,
+      .lang-en {
+        font-family: "Poppins", sans-serif;
+        direction: ltr;
+        background-color: var(--color-background);
+      }
 
-        .lang-hi {
-            font-family: 'Noto Sans Devanagari', sans-serif;
-            direction: ltr;
-        }
+      .lang-hi {
+        font-family: "Noto Sans Devanagari", sans-serif;
+        direction: ltr;
+      }
 
-        .lang-ur {
-            font-family: 'Noto Nastaliq Urdu', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
-            direction: rtl;
-            line-height: 1.8;
-            text-align: right;
-        }
+      .lang-ur {
+        font-family: "Noto Nastaliq Urdu", "Segoe UI", Tahoma, Geneva, Verdana,
+          sans-serif !important;
+        direction: rtl;
+        line-height: 1.8;
+        text-align: right;
+      }
 
-        /* Form & Table Inputs */
-        .form-input,
-        select,
-        .form-textarea {
-            padding: 0.75rem 1rem;
-            border-radius: 0.5rem;
-            border: 1px solid #ccc;
-            width: 100%;
-            font-family: inherit;
-        }
+      /* Form & Table Inputs */
+      .form-input,
+      select,
+      .form-textarea {
+        padding: 0.75rem 1rem;
+        border-radius: 0.5rem;
+        border: 1px solid #ccc;
+        width: 100%;
+        font-family: inherit;
+      }
 
-        .form-input:focus,
-        select:focus,
-        .form-textarea:focus {
-            outline: none;
-            border-color: var(--color-primary);
-            box-shadow: 0 0 0 3px rgba(0, 166, 147, 0.2);
-        }
+      .form-input:focus,
+      select:focus,
+      .form-textarea:focus {
+        outline: none;
+        border-color: var(--color-primary);
+        box-shadow: 0 0 0 3px rgba(0, 166, 147, 0.2);
+      }
 
-        .form-label {
-            display: block;
-            font-weight: 600;
-            margin-bottom: 0.25rem;
-            font-size: 0.875rem;
-        }
+      .form-label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 0.25rem;
+        font-size: 0.875rem;
+      }
 
-        /* Buttons */
-        .primary-button {
-            padding: 0.75rem 1.25rem;
-            background-color: #3b82f6;
-            color: var(--color-text-light);
-            font-weight: 600;
-            border-radius: 0.5rem;
-            transition: background-color 0.3s, transform 0.1s;
-            cursor: pointer;
-        }
+      /* Buttons */
+      .primary-button {
+        padding: 0.75rem 1.25rem;
+        background-color: #3b82f6;
+        color: var(--color-text-light);
+        font-weight: 600;
+        border-radius: 0.5rem;
+        transition: background-color 0.3s, transform 0.1s;
+        cursor: pointer;
+      }
 
-        .primary-button:hover {
-            background-color: #2563eb;
-            transform: translateY(-1px);
-        }
+      .primary-button:hover {
+        background-color: #2563eb;
+        transform: translateY(-1px);
+      }
 
-        .action-button {
-            padding: 0.5rem 0.75rem;
-            border-radius: 0.25rem;
-            font-size: 0.75rem;
-            font-weight: 600;
-            transition: background-color 0.2s;
-        }
+      .action-button {
+        padding: 0.5rem 0.75rem;
+        border-radius: 0.25rem;
+        font-size: 0.75rem;
+        font-weight: 600;
+        transition: background-color 0.2s;
+      }
 
-        .btn-edit {
-            background-color: #3b82f6;
-            color: white;
-        }
+      .btn-edit {
+        background-color: #3b82f6;
+        color: white;
+      }
 
-        .btn-delete {
-            background-color: #ef4444;
-            color: white;
-        }
+      .btn-delete {
+        background-color: #ef4444;
+        color: white;
+      }
 
-        /* Fixed Header */
-        header {
-            background-color: var(--color-text-light);
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            position: sticky;
-            top: 0;
-            width: 100%;
-            z-index: 10;
-            padding: 1rem 2rem;
-        }
+      /* Fixed Header */
+      header {
+        background-color: var(--color-text-light);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        position: sticky;
+        top: 0;
+        width: 100%;
+        z-index: 10;
+        padding: 1rem 2rem;
+      }
 
-        /* Table Styling */
-        .admin-table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0 8px;
-        }
+      /* Table Styling */
+      .admin-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0 8px;
+      }
 
-        .admin-table th {
-            text-align: left;
-            padding: 0.75rem 1rem;
-            font-size: 0.8rem;
-            color: gray;
-            text-transform: uppercase;
-            font-weight: 700;
-        }
+      .admin-table th {
+        text-align: left;
+        padding: 0.75rem 1rem;
+        font-size: 0.8rem;
+        color: gray;
+        text-transform: uppercase;
+        font-weight: 700;
+      }
 
-        .lang-ur .admin-table th {
-            text-align: right;
-        }
+      .lang-ur .admin-table th {
+        text-align: right;
+      }
 
-        .admin-table td {
-            padding: 0.75rem 1rem;
-            background-color: white;
-            border-top: 1px solid #eee;
-            border-bottom: 1px solid #eee;
-            font-size: 0.8rem;
-            font-weight: 500;
-        }
+      .admin-table td {
+        padding: 0.75rem 1rem;
+        background-color: white;
+        border-top: 1px solid #eee;
+        border-bottom: 1px solid #eee;
+        font-size: 0.8rem;
+        font-weight: 500;
+      }
 
-        .admin-table tr td:first-child {
-            border-top-left-radius: 0.75rem;
-            border-bottom-left-radius: 0.75rem;
-        }
+      .admin-table tr td:first-child {
+        border-top-left-radius: 0.75rem;
+        border-bottom-left-radius: 0.75rem;
+      }
 
-        .admin-table tr td:last-child {
-            border-top-right-radius: 0.75rem;
-            border-bottom-right-radius: 0.75rem;
-        }
+      .admin-table tr td:last-child {
+        border-top-right-radius: 0.75rem;
+        border-bottom-right-radius: 0.75rem;
+      }
 
-        .lang-ur .admin-table tr td:first-child {
-            border-radius: 0;
-            border-top-right-radius: 0.75rem;
-            border-bottom-right-radius: 0.75rem;
-        }
+      .lang-ur .admin-table tr td:first-child {
+        border-radius: 0;
+        border-top-right-radius: 0.75rem;
+        border-bottom-right-radius: 0.75rem;
+      }
 
-        .lang-ur .admin-table tr td:last-child {
-            border-radius: 0;
-            border-top-left-radius: 0.75rem;
-            border-bottom-left-radius: 0.75rem;
-        }
+      .lang-ur .admin-table tr td:last-child {
+        border-radius: 0;
+        border-top-left-radius: 0.75rem;
+        border-bottom-left-radius: 0.75rem;
+      }
 
-        .table-container {
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-        }
+      .table-container {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
 
-        .table-container table {
-            min-width: 1000px;
-        }
+      .table-container table {
+        min-width: 1000px;
+      }
 
-        /* Modal Styles */
-        .modal-backdrop {
-            background-color: rgba(0, 0, 0, 0.6);
-            transition: opacity 0.3s ease;
-        }
+      /* Modal Styles */
+      .modal-backdrop {
+        background-color: rgba(0, 0, 0, 0.6);
+        transition: opacity 0.3s ease;
+      }
 
-        .modal-content {
-            background-color: var(--color-background);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
-            border-radius: 1rem;
-            max-width: 95%;
-            width: 500px;
-            max-height: 90vh;
-            overflow-y: auto;
-        }
+      .modal-content {
+        background-color: var(--color-background);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+        border-radius: 1rem;
+        max-width: 95%;
+        width: 500px;
+        max-height: 90vh;
+        overflow-y: auto;
+      }
     </style>
-</head>
+  </head>
 
-<body class="lang-en">
-
+  <body class="lang-en">
     <script>
-        // Helper to format date YYYY-MM-DD
-        function formatDate(date) {
-            const d = new Date(date);
-            let month = '' + (d.getMonth() + 1);
-            let day = '' + d.getDate();
-            const year = d.getFullYear();
+      // Helper to format date YYYY-MM-DD
+      function formatDate(date) {
+        const d = new Date(date);
+        let month = "" + (d.getMonth() + 1);
+        let day = "" + d.getDate();
+        const year = d.getFullYear();
 
-            if (month.length < 2) month = '0' + month;
-            if (day.length < 2) day = '0' + day;
+        if (month.length < 2) month = "0" + month;
+        if (day.length < 2) day = "0" + day;
 
-            return [year, month, day].join('-');
-        }
+        return [year, month, day].join("-");
+      }
 
-        // --- Dummy Item Data (from Manage Items) ---
-        const DUMMY_KITCHEN_ITEMS = [
-            { id: 1, name: 'Aaloo', unit: 'kg' },
-            { id: 2, name: 'Aata', unit: 'kg' },
-            { id: 3, name: 'Chawal', unit: 'kg' },
-            { id: 4, name: 'Dal', unit: 'kg' },
-            { id: 5, name: 'Doodh', unit: 'liter' },
-            { id: 6, name: 'Mirch', unit: 'grams' },
-            { id: 7, name: 'Chai Patti', unit: 'kg' },
-        ];
+      // --- Dummy Item Data (from Manage Items) ---
+      const DUMMY_KITCHEN_ITEMS = [
+        { id: 1, name: "Aaloo", unit: "kg" },
+        { id: 2, name: "Aata", unit: "kg" },
+        { id: 3, name: "Chawal", unit: "kg" },
+        { id: 4, name: "Dal", unit: "kg" },
+        { id: 5, name: "Doodh", unit: "liter" },
+        { id: 6, name: "Mirch", unit: "grams" },
+        { id: 7, name: "Chai Patti", unit: "kg" },
+      ];
 
-        // --- Dummy Purchase Data ---
-        let dummyPurchases = [
-            { id: 101, itemId: 1, itemName: 'Aaloo', unit: 'kg', quantity: 100.00, unitPrice: 100.00, date: '2025-10-15' },
-            { id: 102, itemId: 3, itemName: 'Chawal', unit: 'kg', quantity: 500.00, unitPrice: 120.00, date: '2025-08-06' },
-            { id: 103, itemId: 4, itemName: 'Dal', unit: 'kg', quantity: 1000.00, unitPrice: 120.00, date: '2025-08-06' },
-            { id: 104, itemId: 5, itemName: 'Doodh', unit: 'liter', quantity: 100.00, unitPrice: 60.00, date: '2025-08-06' },
-            { id: 105, itemId: 6, itemName: 'Mirch', unit: 'grams', quantity: 500.00, unitPrice: 160.00, date: '2025-08-06' },
-            // Note: Weight(kg) and Chain(kg) in the image are placeholders; using existing dummy items here.
-        ];
+      // --- Dummy Purchase Data ---
+      let dummyPurchases = [
+        {
+          id: 101,
+          itemId: 1,
+          itemName: "Aaloo",
+          unit: "kg",
+          quantity: 100.0,
+          unitPrice: 100.0,
+          date: "2025-10-15",
+        },
+        {
+          id: 102,
+          itemId: 3,
+          itemName: "Chawal",
+          unit: "kg",
+          quantity: 500.0,
+          unitPrice: 120.0,
+          date: "2025-08-06",
+        },
+        {
+          id: 103,
+          itemId: 4,
+          itemName: "Dal",
+          unit: "kg",
+          quantity: 1000.0,
+          unitPrice: 120.0,
+          date: "2025-08-06",
+        },
+        {
+          id: 104,
+          itemId: 5,
+          itemName: "Doodh",
+          unit: "liter",
+          quantity: 100.0,
+          unitPrice: 60.0,
+          date: "2025-08-06",
+        },
+        {
+          id: 105,
+          itemId: 6,
+          itemName: "Mirch",
+          unit: "grams",
+          quantity: 500.0,
+          unitPrice: 160.0,
+          date: "2025-08-06",
+        },
+        // Note: Weight(kg) and Chain(kg) in the image are placeholders; using existing dummy items here.
+      ];
 
-        const PURCHASE_STORAGE_KEY = 'madarsaKitchenPurchases';
-        let nextPurchaseId = 106;
+      const PURCHASE_STORAGE_KEY = "madarsaKitchenPurchases";
+      let nextPurchaseId = 106;
 
-        // Initialize/Load Purchases from localStorage
-        function loadPurchases() {
-            const storedPurchases = localStorage.getItem(PURCHASE_STORAGE_KEY);
-            if (storedPurchases) {
-                try {
-                    dummyPurchases = JSON.parse(storedPurchases);
-                    if (dummyPurchases.length > 0) {
-                        const maxId = Math.max(...dummyPurchases.map(p => p.id));
-                        nextPurchaseId = maxId + 1;
-                    }
-                } catch (e) {
-                    console.error("Error loading purchases:", e);
-                }
-            } else {
-                savePurchases();
+      // Initialize/Load Purchases from localStorage
+      function loadPurchases() {
+        const storedPurchases = localStorage.getItem(PURCHASE_STORAGE_KEY);
+        if (storedPurchases) {
+          try {
+            dummyPurchases = JSON.parse(storedPurchases);
+            if (dummyPurchases.length > 0) {
+              const maxId = Math.max(...dummyPurchases.map((p) => p.id));
+              nextPurchaseId = maxId + 1;
             }
+          } catch (e) {
+            console.error("Error loading purchases:", e);
+          }
+        } else {
+          savePurchases();
         }
+      }
 
-        // Save Purchases to localStorage
-        function savePurchases() {
-            localStorage.setItem(PURCHASE_STORAGE_KEY, JSON.stringify(dummyPurchases));
+      // Save Purchases to localStorage
+      function savePurchases() {
+        localStorage.setItem(
+          PURCHASE_STORAGE_KEY,
+          JSON.stringify(dummyPurchases)
+        );
+      }
+
+      // Helper to get purchase by ID
+      function getPurchaseById(id) {
+        return dummyPurchases.find((p) => p.id === id);
+      }
+
+      // --- Multilingual Data ---
+      const langData = {
+        en: {
+          kitchen_system: "Kitchen System",
+          page_title: "Purchase Management",
+          back_to_kitchen: "Back to Kitchen",
+          logout: "Logout",
+
+          // Filters/Add Form
+          filter_by_items: "Filter by items",
+          all_items: "-- All items --",
+          from_history: "From history:",
+          to_date: "To date:",
+          reset: "Reset",
+          filter: "Filter",
+          item_selection: "Item selection:",
+          select_item_placeholder: "-- Select item --",
+          quantity: "Quantity:",
+          unit_price: "Unit price:",
+          purchase_date: "Purchase date:",
+          add_purchase_btn: "Add purchase",
+
+          // Table Headers
+          process: "Process",
+          purchase_date_table: "Purchase Date",
+          unit_price_table: "Unit price",
+          quantity_table: "Quantity",
+          item_name: "Item name",
+          delete: "Delete",
+          edit: "Edit",
+
+          // Modal
+          modal_edit_title: "Edit Purchase Record",
+          save: "Save Changes",
+          cancel: "Cancel",
+
+          // Messages
+          confirm_delete: "Are you sure you want to delete this purchase?",
+          purchase_deleted: "Purchase record deleted!",
+          purchase_saved: "Purchase record saved/updated successfully!",
+          validation_error:
+            "Please select an Item and provide valid Quantity, Unit Price, and Date.",
+        },
+        hi: {
+          kitchen_system: "रसोई प्रणाली",
+          page_title: "खरीद प्रबंधन",
+          back_to_kitchen: "रसोई पर वापस",
+          logout: "लॉगआउट",
+
+          // Filters/Add Form
+          filter_by_items: "आइटम से फ़िल्टर करें",
+          all_items: "-- सभी आइटम --",
+          from_history: "इतिहास से:",
+          to_date: "इस तिथि तक:",
+          reset: "रीसेट",
+          filter: "फ़िल्टर करें",
+          item_selection: "आइटम चयन:",
+          select_item_placeholder: "-- आइटम चुनें --",
+          quantity: "मात्रा:",
+          unit_price: "इकाई मूल्य:",
+          purchase_date: "खरीद की तारीख:",
+          add_purchase_btn: "खरीद जोड़ें",
+
+          // Table Headers
+          process: "प्रक्रिया",
+          purchase_date_table: "खरीद की तारीख",
+          unit_price_table: "इकाई मूल्य",
+          quantity_table: "मात्रा",
+          item_name: "आइटम का नाम",
+          delete: "हटाएँ",
+          edit: "संपादित करें",
+
+          // Modal
+          modal_edit_title: "खरीद रिकॉर्ड संपादित करें",
+          save: "परिवर्तन सहेजें",
+          cancel: "रद्द करें",
+
+          // Messages
+          confirm_delete: "क्या आप निश्चित रूप से इस खरीद को हटाना चाहते हैं?",
+          purchase_deleted: "खरीद रिकॉर्ड हटा दिया गया!",
+          purchase_saved: "खरीद रिकॉर्ड सफलतापूर्वक सहेजा/अपडेट किया गया!",
+          validation_error:
+            "कृपया एक आइटम चुनें और वैध मात्रा, इकाई मूल्य और तिथि प्रदान करें।",
+        },
+        ur: {
+          kitchen_system: "باورچی خانہ نظام",
+          page_title: "خریداری کا انتظام",
+          back_to_kitchen: "باورچی خانے پر واپس جائیں",
+          logout: "لاگ آؤٹ",
+
+          // Filters/Add Form
+          filter_by_items: "آئٹمز کے ذریعے فلٹر کریں",
+          all_items: "-- تمام آئٹمز --",
+          from_history: "تاریخ سے:",
+          to_date: "اس تاریخ تک:",
+          reset: "ری سیٹ",
+          filter: "فلٹر",
+          item_selection: "آئٹم کا انتخاب:",
+          select_item_placeholder: "-- آئٹم منتخب کریں --",
+          quantity: "مقدار:",
+          unit_price: "یونٹ کی قیمت:",
+          purchase_date: "خریداری کی تاریخ:",
+          add_purchase_btn: "خریداری شامل کریں",
+
+          // Table Headers
+          process: "عمل",
+          purchase_date_table: "خریداری کی تاریخ",
+          unit_price_table: "یونٹ کی قیمت",
+          quantity_table: "مقدار",
+          item_name: "آئٹم کا نام",
+          delete: "حذف کریں",
+          edit: "ترمیم کریں",
+
+          // Modal
+          modal_edit_title: "خریداری ریکارڈ میں ترمیم کریں",
+          save: "تبدیلیاں محفوظ کریں",
+          cancel: "منسوخ کریں",
+
+          // Messages
+          confirm_delete: "کیا آپ واقعی اس خریداری کو حذف کرنا چاہتے ہیں؟",
+          purchase_deleted: "خریداری کا ریکارڈ حذف کر دیا گیا!",
+          purchase_saved:
+            "خریداری کا ریکارڈ کامیابی سے محفوظ/اپ ڈیٹ کر دیا گیا!",
+          validation_error:
+            "براہ کرم ایک آئٹم منتخب کریں اور درست مقدار، یونٹ کی قیمت، اور تاریخ فراہم کریں۔",
+        },
+      };
+
+      let currentLang = "en";
+
+      function getTranslation(key) {
+        return langData[currentLang][key] || langData["en"][key] || key;
+      }
+
+      // --- Core UI Update Functions ---
+      function updateContent() {
+        document.body.className = "lang-" + currentLang;
+
+        document.querySelectorAll("[data-lang-key]").forEach((el) => {
+          const key = el.getAttribute("data-lang-key");
+          el.textContent = getTranslation(key);
+        });
+
+        populateItemDropdowns();
+        renderPurchaseTable(filterPurchases());
+      }
+
+      function changeLanguage(lang) {
+        if (lang in langData) {
+          currentLang = lang;
+          localStorage.setItem("madarsaSystemLang", lang);
+          updateContent();
         }
+      }
 
-        // Helper to get purchase by ID
-        function getPurchaseById(id) {
-            return dummyPurchases.find(p => p.id === id);
-        }
+      function populateItemDropdowns() {
+        const filterDropdown = document.getElementById("item-filter");
+        const addFormDropdown = document.getElementById("item-select-add");
 
-        // --- Multilingual Data ---
-        const langData = {
-            'en': {
-                'kitchen_system': 'Kitchen System',
-                'page_title': 'Purchase Management',
-                'back_to_kitchen': 'Back to Kitchen',
-                'logout': 'Logout',
+        // Get selected values to maintain state after language change
+        const selectedFilter = filterDropdown.value;
+        const selectedItemAdd = addFormDropdown.value;
 
-                // Filters/Add Form
-                'filter_by_items': 'Filter by items',
-                'all_items': '-- All items --',
-                'from_history': 'From history:',
-                'to_date': 'To date:',
-                'reset': 'Reset',
-                'filter': 'Filter',
-                'item_selection': 'Item selection:',
-                'select_item_placeholder': '-- Select item --',
-                'quantity': 'Quantity:',
-                'unit_price': 'Unit price:',
-                'purchase_date': 'Purchase date:',
-                'add_purchase_btn': 'Add purchase',
+        const optionsHtml = DUMMY_KITCHEN_ITEMS.map(
+          (item) =>
+            `<option value="${item.id}" data-unit="${item.unit}">${item.name} (${item.unit})</option>`
+        ).join("");
 
-                // Table Headers
-                'process': 'Process',
-                'purchase_date_table': 'Purchase Date',
-                'unit_price_table': 'Unit price',
-                'quantity_table': 'Quantity',
-                'item_name': 'Item name',
-                'delete': 'Delete',
-                'edit': 'Edit',
+        // Filter Dropdown
+        filterDropdown.innerHTML =
+          `<option value="" data-lang-key="all_items">${getTranslation(
+            "all_items"
+          )}</option>` + optionsHtml;
+        filterDropdown.value = selectedFilter;
 
-                // Modal
-                'modal_edit_title': 'Edit Purchase Record',
-                'save': 'Save Changes',
-                'cancel': 'Cancel',
+        // Add Form Dropdown
+        addFormDropdown.innerHTML =
+          `<option value="" data-lang-key="select_item_placeholder" selected disabled>${getTranslation(
+            "select_item_placeholder"
+          )}</option>` + optionsHtml;
+        addFormDropdown.value = selectedItemAdd;
+      }
 
-                // Messages
-                'confirm_delete': 'Are you sure you want to delete this purchase?',
-                'purchase_deleted': 'Purchase record deleted!',
-                'purchase_saved': 'Purchase record saved/updated successfully!',
-                'validation_error': 'Please select an Item and provide valid Quantity, Unit Price, and Date.'
-            },
-            'hi': {
-                'kitchen_system': 'रसोई प्रणाली',
-                'page_title': 'खरीद प्रबंधन',
-                'back_to_kitchen': 'रसोई पर वापस',
-                'logout': 'लॉगआउट',
+      // --- Table Rendering ---
+      function renderPurchaseTable(purchaseList) {
+        const tbody = document.getElementById("purchases-table-body");
+        if (!tbody) return;
 
-                // Filters/Add Form
-                'filter_by_items': 'आइटम से फ़िल्टर करें',
-                'all_items': '-- सभी आइटम --',
-                'from_history': 'इतिहास से:',
-                'to_date': 'इस तिथि तक:',
-                'reset': 'रीसेट',
-                'filter': 'फ़िल्टर करें',
-                'item_selection': 'आइटम चयन:',
-                'select_item_placeholder': '-- आइटम चुनें --',
-                'quantity': 'मात्रा:',
-                'unit_price': 'इकाई मूल्य:',
-                'purchase_date': 'खरीद की तारीख:',
-                'add_purchase_btn': 'खरीद जोड़ें',
+        tbody.innerHTML = "";
 
-                // Table Headers
-                'process': 'प्रक्रिया',
-                'purchase_date_table': 'खरीद की तारीख',
-                'unit_price_table': 'इकाई मूल्य',
-                'quantity_table': 'मात्रा',
-                'item_name': 'आइटम का नाम',
-                'delete': 'हटाएँ',
-                'edit': 'संपादित करें',
+        // Sort by date descending
+        purchaseList.sort((a, b) => new Date(b.date) - new Date(a.date));
 
-                // Modal
-                'modal_edit_title': 'खरीद रिकॉर्ड संपादित करें',
-                'save': 'परिवर्तन सहेजें',
-                'cancel': 'रद्द करें',
+        purchaseList.forEach((purchase) => {
+          const tr = document.createElement("tr");
+          const itemDetails = DUMMY_KITCHEN_ITEMS.find(
+            (item) => item.id === purchase.itemId
+          );
+          const unit = itemDetails ? itemDetails.unit : "";
 
-                // Messages
-                'confirm_delete': 'क्या आप निश्चित रूप से इस खरीद को हटाना चाहते हैं?',
-                'purchase_deleted': 'खरीद रिकॉर्ड हटा दिया गया!',
-                'purchase_saved': 'खरीद रिकॉर्ड सफलतापूर्वक सहेजा/अपडेट किया गया!',
-                'validation_error': 'कृपया एक आइटम चुनें और वैध मात्रा, इकाई मूल्य और तिथि प्रदान करें।'
-            },
-            'ur': {
-                'kitchen_system': 'باورچی خانہ نظام',
-                'page_title': 'خریداری کا انتظام',
-                'back_to_kitchen': 'باورچی خانے پر واپس جائیں',
-                'logout': 'لاگ آؤٹ',
-
-                // Filters/Add Form
-                'filter_by_items': 'آئٹمز کے ذریعے فلٹر کریں',
-                'all_items': '-- تمام آئٹمز --',
-                'from_history': 'تاریخ سے:',
-                'to_date': 'اس تاریخ تک:',
-                'reset': 'ری سیٹ',
-                'filter': 'فلٹر',
-                'item_selection': 'آئٹم کا انتخاب:',
-                'select_item_placeholder': '-- آئٹم منتخب کریں --',
-                'quantity': 'مقدار:',
-                'unit_price': 'یونٹ کی قیمت:',
-                'purchase_date': 'خریداری کی تاریخ:',
-                'add_purchase_btn': 'خریداری شامل کریں',
-
-                // Table Headers
-                'process': 'عمل',
-                'purchase_date_table': 'خریداری کی تاریخ',
-                'unit_price_table': 'یونٹ کی قیمت',
-                'quantity_table': 'مقدار',
-                'item_name': 'آئٹم کا نام',
-                'delete': 'حذف کریں',
-                'edit': 'ترمیم کریں',
-
-                // Modal
-                'modal_edit_title': 'خریداری ریکارڈ میں ترمیم کریں',
-                'save': 'تبدیلیاں محفوظ کریں',
-                'cancel': 'منسوخ کریں',
-
-                // Messages
-                'confirm_delete': 'کیا آپ واقعی اس خریداری کو حذف کرنا چاہتے ہیں؟',
-                'purchase_deleted': 'خریداری کا ریکارڈ حذف کر دیا گیا!',
-                'purchase_saved': 'خریداری کا ریکارڈ کامیابی سے محفوظ/اپ ڈیٹ کر دیا گیا!',
-                'validation_error': 'براہ کرم ایک آئٹم منتخب کریں اور درست مقدار، یونٹ کی قیمت، اور تاریخ فراہم کریں۔'
-            }
-        };
-
-        let currentLang = 'en';
-
-        function getTranslation(key) {
-            return langData[currentLang][key] || langData['en'][key] || key;
-        }
-
-        // --- Core UI Update Functions ---
-        function updateContent() {
-            document.body.className = 'lang-' + currentLang;
-
-            document.querySelectorAll('[data-lang-key]').forEach(el => {
-                const key = el.getAttribute('data-lang-key');
-                el.textContent = getTranslation(key);
-            });
-
-            populateItemDropdowns();
-            renderPurchaseTable(filterPurchases());
-        }
-
-        function changeLanguage(lang) {
-            if (lang in langData) {
-                currentLang = lang;
-                localStorage.setItem('madarsaSystemLang', lang);
-                updateContent();
-            }
-        }
-
-        function populateItemDropdowns() {
-            const filterDropdown = document.getElementById('item-filter');
-            const addFormDropdown = document.getElementById('item-select-add');
-
-            // Get selected values to maintain state after language change
-            const selectedFilter = filterDropdown.value;
-            const selectedItemAdd = addFormDropdown.value;
-
-            const optionsHtml = DUMMY_KITCHEN_ITEMS.map(item =>
-                `<option value="${item.id}" data-unit="${item.unit}">${item.name} (${item.unit})</option>`
-            ).join('');
-
-            // Filter Dropdown
-            filterDropdown.innerHTML = `<option value="" data-lang-key="all_items">${getTranslation('all_items')}</option>` + optionsHtml;
-            filterDropdown.value = selectedFilter;
-
-            // Add Form Dropdown
-            addFormDropdown.innerHTML = `<option value="" data-lang-key="select_item_placeholder" selected disabled>${getTranslation('select_item_placeholder')}</option>` + optionsHtml;
-            addFormDropdown.value = selectedItemAdd;
-        }
-
-        // --- Table Rendering ---
-        function renderPurchaseTable(purchaseList) {
-            const tbody = document.getElementById('purchases-table-body');
-            if (!tbody) return;
-
-            tbody.innerHTML = '';
-
-            // Sort by date descending
-            purchaseList.sort((a, b) => new Date(b.date) - new Date(a.date));
-
-            purchaseList.forEach(purchase => {
-                const tr = document.createElement('tr');
-                const itemDetails = DUMMY_KITCHEN_ITEMS.find(item => item.id === purchase.itemId);
-                const unit = itemDetails ? itemDetails.unit : '';
-
-                tr.innerHTML = `
+          tr.innerHTML = `
                     <td class="flex space-x-2">
-                        <a href="#" onclick="handleAction('delete', ${purchase.id})" class="action-button btn-delete mr-1" data-lang-key="delete">${getTranslation('delete')}</a>
-                        <a href="#" onclick="handleAction('edit', ${purchase.id})" class="action-button btn-edit mr-1" data-lang-key="edit">${getTranslation('edit')}</a>
+                        <a href="#" onclick="handleAction('delete', ${
+                          purchase.id
+                        })" class="action-button btn-delete mr-1" data-lang-key="delete">${getTranslation(
+            "delete"
+          )}</a>
+                        <a href="#" onclick="handleAction('edit', ${
+                          purchase.id
+                        })" class="action-button btn-edit mr-1" data-lang-key="edit">${getTranslation(
+            "edit"
+          )}</a>
                     </td>
                     <td>${purchase.date}</td>
                     <td>${purchase.unitPrice.toFixed(2)}</td>
                     <td>${purchase.quantity.toFixed(2)}</td>
-                    <td class="font-bold text-gray-800">${purchase.itemName} (${unit})</td>
+                    <td class="font-bold text-gray-800">${
+                      purchase.itemName
+                    } (${unit})</td>
                 `;
-                tbody.appendChild(tr);
-            });
+          tbody.appendChild(tr);
+        });
+      }
+
+      // --- Filter Logic ---
+      function filterPurchases() {
+        const itemFilter = parseInt(
+          document.getElementById("item-filter").value
+        );
+        const fromDate = document.getElementById("from-date").value;
+        const toDate = document.getElementById("to-date").value;
+
+        return dummyPurchases.filter((purchase) => {
+          const matchesItem =
+            isNaN(itemFilter) || purchase.itemId === itemFilter;
+
+          const matchesFromDate =
+            !fromDate || new Date(purchase.date) >= new Date(fromDate);
+          const matchesToDate =
+            !toDate || new Date(purchase.date) <= new Date(toDate);
+
+          return matchesItem && matchesFromDate && matchesToDate;
+        });
+      }
+
+      function handleFilter() {
+        renderPurchaseTable(filterPurchases());
+      }
+
+      function resetFilters() {
+        document.getElementById("item-filter").value = "";
+        document.getElementById("from-date").value = "";
+        document.getElementById("to-date").value = "";
+        handleFilter();
+      }
+
+      // --- Add/Edit Logic ---
+      function savePurchaseRecord(event, isEdit = false, id = null) {
+        event.preventDefault();
+        const form = event.target;
+
+        const itemId = parseInt(form.querySelector("#item-select-add").value);
+        const quantity = parseFloat(form.querySelector("#quantity-add").value);
+        const unitPrice = parseFloat(
+          form.querySelector("#unit-price-add").value
+        );
+        const date = form.querySelector("#purchase-date-add").value;
+
+        if (
+          !itemId ||
+          isNaN(quantity) ||
+          isNaN(unitPrice) ||
+          !date ||
+          quantity <= 0 ||
+          unitPrice <= 0
+        ) {
+          alert(getTranslation("validation_error"));
+          return false;
         }
 
-        // --- Filter Logic ---
-        function filterPurchases() {
-            const itemFilter = parseInt(document.getElementById('item-filter').value);
-            const fromDate = document.getElementById('from-date').value;
-            const toDate = document.getElementById('to-date').value;
+        const itemDetails = DUMMY_KITCHEN_ITEMS.find(
+          (item) => item.id === itemId
+        );
+        if (!itemDetails) return false;
 
-            return dummyPurchases.filter(purchase => {
+        const purchaseRecord = {
+          itemId,
+          itemName: itemDetails.name,
+          unit: itemDetails.unit,
+          quantity: quantity,
+          unitPrice: unitPrice,
+          date: date,
+        };
 
-                const matchesItem = isNaN(itemFilter) || purchase.itemId === itemFilter;
-
-                const matchesFromDate = !fromDate || new Date(purchase.date) >= new Date(fromDate);
-                const matchesToDate = !toDate || new Date(purchase.date) <= new Date(toDate);
-
-                return matchesItem && matchesFromDate && matchesToDate;
-            });
-        }
-
-        function handleFilter() {
-            renderPurchaseTable(filterPurchases());
-        }
-
-        function resetFilters() {
-            document.getElementById('item-filter').value = '';
-            document.getElementById('from-date').value = '';
-            document.getElementById('to-date').value = '';
-            handleFilter();
-        }
-
-        // --- Add/Edit Logic ---
-        function savePurchaseRecord(event, isEdit = false, id = null) {
-            event.preventDefault();
-            const form = event.target;
-
-            const itemId = parseInt(form.querySelector('#item-select-add').value);
-            const quantity = parseFloat(form.querySelector('#quantity-add').value);
-            const unitPrice = parseFloat(form.querySelector('#unit-price-add').value);
-            const date = form.querySelector('#purchase-date-add').value;
-
-            if (!itemId || isNaN(quantity) || isNaN(unitPrice) || !date || quantity <= 0 || unitPrice <= 0) {
-                alert(getTranslation('validation_error'));
-                return false;
-            }
-
-            const itemDetails = DUMMY_KITCHEN_ITEMS.find(item => item.id === itemId);
-            if (!itemDetails) return false;
-
-            const purchaseRecord = {
-                itemId,
-                itemName: itemDetails.name,
-                unit: itemDetails.unit,
-                quantity: quantity,
-                unitPrice: unitPrice,
-                date: date
+        if (isEdit) {
+          const index = dummyPurchases.findIndex((p) => p.id === id);
+          if (index !== -1) {
+            dummyPurchases[index] = {
+              ...dummyPurchases[index],
+              ...purchaseRecord,
             };
-
-            if (isEdit) {
-                const index = dummyPurchases.findIndex(p => p.id === id);
-                if (index !== -1) {
-                    dummyPurchases[index] = { ...dummyPurchases[index], ...purchaseRecord };
-                }
-            } else {
-                purchaseRecord.id = nextPurchaseId++;
-                dummyPurchases.push(purchaseRecord);
-            }
-
-            savePurchases();
-
-            if (!isEdit) {
-                form.reset();
-                document.getElementById('purchase-date-add').value = formatDate(new Date());
-            } else {
-                closePurchaseModal();
-            }
-
-            updateContent();
-            alert(getTranslation('purchase_saved'));
-            return false;
+          }
+        } else {
+          purchaseRecord.id = nextPurchaseId++;
+          dummyPurchases.push(purchaseRecord);
         }
 
-        // --- Delete Logic ---
-        function deletePurchase(id) {
-            dummyPurchases = dummyPurchases.filter(p => p.id !== id);
-            savePurchases();
-            updateContent();
-            alert(getTranslation('purchase_deleted'));
+        savePurchases();
+
+        if (!isEdit) {
+          form.reset();
+          document.getElementById("purchase-date-add").value = formatDate(
+            new Date()
+          );
+        } else {
+          closePurchaseModal();
         }
 
-        // --- Action Dispatcher (Delete/Edit) ---
-        function handleAction(action, id) {
-            if (action === 'delete') {
-                if (confirm(getTranslation('confirm_delete'))) {
-                    deletePurchase(id);
-                }
-            } else if (action === 'edit') {
-                const purchase = getPurchaseById(id);
-                if (purchase) {
-                    openPurchaseModal(purchase);
-                }
-            }
+        updateContent();
+        alert(getTranslation("purchase_saved"));
+        return false;
+      }
+
+      // --- Delete Logic ---
+      function deletePurchase(id) {
+        dummyPurchases = dummyPurchases.filter((p) => p.id !== id);
+        savePurchases();
+        updateContent();
+        alert(getTranslation("purchase_deleted"));
+      }
+
+      // --- Action Dispatcher (Delete/Edit) ---
+      function handleAction(action, id) {
+        if (action === "delete") {
+          if (confirm(getTranslation("confirm_delete"))) {
+            deletePurchase(id);
+          }
+        } else if (action === "edit") {
+          const purchase = getPurchaseById(id);
+          if (purchase) {
+            openPurchaseModal(purchase);
+          }
         }
+      }
 
-        // --- Modal Handling for Edit ---
-        function openPurchaseModal(purchase) {
-            const modal = document.getElementById('purchase-modal');
-            const isRtl = currentLang === 'ur';
+      // --- Modal Handling for Edit ---
+      function openPurchaseModal(purchase) {
+        const modal = document.getElementById("purchase-modal");
+        const isRtl = currentLang === "ur";
 
-            document.getElementById('modal-title').textContent = getTranslation('modal_edit_title');
+        document.getElementById("modal-title").textContent =
+          getTranslation("modal_edit_title");
 
-            const itemDetails = DUMMY_KITCHEN_ITEMS.find(item => item.id === purchase.itemId);
-            const unit = itemDetails ? itemDetails.unit : '';
+        const itemDetails = DUMMY_KITCHEN_ITEMS.find(
+          (item) => item.id === purchase.itemId
+        );
+        const unit = itemDetails ? itemDetails.unit : "";
 
-            const formHtml = `
-                <form id="edit-purchase-form" onsubmit="return savePurchaseRecord(event, true, ${purchase.id})">
+        const formHtml = `
+                <form id="edit-purchase-form" onsubmit="return savePurchaseRecord(event, true, ${
+                  purchase.id
+                })">
                     <div class="form-group mb-4">
-                        <label class="form-label">${getTranslation('item_name')}</label>
-                        <input type="text" class="form-input bg-gray-100" value="${purchase.itemName} (${unit})" disabled>
-                        <input type="hidden" id="item-select-add" value="${purchase.itemId}">
+                        <label class="form-label">${getTranslation(
+                          "item_name"
+                        )}</label>
+                        <input type="text" class="form-input bg-gray-100" value="${
+                          purchase.itemName
+                        } (${unit})" disabled>
+                        <input type="hidden" id="item-select-add" value="${
+                          purchase.itemId
+                        }">
                     </div>
                     
                     <div class="grid grid-cols-2 gap-4">
                         <div class="form-group">
-                            <label for="quantity-add" class="form-label">${getTranslation('quantity')}</label>
-                            <input type="number" id="quantity-add" class="form-input" value="${purchase.quantity}" step="0.01" required>
+                            <label for="quantity-add" class="form-label">${getTranslation(
+                              "quantity"
+                            )}</label>
+                            <input type="number" id="quantity-add" class="form-input" value="${
+                              purchase.quantity
+                            }" step="0.01" required>
                         </div>
                         <div class="form-group">
-                            <label for="unit-price-add" class="form-label">${getTranslation('unit_price')}</label>
-                            <input type="number" id="unit-price-add" class="form-input" value="${purchase.unitPrice}" step="0.01" required>
+                            <label for="unit-price-add" class="form-label">${getTranslation(
+                              "unit_price"
+                            )}</label>
+                            <input type="number" id="unit-price-add" class="form-input" value="${
+                              purchase.unitPrice
+                            }" step="0.01" required>
                         </div>
                     </div>
                     
                     <div class="form-group mt-4">
-                        <label for="purchase-date-add" class="form-label">${getTranslation('purchase_date')}</label>
-                        <input type="date" id="purchase-date-add" class="form-input" value="${purchase.date}" required>
+                        <label for="purchase-date-add" class="form-label">${getTranslation(
+                          "purchase_date"
+                        )}</label>
+                        <input type="date" id="purchase-date-add" class="form-input" value="${
+                          purchase.date
+                        }" required>
                     </div>
 
                     <div class="flex justify-end space-x-4 mt-8">
-                        <button type="button" onclick="closePurchaseModal()" class="action-button bg-gray-200 text-gray-700 hover:bg-gray-300">${getTranslation('cancel')}</button>
-                        <button type="submit" class="primary-button">${getTranslation('save')}</button>
+                        <button type="button" onclick="closePurchaseModal()" class="action-button bg-gray-200 text-gray-700 hover:bg-gray-300">${getTranslation(
+                          "cancel"
+                        )}</button>
+                        <button type="submit" class="primary-button">${getTranslation(
+                          "save"
+                        )}</button>
                     </div>
                 </form>
             `;
 
-            document.getElementById('modal-body').innerHTML = formHtml;
-            document.getElementById('edit-purchase-form').style.textAlign = isRtl ? 'right' : 'left';
+        document.getElementById("modal-body").innerHTML = formHtml;
+        document.getElementById("edit-purchase-form").style.textAlign = isRtl
+          ? "right"
+          : "left";
 
+        modal.classList.remove("hidden", "opacity-0");
+      }
 
-            modal.classList.remove('hidden', 'opacity-0');
-        }
+      function closePurchaseModal() {
+        document.getElementById("purchase-modal").classList.add("opacity-0");
+        setTimeout(() => {
+          document.getElementById("purchase-modal").classList.add("hidden");
+        }, 300);
+      }
 
-        function closePurchaseModal() {
-            document.getElementById('purchase-modal').classList.add('opacity-0');
-            setTimeout(() => { document.getElementById('purchase-modal').classList.add('hidden'); }, 300);
-        }
+      function logOut() {
+        localStorage.removeItem("isUserLoggedIn");
+        localStorage.removeItem("authToken");
+        localStorage.removeItem("userData");
+        window.location.href = "index.html";
+      }
 
+      // Initialize content and language
+      window.onload = function () {
+        loadPurchases(); // Load data
+        const storedLang = localStorage.getItem("madarsaSystemLang");
+        currentLang = storedLang && storedLang in langData ? storedLang : "en";
 
-        // Initialize content and language
-        window.onload = function () {
-            loadPurchases(); // Load data
-            const storedLang = localStorage.getItem('madarsaSystemLang');
-            currentLang = (storedLang && storedLang in langData) ? storedLang : 'en';
+        // Set default date for the Add form
+        document.getElementById("purchase-date-add").value = formatDate(
+          new Date()
+        );
 
-            // Set default date for the Add form
-            document.getElementById('purchase-date-add').value = formatDate(new Date());
+        // Initial content update and table render
+        updateContent();
 
-            // Initial content update and table render
-            updateContent();
+        // Attach filter listeners
+        document
+          .getElementById("item-filter")
+          .addEventListener("change", handleFilter);
+        document
+          .getElementById("from-date")
+          .addEventListener("change", handleFilter);
+        document
+          .getElementById("to-date")
+          .addEventListener("change", handleFilter);
+        document
+          .getElementById("filter-btn")
+          .addEventListener("click", handleFilter);
+        document
+          .getElementById("reset-btn")
+          .addEventListener("click", resetFilters);
 
-            // Attach filter listeners
-            document.getElementById('item-filter').addEventListener('change', handleFilter);
-            document.getElementById('from-date').addEventListener('change', handleFilter);
-            document.getElementById('to-date').addEventListener('change', handleFilter);
-            document.getElementById('filter-btn').addEventListener('click', handleFilter);
-            document.getElementById('reset-btn').addEventListener('click', resetFilters);
-
-            // Attach form listener for adding new purchase
-            document.getElementById('add-purchase-form').addEventListener('submit', (e) => savePurchaseRecord(e, false, null));
-        };
+        // Attach form listener for adding new purchase
+        document
+          .getElementById("add-purchase-form")
+          .addEventListener("submit", (e) =>
+            savePurchaseRecord(e, false, null)
+          );
+      };
     </script>
 
     <!-- HEADER -->
     <header>
-        <div class="max-w-7xl mx-auto w-full flex justify-between items-center">
-            <!-- Left: Back Button & Title -->
-            <div class="flex items-center space-x-4">
-                <a href="kitchen_system.html" class="action-button bg-gray-100 text-gray-700 hover:bg-gray-200"
-                    data-lang-key="back_to_kitchen">Back to Kitchen</a>
-                <h1 class="text-xl font-bold" data-lang-key="page_title" style="color: var(--color-primary);">Purchase
-                    Management</h1>
-            </div>
-
-            <!-- Right: Language Switch -->
-            <div class="flex items-center space-x-2">
-                <select onchange="changeLanguage(this.value)" class="bg-gray-100 rounded-lg p-1 text-sm">
-                    <option value="en" selected>English</option>
-                    <option value="hi">हिन्दी</option>
-                    <option value="ur">اردو</option>
-                </select>
-                <button onclick="window.location.href='login.html'"
-                    class="text-sm font-semibold text-red-600 hover:text-red-800 transition-colors ml-4"
-                    data-lang-key="logout">Logout</button>
-            </div>
+      <div class="max-w-7xl mx-auto w-full flex justify-between items-center">
+        <!-- Left: Back Button & Title -->
+        <div class="flex items-center space-x-4">
+          <a
+            href="kitchen_system.html"
+            class="action-button bg-gray-100 text-gray-700 hover:bg-gray-200"
+            data-lang-key="back_to_kitchen"
+            >Back to Kitchen</a
+          >
+          <h1
+            class="text-xl font-bold"
+            data-lang-key="page_title"
+            style="color: var(--color-primary)"
+          >
+            Purchase Management
+          </h1>
         </div>
+
+        <!-- Right: Language Switch -->
+        <div class="flex items-center space-x-2">
+          <select
+            onchange="changeLanguage(this.value)"
+            class="bg-gray-100 rounded-lg p-1 text-sm"
+          >
+            <option value="en" selected>English</option>
+            <option value="hi">हिन्दी</option>
+            <option value="ur">اردو</option>
+          </select>
+          <button
+            onclick="logOut()"
+            class="text-sm font-semibold text-red-600 hover:text-red-800 transition-colors ml-4"
+            data-lang-key="logout"
+          >
+            Logout
+          </button>
+        </div>
+      </div>
     </header>
 
     <!-- MAIN CONTENT AREA -->
     <main class="max-w-7xl mx-auto w-full p-4 md:p-8">
+      <!-- Purchase Management Container -->
+      <div class="bg-white p-6 md:p-8 rounded-xl shadow-2xl">
+        <h2
+          class="text-2xl font-bold text-gray-700 mb-6"
+          data-lang-key="page_title"
+        >
+          Purchase Management
+        </h2>
 
-        <!-- Purchase Management Container -->
-        <div class="bg-white p-6 md:p-8 rounded-xl shadow-2xl">
-
-            <h2 class="text-2xl font-bold text-gray-700 mb-6" data-lang-key="page_title">Purchase Management</h2>
-
-            <!-- Filters Section -->
-            <div class="border-b pb-4 mb-6">
-                <h3 class="text-lg font-semibold text-gray-700 mb-4" data-lang-key="filter_by_items">Filter by items
-                </h3>
-                <div class="grid grid-cols-1 md:grid-cols-6 gap-4 items-end">
-
-                    <!-- Item Filter -->
-                    <div class="form-group md:col-span-2">
-                        <select id="item-filter" class="form-input">
-                            <!-- Options populated by JS -->
-                        </select>
-                    </div>
-
-                    <!-- From Date -->
-                    <div class="form-group">
-                        <label for="from-date" class="form-label" data-lang-key="from_history">From history:</label>
-                        <input type="date" id="from-date" class="form-input">
-                    </div>
-
-                    <!-- To Date -->
-                    <div class="form-group">
-                        <label for="to-date" class="form-label" data-lang-key="to_date">To date:</label>
-                        <input type="date" id="to-date" class="form-input">
-                    </div>
-
-                    <!-- Filter/Reset Buttons -->
-                    <div class="form-group flex space-x-3 md:col-span-2">
-                        <button type="button" id="reset-btn" class="action-button text-gray-700 hover:bg-gray-100 w-1/2"
-                            data-lang-key="reset">Reset</button>
-                        <button type="button" id="filter-btn" class="action-button primary-button w-1/2"
-                            data-lang-key="filter">Filter</button>
-                    </div>
-                </div>
+        <!-- Filters Section -->
+        <div class="border-b pb-4 mb-6">
+          <h3
+            class="text-lg font-semibold text-gray-700 mb-4"
+            data-lang-key="filter_by_items"
+          >
+            Filter by items
+          </h3>
+          <div class="grid grid-cols-1 md:grid-cols-6 gap-4 items-end">
+            <!-- Item Filter -->
+            <div class="form-group md:col-span-2">
+              <select id="item-filter" class="form-input">
+                <!-- Options populated by JS -->
+              </select>
             </div>
 
-            <!-- Add Purchase Form -->
-            <h3 class="text-lg font-semibold text-gray-700 mt-6 mb-4" data-lang-key="add_purchase_btn">Add Purchase</h3>
-            <form id="add-purchase-form" class="border-b pb-6 mb-6">
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
-
-                    <!-- Item Selection -->
-                    <div class="form-group md:col-span-1">
-                        <label for="item-select-add" class="form-label" data-lang-key="item_selection">Item
-                            selection:</label>
-                        <select id="item-select-add" class="form-input" required>
-                            <!-- Options populated by JS -->
-                        </select>
-                    </div>
-
-                    <!-- Quantity -->
-                    <div class="form-group">
-                        <label for="quantity-add" class="form-label" data-lang-key="quantity">Quantity:</label>
-                        <input type="number" id="quantity-add" class="form-input" min="0.01" step="0.01" required>
-                    </div>
-
-                    <!-- Unit Price -->
-                    <div class="form-group">
-                        <label for="unit-price-add" class="form-label" data-lang-key="unit_price">Unit price:</label>
-                        <input type="number" id="unit-price-add" class="form-input" min="0.01" step="0.01" required>
-                    </div>
-
-                    <!-- Purchase Date -->
-                    <div class="form-group">
-                        <label for="purchase-date-add" class="form-label" data-lang-key="purchase_date">Purchase
-                            date:</label>
-                        <input type="date" id="purchase-date-add" class="form-input" required>
-                    </div>
-
-                    <!-- Add Button -->
-                    <div class="form-group md:col-span-4 flex justify-end">
-                        <button type="submit" class="action-button primary-button" data-lang-key="add_purchase_btn">Add
-                            purchase</button>
-                    </div>
-                </div>
-            </form>
-
-            <!-- Purchase History Table -->
-            <div class="table-container">
-                <table class="admin-table">
-                    <thead>
-                        <tr class="bg-gray-100 rounded-lg">
-                            <th data-lang-key="process">Process</th>
-                            <th data-lang-key="purchase_date_table">Purchase Date</th>
-                            <th data-lang-key="unit_price_table">Unit price</th>
-                            <th data-lang-key="quantity_table">Quantity</th>
-                            <th data-lang-key="item_name">Item name</th>
-                        </tr>
-                    </thead>
-                    <tbody id="purchases-table-body">
-                        <!-- Purchase data will be injected here by JS -->
-                    </tbody>
-                </table>
+            <!-- From Date -->
+            <div class="form-group">
+              <label
+                for="from-date"
+                class="form-label"
+                data-lang-key="from_history"
+                >From history:</label
+              >
+              <input type="date" id="from-date" class="form-input" />
             </div>
+
+            <!-- To Date -->
+            <div class="form-group">
+              <label for="to-date" class="form-label" data-lang-key="to_date"
+                >To date:</label
+              >
+              <input type="date" id="to-date" class="form-input" />
+            </div>
+
+            <!-- Filter/Reset Buttons -->
+            <div class="form-group flex space-x-3 md:col-span-2">
+              <button
+                type="button"
+                id="reset-btn"
+                class="action-button text-gray-700 hover:bg-gray-100 w-1/2"
+                data-lang-key="reset"
+              >
+                Reset
+              </button>
+              <button
+                type="button"
+                id="filter-btn"
+                class="action-button primary-button w-1/2"
+                data-lang-key="filter"
+              >
+                Filter
+              </button>
+            </div>
+          </div>
         </div>
+
+        <!-- Add Purchase Form -->
+        <h3
+          class="text-lg font-semibold text-gray-700 mt-6 mb-4"
+          data-lang-key="add_purchase_btn"
+        >
+          Add Purchase
+        </h3>
+        <form id="add-purchase-form" class="border-b pb-6 mb-6">
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+            <!-- Item Selection -->
+            <div class="form-group md:col-span-1">
+              <label
+                for="item-select-add"
+                class="form-label"
+                data-lang-key="item_selection"
+                >Item selection:</label
+              >
+              <select id="item-select-add" class="form-input" required>
+                <!-- Options populated by JS -->
+              </select>
+            </div>
+
+            <!-- Quantity -->
+            <div class="form-group">
+              <label
+                for="quantity-add"
+                class="form-label"
+                data-lang-key="quantity"
+                >Quantity:</label
+              >
+              <input
+                type="number"
+                id="quantity-add"
+                class="form-input"
+                min="0.01"
+                step="0.01"
+                required
+              />
+            </div>
+
+            <!-- Unit Price -->
+            <div class="form-group">
+              <label
+                for="unit-price-add"
+                class="form-label"
+                data-lang-key="unit_price"
+                >Unit price:</label
+              >
+              <input
+                type="number"
+                id="unit-price-add"
+                class="form-input"
+                min="0.01"
+                step="0.01"
+                required
+              />
+            </div>
+
+            <!-- Purchase Date -->
+            <div class="form-group">
+              <label
+                for="purchase-date-add"
+                class="form-label"
+                data-lang-key="purchase_date"
+                >Purchase date:</label
+              >
+              <input
+                type="date"
+                id="purchase-date-add"
+                class="form-input"
+                required
+              />
+            </div>
+
+            <!-- Add Button -->
+            <div class="form-group md:col-span-4 flex justify-end">
+              <button
+                type="submit"
+                class="action-button primary-button"
+                data-lang-key="add_purchase_btn"
+              >
+                Add purchase
+              </button>
+            </div>
+          </div>
+        </form>
+
+        <!-- Purchase History Table -->
+        <div class="table-container">
+          <table class="admin-table">
+            <thead>
+              <tr class="bg-gray-100 rounded-lg">
+                <th data-lang-key="process">Process</th>
+                <th data-lang-key="purchase_date_table">Purchase Date</th>
+                <th data-lang-key="unit_price_table">Unit price</th>
+                <th data-lang-key="quantity_table">Quantity</th>
+                <th data-lang-key="item_name">Item name</th>
+              </tr>
+            </thead>
+            <tbody id="purchases-table-body">
+              <!-- Purchase data will be injected here by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
     </main>
 
     <!-- PURCHASE EDIT MODAL -->
-    <div id="purchase-modal"
-        class="hidden opacity-0 fixed inset-0 z-50 flex items-center justify-center modal-backdrop transition-opacity duration-300">
-        <div class="modal-content p-6 md:p-8 transform scale-100 transition-transform duration-300"
-            style="border: 3px solid var(--color-primary);">
-            <div class="flex justify-between items-start pb-4 border-b mb-6">
-                <h3 id="modal-title" class="text-xl font-bold text-gray-700">Edit Purchase Record</h3>
-                <button onclick="closePurchaseModal()" class="text-gray-500 hover:text-gray-900 transition-colors p-1"
-                    aria-label="Close">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
-                        stroke="currentColor" class="w-6 h-6">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
-            </div>
-            <div id="modal-body">
-                <!-- Dynamic form content goes here -->
-            </div>
+    <div
+      id="purchase-modal"
+      class="hidden opacity-0 fixed inset-0 z-50 flex items-center justify-center modal-backdrop transition-opacity duration-300"
+    >
+      <div
+        class="modal-content p-6 md:p-8 transform scale-100 transition-transform duration-300"
+        style="border: 3px solid var(--color-primary)"
+      >
+        <div class="flex justify-between items-start pb-4 border-b mb-6">
+          <h3 id="modal-title" class="text-xl font-bold text-gray-700">
+            Edit Purchase Record
+          </h3>
+          <button
+            onclick="closePurchaseModal()"
+            class="text-gray-500 hover:text-gray-900 transition-colors p-1"
+            aria-label="Close"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="2"
+              stroke="currentColor"
+              class="w-6 h-6"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
         </div>
+        <div id="modal-body">
+          <!-- Dynamic form content goes here -->
+        </div>
+      </div>
     </div>
-</body>
-
+  </body>
 </html>

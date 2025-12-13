@@ -1,797 +1,1033 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Payments & Expenses - Accounting System</title>
     <script src="https://cdn.tailwindcss.com"></script>
 
     <style>
-        :root {
-            --color-primary: #00A693;
-            --color-background: #F2F3F4;
-            --color-accent: #E08A27;
-            --color-text-dark: #1A1A1A;
-            --color-text-light: #FFFFFF;
-        }
+      :root {
+        --color-primary: #00a693;
+        --color-background: #f2f3f4;
+        --color-accent: #e08a27;
+        --color-text-dark: #1a1a1a;
+        --color-text-light: #ffffff;
+      }
 
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;700&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap');
+      @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;700&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap");
 
-        /* Language Styles */
-        body,
-        .lang-en {
-            font-family: 'Poppins', sans-serif;
-            direction: ltr;
-            background-color: var(--color-background);
-        }
+      /* Language Styles */
+      body,
+      .lang-en {
+        font-family: "Poppins", sans-serif;
+        direction: ltr;
+        background-color: var(--color-background);
+      }
 
-        .lang-hi {
-            font-family: 'Noto Sans Devanagari', sans-serif;
-            direction: ltr;
-        }
+      .lang-hi {
+        font-family: "Noto Sans Devanagari", sans-serif;
+        direction: ltr;
+      }
 
-        .lang-ur {
-            font-family: 'Noto Nastaliq Urdu', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
-            direction: rtl;
-            line-height: 1.8;
-            text-align: right;
-        }
+      .lang-ur {
+        font-family: "Noto Nastaliq Urdu", "Segoe UI", Tahoma, Geneva, Verdana,
+          sans-serif !important;
+        direction: rtl;
+        line-height: 1.8;
+        text-align: right;
+      }
 
-        /* Form & Inputs */
-        .form-input,
-        select,
-        .form-textarea {
-            padding: 0.75rem 1rem;
-            border-radius: 0.5rem;
-            border: 1px solid #ccc;
-            width: 100%;
-            font-family: inherit;
-        }
+      /* Form & Inputs */
+      .form-input,
+      select,
+      .form-textarea {
+        padding: 0.75rem 1rem;
+        border-radius: 0.5rem;
+        border: 1px solid #ccc;
+        width: 100%;
+        font-family: inherit;
+      }
 
-        .form-input:focus,
-        select:focus,
-        .form-textarea:focus {
-            outline: none;
-            border-color: var(--color-primary);
-            box-shadow: 0 0 0 3px rgba(0, 166, 147, 0.2);
-        }
+      .form-input:focus,
+      select:focus,
+      .form-textarea:focus {
+        outline: none;
+        border-color: var(--color-primary);
+        box-shadow: 0 0 0 3px rgba(0, 166, 147, 0.2);
+      }
 
-        .form-label {
-            display: block;
-            font-weight: 600;
-            margin-bottom: 0.25rem;
-            font-size: 0.875rem;
-        }
+      .form-label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 0.25rem;
+        font-size: 0.875rem;
+      }
 
-        /* Buttons */
-        .primary-button {
-            padding: 0.8rem 1.5rem;
-            background-color: var(--color-primary);
-            color: var(--color-text-light);
-            font-weight: 600;
-            border-radius: 0.75rem;
-            transition: background-color 0.3s, transform 0.1s;
-            cursor: pointer;
-        }
+      /* Buttons */
+      .primary-button {
+        padding: 0.8rem 1.5rem;
+        background-color: var(--color-primary);
+        color: var(--color-text-light);
+        font-weight: 600;
+        border-radius: 0.75rem;
+        transition: background-color 0.3s, transform 0.1s;
+        cursor: pointer;
+      }
 
-        .primary-button:hover {
-            background-color: #008f7d;
-            transform: translateY(-1px);
-        }
+      .primary-button:hover {
+        background-color: #008f7d;
+        transform: translateY(-1px);
+      }
 
-        .action-button {
-            padding: 0.5rem 0.75rem;
-            border-radius: 0.25rem;
-            font-size: 0.75rem;
-            font-weight: 600;
-            transition: background-color 0.2s;
-        }
+      .action-button {
+        padding: 0.5rem 0.75rem;
+        border-radius: 0.25rem;
+        font-size: 0.75rem;
+        font-weight: 600;
+        transition: background-color 0.2s;
+      }
 
-        /* Fixed Header */
-        header {
-            background-color: var(--color-text-light);
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            position: sticky;
-            top: 0;
-            width: 100%;
-            z-index: 10;
-            padding: 1rem 2rem;
-        }
+      /* Fixed Header */
+      header {
+        background-color: var(--color-text-light);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        position: sticky;
+        top: 0;
+        width: 100%;
+        z-index: 10;
+        padding: 1rem 2rem;
+      }
 
-        .btn-edit {
-            background-color: #3b82f6;
-            color: white;
-        }
+      .btn-edit {
+        background-color: #3b82f6;
+        color: white;
+      }
 
-        .btn-delete {
-            background-color: #ef4444;
-            color: white;
-        }
+      .btn-delete {
+        background-color: #ef4444;
+        color: white;
+      }
 
-        /* Table Styling */
-        .admin-table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0 10px;
-        }
+      /* Table Styling */
+      .admin-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0 10px;
+      }
 
-        .admin-table th {
-            background-color: #f3f4f6;
-            color: var(--color-text-dark);
-            text-align: left;
-            padding: 0.75rem 1rem;
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            font-weight: 700;
-        }
+      .admin-table th {
+        background-color: #f3f4f6;
+        color: var(--color-text-dark);
+        text-align: left;
+        padding: 0.75rem 1rem;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        font-weight: 700;
+      }
 
-        .lang-ur .admin-table th {
-            text-align: right;
-        }
+      .lang-ur .admin-table th {
+        text-align: right;
+      }
 
-        .admin-table td {
-            padding: 0.75rem 1rem;
-            background-color: white;
-            border-top: 1px solid #eee;
-            border-bottom: 1px solid #eee;
-            font-size: 0.8rem;
-            font-weight: 500;
-        }
+      .admin-table td {
+        padding: 0.75rem 1rem;
+        background-color: white;
+        border-top: 1px solid #eee;
+        border-bottom: 1px solid #eee;
+        font-size: 0.8rem;
+        font-weight: 500;
+      }
 
-        .admin-table tr td:first-child {
-            border-top-left-radius: 0.5rem;
-            border-bottom-left-radius: 0.5rem;
-        }
+      .admin-table tr td:first-child {
+        border-top-left-radius: 0.5rem;
+        border-bottom-left-radius: 0.5rem;
+      }
 
-        .admin-table tr td:last-child {
-            border-top-right-radius: 0.5rem;
-            border-bottom-right-radius: 0.5rem;
-        }
+      .admin-table tr td:last-child {
+        border-top-right-radius: 0.5rem;
+        border-bottom-right-radius: 0.5rem;
+      }
 
-        .table-container {
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-        }
+      .table-container {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
 
-        .table-container table {
-            min-width: 1000px;
-        }
+      .table-container table {
+        min-width: 1000px;
+      }
 
-        /* Modal Styles */
-        .modal-content {
-            background-color: var(--color-background);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
-            border-radius: 1rem;
-            max-width: 95%;
-            width: 550px;
-            max-height: 90vh;
-            overflow-y: auto;
-            border: 3px solid var(--color-primary);
-        }
+      /* Modal Styles */
+      .modal-content {
+        background-color: var(--color-background);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+        border-radius: 1rem;
+        max-width: 95%;
+        width: 550px;
+        max-height: 90vh;
+        overflow-y: auto;
+        border: 3px solid var(--color-primary);
+      }
     </style>
-</head>
+  </head>
 
-<body class="lang-en">
-
+  <body class="lang-en">
     <script>
-        // Helper to format date YYYY-MM-DD
-        function formatDate(date) {
-            const d = new Date(date);
-            let month = '' + (d.getMonth() + 1);
-            let day = '' + d.getDate();
-            const year = d.getFullYear();
+      // Helper to format date YYYY-MM-DD
+      function formatDate(date) {
+        const d = new Date(date);
+        let month = "" + (d.getMonth() + 1);
+        let day = "" + d.getDate();
+        const year = d.getFullYear();
 
-            if (month.length < 2) month = '0' + month;
-            if (day.length < 2) day = '0' + day;
+        if (month.length < 2) month = "0" + month;
+        if (day.length < 2) day = "0" + day;
 
-            return [year, month, day].join('-');
+        return [year, month, day].join("-");
+      }
+
+      // --- Dummy Data ---
+      let DUMMY_EXPENSES = [
+        {
+          id: 101,
+          date: "2025-11-20",
+          category: "Maintenance",
+          amount: 3500.0,
+          recipient: "Electrician Services",
+          description: "Repair of main circuit board.",
+        },
+        {
+          id: 102,
+          date: "2025-11-25",
+          category: "Utility Bill",
+          amount: 8200.5,
+          recipient: "Electricity Board",
+          description: "Monthly electricity charges (Oct-Nov).",
+        },
+        {
+          id: 103,
+          date: "2025-11-01",
+          category: "Staff Benefit",
+          amount: 15000.0,
+          recipient: "Staff Welfare Fund",
+          description: "Diwali staff bonus distribution.",
+        },
+      ];
+
+      const EXPENSE_STORAGE_KEY = "madarsaGeneralExpenses";
+      const EXPENSE_CATEGORIES = [
+        "Maintenance",
+        "Utility Bill",
+        "Staff Benefit",
+        "Stationery",
+        "General",
+      ];
+
+      // Load/Save Logic
+      function loadExpenses() {
+        const storedExpenses = localStorage.getItem(EXPENSE_STORAGE_KEY);
+        if (storedExpenses) {
+          try {
+            DUMMY_EXPENSES = JSON.parse(storedExpenses);
+          } catch (e) {
+            console.error("Error loading expenses:", e);
+          }
+        } else {
+          saveExpenses();
+        }
+      }
+
+      function saveExpenses() {
+        localStorage.setItem(
+          EXPENSE_STORAGE_KEY,
+          JSON.stringify(DUMMY_EXPENSES)
+        );
+      }
+
+      // Helper to get expense by ID
+      function getExpenseById(id) {
+        return DUMMY_EXPENSES.find((e) => e.id === id);
+      }
+
+      // --- Multilingual Data ---
+      const langData = {
+        en: {
+          accounting_system: "Accounting System",
+          page_title: "Payments / Expenses",
+          back_to_accounting: "Back to Accounting",
+          logout: "Logout",
+
+          // Form/Filters
+          add_new_expense: "Add New Expense",
+          from_date: "From Date",
+          to_date: "To Date",
+          filter_by_category: "Filter by Category",
+          all_categories: "All Categories",
+          apply_filter: "Apply Filter",
+          reset_filter: "Reset",
+          date: "Date:",
+          category: "Category:",
+          amount: "Amount:",
+          recipient: "Recipient:",
+          description: "Description:",
+          record_payment: "Record Payment",
+
+          // Categories
+          Maintenance: "Maintenance",
+          "Utility Bill": "Utility Bill",
+          "Staff Benefit": "Staff Benefit",
+          Stationery: "Stationery",
+          General: "General",
+
+          // Table Headers
+          date_table: "Date",
+          category_table: "Category",
+          amount_table: "Amount",
+          recipient_table: "Recipient",
+          description_table: "Description",
+          actions: "Actions",
+          edit: "Edit",
+          delete: "Delete",
+
+          // Modal
+          modal_edit_title: "Edit Expense Entry",
+          save: "Save Changes",
+          cancel: "Cancel",
+
+          // Messages
+          validation_error:
+            "Please fill all required fields (Date, Category, Amount, Recipient).",
+          expense_added: "Expense successfully recorded!",
+          expense_deleted: "Expense deleted.",
+          expense_updated: "Expense updated.",
+          confirm_delete:
+            "Are you sure you want to delete this expense record?",
+        },
+        hi: {
+          accounting_system: "लेखांकन प्रणाली",
+          page_title: "भुगतान / खर्च",
+          back_to_accounting: "लेखांकन पर वापस",
+          logout: "लॉगआउट",
+
+          // Filters/Actions
+          add_new_expense: "नया खर्च जोड़ें",
+          from_date: "इस तिथि से",
+          to_date: "इस तिथि तक",
+          filter_by_category: "श्रेणी द्वारा फ़िल्टर करें",
+          all_categories: "सभी श्रेणियां",
+          apply_filter: "फ़िल्टर लागू करें",
+          reset_filter: "रीसेट करें",
+          date: "तिथि:",
+          category: "श्रेणी:",
+          amount: "राशि:",
+          recipient: "प्राप्तकर्ता:",
+          description: "विवरण:",
+          record_payment: "भुगतान रिकॉर्ड करें",
+
+          // Categories
+          Maintenance: "रखरखाव",
+          "Utility Bill": "उपयोगिता बिल",
+          "Staff Benefit": "कर्मचारी लाभ",
+          Stationery: "स्टेशनरी",
+          General: "सामान्य",
+
+          // Table Headers
+          date_table: "तिथि",
+          category_table: "श्रेणी",
+          amount_table: "राशि",
+          recipient_table: "प्राप्तकर्ता",
+          description_table: "विवरण",
+          actions: "कार्यवाही",
+          edit: "संपादित करें",
+          delete: "हटाएँ",
+
+          // Modal
+          modal_edit_title: "खर्च एंट्री संपादित करें",
+          save: "परिवर्तन सहेजें",
+          cancel: "रद्द करें",
+
+          // Messages
+          validation_error:
+            "कृपया सभी आवश्यक फ़ील्ड (तिथि, श्रेणी, राशि, प्राप्तकर्ता) भरें।",
+          expense_added: "खर्च सफलतापूर्वक दर्ज किया गया!",
+          expense_deleted: "एंट्री हटा दी गई।",
+          expense_updated: "एंट्री अपडेट की गई।",
+        },
+        ur: {
+          accounting_system: "اکاؤنٹنگ نظام",
+          page_title: "ادائیگی/اخراجات",
+          back_to_accounting: "اکاؤنٹنگ پر واپس جائیں",
+          logout: "لاگ آؤٹ",
+
+          // Filters/Actions
+          add_new_expense: "نیا خرچ شامل کریں",
+          from_date: "اس تاریخ سے",
+          to_date: "اس تاریخ تک",
+          filter_by_category: "زمرہ کے ذریعے فلٹر کریں",
+          all_categories: "تمام زمرے",
+          apply_filter: "فلٹر لگائیں",
+          reset_filter: "ری سیٹ کریں",
+          date: "تاریخ:",
+          category: "زمرہ:",
+          amount: "رقم:",
+          recipient: "وصول کنندہ:",
+          description: "تفصیل:",
+          record_payment: "ادائیگی ریکارڈ کریں",
+
+          // Categories
+          Maintenance: "دیکھ بھال",
+          "Utility Bill": "یوٹیلیٹی بل",
+          "Staff Benefit": "عملے کا فائدہ",
+          Stationery: "اسٹیشنری",
+          General: "عام",
+
+          // Table Headers
+          date_table: "تاریخ",
+          category_table: "زمرہ",
+          amount_table: "رقم",
+          recipient_table: "وصول کنندہ",
+          description_table: "تفصیل",
+          actions: "عمل",
+          edit: "ترمیم کریں",
+          delete: "حذف کریں",
+
+          // Modal
+          modal_edit_title: "خرچ انٹری میں ترمیم کریں",
+          save: "تبدیلیاں محفوظ کریں",
+          cancel: "منسوخ کریں",
+
+          // Messages
+          validation_error:
+            "براہ کرم تمام مطلوبہ خانے (تاریخ، زمرہ، رقم، وصول کنندہ) پُر کریں۔",
+          expense_added: "خرچ کامیابی سے ریکارڈ ہو گیا!",
+          expense_deleted: "انٹری حذف کر دی گئی۔",
+          expense_updated: "انٹری اپ ڈیٹ کر دی گئی۔",
+        },
+      };
+
+      let currentLang = "en";
+
+      function getTranslation(key) {
+        return langData[currentLang][key] || langData["en"][key] || key;
+      }
+
+      // --- Core UI Update Functions ---
+      function updateContent() {
+        document.body.className = "lang-" + currentLang;
+
+        document.querySelectorAll("[data-lang-key]").forEach((el) => {
+          const key = el.getAttribute("data-lang-key");
+          el.textContent = getTranslation(key);
+        });
+
+        populateDropdowns();
+        handleFilter();
+      }
+
+      function changeLanguage(lang) {
+        if (lang in langData) {
+          currentLang = lang;
+          localStorage.setItem("madarsaSystemLang", lang);
+          updateContent();
+        }
+      }
+
+      function populateDropdowns() {
+        const categoryDropdownAdd = document.getElementById(
+          "category-select-add"
+        );
+        const categoryDropdownFilter =
+          document.getElementById("category-filter");
+
+        const optionsHtml = EXPENSE_CATEGORIES.map(
+          (cat) => `<option value="${cat}">${getTranslation(cat)}</option>`
+        ).join("");
+
+        // Add Form Dropdown
+        categoryDropdownAdd.innerHTML =
+          `<option value="" disabled selected data-lang-key="category">${getTranslation(
+            "category"
+          )}</option>` + optionsHtml;
+
+        // Filter Dropdown (Maintain selection)
+        const selectedFilter = categoryDropdownFilter.value;
+        categoryDropdownFilter.innerHTML =
+          `<option value="" data-lang-key="all_categories">${getTranslation(
+            "all_categories"
+          )}</option>` + optionsHtml;
+        categoryDropdownFilter.value = selectedFilter;
+
+        // Set default date to today
+        const today = formatDate(new Date());
+        document.getElementById("expense-date-add").value = today;
+      }
+
+      // --- Table Rendering ---
+      function renderExpenseTable(expenseList) {
+        const tbody = document.getElementById("expenses-table-body");
+        if (!tbody) return;
+
+        tbody.innerHTML = "";
+
+        if (expenseList.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="6" class="text-center text-gray-500 p-4">${
+            getTranslation("no_records") || "No records found."
+          }</td></tr>`;
+          return;
         }
 
-        // --- Dummy Data ---
-        let DUMMY_EXPENSES = [
-            { id: 101, date: '2025-11-20', category: 'Maintenance', amount: 3500.00, recipient: 'Electrician Services', description: 'Repair of main circuit board.' },
-            { id: 102, date: '2025-11-25', category: 'Utility Bill', amount: 8200.50, recipient: 'Electricity Board', description: 'Monthly electricity charges (Oct-Nov).' },
-            { id: 103, date: '2025-11-01', category: 'Staff Benefit', amount: 15000.00, recipient: 'Staff Welfare Fund', description: 'Diwali staff bonus distribution.' },
-        ];
+        expenseList.forEach((expense) => {
+          const tr = document.createElement("tr");
 
-        const EXPENSE_STORAGE_KEY = 'madarsaGeneralExpenses';
-        const EXPENSE_CATEGORIES = ['Maintenance', 'Utility Bill', 'Staff Benefit', 'Stationery', 'General'];
-
-        // Load/Save Logic
-        function loadExpenses() {
-            const storedExpenses = localStorage.getItem(EXPENSE_STORAGE_KEY);
-            if (storedExpenses) {
-                try {
-                    DUMMY_EXPENSES = JSON.parse(storedExpenses);
-                } catch (e) {
-                    console.error("Error loading expenses:", e);
-                }
-            } else {
-                saveExpenses();
-            }
-        }
-
-        function saveExpenses() {
-            localStorage.setItem(EXPENSE_STORAGE_KEY, JSON.stringify(DUMMY_EXPENSES));
-        }
-
-        // Helper to get expense by ID
-        function getExpenseById(id) {
-            return DUMMY_EXPENSES.find(e => e.id === id);
-        }
-
-
-        // --- Multilingual Data ---
-        const langData = {
-            'en': {
-                'accounting_system': 'Accounting System',
-                'page_title': 'Payments / Expenses',
-                'back_to_accounting': 'Back to Accounting',
-                'logout': 'Logout',
-
-                // Form/Filters
-                'add_new_expense': 'Add New Expense',
-                'from_date': 'From Date',
-                'to_date': 'To Date',
-                'filter_by_category': 'Filter by Category',
-                'all_categories': 'All Categories',
-                'apply_filter': 'Apply Filter',
-                'reset_filter': 'Reset',
-                'date': 'Date:',
-                'category': 'Category:',
-                'amount': 'Amount:',
-                'recipient': 'Recipient:',
-                'description': 'Description:',
-                'record_payment': 'Record Payment',
-
-                // Categories
-                'Maintenance': 'Maintenance',
-                'Utility Bill': 'Utility Bill',
-                'Staff Benefit': 'Staff Benefit',
-                'Stationery': 'Stationery',
-                'General': 'General',
-
-                // Table Headers
-                'date_table': 'Date',
-                'category_table': 'Category',
-                'amount_table': 'Amount',
-                'recipient_table': 'Recipient',
-                'description_table': 'Description',
-                'actions': 'Actions',
-                'edit': 'Edit',
-                'delete': 'Delete',
-
-                // Modal
-                'modal_edit_title': 'Edit Expense Entry',
-                'save': 'Save Changes',
-                'cancel': 'Cancel',
-
-                // Messages
-                'validation_error': 'Please fill all required fields (Date, Category, Amount, Recipient).',
-                'expense_added': 'Expense successfully recorded!',
-                'expense_deleted': 'Expense deleted.',
-                'expense_updated': 'Expense updated.',
-                'confirm_delete': 'Are you sure you want to delete this expense record?'
-            },
-            'hi': {
-                'accounting_system': 'लेखांकन प्रणाली',
-                'page_title': 'भुगतान / खर्च',
-                'back_to_accounting': 'लेखांकन पर वापस',
-                'logout': 'लॉगआउट',
-
-                // Filters/Actions
-                'add_new_expense': 'नया खर्च जोड़ें',
-                'from_date': 'इस तिथि से',
-                'to_date': 'इस तिथि तक',
-                'filter_by_category': 'श्रेणी द्वारा फ़िल्टर करें',
-                'all_categories': 'सभी श्रेणियां',
-                'apply_filter': 'फ़िल्टर लागू करें',
-                'reset_filter': 'रीसेट करें',
-                'date': 'तिथि:',
-                'category': 'श्रेणी:',
-                'amount': 'राशि:',
-                'recipient': 'प्राप्तकर्ता:',
-                'description': 'विवरण:',
-                'record_payment': 'भुगतान रिकॉर्ड करें',
-
-                // Categories
-                'Maintenance': 'रखरखाव',
-                'Utility Bill': 'उपयोगिता बिल',
-                'Staff Benefit': 'कर्मचारी लाभ',
-                'Stationery': 'स्टेशनरी',
-                'General': 'सामान्य',
-
-                // Table Headers
-                'date_table': 'तिथि',
-                'category_table': 'श्रेणी',
-                'amount_table': 'राशि',
-                'recipient_table': 'प्राप्तकर्ता',
-                'description_table': 'विवरण',
-                'actions': 'कार्यवाही',
-                'edit': 'संपादित करें',
-                'delete': 'हटाएँ',
-
-                // Modal
-                'modal_edit_title': 'खर्च एंट्री संपादित करें',
-                'save': 'परिवर्तन सहेजें',
-                'cancel': 'रद्द करें',
-
-                // Messages
-                'validation_error': 'कृपया सभी आवश्यक फ़ील्ड (तिथि, श्रेणी, राशि, प्राप्तकर्ता) भरें।',
-                'expense_added': 'खर्च सफलतापूर्वक दर्ज किया गया!',
-                'expense_deleted': 'एंट्री हटा दी गई।',
-                'expense_updated': 'एंट्री अपडेट की गई।'
-            },
-            'ur': {
-                'accounting_system': 'اکاؤنٹنگ نظام',
-                'page_title': 'ادائیگی/اخراجات',
-                'back_to_accounting': 'اکاؤنٹنگ پر واپس جائیں',
-                'logout': 'لاگ آؤٹ',
-
-                // Filters/Actions
-                'add_new_expense': 'نیا خرچ شامل کریں',
-                'from_date': 'اس تاریخ سے',
-                'to_date': 'اس تاریخ تک',
-                'filter_by_category': 'زمرہ کے ذریعے فلٹر کریں',
-                'all_categories': 'تمام زمرے',
-                'apply_filter': 'فلٹر لگائیں',
-                'reset_filter': 'ری سیٹ کریں',
-                'date': 'تاریخ:',
-                'category': 'زمرہ:',
-                'amount': 'رقم:',
-                'recipient': 'وصول کنندہ:',
-                'description': 'تفصیل:',
-                'record_payment': 'ادائیگی ریکارڈ کریں',
-
-                // Categories
-                'Maintenance': 'دیکھ بھال',
-                'Utility Bill': 'یوٹیلیٹی بل',
-                'Staff Benefit': 'عملے کا فائدہ',
-                'Stationery': 'اسٹیشنری',
-                'General': 'عام',
-
-                // Table Headers
-                'date_table': 'تاریخ',
-                'category_table': 'زمرہ',
-                'amount_table': 'رقم',
-                'recipient_table': 'وصول کنندہ',
-                'description_table': 'تفصیل',
-                'actions': 'عمل',
-                'edit': 'ترمیم کریں',
-                'delete': 'حذف کریں',
-
-                // Modal
-                'modal_edit_title': 'خرچ انٹری میں ترمیم کریں',
-                'save': 'تبدیلیاں محفوظ کریں',
-                'cancel': 'منسوخ کریں',
-
-                // Messages
-                'validation_error': 'براہ کرم تمام مطلوبہ خانے (تاریخ، زمرہ، رقم، وصول کنندہ) پُر کریں۔',
-                'expense_added': 'خرچ کامیابی سے ریکارڈ ہو گیا!',
-                'expense_deleted': 'انٹری حذف کر دی گئی۔',
-                'expense_updated': 'انٹری اپ ڈیٹ کر دی گئی۔'
-            }
-        };
-
-        let currentLang = 'en';
-
-        function getTranslation(key) {
-            return langData[currentLang][key] || langData['en'][key] || key;
-        }
-
-        // --- Core UI Update Functions ---
-        function updateContent() {
-            document.body.className = 'lang-' + currentLang;
-
-            document.querySelectorAll('[data-lang-key]').forEach(el => {
-                const key = el.getAttribute('data-lang-key');
-                el.textContent = getTranslation(key);
-            });
-
-            populateDropdowns();
-            handleFilter();
-        }
-
-        function changeLanguage(lang) {
-            if (lang in langData) {
-                currentLang = lang;
-                localStorage.setItem('madarsaSystemLang', lang);
-                updateContent();
-            }
-        }
-
-        function populateDropdowns() {
-            const categoryDropdownAdd = document.getElementById('category-select-add');
-            const categoryDropdownFilter = document.getElementById('category-filter');
-
-            const optionsHtml = EXPENSE_CATEGORIES.map(cat =>
-                `<option value="${cat}">${getTranslation(cat)}</option>`
-            ).join('');
-
-            // Add Form Dropdown
-            categoryDropdownAdd.innerHTML = `<option value="" disabled selected data-lang-key="category">${getTranslation('category')}</option>` + optionsHtml;
-
-            // Filter Dropdown (Maintain selection)
-            const selectedFilter = categoryDropdownFilter.value;
-            categoryDropdownFilter.innerHTML = `<option value="" data-lang-key="all_categories">${getTranslation('all_categories')}</option>` + optionsHtml;
-            categoryDropdownFilter.value = selectedFilter;
-
-            // Set default date to today
-            const today = formatDate(new Date());
-            document.getElementById('expense-date-add').value = today;
-        }
-
-        // --- Table Rendering ---
-        function renderExpenseTable(expenseList) {
-            const tbody = document.getElementById('expenses-table-body');
-            if (!tbody) return;
-
-            tbody.innerHTML = '';
-
-            if (expenseList.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="text-center text-gray-500 p-4">${getTranslation('no_records') || 'No records found.'}</td></tr>`;
-                return;
-            }
-
-            expenseList.forEach(expense => {
-                const tr = document.createElement('tr');
-
-                tr.innerHTML = `
+          tr.innerHTML = `
                     <td>${expense.date}</td>
                     <td>${getTranslation(expense.category)}</td>
-                    <td class="font-bold text-red-600">${expense.amount.toFixed(2)} INR</td>
+                    <td class="font-bold text-red-600">${expense.amount.toFixed(
+                      2
+                    )} INR</td>
                     <td>${expense.recipient}</td>
                     <td>${expense.description.substring(0, 50)}...</td>
                     <td class="flex space-x-3">
-                        <a href="#" onclick="handleAction('edit', ${expense.id})" class="action-button btn-edit mr-1" data-lang-key="edit">${getTranslation('edit')}</a>
-                        <a href="#" onclick="handleAction('delete', ${expense.id})" class="action-button btn-delete mr-1" data-lang-key="delete">${getTranslation('delete')}</a>
+                        <a href="#" onclick="handleAction('edit', ${
+                          expense.id
+                        })" class="action-button btn-edit mr-1" data-lang-key="edit">${getTranslation(
+            "edit"
+          )}</a>
+                        <a href="#" onclick="handleAction('delete', ${
+                          expense.id
+                        })" class="action-button btn-delete mr-1" data-lang-key="delete">${getTranslation(
+            "delete"
+          )}</a>
                     </td>
                 `;
-                tbody.appendChild(tr);
-            });
+          tbody.appendChild(tr);
+        });
+      }
+
+      // --- Filter Logic ---
+      function filterExpenses() {
+        const fromDate = document.getElementById("from-date").value;
+        const toDate = document.getElementById("to-date").value;
+        const categoryFilter = document.getElementById("category-filter").value;
+        const searchInput = document
+          .getElementById("search-input")
+          .value.toLowerCase();
+
+        return DUMMY_EXPENSES.filter((expense) => {
+          const matchesCategory =
+            !categoryFilter || expense.category === categoryFilter;
+          const matchesFromDate =
+            !fromDate || new Date(expense.date) >= new Date(fromDate);
+          const matchesToDate =
+            !toDate || new Date(expense.date) <= new Date(toDate);
+          const matchesSearch =
+            expense.description.toLowerCase().includes(searchInput) ||
+            expense.recipient.toLowerCase().includes(searchInput);
+
+          return (
+            matchesCategory && matchesFromDate && matchesToDate && matchesSearch
+          );
+        });
+      }
+
+      function handleFilter() {
+        renderExpenseTable(filterExpenses());
+      }
+
+      function resetFilters() {
+        document.getElementById("from-date").value = "";
+        document.getElementById("to-date").value = "";
+        document.getElementById("category-filter").value = "";
+        document.getElementById("search-input").value = "";
+        handleFilter();
+      }
+
+      // --- CRUD Logic ---
+      function saveExpenseEntry(event, isEdit = false, id = null) {
+        event.preventDefault();
+        const form = event.target;
+
+        const date = form.querySelector("#expense-date-add").value;
+        const category = form.querySelector("#category-select-add").value;
+        const amount = parseFloat(form.querySelector("#amount-add").value);
+        const recipient = form.querySelector("#recipient-add").value.trim();
+        const description = form.querySelector("#description-add").value.trim();
+
+        if (!date || !category || isNaN(amount) || amount <= 0 || !recipient) {
+          alert(getTranslation("validation_error"));
+          return false;
         }
 
-        // --- Filter Logic ---
-        function filterExpenses() {
-            const fromDate = document.getElementById('from-date').value;
-            const toDate = document.getElementById('to-date').value;
-            const categoryFilter = document.getElementById('category-filter').value;
-            const searchInput = document.getElementById('search-input').value.toLowerCase();
+        const newEntry = { date, category, amount, recipient, description };
 
-            return DUMMY_EXPENSES.filter(expense => {
-                const matchesCategory = !categoryFilter || expense.category === categoryFilter;
-                const matchesFromDate = !fromDate || new Date(expense.date) >= new Date(fromDate);
-                const matchesToDate = !toDate || new Date(expense.date) <= new Date(toDate);
-                const matchesSearch = expense.description.toLowerCase().includes(searchInput) || expense.recipient.toLowerCase().includes(searchInput);
-
-                return matchesCategory && matchesFromDate && matchesToDate && matchesSearch;
-            });
+        if (isEdit) {
+          // EDIT LOGIC
+          const index = DUMMY_EXPENSES.findIndex((e) => e.id === id);
+          if (index !== -1) {
+            DUMMY_EXPENSES[index] = { ...DUMMY_EXPENSES[index], ...newEntry };
+            alert(getTranslation("expense_updated"));
+          }
+        } else {
+          // ADD LOGIC
+          const maxId =
+            DUMMY_EXPENSES.length > 0
+              ? Math.max(...DUMMY_EXPENSES.map((e) => e.id || 0))
+              : 100;
+          newEntry.id = maxId + 1;
+          DUMMY_EXPENSES.push(newEntry);
+          alert(getTranslation("expense_added"));
         }
 
-        function handleFilter() {
-            renderExpenseTable(filterExpenses());
+        saveExpenses();
+        if (!isEdit) {
+          form.reset();
+          document.getElementById("expense-date-add").value = formatDate(
+            new Date()
+          );
+        } else {
+          closeExpenseModal();
         }
 
-        function resetFilters() {
-            document.getElementById('from-date').value = '';
-            document.getElementById('to-date').value = '';
-            document.getElementById('category-filter').value = '';
-            document.getElementById('search-input').value = '';
-            handleFilter();
+        updateContent();
+        return false;
+      }
+
+      function deleteExpense(id) {
+        DUMMY_EXPENSES = DUMMY_EXPENSES.filter((e) => e.id !== id);
+        saveExpenses();
+        updateContent();
+        alert(getTranslation("expense_deleted"));
+      }
+
+      // --- Action Dispatcher (Delete/Edit) ---
+      function handleAction(action, id) {
+        const expense = getExpenseById(id);
+
+        if (action === "delete") {
+          if (confirm(getTranslation("confirm_delete"))) {
+            deleteExpense(id);
+          }
+        } else if (action === "edit") {
+          if (expense) {
+            openExpenseModal(expense);
+          }
         }
+      }
 
-        // --- CRUD Logic ---
-        function saveExpenseEntry(event, isEdit = false, id = null) {
-            event.preventDefault();
-            const form = event.target;
+      // --- Modal Handling for Edit ---
+      function openExpenseModal(expense) {
+        const modal = document.getElementById("expense-modal");
+        const isRtl = currentLang === "ur";
 
-            const date = form.querySelector('#expense-date-add').value;
-            const category = form.querySelector('#category-select-add').value;
-            const amount = parseFloat(form.querySelector('#amount-add').value);
-            const recipient = form.querySelector('#recipient-add').value.trim();
-            const description = form.querySelector('#description-add').value.trim();
+        document.getElementById("modal-title").textContent =
+          getTranslation("modal_edit_title");
 
-            if (!date || !category || isNaN(amount) || amount <= 0 || !recipient) {
-                alert(getTranslation('validation_error'));
-                return false;
-            }
-
-            const newEntry = { date, category, amount, recipient, description };
-
-            if (isEdit) {
-                // EDIT LOGIC
-                const index = DUMMY_EXPENSES.findIndex(e => e.id === id);
-                if (index !== -1) {
-                    DUMMY_EXPENSES[index] = { ...DUMMY_EXPENSES[index], ...newEntry };
-                    alert(getTranslation('expense_updated'));
-                }
-            } else {
-                // ADD LOGIC
-                const maxId = DUMMY_EXPENSES.length > 0 ? Math.max(...DUMMY_EXPENSES.map(e => e.id || 0)) : 100;
-                newEntry.id = maxId + 1;
-                DUMMY_EXPENSES.push(newEntry);
-                alert(getTranslation('expense_added'));
-            }
-
-            saveExpenses();
-            if (!isEdit) {
-                form.reset();
-                document.getElementById('expense-date-add').value = formatDate(new Date());
-            } else {
-                closeExpenseModal();
-            }
-
-            updateContent();
-            return false;
-        }
-
-        function deleteExpense(id) {
-            DUMMY_EXPENSES = DUMMY_EXPENSES.filter(e => e.id !== id);
-            saveExpenses();
-            updateContent();
-            alert(getTranslation('expense_deleted'));
-        }
-
-        // --- Action Dispatcher (Delete/Edit) ---
-        function handleAction(action, id) {
-            const expense = getExpenseById(id);
-
-            if (action === 'delete') {
-                if (confirm(getTranslation('confirm_delete'))) {
-                    deleteExpense(id);
-                }
-            } else if (action === 'edit') {
-                if (expense) {
-                    openExpenseModal(expense);
-                }
-            }
-        }
-
-        // --- Modal Handling for Edit ---
-        function openExpenseModal(expense) {
-            const modal = document.getElementById('expense-modal');
-            const isRtl = currentLang === 'ur';
-
-            document.getElementById('modal-title').textContent = getTranslation('modal_edit_title');
-
-            const formHtml = `
-                <form id="edit-expense-form" onsubmit="return saveExpenseEntry(event, true, ${expense.id})">
+        const formHtml = `
+                <form id="edit-expense-form" onsubmit="return saveExpenseEntry(event, true, ${
+                  expense.id
+                })">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div class="form-group">
-                            <label for="edit-date" class="form-label">${getTranslation('date')}</label>
-                            <input type="date" id="edit-date" class="form-input" value="${expense.date}" required>
+                            <label for="edit-date" class="form-label">${getTranslation(
+                              "date"
+                            )}</label>
+                            <input type="date" id="edit-date" class="form-input" value="${
+                              expense.date
+                            }" required>
                         </div>
                         <div class="form-group">
-                            <label for="edit-category" class="form-label">${getTranslation('category')}</label>
+                            <label for="edit-category" class="form-label">${getTranslation(
+                              "category"
+                            )}</label>
                             <select id="edit-category" class="form-input" required>
-                                ${EXPENSE_CATEGORIES.map(cat => `<option value="${cat}" ${expense.category === cat ? 'selected' : ''}>${getTranslation(cat)}</option>`).join('')}
+                                ${EXPENSE_CATEGORIES.map(
+                                  (cat) =>
+                                    `<option value="${cat}" ${
+                                      expense.category === cat ? "selected" : ""
+                                    }>${getTranslation(cat)}</option>`
+                                ).join("")}
                             </select>
                         </div>
                         
                         <div class="form-group">
-                            <label for="edit-amount" class="form-label">${getTranslation('amount')}</label>
-                            <input type="number" id="edit-amount" class="form-input" value="${expense.amount}" min="0.01" step="0.01" required>
+                            <label for="edit-amount" class="form-label">${getTranslation(
+                              "amount"
+                            )}</label>
+                            <input type="number" id="edit-amount" class="form-input" value="${
+                              expense.amount
+                            }" min="0.01" step="0.01" required>
                         </div>
                         <div class="form-group">
-                            <label for="edit-recipient" class="form-label">${getTranslation('recipient')}</label>
-                            <input type="text" id="edit-recipient" class="form-input" value="${expense.recipient}" required>
+                            <label for="edit-recipient" class="form-label">${getTranslation(
+                              "recipient"
+                            )}</label>
+                            <input type="text" id="edit-recipient" class="form-input" value="${
+                              expense.recipient
+                            }" required>
                         </div>
                     </div>
                     
                     <div class="form-group mt-4 md:col-span-2">
-                        <label for="edit-description" class="form-label">${getTranslation('description')}</label>
-                        <textarea id="edit-description" class="form-textarea h-20">${expense.description}</textarea>
+                        <label for="edit-description" class="form-label">${getTranslation(
+                          "description"
+                        )}</label>
+                        <textarea id="edit-description" class="form-textarea h-20">${
+                          expense.description
+                        }</textarea>
                     </div>
 
                     <div class="flex justify-end space-x-4 mt-8">
-                        <button type="button" onclick="closeExpenseModal()" class="action-button bg-gray-200 text-gray-700 hover:bg-gray-300">${getTranslation('cancel')}</button>
-                        <button type="submit" class="primary-button">${getTranslation('save')}</button>
+                        <button type="button" onclick="closeExpenseModal()" class="action-button bg-gray-200 text-gray-700 hover:bg-gray-300">${getTranslation(
+                          "cancel"
+                        )}</button>
+                        <button type="submit" class="primary-button">${getTranslation(
+                          "save"
+                        )}</button>
                     </div>
                 </form>
             `;
 
-            document.getElementById('modal-body').innerHTML = formHtml;
+        document.getElementById("modal-body").innerHTML = formHtml;
 
-            // Apply dynamic RTL styles to modal form
-            document.getElementById('edit-expense-form').style.textAlign = isRtl ? 'right' : 'left';
-            document.querySelectorAll('#edit-expense-form .form-label').forEach(label => {
-                label.style.textAlign = isRtl ? 'right' : 'left';
-            });
-            document.querySelectorAll('#edit-expense-form .form-input, #edit-expense-form select, #edit-expense-form .form-textarea').forEach(input => {
-                input.style.direction = isRtl ? 'rtl' : 'ltr';
-            });
+        // Apply dynamic RTL styles to modal form
+        document.getElementById("edit-expense-form").style.textAlign = isRtl
+          ? "right"
+          : "left";
+        document
+          .querySelectorAll("#edit-expense-form .form-label")
+          .forEach((label) => {
+            label.style.textAlign = isRtl ? "right" : "left";
+          });
+        document
+          .querySelectorAll(
+            "#edit-expense-form .form-input, #edit-expense-form select, #edit-expense-form .form-textarea"
+          )
+          .forEach((input) => {
+            input.style.direction = isRtl ? "rtl" : "ltr";
+          });
 
+        modal.classList.remove("hidden", "opacity-0");
+      }
 
-            modal.classList.remove('hidden', 'opacity-0');
-        }
+      function closeExpenseModal() {
+        document.getElementById("expense-modal").classList.add("opacity-0");
+        setTimeout(() => {
+          document.getElementById("expense-modal").classList.add("hidden");
+        }, 300);
+      }
 
-        function closeExpenseModal() {
-            document.getElementById('expense-modal').classList.add('opacity-0');
-            setTimeout(() => { document.getElementById('expense-modal').classList.add('hidden'); }, 300);
-        }
+      function logOut() {
+        localStorage.removeItem("isUserLoggedIn");
+        localStorage.removeItem("authToken");
+        localStorage.removeItem("userData");
+        window.location.href = "index.html";
+      }
 
+      // Initialize content and language
+      window.onload = function () {
+        loadExpenses();
+        const storedLang = localStorage.getItem("madarsaSystemLang");
+        currentLang = storedLang && storedLang in langData ? storedLang : "en";
 
-        // Initialize content and language
-        window.onload = function () {
-            loadExpenses();
-            const storedLang = localStorage.getItem('madarsaSystemLang');
-            currentLang = (storedLang && storedLang in langData) ? storedLang : 'en';
+        // Initial content update and table render
+        updateContent();
 
-            // Initial content update and table render
-            updateContent();
-
-            // Attach filter listeners
-            document.getElementById('apply-filter-btn').addEventListener('click', handleFilter);
-            document.getElementById('reset-filter-btn').addEventListener('click', resetFilters);
-        };
+        // Attach filter listeners
+        document
+          .getElementById("apply-filter-btn")
+          .addEventListener("click", handleFilter);
+        document
+          .getElementById("reset-filter-btn")
+          .addEventListener("click", resetFilters);
+      };
     </script>
 
     <!-- HEADER -->
     <header>
-        <div class="max-w-7xl mx-auto w-full flex justify-between items-center">
-            <!-- Left: Back Button & Title -->
-            <div class="flex items-center space-x-4">
-                <a href="accounting_system.html" class="action-button bg-gray-100 text-gray-700 hover:bg-gray-200"
-                    data-lang-key="back_to_accounting">Back to Accounting</a>
-                <h1 class="text-xl font-bold" data-lang-key="page_title" style="color: var(--color-primary);">Payments /
-                    Expenses</h1>
-            </div>
-
-            <!-- Right: Language Switch -->
-            <div class="flex items-center space-x-2">
-                <select onchange="changeLanguage(this.value)" class="bg-gray-100 rounded-lg p-1 text-sm">
-                    <option value="en" selected>English</option>
-                    <option value="hi">हिन्दी</option>
-                    <option value="ur">اردو</option>
-                </select>
-                <button onclick="window.location.href='login.html'"
-                    class="text-sm font-semibold text-red-600 hover:text-red-800 transition-colors ml-4"
-                    data-lang-key="logout">Logout</button>
-            </div>
+      <div class="max-w-7xl mx-auto w-full flex justify-between items-center">
+        <!-- Left: Back Button & Title -->
+        <div class="flex items-center space-x-4">
+          <a
+            href="accounting_system.html"
+            class="action-button bg-gray-100 text-gray-700 hover:bg-gray-200"
+            data-lang-key="back_to_accounting"
+            >Back to Accounting</a
+          >
+          <h1
+            class="text-xl font-bold"
+            data-lang-key="page_title"
+            style="color: var(--color-primary)"
+          >
+            Payments / Expenses
+          </h1>
         </div>
+
+        <!-- Right: Language Switch -->
+        <div class="flex items-center space-x-2">
+          <select
+            onchange="changeLanguage(this.value)"
+            class="bg-gray-100 rounded-lg p-1 text-sm"
+          >
+            <option value="en" selected>English</option>
+            <option value="hi">हिन्दी</option>
+            <option value="ur">اردو</option>
+          </select>
+          <button
+            onclick="logOut()"
+            class="text-sm font-semibold text-red-600 hover:text-red-800 transition-colors ml-4"
+            data-lang-key="logout"
+          >
+            Logout
+          </button>
+        </div>
+      </div>
     </header>
 
     <!-- MAIN CONTENT AREA -->
     <main class="max-w-7xl mx-auto w-full p-4 md:p-8">
+      <!-- Add New Expense Form -->
+      <div class="bg-white p-6 md:p-8 rounded-xl shadow-2xl mb-8">
+        <h2
+          class="text-2xl font-bold text-gray-700 mb-6"
+          data-lang-key="add_new_expense"
+        >
+          Add New Expense
+        </h2>
 
-        <!-- Add New Expense Form -->
-        <div class="bg-white p-6 md:p-8 rounded-xl shadow-2xl mb-8">
-            <h2 class="text-2xl font-bold text-gray-700 mb-6" data-lang-key="add_new_expense">Add New Expense</h2>
-
-            <form id="add-expense-form">
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
-
-                    <!-- Date -->
-                    <div class="form-group">
-                        <label for="expense-date-add" class="form-label" data-lang-key="date">Date:</label>
-                        <input type="date" id="expense-date-add" class="form-input" required>
-                    </div>
-
-                    <!-- Category -->
-                    <div class="form-group">
-                        <label for="category-select-add" class="form-label" data-lang-key="category">Category:</label>
-                        <select id="category-select-add" class="form-input" required>
-                            <!-- Populated by JS -->
-                        </select>
-                    </div>
-
-                    <!-- Amount -->
-                    <div class="form-group">
-                        <label for="amount-add" class="form-label" data-lang-key="amount">Amount (INR):</label>
-                        <input type="number" id="amount-add" class="form-input" min="0.01" step="0.01" required>
-                    </div>
-
-                    <!-- Recipient -->
-                    <div class="form-group">
-                        <label for="recipient-add" class="form-label" data-lang-key="recipient">Recipient:</label>
-                        <input type="text" id="recipient-add" class="form-input" required>
-                    </div>
-
-                    <!-- Description (Span 3) -->
-                    <div class="form-group md:col-span-3">
-                        <label for="description-add" class="form-label" data-lang-key="description">Description:</label>
-                        <textarea id="description-add" class="form-textarea h-10"></textarea>
-                    </div>
-
-                    <!-- Record Button -->
-                    <div class="form-group md:col-span-1 flex justify-end">
-                        <button type="submit" class="primary-button w-full" data-lang-key="record_payment">Record
-                            Payment</button>
-                    </div>
-                </div>
-            </form>
-        </div>
-
-        <!-- Filter Options -->
-        <div class="bg-white p-6 md:p-8 rounded-xl shadow-2xl mb-8">
-            <h3 class="text-lg font-bold text-gray-700 mb-4" data-lang-key="filter_options">Filter Options</h3>
-            <div class="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
-
-                <!-- From Date -->
-                <div class="form-group">
-                    <label for="from-date" class="form-label" data-lang-key="from_date">From Date</label>
-                    <input type="date" id="from-date" class="form-input">
-                </div>
-
-                <!-- To Date -->
-                <div class="form-group">
-                    <label for="to-date" class="form-label" data-lang-key="to_date">To Date</label>
-                    <input type="date" id="to-date" class="form-input">
-                </div>
-
-                <!-- Category Filter -->
-                <div class="form-group">
-                    <label for="category-filter" class="form-label" data-lang-key="filter_by_category">Filter by
-                        Category</label>
-                    <select id="category-filter" class="form-input">
-                        <!-- Options populated by JS -->
-                    </select>
-                </div>
-
-                <!-- Search Recipient/Description -->
-                <div class="form-group">
-                    <label for="search-input" class="form-label" data-lang-key="search_student">Search
-                        Recipient/Desc</label>
-                    <input type="text" id="search-input" class="form-input">
-                </div>
-
-
-                <!-- Apply/Reset Buttons -->
-                <div class="form-group flex space-x-2">
-                    <button type="button" id="reset-filter-btn"
-                        class="action-button text-gray-700 hover:bg-gray-100 w-1/2"
-                        data-lang-key="reset_filter">Reset</button>
-                    <button type="button" id="apply-filter-btn" class="action-button primary-button w-1/2"
-                        data-lang-key="apply_filter">Apply Filter</button>
-                </div>
+        <form id="add-expense-form">
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+            <!-- Date -->
+            <div class="form-group">
+              <label
+                for="expense-date-add"
+                class="form-label"
+                data-lang-key="date"
+                >Date:</label
+              >
+              <input
+                type="date"
+                id="expense-date-add"
+                class="form-input"
+                required
+              />
             </div>
-        </div>
 
-        <!-- Expense History Table -->
-        <div class="bg-white p-6 md:p-8 rounded-xl shadow-2xl">
-            <h3 class="text-lg font-semibold text-gray-700 mb-6" data-lang-key="page_title">Payments / Expenses History
-            </h3>
-
-            <div class="table-container">
-                <table class="admin-table">
-                    <thead>
-                        <tr class="rounded-lg">
-                            <th style="width: 10%" data-lang-key="date_table">Date</th>
-                            <th style="width: 12%" data-lang-key="category_table">Category</th>
-                            <th style="width: 10%" data-lang-key="amount_table">Amount</th>
-                            <th style="width: 18%" data-lang-key="recipient_table">Recipient</th>
-                            <th style="width: 38%" data-lang-key="description_table">Description</th>
-                            <th style="width: 12%" data-lang-key="actions">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="expenses-table-body">
-                        <!-- Expense data will be injected here by JS -->
-                    </tbody>
-                </table>
+            <!-- Category -->
+            <div class="form-group">
+              <label
+                for="category-select-add"
+                class="form-label"
+                data-lang-key="category"
+                >Category:</label
+              >
+              <select id="category-select-add" class="form-input" required>
+                <!-- Populated by JS -->
+              </select>
             </div>
+
+            <!-- Amount -->
+            <div class="form-group">
+              <label for="amount-add" class="form-label" data-lang-key="amount"
+                >Amount (INR):</label
+              >
+              <input
+                type="number"
+                id="amount-add"
+                class="form-input"
+                min="0.01"
+                step="0.01"
+                required
+              />
+            </div>
+
+            <!-- Recipient -->
+            <div class="form-group">
+              <label
+                for="recipient-add"
+                class="form-label"
+                data-lang-key="recipient"
+                >Recipient:</label
+              >
+              <input
+                type="text"
+                id="recipient-add"
+                class="form-input"
+                required
+              />
+            </div>
+
+            <!-- Description (Span 3) -->
+            <div class="form-group md:col-span-3">
+              <label
+                for="description-add"
+                class="form-label"
+                data-lang-key="description"
+                >Description:</label
+              >
+              <textarea
+                id="description-add"
+                class="form-textarea h-10"
+              ></textarea>
+            </div>
+
+            <!-- Record Button -->
+            <div class="form-group md:col-span-1 flex justify-end">
+              <button
+                type="submit"
+                class="primary-button w-full"
+                data-lang-key="record_payment"
+              >
+                Record Payment
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- Filter Options -->
+      <div class="bg-white p-6 md:p-8 rounded-xl shadow-2xl mb-8">
+        <h3
+          class="text-lg font-bold text-gray-700 mb-4"
+          data-lang-key="filter_options"
+        >
+          Filter Options
+        </h3>
+        <div class="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
+          <!-- From Date -->
+          <div class="form-group">
+            <label for="from-date" class="form-label" data-lang-key="from_date"
+              >From Date</label
+            >
+            <input type="date" id="from-date" class="form-input" />
+          </div>
+
+          <!-- To Date -->
+          <div class="form-group">
+            <label for="to-date" class="form-label" data-lang-key="to_date"
+              >To Date</label
+            >
+            <input type="date" id="to-date" class="form-input" />
+          </div>
+
+          <!-- Category Filter -->
+          <div class="form-group">
+            <label
+              for="category-filter"
+              class="form-label"
+              data-lang-key="filter_by_category"
+              >Filter by Category</label
+            >
+            <select id="category-filter" class="form-input">
+              <!-- Options populated by JS -->
+            </select>
+          </div>
+
+          <!-- Search Recipient/Description -->
+          <div class="form-group">
+            <label
+              for="search-input"
+              class="form-label"
+              data-lang-key="search_student"
+              >Search Recipient/Desc</label
+            >
+            <input type="text" id="search-input" class="form-input" />
+          </div>
+
+          <!-- Apply/Reset Buttons -->
+          <div class="form-group flex space-x-2">
+            <button
+              type="button"
+              id="reset-filter-btn"
+              class="action-button text-gray-700 hover:bg-gray-100 w-1/2"
+              data-lang-key="reset_filter"
+            >
+              Reset
+            </button>
+            <button
+              type="button"
+              id="apply-filter-btn"
+              class="action-button primary-button w-1/2"
+              data-lang-key="apply_filter"
+            >
+              Apply Filter
+            </button>
+          </div>
         </div>
+      </div>
+
+      <!-- Expense History Table -->
+      <div class="bg-white p-6 md:p-8 rounded-xl shadow-2xl">
+        <h3
+          class="text-lg font-semibold text-gray-700 mb-6"
+          data-lang-key="page_title"
+        >
+          Payments / Expenses History
+        </h3>
+
+        <div class="table-container">
+          <table class="admin-table">
+            <thead>
+              <tr class="rounded-lg">
+                <th style="width: 10%" data-lang-key="date_table">Date</th>
+                <th style="width: 12%" data-lang-key="category_table">
+                  Category
+                </th>
+                <th style="width: 10%" data-lang-key="amount_table">Amount</th>
+                <th style="width: 18%" data-lang-key="recipient_table">
+                  Recipient
+                </th>
+                <th style="width: 38%" data-lang-key="description_table">
+                  Description
+                </th>
+                <th style="width: 12%" data-lang-key="actions">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="expenses-table-body">
+              <!-- Expense data will be injected here by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
     </main>
 
     <!-- EXPENSE EDIT MODAL -->
-    <div id="expense-modal"
-        class="hidden opacity-0 fixed inset-0 z-50 flex items-center justify-center modal-backdrop transition-opacity duration-300">
-        <div class="modal-content p-6 md:p-8 transform scale-100 transition-transform duration-300">
-            <div class="flex justify-between items-start pb-4 border-b mb-6">
-                <h3 id="modal-title" class="text-xl font-bold text-gray-700">Edit Expense Entry</h3>
-                <button onclick="closeExpenseModal()" class="text-gray-500 hover:text-gray-900 transition-colors p-1"
-                    aria-label="Close">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
-                        stroke="currentColor" class="w-6 h-6">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
-            </div>
-            <div id="modal-body">
-                <!-- Dynamic form content goes here -->
-            </div>
+    <div
+      id="expense-modal"
+      class="hidden opacity-0 fixed inset-0 z-50 flex items-center justify-center modal-backdrop transition-opacity duration-300"
+    >
+      <div
+        class="modal-content p-6 md:p-8 transform scale-100 transition-transform duration-300"
+      >
+        <div class="flex justify-between items-start pb-4 border-b mb-6">
+          <h3 id="modal-title" class="text-xl font-bold text-gray-700">
+            Edit Expense Entry
+          </h3>
+          <button
+            onclick="closeExpenseModal()"
+            class="text-gray-500 hover:text-gray-900 transition-colors p-1"
+            aria-label="Close"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="2"
+              stroke="currentColor"
+              class="w-6 h-6"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
         </div>
+        <div id="modal-body">
+          <!-- Dynamic form content goes here -->
+        </div>
+      </div>
     </div>
-</body>
-
+  </body>
 </html>

@@ -1,686 +1,882 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Fees Details - Accounting System</title>
     <script src="https://cdn.tailwindcss.com"></script>
 
     <style>
-        :root {
-            --color-primary: #00A693;
-            --color-background: #F2F3F4;
-            --color-accent: #E08A27;
-            --color-text-dark: #1A1A1A;
-            --color-text-light: #FFFFFF;
-        }
+      :root {
+        --color-primary: #00a693;
+        --color-background: #f2f3f4;
+        --color-accent: #e08a27;
+        --color-text-dark: #1a1a1a;
+        --color-text-light: #ffffff;
+      }
 
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;700&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap');
+      @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;700&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap");
 
-        /* Language Styles */
-        body,
-        .lang-en {
-            font-family: 'Poppins', sans-serif;
-            direction: ltr;
-            background-color: var(--color-background);
-        }
+      /* Language Styles */
+      body,
+      .lang-en {
+        font-family: "Poppins", sans-serif;
+        direction: ltr;
+        background-color: var(--color-background);
+      }
 
-        .lang-hi {
-            font-family: 'Noto Sans Devanagari', sans-serif;
-            direction: ltr;
-        }
+      .lang-hi {
+        font-family: "Noto Sans Devanagari", sans-serif;
+        direction: ltr;
+      }
 
-        .lang-ur {
-            font-family: 'Noto Nastaliq Urdu', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
-            direction: rtl;
-            line-height: 1.8;
-            text-align: right;
-        }
+      .lang-ur {
+        font-family: "Noto Nastaliq Urdu", "Segoe UI", Tahoma, Geneva, Verdana,
+          sans-serif !important;
+        direction: rtl;
+        line-height: 1.8;
+        text-align: right;
+      }
 
-        /* Form & Inputs */
-        .form-input,
-        select {
-            padding: 0.75rem 1rem;
-            border-radius: 0.5rem;
-            border: 1px solid #ccc;
-            width: 100%;
-            font-family: inherit;
-        }
+      /* Form & Inputs */
+      .form-input,
+      select {
+        padding: 0.75rem 1rem;
+        border-radius: 0.5rem;
+        border: 1px solid #ccc;
+        width: 100%;
+        font-family: inherit;
+      }
 
-        .form-input:focus,
-        select:focus {
-            outline: none;
-            border-color: var(--color-primary);
-            box-shadow: 0 0 0 3px rgba(0, 166, 147, 0.2);
-        }
+      .form-input:focus,
+      select:focus {
+        outline: none;
+        border-color: var(--color-primary);
+        box-shadow: 0 0 0 3px rgba(0, 166, 147, 0.2);
+      }
 
-        .form-label {
-            display: block;
-            font-weight: 600;
-            margin-bottom: 0.25rem;
-            font-size: 0.875rem;
-        }
+      .form-label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 0.25rem;
+        font-size: 0.875rem;
+      }
 
-        /* Buttons */
-        .primary-button {
-            padding: 0.8rem 1.5rem;
-            background-color: var(--color-primary);
-            color: var(--color-text-light);
-            font-weight: 600;
-            border-radius: 0.5rem;
-            transition: background-color 0.3s, transform 0.1s;
-            cursor: pointer;
-        }
+      /* Buttons */
+      .primary-button {
+        padding: 0.8rem 1.5rem;
+        background-color: var(--color-primary);
+        color: var(--color-text-light);
+        font-weight: 600;
+        border-radius: 0.5rem;
+        transition: background-color 0.3s, transform 0.1s;
+        cursor: pointer;
+      }
 
-        .primary-button:hover {
-            background-color: #008f7d;
-            transform: translateY(-1px);
-        }
+      .primary-button:hover {
+        background-color: #008f7d;
+        transform: translateY(-1px);
+      }
 
-        .action-button {
-            padding: 0.5rem 0.75rem;
-            border-radius: 0.5rem;
-            font-size: 0.75rem;
-            font-weight: 600;
-            transition: background-color 0.2s;
-        }
+      .action-button {
+        padding: 0.5rem 0.75rem;
+        border-radius: 0.5rem;
+        font-size: 0.75rem;
+        font-weight: 600;
+        transition: background-color 0.2s;
+      }
 
-        /* Fixed Header */
-        header {
-            background-color: var(--color-text-light);
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            position: sticky;
-            top: 0;
-            width: 100%;
-            z-index: 10;
-            padding: 1rem 2rem;
-        }
+      /* Fixed Header */
+      header {
+        background-color: var(--color-text-light);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        position: sticky;
+        top: 0;
+        width: 100%;
+        z-index: 10;
+        padding: 1rem 2rem;
+      }
 
-        /* Table Styling */
-        .admin-table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0 5px;
-        }
+      /* Table Styling */
+      .admin-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0 5px;
+      }
 
-        .admin-table th {
-            background-color: #10b981;
-            /* Green header matching the image */
-            color: white;
-            text-align: left;
-            padding: 0.75rem 1rem;
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            font-weight: 700;
-        }
+      .admin-table th {
+        background-color: #10b981;
+        /* Green header matching the image */
+        color: white;
+        text-align: left;
+        padding: 0.75rem 1rem;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        font-weight: 700;
+      }
 
-        .lang-ur .admin-table th {
-            text-align: right;
-        }
+      .lang-ur .admin-table th {
+        text-align: right;
+      }
 
-        .admin-table td {
-            padding: 0.75rem 1rem;
-            background-color: #f7fcf7;
-            /* Light green row background */
-            border-top: 1px solid #e6ffe6;
-            border-bottom: 1px solid #e6ffe6;
-            font-size: 0.8rem;
-            font-weight: 500;
-        }
+      .admin-table td {
+        padding: 0.75rem 1rem;
+        background-color: #f7fcf7;
+        /* Light green row background */
+        border-top: 1px solid #e6ffe6;
+        border-bottom: 1px solid #e6ffe6;
+        font-size: 0.8rem;
+        font-weight: 500;
+      }
 
-        .admin-table tr:nth-child(even) td {
-            background-color: #f0fff0;
-        }
+      .admin-table tr:nth-child(even) td {
+        background-color: #f0fff0;
+      }
 
-        /* Alternating row color */
-        .admin-table tr td:first-child {
-            border-top-left-radius: 0.5rem;
-            border-bottom-left-radius: 0.5rem;
-        }
+      /* Alternating row color */
+      .admin-table tr td:first-child {
+        border-top-left-radius: 0.5rem;
+        border-bottom-left-radius: 0.5rem;
+      }
 
-        .admin-table tr td:last-child {
-            border-top-right-radius: 0.5rem;
-            border-bottom-right-radius: 0.5rem;
-        }
+      .admin-table tr td:last-child {
+        border-top-right-radius: 0.5rem;
+        border-bottom-right-radius: 0.5rem;
+      }
 
-        .table-container {
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-        }
+      .table-container {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
 
-        .table-container table {
-            min-width: 1200px;
-        }
+      .table-container table {
+        min-width: 1200px;
+      }
 
-        /* Ensures minimum width for scroll */
+      /* Ensures minimum width for scroll */
 
-        /* Modal Styles */
-        .modal-backdrop {
-            background-color: rgba(0, 0, 0, 0.6);
-            transition: opacity 0.3s ease;
-        }
+      /* Modal Styles */
+      .modal-backdrop {
+        background-color: rgba(0, 0, 0, 0.6);
+        transition: opacity 0.3s ease;
+      }
 
-        .modal-content {
-            background-color: var(--color-background);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
-            border-radius: 1rem;
-            max-width: 95%;
-            width: 500px;
-            max-height: 90vh;
-            overflow-y: auto;
-            border: 3px solid var(--color-primary);
-        }
+      .modal-content {
+        background-color: var(--color-background);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+        border-radius: 1rem;
+        max-width: 95%;
+        width: 500px;
+        max-height: 90vh;
+        overflow-y: auto;
+        border: 3px solid var(--color-primary);
+      }
 
-        /* RTL Table Header Fix */
-        .lang-ur .admin-table th {
-            text-align: right !important;
-        }
+      /* RTL Table Header Fix */
+      .lang-ur .admin-table th {
+        text-align: right !important;
+      }
 
-        /* RTL Modal Form Fix */
-        .lang-ur #payment-form .form-group {
-            text-align: right;
-        }
+      /* RTL Modal Form Fix */
+      .lang-ur #payment-form .form-group {
+        text-align: right;
+      }
     </style>
-</head>
+  </head>
 
-<body class="lang-en">
-
+  <body class="lang-en">
     <script>
-        // --- Dummy Data ---
-        // Simulating data received from a student enrollment system
-        let DUMMY_STUDENTS_FEES = [
-            // Student data: [ID, Name, Class, MonthlyFee, TotalMonths, TotalPaid, TotalWaived]
-            { id: 1, name: 'ارشد خان', class: 'Hifz', monthlyFee: 500.00, totalMonths: 3, totalPaid: 600.00, totalWaived: 400.00 },
-            { id: 2, name: 'شاکر', class: 10, monthlyFee: 500.00, totalMonths: 3, totalPaid: 0.00, totalWaived: 0.00 },
-            { id: 3, name: 'ریحانۂ تسلیم', class: 5, monthlyFee: 0.00, totalMonths: 4, totalPaid: 0.00, totalWaived: 0.00 },
-            { id: 4, name: 'علی حسین', class: 5, monthlyFee: 1000.00, totalMonths: 4, totalPaid: 600.00, totalWaived: 400.00 },
-            { id: 5, name: 'حمید خالد', class: 2, monthlyFee: 0.00, totalMonths: 4, totalPaid: 0.00, totalWaived: 0.00 },
-            { id: 6, name: 'سلمان عارف', class: 5, monthlyFee: 900.00, totalMonths: 4, totalPaid: 600.00, totalWaived: 300.00 },
-            { id: 7, name: 'اتیق فواز', class: 2, monthlyFee: 1200.00, totalMonths: 4, totalPaid: 0.00, totalWaived: 0.00 },
-        ];
+      // --- Dummy Data ---
+      // Simulating data received from a student enrollment system
+      let DUMMY_STUDENTS_FEES = [
+        // Student data: [ID, Name, Class, MonthlyFee, TotalMonths, TotalPaid, TotalWaived]
+        {
+          id: 1,
+          name: "ارشد خان",
+          class: "Hifz",
+          monthlyFee: 500.0,
+          totalMonths: 3,
+          totalPaid: 600.0,
+          totalWaived: 400.0,
+        },
+        {
+          id: 2,
+          name: "شاکر",
+          class: 10,
+          monthlyFee: 500.0,
+          totalMonths: 3,
+          totalPaid: 0.0,
+          totalWaived: 0.0,
+        },
+        {
+          id: 3,
+          name: "ریحانۂ تسلیم",
+          class: 5,
+          monthlyFee: 0.0,
+          totalMonths: 4,
+          totalPaid: 0.0,
+          totalWaived: 0.0,
+        },
+        {
+          id: 4,
+          name: "علی حسین",
+          class: 5,
+          monthlyFee: 1000.0,
+          totalMonths: 4,
+          totalPaid: 600.0,
+          totalWaived: 400.0,
+        },
+        {
+          id: 5,
+          name: "حمید خالد",
+          class: 2,
+          monthlyFee: 0.0,
+          totalMonths: 4,
+          totalPaid: 0.0,
+          totalWaived: 0.0,
+        },
+        {
+          id: 6,
+          name: "سلمان عارف",
+          class: 5,
+          monthlyFee: 900.0,
+          totalMonths: 4,
+          totalPaid: 600.0,
+          totalWaived: 300.0,
+        },
+        {
+          id: 7,
+          name: "اتیق فواز",
+          class: 2,
+          monthlyFee: 1200.0,
+          totalMonths: 4,
+          totalPaid: 0.0,
+          totalWaived: 0.0,
+        },
+      ];
 
-        const FEES_STORAGE_KEY = 'madarsaStudentFees';
+      const FEES_STORAGE_KEY = "madarsaStudentFees";
 
-        // Load/Save Logic
-        function loadFeesData() {
-            const storedData = localStorage.getItem(FEES_STORAGE_KEY);
-            if (storedData) {
-                try {
-                    DUMMY_STUDENTS_FEES = JSON.parse(storedData);
-                } catch (e) {
-                    console.error("Error loading fees data:", e);
-                }
-            }
+      // Load/Save Logic
+      function loadFeesData() {
+        const storedData = localStorage.getItem(FEES_STORAGE_KEY);
+        if (storedData) {
+          try {
+            DUMMY_STUDENTS_FEES = JSON.parse(storedData);
+          } catch (e) {
+            console.error("Error loading fees data:", e);
+          }
+        }
+      }
+
+      function saveFeesData() {
+        localStorage.setItem(
+          FEES_STORAGE_KEY,
+          JSON.stringify(DUMMY_STUDENTS_FEES)
+        );
+      }
+
+      // --- Multilingual Data ---
+      const langData = {
+        en: {
+          accounting_system: "Accounting System",
+          page_title: "Fees Details",
+          back_to_accounting: "Back to Accounting",
+          logout: "Logout",
+
+          // Filters/Actions
+          search_student: "Search Student Name/Class...",
+          filter_class: "Filter by Class",
+          all_classes: "All",
+          apply_filter: "Apply Filter",
+          pay_fee: "Pay Fee",
+          paid: "Paid", // Button for zero balance
+
+          // Table Headers
+          name: "Name",
+          class: "Class",
+          monthly_fee: "Monthly Fee",
+          total_months: "Total Months",
+          total_due: "Total Due",
+          paid: "Paid",
+          waived: "Waived",
+          balance: "Balance",
+          payment: "Payment",
+
+          // Modal
+          modal_title: "Process Fee Payment",
+          student_name: "Student Name:",
+          current_balance: "Current Balance:",
+          amount_to_pay: "Amount to Pay (INR):",
+          amount_waived: "Amount Waived (INR):",
+          payment_method: "Payment Method:",
+          cash: "Cash",
+          bank_transfer: "Bank Transfer",
+          waive_reason: "Waive Reason (If Applicable):",
+          record_payment: "Record Payment",
+
+          // Messages
+          invalid_amount: "Invalid amount entered.",
+          payment_recorded: "Payment successfully recorded!",
+          balance_cleared: "Balance Cleared!",
+          no_data: "No students found matching the criteria.",
+        },
+        hi: {
+          accounting_system: "लेखांकन प्रणाली",
+          page_title: "शुल्क विवरण",
+          back_to_accounting: "लेखांकन पर वापस",
+          logout: "लॉगआउट",
+
+          // Filters/Actions
+          search_student: "छात्र का नाम/कक्षा खोजें...",
+          filter_class: "कक्षा द्वारा फ़िल्टर करें",
+          all_classes: "सभी",
+          apply_filter: "फ़िल्टर लागू करें",
+          pay_fee: "शुल्क भुगतान करें",
+          paid: "भुगतान किया गया",
+
+          // Table Headers
+          name: "नाम",
+          class: "कक्षा",
+          monthly_fee: "मासिक शुल्क",
+          total_months: "कुल महीने",
+          total_due: "कुल देय",
+          paid: "भुगतान किया गया",
+          waived: "माफ किया गया",
+          balance: "शेष",
+          payment: "भुगतान",
+
+          // Modal
+          modal_title: "शुल्क भुगतान प्रक्रिया",
+          student_name: "छात्र का नाम:",
+          current_balance: "वर्तमान शेष:",
+          amount_to_pay: "भुगतान की जाने वाली राशि (INR):",
+          amount_waived: "माफ की गई राशि (INR):",
+          payment_method: "भुगतान विधि:",
+          cash: "नकद",
+          bank_transfer: "बैंक ट्रांसफर",
+          waive_reason: "माफी का कारण (यदि लागू हो):",
+          record_payment: "भुगतान रिकॉर्ड करें",
+
+          // Messages
+          invalid_amount: "अवैध राशि दर्ज की गई।",
+          payment_recorded: "भुगतान सफलतापूर्वक दर्ज किया गया!",
+          balance_cleared: "शेष राशि साफ!",
+          no_data: "मानदंड से मेल खाने वाले कोई छात्र नहीं मिले।",
+        },
+        ur: {
+          accounting_system: "اکاؤنٹنگ نظام",
+          page_title: "فیس کی تفصیلات",
+          back_to_accounting: "اکاؤنٹنگ پر واپس جائیں",
+          logout: "لاگ آؤٹ",
+
+          // Filters/Actions
+          search_student: "طالب علم کا نام/کلاس تلاش کریں...",
+          filter_class: "کلاس کے ذریعے فلٹر کریں",
+          all_classes: "تمام",
+          apply_filter: "فلٹر لگائیں",
+          pay_fee: "فیس ادا کریں",
+          paid: "ادا کر دیا گیا",
+
+          // Table Headers
+          name: "نام",
+          class: "کلاس",
+          monthly_fee: "ماہانہ فیس",
+          total_months: "کل مہینے",
+          total_due: "کل واجب الادا",
+          paid: "ادا کیا گیا",
+          waived: "معاف",
+          balance: "بقیہ",
+          payment: "ادائیگی",
+
+          // Modal
+          modal_title: "فیس کی ادائیگی پروسیس کریں",
+          student_name: "طالب علم کا نام:",
+          current_balance: "موجودہ بقیہ:",
+          amount_to_pay: "ادا کرنے کی رقم (INR):",
+          amount_waived: "معاف کی گئی رقم (INR):",
+          payment_method: "ادائیگی کا طریقہ:",
+          cash: "نقد",
+          bank_transfer: "بینک ٹرانسفر",
+          waive_reason: "معافی کی وجہ (اگر قابل اطلاق ہو):",
+          record_payment: "ادائیگی ریکارڈ کریں",
+
+          // Messages
+          invalid_amount: "درج کی گئی رقم غلط ہے۔",
+          payment_recorded: "ادائیگی کامیابی سے ریکارڈ ہو گئی!",
+          balance_cleared: "بقیہ صاف ہو گیا!",
+          no_data: "معیار سے مماثل کوئی طالب علم نہیں ملا۔",
+        },
+      };
+
+      let currentLang = "en";
+
+      function getTranslation(key) {
+        return langData[currentLang][key] || langData["en"][key] || key;
+      }
+
+      // --- Core UI Update Functions ---
+      function updateContent() {
+        document.body.className = "lang-" + currentLang;
+
+        document.querySelectorAll("[data-lang-key]").forEach((el) => {
+          const key = el.getAttribute("data-lang-key");
+          el.textContent = getTranslation(key);
+        });
+
+        loadFeesData(); // Ensure latest data is used
+        populateClassFilter();
+        renderFeesTable();
+      }
+
+      function changeLanguage(lang) {
+        if (lang in langData) {
+          currentLang = lang;
+          localStorage.setItem("madarsaSystemLang", lang);
+          updateContent();
+        }
+      }
+
+      function populateClassFilter() {
+        const filterDropdown = document.getElementById("class-filter");
+        const selectedValue = filterDropdown.value;
+
+        // Get unique classes from dummy data
+        const uniqueClasses = [
+          ...new Set(DUMMY_STUDENTS_FEES.map((s) => s.class)),
+        ].sort();
+
+        let optionsHtml = `<option value="" data-lang-key="all_classes">${getTranslation(
+          "all_classes"
+        )}</option>`;
+        uniqueClasses.forEach((c) => {
+          optionsHtml += `<option value="${c}">${c}</option>`;
+        });
+
+        filterDropdown.innerHTML = optionsHtml;
+        filterDropdown.value = selectedValue;
+      }
+
+      // --- Calculation Helpers ---
+      function getFeeSummary(student) {
+        const totalDue = student.monthlyFee * student.totalMonths;
+        const totalPaidWaived = student.totalPaid + student.totalWaived;
+        const balance = totalDue - totalPaidWaived;
+
+        return { totalDue, balance };
+      }
+
+      function getStudentById(id) {
+        return DUMMY_STUDENTS_FEES.find((s) => s.id === id);
+      }
+
+      // --- Table Rendering ---
+      function renderFeesTable() {
+        const tbody = document.getElementById("fees-table-body");
+        if (!tbody) return;
+
+        tbody.innerHTML = "";
+
+        const searchInput = document
+          .getElementById("search-input")
+          .value.toLowerCase();
+        const classFilter = document.getElementById("class-filter").value;
+
+        const filteredStudents = DUMMY_STUDENTS_FEES.filter((s) => {
+          const matchesSearch =
+            s.name.toLowerCase().includes(searchInput) ||
+            s.class.toString().toLowerCase().includes(searchInput);
+          const matchesClass =
+            !classFilter || s.class.toString() === classFilter.toString();
+          return matchesSearch && matchesClass;
+        });
+
+        if (filteredStudents.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="9" class="text-center text-gray-500 p-4">${getTranslation(
+            "no_data"
+          )}</td></tr>`;
+          return;
         }
 
-        function saveFeesData() {
-            localStorage.setItem(FEES_STORAGE_KEY, JSON.stringify(DUMMY_STUDENTS_FEES));
-        }
+        filteredStudents.forEach((student) => {
+          const summary = getFeeSummary(student);
+          const isBalanceZero = summary.balance <= 0;
 
-        // --- Multilingual Data ---
-        const langData = {
-            'en': {
-                'accounting_system': 'Accounting System',
-                'page_title': 'Fees Details',
-                'back_to_accounting': 'Back to Accounting',
-                'logout': 'Logout',
-
-                // Filters/Actions
-                'search_student': 'Search Student Name/Class...',
-                'filter_class': 'Filter by Class',
-                'all_classes': 'All',
-                'apply_filter': 'Apply Filter',
-                'pay_fee': 'Pay Fee',
-                'paid': 'Paid', // Button for zero balance
-
-                // Table Headers
-                'name': 'Name',
-                'class': 'Class',
-                'monthly_fee': 'Monthly Fee',
-                'total_months': 'Total Months',
-                'total_due': 'Total Due',
-                'paid': 'Paid',
-                'waived': 'Waived',
-                'balance': 'Balance',
-                'payment': 'Payment',
-
-                // Modal
-                'modal_title': 'Process Fee Payment',
-                'student_name': 'Student Name:',
-                'current_balance': 'Current Balance:',
-                'amount_to_pay': 'Amount to Pay (INR):',
-                'amount_waived': 'Amount Waived (INR):',
-                'payment_method': 'Payment Method:',
-                'cash': 'Cash',
-                'bank_transfer': 'Bank Transfer',
-                'waive_reason': 'Waive Reason (If Applicable):',
-                'record_payment': 'Record Payment',
-
-                // Messages
-                'invalid_amount': 'Invalid amount entered.',
-                'payment_recorded': 'Payment successfully recorded!',
-                'balance_cleared': 'Balance Cleared!',
-                'no_data': 'No students found matching the criteria.'
-            },
-            'hi': {
-                'accounting_system': 'लेखांकन प्रणाली',
-                'page_title': 'शुल्क विवरण',
-                'back_to_accounting': 'लेखांकन पर वापस',
-                'logout': 'लॉगआउट',
-
-                // Filters/Actions
-                'search_student': 'छात्र का नाम/कक्षा खोजें...',
-                'filter_class': 'कक्षा द्वारा फ़िल्टर करें',
-                'all_classes': 'सभी',
-                'apply_filter': 'फ़िल्टर लागू करें',
-                'pay_fee': 'शुल्क भुगतान करें',
-                'paid': 'भुगतान किया गया',
-
-                // Table Headers
-                'name': 'नाम',
-                'class': 'कक्षा',
-                'monthly_fee': 'मासिक शुल्क',
-                'total_months': 'कुल महीने',
-                'total_due': 'कुल देय',
-                'paid': 'भुगतान किया गया',
-                'waived': 'माफ किया गया',
-                'balance': 'शेष',
-                'payment': 'भुगतान',
-
-                // Modal
-                'modal_title': 'शुल्क भुगतान प्रक्रिया',
-                'student_name': 'छात्र का नाम:',
-                'current_balance': 'वर्तमान शेष:',
-                'amount_to_pay': 'भुगतान की जाने वाली राशि (INR):',
-                'amount_waived': 'माफ की गई राशि (INR):',
-                'payment_method': 'भुगतान विधि:',
-                'cash': 'नकद',
-                'bank_transfer': 'बैंक ट्रांसफर',
-                'waive_reason': 'माफी का कारण (यदि लागू हो):',
-                'record_payment': 'भुगतान रिकॉर्ड करें',
-
-                // Messages
-                'invalid_amount': 'अवैध राशि दर्ज की गई।',
-                'payment_recorded': 'भुगतान सफलतापूर्वक दर्ज किया गया!',
-                'balance_cleared': 'शेष राशि साफ!',
-                'no_data': 'मानदंड से मेल खाने वाले कोई छात्र नहीं मिले।'
-            },
-            'ur': {
-                'accounting_system': 'اکاؤنٹنگ نظام',
-                'page_title': 'فیس کی تفصیلات',
-                'back_to_accounting': 'اکاؤنٹنگ پر واپس جائیں',
-                'logout': 'لاگ آؤٹ',
-
-                // Filters/Actions
-                'search_student': 'طالب علم کا نام/کلاس تلاش کریں...',
-                'filter_class': 'کلاس کے ذریعے فلٹر کریں',
-                'all_classes': 'تمام',
-                'apply_filter': 'فلٹر لگائیں',
-                'pay_fee': 'فیس ادا کریں',
-                'paid': 'ادا کر دیا گیا',
-
-                // Table Headers
-                'name': 'نام',
-                'class': 'کلاس',
-                'monthly_fee': 'ماہانہ فیس',
-                'total_months': 'کل مہینے',
-                'total_due': 'کل واجب الادا',
-                'paid': 'ادا کیا گیا',
-                'waived': 'معاف',
-                'balance': 'بقیہ',
-                'payment': 'ادائیگی',
-
-                // Modal
-                'modal_title': 'فیس کی ادائیگی پروسیس کریں',
-                'student_name': 'طالب علم کا نام:',
-                'current_balance': 'موجودہ بقیہ:',
-                'amount_to_pay': 'ادا کرنے کی رقم (INR):',
-                'amount_waived': 'معاف کی گئی رقم (INR):',
-                'payment_method': 'ادائیگی کا طریقہ:',
-                'cash': 'نقد',
-                'bank_transfer': 'بینک ٹرانسفر',
-                'waive_reason': 'معافی کی وجہ (اگر قابل اطلاق ہو):',
-                'record_payment': 'ادائیگی ریکارڈ کریں',
-
-                // Messages
-                'invalid_amount': 'درج کی گئی رقم غلط ہے۔',
-                'payment_recorded': 'ادائیگی کامیابی سے ریکارڈ ہو گئی!',
-                'balance_cleared': 'بقیہ صاف ہو گیا!',
-                'no_data': 'معیار سے مماثل کوئی طالب علم نہیں ملا۔'
-            }
-        };
-
-        let currentLang = 'en';
-
-        function getTranslation(key) {
-            return langData[currentLang][key] || langData['en'][key] || key;
-        }
-
-        // --- Core UI Update Functions ---
-        function updateContent() {
-            document.body.className = 'lang-' + currentLang;
-
-            document.querySelectorAll('[data-lang-key]').forEach(el => {
-                const key = el.getAttribute('data-lang-key');
-                el.textContent = getTranslation(key);
-            });
-
-            loadFeesData(); // Ensure latest data is used
-            populateClassFilter();
-            renderFeesTable();
-        }
-
-        function changeLanguage(lang) {
-            if (lang in langData) {
-                currentLang = lang;
-                localStorage.setItem('madarsaSystemLang', lang);
-                updateContent();
-            }
-        }
-
-        function populateClassFilter() {
-            const filterDropdown = document.getElementById('class-filter');
-            const selectedValue = filterDropdown.value;
-
-            // Get unique classes from dummy data
-            const uniqueClasses = [...new Set(DUMMY_STUDENTS_FEES.map(s => s.class))].sort();
-
-            let optionsHtml = `<option value="" data-lang-key="all_classes">${getTranslation('all_classes')}</option>`;
-            uniqueClasses.forEach(c => {
-                optionsHtml += `<option value="${c}">${c}</option>`;
-            });
-
-            filterDropdown.innerHTML = optionsHtml;
-            filterDropdown.value = selectedValue;
-        }
-
-        // --- Calculation Helpers ---
-        function getFeeSummary(student) {
-            const totalDue = student.monthlyFee * student.totalMonths;
-            const totalPaidWaived = student.totalPaid + student.totalWaived;
-            const balance = totalDue - totalPaidWaived;
-
-            return { totalDue, balance };
-        }
-
-        function getStudentById(id) {
-            return DUMMY_STUDENTS_FEES.find(s => s.id === id);
-        }
-
-        // --- Table Rendering ---
-        function renderFeesTable() {
-            const tbody = document.getElementById('fees-table-body');
-            if (!tbody) return;
-
-            tbody.innerHTML = '';
-
-            const searchInput = document.getElementById('search-input').value.toLowerCase();
-            const classFilter = document.getElementById('class-filter').value;
-
-            const filteredStudents = DUMMY_STUDENTS_FEES.filter(s => {
-                const matchesSearch = s.name.toLowerCase().includes(searchInput) || s.class.toString().toLowerCase().includes(searchInput);
-                const matchesClass = !classFilter || s.class.toString() === classFilter.toString();
-                return matchesSearch && matchesClass;
-            });
-
-            if (filteredStudents.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="9" class="text-center text-gray-500 p-4">${getTranslation('no_data')}</td></tr>`;
-                return;
-            }
-
-            filteredStudents.forEach(student => {
-                const summary = getFeeSummary(student);
-                const isBalanceZero = summary.balance <= 0;
-
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
                     <td class="font-bold text-gray-800">${student.name}</td>
                     <td>${student.class}</td>
                     <td>${student.monthlyFee.toFixed(2)}</td>
                     <td>${student.totalMonths}</td>
                     <td class="font-bold">${summary.totalDue.toFixed(2)}</td>
-                    <td class="text-green-700">${student.totalPaid.toFixed(2)}</td>
-                    <td class="text-yellow-700">${student.totalWaived.toFixed(2)}</td>
-                    <td class="font-bold ${isBalanceZero ? 'text-green-700' : 'text-red-600'}">${summary.balance.toFixed(2)}</td>
+                    <td class="text-green-700">${student.totalPaid.toFixed(
+                      2
+                    )}</td>
+                    <td class="text-yellow-700">${student.totalWaived.toFixed(
+                      2
+                    )}</td>
+                    <td class="font-bold ${
+                      isBalanceZero ? "text-green-700" : "text-red-600"
+                    }">${summary.balance.toFixed(2)}</td>
                     <td>
-                        ${isBalanceZero
-                        ? `<button class="action-button bg-green-500 text-white" disabled data-lang-key="paid">${getTranslation('paid')}</button>`
-                        : `<button onclick="openPaymentModal(${student.id})" class="action-button primary-button bg-green-500 text-white hover:bg-green-600" data-lang-key="pay_fee">${getTranslation('pay_fee')}</button>`
-                    }
+                        ${
+                          isBalanceZero
+                            ? `<button class="action-button bg-green-500 text-white" disabled data-lang-key="paid">${getTranslation(
+                                "paid"
+                              )}</button>`
+                            : `<button onclick="openPaymentModal(${
+                                student.id
+                              })" class="action-button primary-button bg-green-500 text-white hover:bg-green-600" data-lang-key="pay_fee">${getTranslation(
+                                "pay_fee"
+                              )}</button>`
+                        }
                     </td>
                 `;
-                tbody.appendChild(tr);
-            });
-        }
+          tbody.appendChild(tr);
+        });
+      }
 
-        // --- Modal & Payment Logic ---
-        function openPaymentModal(studentId) {
-            const student = getStudentById(studentId);
-            const summary = getFeeSummary(student);
+      // --- Modal & Payment Logic ---
+      function openPaymentModal(studentId) {
+        const student = getStudentById(studentId);
+        const summary = getFeeSummary(student);
 
-            const modal = document.getElementById('payment-modal');
-            const isRtl = currentLang === 'ur';
+        const modal = document.getElementById("payment-modal");
+        const isRtl = currentLang === "ur";
 
-            document.getElementById('modal-title').textContent = getTranslation('modal_title');
+        document.getElementById("modal-title").textContent =
+          getTranslation("modal_title");
 
-            const formHtml = `
-                <form id="payment-form" onsubmit="return handlePayment(event, ${studentId}, ${summary.balance})">
+        const formHtml = `
+                <form id="payment-form" onsubmit="return handlePayment(event, ${studentId}, ${
+          summary.balance
+        })">
                     <div class="space-y-4">
-                        <p class="font-bold"><span data-lang-key="student_name">${getTranslation('student_name')}</span> ${student.name} (${student.class})</p>
-                        <p class="text-xl font-bold ${summary.balance <= 0 ? 'text-green-600' : 'text-red-600'}">
-                            <span data-lang-key="current_balance">${getTranslation('current_balance')}</span> ${summary.balance.toFixed(2)} INR
+                        <p class="font-bold"><span data-lang-key="student_name">${getTranslation(
+                          "student_name"
+                        )}</span> ${student.name} (${student.class})</p>
+                        <p class="text-xl font-bold ${
+                          summary.balance <= 0
+                            ? "text-green-600"
+                            : "text-red-600"
+                        }">
+                            <span data-lang-key="current_balance">${getTranslation(
+                              "current_balance"
+                            )}</span> ${summary.balance.toFixed(2)} INR
                         </p>
                         
                         <div class="grid grid-cols-2 gap-4">
                             <!-- Amount to Pay -->
                             <div class="form-group">
-                                <label for="amount-pay" class="form-label"><span data-lang-key="amount_to_pay">${getTranslation('amount_to_pay')}</span></label>
-                                <input type="number" id="amount-pay" class="form-input" min="0" step="0.01" max="${summary.balance}" value="${summary.balance.toFixed(2)}" required>
+                                <label for="amount-pay" class="form-label"><span data-lang-key="amount_to_pay">${getTranslation(
+                                  "amount_to_pay"
+                                )}</span></label>
+                                <input type="number" id="amount-pay" class="form-input" min="0" step="0.01" max="${
+                                  summary.balance
+                                }" value="${summary.balance.toFixed(
+          2
+        )}" required>
                             </div>
                             <!-- Amount Waived -->
                             <div class="form-group">
-                                <label for="amount-waived" class="form-label"><span data-lang-key="amount_waived">${getTranslation('amount_waived')}</span></label>
+                                <label for="amount-waived" class="form-label"><span data-lang-key="amount_waived">${getTranslation(
+                                  "amount_waived"
+                                )}</span></label>
                                 <input type="number" id="amount-waived" class="form-input" min="0" step="0.01" value="0.00" required>
                             </div>
                         </div>
 
                         <!-- Payment Method -->
                         <div class="form-group">
-                            <label for="payment-method" class="form-label" data-lang-key="payment_method">${getTranslation('payment_method')}</label>
+                            <label for="payment-method" class="form-label" data-lang-key="payment_method">${getTranslation(
+                              "payment_method"
+                            )}</label>
                             <select id="payment-method" class="form-input" required>
-                                <option value="Cash" data-lang-key="cash">${getTranslation('cash')}</option>
-                                <option value="Bank Transfer" data-lang-key="bank_transfer">${getTranslation('bank_transfer')}</option>
+                                <option value="Cash" data-lang-key="cash">${getTranslation(
+                                  "cash"
+                                )}</option>
+                                <option value="Bank Transfer" data-lang-key="bank_transfer">${getTranslation(
+                                  "bank_transfer"
+                                )}</option>
                             </select>
                         </div>
                         
                         <!-- Waive Reason (Optional) -->
                         <div class="form-group">
-                            <label for="waive-reason" class="form-label" data-lang-key="waive_reason">${getTranslation('waive_reason')}</label>
+                            <label for="waive-reason" class="form-label" data-lang-key="waive_reason">${getTranslation(
+                              "waive_reason"
+                            )}</label>
                             <textarea id="waive-reason" class="form-input h-16"></textarea>
                         </div>
                         
                         <div class="flex justify-end mt-6">
-                            <button type="submit" class="primary-button" data-lang-key="record_payment">${getTranslation('record_payment')}</button>
+                            <button type="submit" class="primary-button" data-lang-key="record_payment">${getTranslation(
+                              "record_payment"
+                            )}</button>
                         </div>
                     </div>
                 </form>
             `;
 
-            document.getElementById('modal-body').innerHTML = formHtml;
-            // FIX: Modal form alignment for RTL
-            document.getElementById('payment-form').style.textAlign = isRtl ? 'right' : 'left';
-            document.querySelectorAll('#payment-form .form-label').forEach(label => {
-                label.style.textAlign = isRtl ? 'right' : 'left';
-            });
-            document.querySelectorAll('#payment-form .form-input, #payment-form select').forEach(input => {
-                input.style.direction = isRtl ? 'rtl' : 'ltr';
-            });
+        document.getElementById("modal-body").innerHTML = formHtml;
+        // FIX: Modal form alignment for RTL
+        document.getElementById("payment-form").style.textAlign = isRtl
+          ? "right"
+          : "left";
+        document
+          .querySelectorAll("#payment-form .form-label")
+          .forEach((label) => {
+            label.style.textAlign = isRtl ? "right" : "left";
+          });
+        document
+          .querySelectorAll("#payment-form .form-input, #payment-form select")
+          .forEach((input) => {
+            input.style.direction = isRtl ? "rtl" : "ltr";
+          });
 
+        modal.classList.remove("hidden", "opacity-0");
+      }
 
-            modal.classList.remove('hidden', 'opacity-0');
+      function closePaymentModal() {
+        document.getElementById("payment-modal").classList.add("opacity-0");
+        setTimeout(() => {
+          document.getElementById("payment-modal").classList.add("hidden");
+        }, 300);
+      }
+
+      function handlePayment(event, studentId, currentBalance) {
+        event.preventDefault();
+        const form = event.target;
+
+        const amountToPay =
+          parseFloat(form.querySelector("#amount-pay").value) || 0;
+        const amountWaived =
+          parseFloat(form.querySelector("#amount-waived").value) || 0;
+        const method = form.querySelector("#payment-method").value;
+        const reason = form.querySelector("#waive-reason").value.trim();
+
+        const totalAdjustment = amountToPay + amountWaived;
+
+        if (totalAdjustment <= 0 || totalAdjustment > currentBalance + 0.01) {
+          // 0.01 tolerance for float
+          alert(getTranslation("invalid_amount"));
+          return false;
         }
 
-        function closePaymentModal() {
-            document.getElementById('payment-modal').classList.add('opacity-0');
-            setTimeout(() => { document.getElementById('payment-modal').classList.add('hidden'); }, 300);
+        const studentIndex = DUMMY_STUDENTS_FEES.findIndex(
+          (s) => s.id === studentId
+        );
+        if (studentIndex !== -1) {
+          // Update data
+          DUMMY_STUDENTS_FEES[studentIndex].totalPaid += amountToPay;
+          DUMMY_STUDENTS_FEES[studentIndex].totalWaived += amountWaived;
+
+          // Save and refresh
+          saveFeesData();
+          closePaymentModal();
+          updateContent();
+
+          const summary = getFeeSummary(DUMMY_STUDENTS_FEES[studentIndex]);
+          if (summary.balance <= 0) {
+            alert(getTranslation("balance_cleared"));
+          } else {
+            alert(getTranslation("payment_recorded"));
+          }
         }
 
-        function handlePayment(event, studentId, currentBalance) {
-            event.preventDefault();
-            const form = event.target;
+        return false;
+      }
 
-            const amountToPay = parseFloat(form.querySelector('#amount-pay').value) || 0;
-            const amountWaived = parseFloat(form.querySelector('#amount-waived').value) || 0;
-            const method = form.querySelector('#payment-method').value;
-            const reason = form.querySelector('#waive-reason').value.trim();
+      function logOut() {
+        localStorage.removeItem("isUserLoggedIn");
+        localStorage.removeItem("authToken");
+        localStorage.removeItem("userData");
+        window.location.href = "index.html";
+      }
 
-            const totalAdjustment = amountToPay + amountWaived;
+      // Initialize content and language
+      window.onload = function () {
+        loadFeesData();
+        const storedLang = localStorage.getItem("madarsaSystemLang");
+        currentLang = storedLang && storedLang in langData ? storedLang : "en";
 
-            if (totalAdjustment <= 0 || totalAdjustment > currentBalance + 0.01) { // 0.01 tolerance for float
-                alert(getTranslation('invalid_amount'));
-                return false;
-            }
+        // Initial content update and table render
+        updateContent();
 
-            const studentIndex = DUMMY_STUDENTS_FEES.findIndex(s => s.id === studentId);
-            if (studentIndex !== -1) {
-                // Update data
-                DUMMY_STUDENTS_FEES[studentIndex].totalPaid += amountToPay;
-                DUMMY_STUDENTS_FEES[studentIndex].totalWaived += amountWaived;
-
-                // Save and refresh
-                saveFeesData();
-                closePaymentModal();
-                updateContent();
-
-                const summary = getFeeSummary(DUMMY_STUDENTS_FEES[studentIndex]);
-                if (summary.balance <= 0) {
-                    alert(getTranslation('balance_cleared'));
-                } else {
-                    alert(getTranslation('payment_recorded'));
-                }
-            }
-
-            return false;
-        }
-
-
-        // Initialize content and language
-        window.onload = function () {
-            loadFeesData();
-            const storedLang = localStorage.getItem('madarsaSystemLang');
-            currentLang = (storedLang && storedLang in langData) ? storedLang : 'en';
-
-            // Initial content update and table render
-            updateContent();
-
-            // Attach filter listeners
-            document.getElementById('search-input').addEventListener('input', renderFeesTable);
-            document.getElementById('class-filter').addEventListener('change', renderFeesTable);
-        };
+        // Attach filter listeners
+        document
+          .getElementById("search-input")
+          .addEventListener("input", renderFeesTable);
+        document
+          .getElementById("class-filter")
+          .addEventListener("change", renderFeesTable);
+      };
     </script>
 
     <!-- HEADER -->
     <header>
-        <div class="max-w-7xl mx-auto w-full flex justify-between items-center">
-            <!-- Left: Back Button & Title -->
-            <div class="flex items-center space-x-4">
-                <a href="accounting_system.html" class="action-button bg-gray-100 text-gray-700 hover:bg-gray-200"
-                    data-lang-key="back_to_accounting">Back to Accounting</a>
-                <h1 class="text-xl font-bold" data-lang-key="page_title" style="color: var(--color-primary);">Fees
-                    Details</h1>
-            </div>
-
-            <!-- Right: Language Switch -->
-            <div class="flex items-center space-x-2">
-                <select onchange="changeLanguage(this.value)" class="bg-gray-100 rounded-lg p-1 text-sm">
-                    <option value="en" selected>English</option>
-                    <option value="hi">हिन्दी</option>
-                    <option value="ur">اردو</option>
-                </select>
-                <button onclick="window.location.href='login.html'"
-                    class="text-sm font-semibold text-red-600 hover:text-red-800 transition-colors ml-4"
-                    data-lang-key="logout">Logout</button>
-            </div>
+      <div class="max-w-7xl mx-auto w-full flex justify-between items-center">
+        <!-- Left: Back Button & Title -->
+        <div class="flex items-center space-x-4">
+          <a
+            href="accounting_system.html"
+            class="action-button bg-gray-100 text-gray-700 hover:bg-gray-200"
+            data-lang-key="back_to_accounting"
+            >Back to Accounting</a
+          >
+          <h1
+            class="text-xl font-bold"
+            data-lang-key="page_title"
+            style="color: var(--color-primary)"
+          >
+            Fees Details
+          </h1>
         </div>
+
+        <!-- Right: Language Switch -->
+        <div class="flex items-center space-x-2">
+          <select
+            onchange="changeLanguage(this.value)"
+            class="bg-gray-100 rounded-lg p-1 text-sm"
+          >
+            <option value="en" selected>English</option>
+            <option value="hi">हिन्दी</option>
+            <option value="ur">اردو</option>
+          </select>
+          <button
+            onclick="logOut()"
+            class="text-sm font-semibold text-red-600 hover:text-red-800 transition-colors ml-4"
+            data-lang-key="logout"
+          >
+            Logout
+          </button>
+        </div>
+      </div>
     </header>
 
     <!-- MAIN CONTENT AREA -->
     <main class="max-w-7xl mx-auto w-full p-4 md:p-8">
+      <!-- Filter Options -->
+      <div class="bg-white p-6 md:p-8 rounded-xl shadow-2xl mb-8">
+        <h2
+          class="text-2xl font-bold text-gray-700 mb-6"
+          data-lang-key="page_title"
+        >
+          Fees Details
+        </h2>
 
-        <!-- Filter Options -->
-        <div class="bg-white p-6 md:p-8 rounded-xl shadow-2xl mb-8">
-            <h2 class="text-2xl font-bold text-gray-700 mb-6" data-lang-key="page_title">Fees Details</h2>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+          <!-- Search Input -->
+          <div class="form-group md:col-span-2 relative">
+            <label
+              for="search-input"
+              class="form-label text-gray-500"
+              data-lang-key="search_student"
+              >Search Student Name/Class...</label
+            >
+            <input
+              type="text"
+              id="search-input"
+              class="form-input pl-10"
+              placeholder="Search..."
+            />
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="w-5 h-5 absolute left-3 bottom-3 transform -translate-y-1/2 text-gray-400"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+              />
+            </svg>
+          </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
-
-                <!-- Search Input -->
-                <div class="form-group md:col-span-2 relative">
-                    <label for="search-input" class="form-label text-gray-500" data-lang-key="search_student">Search
-                        Student Name/Class...</label>
-                    <input type="text" id="search-input" class="form-input pl-10" placeholder="Search...">
-                    <svg xmlns="http://www.w3.org/2000/svg"
-                        class="w-5 h-5 absolute left-3 bottom-3 transform -translate-y-1/2 text-gray-400" fill="none"
-                        viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
-                </div>
-
-                <!-- Class Filter -->
-                <div class="form-group">
-                    <label for="class-filter" class="form-label" data-lang-key="filter_class">Filter by Class</label>
-                    <select id="class-filter" class="form-input">
-                        <!-- Options populated by JS -->
-                    </select>
-                </div>
-            </div>
+          <!-- Class Filter -->
+          <div class="form-group">
+            <label
+              for="class-filter"
+              class="form-label"
+              data-lang-key="filter_class"
+              >Filter by Class</label
+            >
+            <select id="class-filter" class="form-input">
+              <!-- Options populated by JS -->
+            </select>
+          </div>
         </div>
+      </div>
 
-        <!-- Fees Details Table -->
-        <div class="bg-white p-6 md:p-8 rounded-xl shadow-2xl">
-            <div class="table-container">
-                <table class="admin-table">
-                    <thead>
-                        <tr class="rounded-lg">
-                            <th style="width: 15%" data-lang-key="name">Name</th>
-                            <th style="width: 8%" data-lang-key="class">Class</th>
-                            <th style="width: 10%" data-lang-key="monthly_fee">Monthly Fee</th>
-                            <th style="width: 10%" data-lang-key="total_months">Total Months</th>
-                            <th style="width: 12%" data-lang-key="total_due">Total Due</th>
-                            <th style="width: 10%" data-lang-key="paid">Paid</th>
-                            <th style="width: 10%" data-lang-key="waived">Waived</th>
-                            <th style="width: 10%" data-lang-key="balance">Balance</th>
-                            <th style="width: 15%" data-lang-key="payment">Payment</th>
-                        </tr>
-                    </thead>
-                    <tbody id="fees-table-body">
-                        <!-- Student Fee data will be injected here by JS -->
-                    </tbody>
-                </table>
-            </div>
+      <!-- Fees Details Table -->
+      <div class="bg-white p-6 md:p-8 rounded-xl shadow-2xl">
+        <div class="table-container">
+          <table class="admin-table">
+            <thead>
+              <tr class="rounded-lg">
+                <th style="width: 15%" data-lang-key="name">Name</th>
+                <th style="width: 8%" data-lang-key="class">Class</th>
+                <th style="width: 10%" data-lang-key="monthly_fee">
+                  Monthly Fee
+                </th>
+                <th style="width: 10%" data-lang-key="total_months">
+                  Total Months
+                </th>
+                <th style="width: 12%" data-lang-key="total_due">Total Due</th>
+                <th style="width: 10%" data-lang-key="paid">Paid</th>
+                <th style="width: 10%" data-lang-key="waived">Waived</th>
+                <th style="width: 10%" data-lang-key="balance">Balance</th>
+                <th style="width: 15%" data-lang-key="payment">Payment</th>
+              </tr>
+            </thead>
+            <tbody id="fees-table-body">
+              <!-- Student Fee data will be injected here by JS -->
+            </tbody>
+          </table>
         </div>
+      </div>
     </main>
 
     <!-- PAYMENT MODAL -->
-    <div id="payment-modal"
-        class="hidden opacity-0 fixed inset-0 z-50 flex items-center justify-center modal-backdrop transition-opacity duration-300">
-        <div class="modal-content p-6 md:p-8 transform scale-100 transition-transform duration-300">
-            <div class="flex justify-between items-start pb-4 border-b mb-6">
-                <h3 id="modal-title" class="text-xl font-bold text-gray-700">Process Fee Payment</h3>
-                <button onclick="closePaymentModal()" class="text-gray-500 hover:text-gray-900 transition-colors p-1"
-                    aria-label="Close">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
-                        stroke="currentColor" class="w-6 h-6">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
-            </div>
-            <div id="modal-body">
-                <!-- Dynamic payment form goes here -->
-            </div>
+    <div
+      id="payment-modal"
+      class="hidden opacity-0 fixed inset-0 z-50 flex items-center justify-center modal-backdrop transition-opacity duration-300"
+    >
+      <div
+        class="modal-content p-6 md:p-8 transform scale-100 transition-transform duration-300"
+      >
+        <div class="flex justify-between items-start pb-4 border-b mb-6">
+          <h3 id="modal-title" class="text-xl font-bold text-gray-700">
+            Process Fee Payment
+          </h3>
+          <button
+            onclick="closePaymentModal()"
+            class="text-gray-500 hover:text-gray-900 transition-colors p-1"
+            aria-label="Close"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="2"
+              stroke="currentColor"
+              class="w-6 h-6"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
         </div>
+        <div id="modal-body">
+          <!-- Dynamic payment form goes here -->
+        </div>
+      </div>
     </div>
-</body>
-
+  </body>
 </html>

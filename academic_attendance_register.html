@@ -286,6 +286,32 @@
           daily_details: "Daily Attendance Details",
           no_students: "No students found in this class.",
         },
+        hi: {
+          academic_system: "शैक्षणिक प्रणाली",
+          page_title: "उपस्थिति रजिस्टर",
+          back_to_academic: "अकादमिक पर वापस जाएं",
+          logout: "लॉग आउट",
+
+          // Form/Labels
+          select_month_year: "माह और वर्ष चुनें:",
+          select_status: "कक्षा/ग्रेड चुनें:",
+          please_select_grade:
+            "रजिस्टर देखने के लिए कृपया कक्षा/ग्रेड और माह/वर्ष चुनें।",
+          print: "रजिस्टर प्रिंट करें (PDF)",
+          month: "माह",
+
+          // Table Headers (Used in Summary/PDF)
+          student_name: "छात्र का नाम",
+          total_p: "कुल उपस्थित (P)",
+          total_a: "कुल अनुपस्थित (A)",
+          total_l: "कुल विलंब (L)",
+          total_lv: "कुल अवकाश (LV)",
+          grand_total: "कुल सारांश",
+
+          // List View Specific
+          daily_details: "दैनिक उपस्थिति विवरण",
+          no_students: "इस कक्षा में कोई छात्र नहीं मिला।",
+        },
         ur: {
           academic_system: "تعلیمی نظام",
           page_title: "حاضری رجسٹر",
@@ -696,6 +722,13 @@
         doc.save(`Attendance_Register_${selectedGrade}_${monthYear}.pdf`);
       }
 
+      function logOut() {
+        localStorage.removeItem("isUserLoggedIn");
+        localStorage.removeItem("authToken");
+        localStorage.removeItem("userData");
+        window.location.href = "index.html";
+      }
+
       // Initialize content and language
       window.onload = function () {
         loadAttendance();
@@ -749,10 +782,11 @@
             class="bg-gray-100 rounded-lg p-1 text-sm"
           >
             <option value="en" selected>English</option>
+            <option value="hi">हिन्दी</option>
             <option value="ur">اردو</option>
           </select>
           <button
-            onclick="window.location.href='login.html'"
+            onclick="logOut()"
             class="text-sm font-semibold text-red-600 hover:text-red-800 transition-colors ml-4 action-button px-3 py-1"
             data-lang-key="logout"
           >

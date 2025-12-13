@@ -1,617 +1,792 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Assign Subjects to Exam - Academic System</title>
     <script src="https://cdn.tailwindcss.com"></script>
 
     <style>
-        :root {
-            --color-primary: #00A693;
-            --color-background: #F2F3F4;
-            --color-accent: #E08A27;
-            --color-text-dark: #1A1A1A;
-            --color-text-light: #FFFFFF;
-            --color-yellow: #FBBF24;
-            --color-danger: #ef4444;
-        }
+      :root {
+        --color-primary: #00a693;
+        --color-background: #f2f3f4;
+        --color-accent: #e08a27;
+        --color-text-dark: #1a1a1a;
+        --color-text-light: #ffffff;
+        --color-yellow: #fbbf24;
+        --color-danger: #ef4444;
+      }
 
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;700&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap');
+      @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;700&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap");
 
-        /* Language Styles */
-        body,
-        .lang-en {
-            font-family: 'Poppins', sans-serif;
-            direction: ltr;
-            background-color: var(--color-background);
-        }
+      /* Language Styles */
+      body,
+      .lang-en {
+        font-family: "Poppins", sans-serif;
+        direction: ltr;
+        background-color: var(--color-background);
+      }
 
-        .lang-hi {
-            font-family: 'Noto Sans Devanagari', sans-serif;
-            direction: ltr;
-        }
+      .lang-hi {
+        font-family: "Noto Sans Devanagari", sans-serif;
+        direction: ltr;
+      }
 
-        .lang-ur {
-            font-family: 'Noto Nastaliq Urdu', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
-            direction: rtl;
-            line-height: 1.8;
-            text-align: right;
-        }
+      .lang-ur {
+        font-family: "Noto Nastaliq Urdu", "Segoe UI", Tahoma, Geneva, Verdana,
+          sans-serif !important;
+        direction: rtl;
+        line-height: 1.8;
+        text-align: right;
+      }
 
-        /* Form & Inputs */
-        .form-input,
-        select {
-            padding: 0.75rem 1rem;
-            border-radius: 0.5rem;
-            border: 1px solid #ccc;
-            width: 100%;
-            font-family: inherit;
-        }
+      /* Form & Inputs */
+      .form-input,
+      select {
+        padding: 0.75rem 1rem;
+        border-radius: 0.5rem;
+        border: 1px solid #ccc;
+        width: 100%;
+        font-family: inherit;
+      }
 
-        .form-input:focus,
-        select:focus {
-            outline: none;
-            border-color: var(--color-primary);
-            box-shadow: 0 0 0 3px rgba(0, 166, 147, 0.2);
-        }
+      .form-input:focus,
+      select:focus {
+        outline: none;
+        border-color: var(--color-primary);
+        box-shadow: 0 0 0 3px rgba(0, 166, 147, 0.2);
+      }
 
-        .form-label {
-            display: block;
-            font-weight: 600;
-            margin-bottom: 0.25rem;
-            font-size: 0.875rem;
-            color: var(--color-text-dark);
-        }
+      .form-label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 0.25rem;
+        font-size: 0.875rem;
+        color: var(--color-text-dark);
+      }
 
-        /* Buttons */
-        .primary-button {
-            padding: 0.8rem 1.5rem;
-            background-color: var(--color-primary);
-            color: white;
-            font-weight: 600;
-            border-radius: 0.5rem;
-            transition: background-color 0.2s;
-            cursor: pointer;
-        }
+      /* Buttons */
+      .primary-button {
+        padding: 0.8rem 1.5rem;
+        background-color: var(--color-primary);
+        color: white;
+        font-weight: 600;
+        border-radius: 0.5rem;
+        transition: background-color 0.2s;
+        cursor: pointer;
+      }
 
-        .primary-button:hover {
-            background-color: #008f7d;
-        }
+      .primary-button:hover {
+        background-color: #008f7d;
+      }
 
-        .action-button {
-            padding: 0.4rem 0.6rem;
-            border-radius: 0.25rem;
-            font-size: 0.75rem;
-            font-weight: 600;
-            transition: background-color 0.2s;
-        }
+      .action-button {
+        padding: 0.4rem 0.6rem;
+        border-radius: 0.25rem;
+        font-size: 0.75rem;
+        font-weight: 600;
+        transition: background-color 0.2s;
+      }
 
-        .btn-edit {
-            background-color: #3b82f6;
-            color: white;
-        }
+      .btn-edit {
+        background-color: #3b82f6;
+        color: white;
+      }
 
-        .btn-delete {
-            background-color: #ef4444;
-            color: white;
-        }
+      .btn-delete {
+        background-color: #ef4444;
+        color: white;
+      }
 
-        .btn-disable {
-            background-color: #f59e0b;
-            color: white;
-        }
+      .btn-disable {
+        background-color: #f59e0b;
+        color: white;
+      }
 
-        /* Fixed Header */
-        header {
-            background-color: var(--color-text-light);
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            position: sticky;
-            top: 0;
-            width: 100%;
-            z-index: 10;
-            padding: 1rem 2rem;
-        }
+      /* Fixed Header */
+      header {
+        background-color: var(--color-text-light);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        position: sticky;
+        top: 0;
+        width: 100%;
+        z-index: 10;
+        padding: 1rem 2rem;
+      }
 
-        /* Card Structure */
-        .centered-card {
-            background-color: white;
-            border-radius: 1rem;
-            padding: 2rem;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-            max-width: 900px;
-            width: 100%;
-            margin: 2rem auto;
-        }
+      /* Card Structure */
+      .centered-card {
+        background-color: white;
+        border-radius: 1rem;
+        padding: 2rem;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        max-width: 900px;
+        width: 100%;
+        margin: 2rem auto;
+      }
 
-        /* Table Styling */
-        .admin-table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0 8px;
-        }
+      /* Table Styling */
+      .admin-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0 8px;
+      }
 
-        .admin-table th {
-            background-color: var(--color-yellow);
-            color: var(--color-text-dark);
-            text-align: left;
-            padding: 0.75rem 1rem;
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            font-weight: 700;
-        }
+      .admin-table th {
+        background-color: var(--color-yellow);
+        color: var(--color-text-dark);
+        text-align: left;
+        padding: 0.75rem 1rem;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        font-weight: 700;
+      }
 
-        .lang-ur .admin-table th {
-            text-align: right;
-        }
+      .lang-ur .admin-table th {
+        text-align: right;
+      }
 
-        .admin-table td {
-            padding: 0.75rem 1rem;
-            background-color: white;
-            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
-            font-size: 0.85rem;
-            font-weight: 500;
-            border: none;
-        }
+      .admin-table td {
+        padding: 0.75rem 1rem;
+        background-color: white;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+        font-size: 0.85rem;
+        font-weight: 500;
+        border: none;
+      }
 
-        .admin-table tbody tr:hover td {
-            background-color: #f7f7f7;
-        }
+      .admin-table tbody tr:hover td {
+        background-color: #f7f7f7;
+      }
 
-        .table-container {
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-        }
+      .table-container {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
 
-        .table-container table {
-            min-width: 900px;
-        }
+      .table-container table {
+        min-width: 900px;
+      }
     </style>
-</head>
+  </head>
 
-<body class="lang-en">
-
+  <body class="lang-en">
     <script>
-        // Helper to format date YYYY-MM-DD
-        function formatDate(date) {
-            const d = new Date(date);
-            let month = '' + (d.getMonth() + 1);
-            let day = '' + d.getDate();
-            const year = d.getFullYear();
+      // Helper to format date YYYY-MM-DD
+      function formatDate(date) {
+        const d = new Date(date);
+        let month = "" + (d.getMonth() + 1);
+        let day = "" + d.getDate();
+        const year = d.getFullYear();
 
-            if (month.length < 2) month = '0' + month;
-            if (day.length < 2) day = '0' + day;
+        if (month.length < 2) month = "0" + month;
+        if (day.length < 2) day = "0" + day;
 
-            return [year, month, day].join('-');
+        return [year, month, day].join("-");
+      }
+
+      // --- Dummy Data ---
+      const DUMMY_EXAMS = [
+        {
+          id: 1,
+          name: "University",
+          date: "2025-08-15",
+          expiration: "2025-09-01",
+          status: "Active",
+        },
+        {
+          id: 2,
+          name: "Mid-Term 2025",
+          date: "2025-10-20",
+          expiration: "2025-10-30",
+          status: "Active",
+        },
+      ];
+
+      // Simulating the subjects available for mapping
+      const DUMMY_SUBJECTS = [
+        { id: 101, name: "Arabic", maxMarks: 100, status: "Active" },
+        { id: 102, name: "Fiqh", maxMarks: 100, status: "Active" },
+        { id: 103, name: "English", maxMarks: 50, status: "Active" },
+        { id: 104, name: "Hadith", maxMarks: 100, status: "Disabled" },
+      ];
+
+      // Structure: assignedSubjects[examId] = [{subjectId: 101, maxMarks: 100, active: true}, ...]
+      let assignedSubjects = {
+        1: [
+          { subjectId: 101, name: "Arabic", maxMarks: 100, active: true },
+          { subjectId: 103, name: "English", maxMarks: 50, active: true },
+        ],
+        2: [{ subjectId: 102, name: "Fiqh", maxMarks: 100, active: true }],
+      };
+
+      const ASSIGNMENT_STORAGE_KEY = "madarsaExamSubjects";
+
+      // Load/Save Logic
+      function loadAssignments() {
+        const storedAssignments = localStorage.getItem(ASSIGNMENT_STORAGE_KEY);
+        if (storedAssignments) {
+          try {
+            assignedSubjects = JSON.parse(storedAssignments);
+          } catch (e) {
+            console.error("Error loading subject assignments:", e);
+          }
+        } else {
+          saveAssignments();
+        }
+      }
+
+      function saveAssignments() {
+        localStorage.setItem(
+          ASSIGNMENT_STORAGE_KEY,
+          JSON.stringify(assignedSubjects)
+        );
+      }
+
+      // --- Multilingual Data ---
+      const langData = {
+        en: {
+          academic_system: "Academic System",
+          page_title: "Exam Subject Mapping",
+          back_to_academic: "Back to Academic",
+          logout: "Logout",
+
+          // Form/Table
+          select_exam: "Select exam:",
+          exam_name: "Exam Name",
+          start_date: "Start Date",
+          expiration_date: "Expiration Date",
+          select_subject: "-- Select Subject --",
+          max_marks: "Max Marks",
+          add_subject: "Add Subject",
+          no_exam_selected:
+            "Please select an Exam to view and manage subjects.",
+          subject_list: "Assigned Subjects List",
+
+          // Table Headers
+          subject: "Subject",
+          max_marks_table: "Max Marks",
+          status_col: "Status",
+          actions: "Actions",
+
+          // Actions/Status
+          edit: "Edit",
+          delete: "Delete",
+          disable: "Disable",
+          active: "Active",
+          disabled: "Disabled",
+
+          // Messages
+          validation_error: "Please select a Subject and provide Max Marks.",
+          subject_added: "Subject successfully added!",
+          subject_deleted: "Subject deleted.",
+          subject_status_updated: "Subject status updated.",
+        },
+        hi: {
+          academic_system: "शैक्षणिक प्रणाली",
+          page_title: "परीक्षा विषय मैपिंग",
+          back_to_academic: "अकादमिक पर वापस जाएं",
+          logout: "लॉग आउट",
+
+          // Form/Table
+          select_exam: "परीक्षा चुनें:",
+          exam_name: "परीक्षा का नाम",
+          start_date: "आरंभ तिथि",
+          expiration_date: "समाप्ति तिथि",
+          select_subject: "-- विषय चुनें --",
+          max_marks: "अधिकतम अंक",
+          add_subject: "विषय जोड़ें",
+          no_exam_selected:
+            "विषयों को देखने और प्रबंधित करने के लिए कृपया एक परीक्षा चुनें।",
+          subject_list: "आवंटित विषयों की सूची",
+
+          // Table Headers
+          subject: "विषय",
+          max_marks_table: "अधिकतम अंक",
+          status_col: "स्थिति",
+          actions: "कार्रवाई",
+
+          // Actions/Status
+          edit: "संपादित करें",
+          delete: "हटाएं",
+          disable: "निष्क्रिय करें",
+          active: "सक्रिय",
+          disabled: "निष्क्रिय",
+
+          // Messages
+          validation_error: "कृपया एक विषय चुनें और अधिकतम अंक प्रदान करें।",
+          subject_added: "विषय सफलतापूर्वक जोड़ा गया!",
+          subject_deleted: "विषय हटा दिया गया।",
+          subject_status_updated: "विषय की स्थिति अपडेट की गई।",
+        },
+        ur: {
+          academic_system: "تعلیمی نظام",
+          page_title: "امتحان مضمون کی نقشہ سازی",
+          back_to_academic: "اکیڈمک پر واپس جائیں",
+          logout: "لاگ آؤٹ",
+
+          // Form/Table
+          select_exam: "امتحان منتخب کریں:",
+          exam_name: "امتحان کا نام",
+          start_date: "آغاز کی تاریخ",
+          expiration_date: "اختتام کی تاریخ",
+          select_subject: "-- مضمون منتخب کریں --",
+          max_marks: "زیادہ سے زیادہ نمبر",
+          add_subject: "مضمون شامل کریں",
+          no_exam_selected:
+            "براہ کرم مضامین کو دیکھنے اور ان کا انتظام کرنے کے لیے ایک امتحان منتخب کریں۔",
+          subject_list: "تفویض کردہ مضامین کی فہرست",
+
+          // Table Headers
+          subject: "مضمون",
+          max_marks_table: "زیادہ سے زیادہ نمبر",
+          status_col: "حالت",
+          actions: "عمل",
+
+          // Actions/Status
+          edit: "ترمیم کریں",
+          delete: "حذف کریں",
+          disable: "غیر فعال کریں",
+          active: "فعال",
+          disabled: "غیر فعال",
+
+          // Messages
+          validation_error:
+            "براہ کرم ایک مضمون منتخب کریں اور زیادہ سے زیادہ نمبر فراہم کریں۔",
+          subject_added: "مضمون کامیابی سے شامل کیا گیا!",
+          subject_deleted: "مضمون حذف کر دیا گیا۔",
+          subject_status_updated: "مضمون کی حیثیت اپ ڈیٹ ہو گئی۔",
+        },
+      };
+
+      let currentLang = "en";
+
+      function getTranslation(key) {
+        return langData[currentLang][key] || langData["en"][key] || key;
+      }
+
+      // --- Core UI Update Functions ---
+      function updateContent() {
+        document.body.className = "lang-" + currentLang;
+
+        document.querySelectorAll("[data-lang-key]").forEach((el) => {
+          const key = el.getAttribute("data-lang-key");
+          el.textContent = getTranslation(key);
+        });
+
+        populateDropdowns();
+
+        // Re-render the area based on current selection
+        const examId = parseInt(document.getElementById("exam-select").value);
+        renderSubjectAssignmentArea(examId);
+      }
+
+      function changeLanguage(lang) {
+        if (lang in langData) {
+          currentLang = lang;
+          localStorage.setItem("madarsaSystemLang", lang);
+          updateContent();
+        }
+      }
+
+      function populateDropdowns() {
+        const examDropdown = document.getElementById("exam-select");
+        const subjectDropdown = document.getElementById("subject-select-add");
+
+        // Populate Exam Dropdown
+        const selectedExamId = examDropdown.value;
+        examDropdown.innerHTML = `<option value="">-- Select Exam --</option>`;
+        DUMMY_EXAMS.forEach((exam) => {
+          examDropdown.innerHTML += `<option value="${exam.id}">${exam.name}</option>`;
+        });
+        examDropdown.value = selectedExamId;
+
+        // Populate Subject Dropdown (All available subjects)
+        subjectDropdown.innerHTML = `<option value="">${getTranslation(
+          "select_subject"
+        )}</option>`;
+        DUMMY_SUBJECTS.forEach((subject) => {
+          subjectDropdown.innerHTML += `<option value="${subject.id}" data-marks="${subject.maxMarks}">${subject.name}</option>`;
+        });
+      }
+
+      // --- Subject Assignment Area Rendering (FIXED LOCATION) ---
+      function handleExamSelectionChange() {
+        const examId = parseInt(document.getElementById("exam-select").value);
+        renderSubjectAssignmentArea(examId);
+      }
+
+      function renderSubjectAssignmentArea(examId = null) {
+        const tableBody = document.getElementById("subject-table-body");
+        const examInfoDiv = document.getElementById("exam-info");
+
+        if (!examInfoDiv) return;
+
+        if (!examId) {
+          examInfoDiv.innerHTML = `<p class="text-center text-gray-500 p-4" data-lang-key="no_exam_selected">${getTranslation(
+            "no_exam_selected"
+          )}</p>`;
+          if (tableBody) tableBody.innerHTML = "";
+          return;
         }
 
-        // --- Dummy Data ---
-        const DUMMY_EXAMS = [
-            { id: 1, name: 'University', date: '2025-08-15', expiration: '2025-09-01', status: 'Active' },
-            { id: 2, name: 'Mid-Term 2025', date: '2025-10-20', expiration: '2025-10-30', status: 'Active' },
-        ];
+        const exam = DUMMY_EXAMS.find((e) => e.id === examId);
+        if (!exam) return;
 
-        // Simulating the subjects available for mapping
-        const DUMMY_SUBJECTS = [
-            { id: 101, name: 'Arabic', maxMarks: 100, status: 'Active' },
-            { id: 102, name: 'Fiqh', maxMarks: 100, status: 'Active' },
-            { id: 103, name: 'English', maxMarks: 50, status: 'Active' },
-            { id: 104, name: 'Hadith', maxMarks: 100, status: 'Disabled' },
-        ];
-
-        // Structure: assignedSubjects[examId] = [{subjectId: 101, maxMarks: 100, active: true}, ...]
-        let assignedSubjects = {
-            1: [
-                { subjectId: 101, name: 'Arabic', maxMarks: 100, active: true },
-                { subjectId: 103, name: 'English', maxMarks: 50, active: true }
-            ],
-            2: [
-                { subjectId: 102, name: 'Fiqh', maxMarks: 100, active: true },
-            ]
-        };
-
-        const ASSIGNMENT_STORAGE_KEY = 'madarsaExamSubjects';
-
-        // Load/Save Logic
-        function loadAssignments() {
-            const storedAssignments = localStorage.getItem(ASSIGNMENT_STORAGE_KEY);
-            if (storedAssignments) {
-                try {
-                    assignedSubjects = JSON.parse(storedAssignments);
-                } catch (e) {
-                    console.error("Error loading subject assignments:", e);
-                }
-            } else {
-                saveAssignments();
-            }
-        }
-
-        function saveAssignments() {
-            localStorage.setItem(ASSIGNMENT_STORAGE_KEY, JSON.stringify(assignedSubjects));
-        }
-
-        // --- Multilingual Data ---
-        const langData = {
-            'en': {
-                'academic_system': 'Academic System',
-                'page_title': 'Exam Subject Mapping',
-                'back_to_academic': 'Back to Academic',
-                'logout': 'Logout',
-
-                // Form/Table
-                'select_exam': 'Select exam:',
-                'exam_name': 'Exam Name',
-                'start_date': 'Start Date',
-                'expiration_date': 'Expiration Date',
-                'select_subject': '-- Select Subject --',
-                'max_marks': 'Max Marks',
-                'add_subject': 'Add Subject',
-                'no_exam_selected': 'Please select an Exam to view and manage subjects.',
-                'subject_list': 'Assigned Subjects List',
-
-                // Table Headers
-                'subject': 'Subject',
-                'max_marks_table': 'Max Marks',
-                'status_col': 'Status',
-                'actions': 'Actions',
-
-                // Actions/Status
-                'edit': 'Edit',
-                'delete': 'Delete',
-                'disable': 'Disable',
-                'active': 'Active',
-                'disabled': 'Disabled',
-
-                // Messages
-                'validation_error': 'Please select a Subject and provide Max Marks.',
-                'subject_added': 'Subject successfully added!',
-                'subject_deleted': 'Subject deleted.',
-                'subject_status_updated': 'Subject status updated.'
-            },
-            'ur': {
-                'academic_system': 'تعلیمی نظام',
-                'page_title': 'امتحان مضمون کی نقشہ سازی',
-                'back_to_academic': 'اکیڈمک پر واپس جائیں',
-                'logout': 'لاگ آؤٹ',
-
-                // Form/Table
-                'select_exam': 'امتحان منتخب کریں:',
-                'exam_name': 'امتحان کا نام',
-                'start_date': 'آغاز کی تاریخ',
-                'expiration_date': 'اختتام کی تاریخ',
-                'select_subject': '-- مضمون منتخب کریں --',
-                'max_marks': 'زیادہ سے زیادہ نمبر',
-                'add_subject': 'مضمون شامل کریں',
-                'no_exam_selected': 'براہ کرم مضامین کو دیکھنے اور ان کا انتظام کرنے کے لیے ایک امتحان منتخب کریں۔',
-                'subject_list': 'تفویض کردہ مضامین کی فہرست',
-
-                // Table Headers
-                'subject': 'مضمون',
-                'max_marks_table': 'زیادہ سے زیادہ نمبر',
-                'status_col': 'حالت',
-                'actions': 'عمل',
-
-                // Actions/Status
-                'edit': 'ترمیم کریں',
-                'delete': 'حذف کریں',
-                'disable': 'غیر فعال کریں',
-                'active': 'فعال',
-                'disabled': 'غیر فعال',
-
-                // Messages
-                'validation_error': 'براہ کرم ایک مضمون منتخب کریں اور زیادہ سے زیادہ نمبر فراہم کریں۔',
-                'subject_added': 'مضمون کامیابی سے شامل کیا گیا!',
-                'subject_deleted': 'مضمون حذف کر دیا گیا۔',
-                'subject_status_updated': 'مضمون کی حیثیت اپ ڈیٹ ہو گئی۔'
-            }
-        };
-
-        let currentLang = 'en';
-
-        function getTranslation(key) {
-            return langData[currentLang][key] || langData['en'][key] || key;
-        }
-
-        // --- Core UI Update Functions ---
-        function updateContent() {
-            document.body.className = 'lang-' + currentLang;
-
-            document.querySelectorAll('[data-lang-key]').forEach(el => {
-                const key = el.getAttribute('data-lang-key');
-                el.textContent = getTranslation(key);
-            });
-
-            populateDropdowns();
-
-            // Re-render the area based on current selection
-            const examId = parseInt(document.getElementById('exam-select').value);
-            renderSubjectAssignmentArea(examId);
-        }
-
-        function changeLanguage(lang) {
-            if (lang in langData) {
-                currentLang = lang;
-                localStorage.setItem('madarsaSystemLang', lang);
-                updateContent();
-            }
-        }
-
-        function populateDropdowns() {
-            const examDropdown = document.getElementById('exam-select');
-            const subjectDropdown = document.getElementById('subject-select-add');
-
-            // Populate Exam Dropdown
-            const selectedExamId = examDropdown.value;
-            examDropdown.innerHTML = `<option value="">-- Select Exam --</option>`;
-            DUMMY_EXAMS.forEach(exam => {
-                examDropdown.innerHTML += `<option value="${exam.id}">${exam.name}</option>`;
-            });
-            examDropdown.value = selectedExamId;
-
-            // Populate Subject Dropdown (All available subjects)
-            subjectDropdown.innerHTML = `<option value="">${getTranslation('select_subject')}</option>`;
-            DUMMY_SUBJECTS.forEach(subject => {
-                subjectDropdown.innerHTML += `<option value="${subject.id}" data-marks="${subject.maxMarks}">${subject.name}</option>`;
-            });
-        }
-
-        // --- Subject Assignment Area Rendering (FIXED LOCATION) ---
-        function handleExamSelectionChange() {
-            const examId = parseInt(document.getElementById('exam-select').value);
-            renderSubjectAssignmentArea(examId);
-        }
-
-        function renderSubjectAssignmentArea(examId = null) {
-            const tableBody = document.getElementById('subject-table-body');
-            const examInfoDiv = document.getElementById('exam-info');
-
-            if (!examInfoDiv) return;
-
-            if (!examId) {
-                examInfoDiv.innerHTML = `<p class="text-center text-gray-500 p-4" data-lang-key="no_exam_selected">${getTranslation('no_exam_selected')}</p>`;
-                if (tableBody) tableBody.innerHTML = '';
-                return;
-            }
-
-            const exam = DUMMY_EXAMS.find(e => e.id === examId);
-            if (!exam) return;
-
-            // 1. Update Exam Info Header
-            examInfoDiv.innerHTML = `
+        // 1. Update Exam Info Header
+        examInfoDiv.innerHTML = `
                 <div class="grid grid-cols-2 md:grid-cols-4 text-sm text-gray-700">
-                    <div><span class="font-bold" data-lang-key="exam_name">${getTranslation('exam_name')}</span> ${exam.name}</div>
-                    <div><span class="font-bold" data-lang-key="start_date">${getTranslation('start_date')}</span> ${exam.date}</div>
-                    <div><span class="font-bold" data-lang-key="expiration_date">${getTranslation('expiration_date')}</span> ${exam.expiration}</div>
-                    <div><span class="font-bold" data-lang-key="status_col">${getTranslation('status_col')}</span> <span class="${exam.status === 'Active' ? 'text-green-600' : 'text-red-600'}">${getTranslation(exam.status)}</span></div>
+                    <div><span class="font-bold" data-lang-key="exam_name">${getTranslation(
+                      "exam_name"
+                    )}</span> ${exam.name}</div>
+                    <div><span class="font-bold" data-lang-key="start_date">${getTranslation(
+                      "start_date"
+                    )}</span> ${exam.date}</div>
+                    <div><span class="font-bold" data-lang-key="expiration_date">${getTranslation(
+                      "expiration_date"
+                    )}</span> ${exam.expiration}</div>
+                    <div><span class="font-bold" data-lang-key="status_col">${getTranslation(
+                      "status_col"
+                    )}</span> <span class="${
+          exam.status === "Active" ? "text-green-600" : "text-red-600"
+        }">${getTranslation(exam.status)}</span></div>
                 </div>
             `;
 
-            // 2. Render Table
-            const subjects = assignedSubjects[examId] || [];
-            if (tableBody) tableBody.innerHTML = '';
+        // 2. Render Table
+        const subjects = assignedSubjects[examId] || [];
+        if (tableBody) tableBody.innerHTML = "";
 
-            subjects.forEach(subject => {
-                const tr = document.createElement('tr');
+        subjects.forEach((subject) => {
+          const tr = document.createElement("tr");
 
-                const statusKey = subject.active ? 'Active' : 'Disabled';
-                const statusClass = subject.active ? 'text-green-600' : 'text-red-600';
-                const toggleAction = subject.active ? 'disable' : 'enable';
-                const toggleText = getTranslation(subject.active ? 'disable' : 'active');
+          const statusKey = subject.active ? "Active" : "Disabled";
+          const statusClass = subject.active
+            ? "text-green-600"
+            : "text-red-600";
+          const toggleAction = subject.active ? "disable" : "enable";
+          const toggleText = getTranslation(
+            subject.active ? "disable" : "active"
+          );
 
-                tr.innerHTML = `
+          tr.innerHTML = `
                     <td>${subject.name}</td>
                     <td>${subject.maxMarks}</td>
                     <td class="${statusClass}">${getTranslation(statusKey)}</td>
                     <td class="flex space-x-2">
-                        <button onclick="handleAction('edit_subject', ${examId}, ${subject.subjectId})" class="action-button btn-edit">${getTranslation('edit')}</button>
-                        <button onclick="handleAction('delete_subject', ${examId}, ${subject.subjectId})" class="action-button btn-delete">${getTranslation('delete')}</button>
-                        <button onclick="handleAction('${toggleAction}_subject', ${examId}, ${subject.subjectId})" class="action-button btn-disable">${toggleText}</button>
+                        <button onclick="handleAction('edit_subject', ${examId}, ${
+            subject.subjectId
+          })" class="action-button btn-edit">${getTranslation("edit")}</button>
+                        <button onclick="handleAction('delete_subject', ${examId}, ${
+            subject.subjectId
+          })" class="action-button btn-delete">${getTranslation(
+            "delete"
+          )}</button>
+                        <button onclick="handleAction('${toggleAction}_subject', ${examId}, ${
+            subject.subjectId
+          })" class="action-button btn-disable">${toggleText}</button>
                     </td>
                 `;
-                if (tableBody) tableBody.appendChild(tr);
-            });
+          if (tableBody) tableBody.appendChild(tr);
+        });
 
-            if (subjects.length === 0 && tableBody) {
-                tableBody.innerHTML = `<tr><td colspan="4" class="text-center text-gray-500 p-4">No subjects assigned to this exam.</td></tr>`;
-            }
+        if (subjects.length === 0 && tableBody) {
+          tableBody.innerHTML = `<tr><td colspan="4" class="text-center text-gray-500 p-4">No subjects assigned to this exam.</td></tr>`;
+        }
+      }
+
+      // --- Subject Assignment Form Logic ---
+      function handleSubjectMarksUpdate() {
+        const subjectSelect = document.getElementById("subject-select-add");
+        const marksInput = document.getElementById("max-marks-add");
+
+        if (subjectSelect.value) {
+          const selectedOption =
+            subjectSelect.options[subjectSelect.selectedIndex];
+          const defaultMarks = selectedOption.dataset.marks || 100;
+          marksInput.value = defaultMarks;
+        } else {
+          marksInput.value = "";
+        }
+      }
+
+      function handleAddSubject(event) {
+        event.preventDefault();
+        const form = event.target;
+
+        // FIX: Accessing exam select value directly from the document
+        const examSelect = document.getElementById("exam-select");
+        const examId = parseInt(examSelect.value);
+
+        const subjectId = parseInt(
+          form.querySelector("#subject-select-add").value
+        );
+        const maxMarks = parseInt(form.querySelector("#max-marks-add").value);
+
+        if (!examId || !subjectId || isNaN(maxMarks) || maxMarks <= 0) {
+          alert(getTranslation("validation_error"));
+          return false;
         }
 
-        // --- Subject Assignment Form Logic ---
-        function handleSubjectMarksUpdate() {
-            const subjectSelect = document.getElementById('subject-select-add');
-            const marksInput = document.getElementById('max-marks-add');
+        const subjectDetails = DUMMY_SUBJECTS.find((s) => s.id === subjectId);
+        if (!subjectDetails) return false;
 
-            if (subjectSelect.value) {
-                const selectedOption = subjectSelect.options[subjectSelect.selectedIndex];
-                const defaultMarks = selectedOption.dataset.marks || 100;
-                marksInput.value = defaultMarks;
-            } else {
-                marksInput.value = '';
-            }
+        // Check if subject is already assigned to this exam
+        if (assignedSubjects[examId]?.some((s) => s.subjectId === subjectId)) {
+          alert(
+            `Subject ${subjectDetails.name} is already assigned to this exam.`
+          );
+          return false;
         }
 
-        function handleAddSubject(event) {
-            event.preventDefault();
-            const form = event.target;
-
-            // FIX: Accessing exam select value directly from the document
-            const examSelect = document.getElementById('exam-select');
-            const examId = parseInt(examSelect.value);
-
-            const subjectId = parseInt(form.querySelector('#subject-select-add').value);
-            const maxMarks = parseInt(form.querySelector('#max-marks-add').value);
-
-            if (!examId || !subjectId || isNaN(maxMarks) || maxMarks <= 0) {
-                alert(getTranslation('validation_error'));
-                return false;
-            }
-
-            const subjectDetails = DUMMY_SUBJECTS.find(s => s.id === subjectId);
-            if (!subjectDetails) return false;
-
-            // Check if subject is already assigned to this exam
-            if (assignedSubjects[examId]?.some(s => s.subjectId === subjectId)) {
-                alert(`Subject ${subjectDetails.name} is already assigned to this exam.`);
-                return false;
-            }
-
-            const newSubjectAssignment = {
-                subjectId,
-                name: subjectDetails.name,
-                maxMarks,
-                active: true
-            };
-
-            if (!assignedSubjects[examId]) assignedSubjects[examId] = [];
-            assignedSubjects[examId].push(newSubjectAssignment);
-            saveAssignments();
-
-            form.reset();
-            updateContent();
-            alert(getTranslation('subject_added'));
-
-            return false;
-        }
-
-        function handleAction(action, examId, subjectId) {
-            const examSubjects = assignedSubjects[examId];
-            const subjectIndex = examSubjects?.findIndex(s => s.subjectId === subjectId);
-
-            if (!examSubjects || subjectIndex === undefined || subjectIndex === -1) return;
-
-            if (action === 'delete_subject') {
-                if (confirm(`Confirm deleting this subject from Exam ID ${examId}?`)) {
-                    examSubjects.splice(subjectIndex, 1);
-                    saveAssignments();
-                    updateContent();
-                    alert(getTranslation('subject_deleted'));
-                }
-            } else if (action === 'disable_subject' || action === 'enable_subject') {
-                const newStatus = action === 'enable_subject' ? true : false;
-                examSubjects[subjectIndex].active = newStatus;
-                saveAssignments();
-                updateContent();
-                alert(getTranslation('subject_status_updated'));
-            } else if (action === 'edit_subject') {
-                alert(`Editing Max Marks for ${examSubjects[subjectIndex].name}. (Functionality TBD)`);
-            }
-        }
-
-
-        // Initialize content and language
-        window.onload = function () {
-            loadAssignments();
-            const storedLang = localStorage.getItem('madarsaSystemLang');
-            currentLang = (storedLang && storedLang in langData) ? storedLang : 'en';
-
-            // Initial content update and table render
-            updateContent();
-
-            // Attach listeners (FIXED LOCATION)
-            document.getElementById('exam-select').addEventListener('change', handleExamSelectionChange);
-            document.getElementById('subject-select-add').addEventListener('change', handleSubjectMarksUpdate);
-            document.getElementById('add-subject-form').addEventListener('submit', handleAddSubject);
+        const newSubjectAssignment = {
+          subjectId,
+          name: subjectDetails.name,
+          maxMarks,
+          active: true,
         };
+
+        if (!assignedSubjects[examId]) assignedSubjects[examId] = [];
+        assignedSubjects[examId].push(newSubjectAssignment);
+        saveAssignments();
+
+        form.reset();
+        updateContent();
+        alert(getTranslation("subject_added"));
+
+        return false;
+      }
+
+      function handleAction(action, examId, subjectId) {
+        const examSubjects = assignedSubjects[examId];
+        const subjectIndex = examSubjects?.findIndex(
+          (s) => s.subjectId === subjectId
+        );
+
+        if (!examSubjects || subjectIndex === undefined || subjectIndex === -1)
+          return;
+
+        if (action === "delete_subject") {
+          if (
+            confirm(`Confirm deleting this subject from Exam ID ${examId}?`)
+          ) {
+            examSubjects.splice(subjectIndex, 1);
+            saveAssignments();
+            updateContent();
+            alert(getTranslation("subject_deleted"));
+          }
+        } else if (
+          action === "disable_subject" ||
+          action === "enable_subject"
+        ) {
+          const newStatus = action === "enable_subject" ? true : false;
+          examSubjects[subjectIndex].active = newStatus;
+          saveAssignments();
+          updateContent();
+          alert(getTranslation("subject_status_updated"));
+        } else if (action === "edit_subject") {
+          alert(
+            `Editing Max Marks for ${examSubjects[subjectIndex].name}. (Functionality TBD)`
+          );
+        }
+      }
+
+      function logOut() {
+        localStorage.removeItem("isUserLoggedIn");
+        localStorage.removeItem("authToken");
+        localStorage.removeItem("userData");
+        window.location.href = "index.html";
+      }
+
+      // Initialize content and language
+      window.onload = function () {
+        loadAssignments();
+        const storedLang = localStorage.getItem("madarsaSystemLang");
+        currentLang = storedLang && storedLang in langData ? storedLang : "en";
+
+        // Initial content update and table render
+        updateContent();
+
+        // Attach listeners (FIXED LOCATION)
+        document
+          .getElementById("exam-select")
+          .addEventListener("change", handleExamSelectionChange);
+        document
+          .getElementById("subject-select-add")
+          .addEventListener("change", handleSubjectMarksUpdate);
+        document
+          .getElementById("add-subject-form")
+          .addEventListener("submit", handleAddSubject);
+      };
     </script>
 
     <!-- HEADER -->
     <header>
-        <div class="max-w-7xl mx-auto w-full flex justify-between items-center">
-            <!-- Left: Back Button & Title -->
-            <div class="flex items-center space-x-4">
-                <a href="academic_system.html" class="action-button bg-gray-100 text-gray-700 hover:bg-gray-200"
-                    data-lang-key="back_to_academic">Back to Academic</a>
-                <h1 class="text-xl font-bold" data-lang-key="page_title" style="color: var(--color-primary);">Exam
-                    Subject Mapping</h1>
-            </div>
-
-            <!-- Right: Language Switch -->
-            <div class="flex items-center space-x-2">
-                <select onchange="changeLanguage(this.value)" class="bg-gray-100 rounded-lg p-1 text-sm">
-                    <option value="en" selected>English</option>
-                    <option value="ur">اردو</option>
-                </select>
-                <button onclick="window.location.href='login.html'"
-                    class="text-sm font-semibold text-red-600 hover:text-red-800 transition-colors ml-4 action-button px-3 py-1"
-                    data-lang-key="logout">Logout</button>
-            </div>
+      <div class="max-w-7xl mx-auto w-full flex justify-between items-center">
+        <!-- Left: Back Button & Title -->
+        <div class="flex items-center space-x-4">
+          <a
+            href="academic_system.html"
+            class="action-button bg-gray-100 text-gray-700 hover:bg-gray-200"
+            data-lang-key="back_to_academic"
+            >Back to Academic</a
+          >
+          <h1
+            class="text-xl font-bold"
+            data-lang-key="page_title"
+            style="color: var(--color-primary)"
+          >
+            Exam Subject Mapping
+          </h1>
         </div>
+
+        <!-- Right: Language Switch -->
+        <div class="flex items-center space-x-2">
+          <select
+            onchange="changeLanguage(this.value)"
+            class="bg-gray-100 rounded-lg p-1 text-sm"
+          >
+            <option value="en" selected>English</option>
+            <option value="hi">हिन्दी</option>
+            <option value="ur">اردو</option>
+          </select>
+          <button
+            onclick="logOut()"
+            class="text-sm font-semibold text-red-600 hover:text-red-800 transition-colors ml-4 action-button px-3 py-1"
+            data-lang-key="logout"
+          >
+            Logout
+          </button>
+        </div>
+      </div>
     </header>
 
     <!-- MAIN CONTENT AREA -->
     <main class="max-w-7xl mx-auto w-full p-4 md:p-8">
+      <h2
+        class="text-3xl font-bold text-gray-700 mb-6"
+        data-lang-key="page_title"
+      >
+        Exam Subject Mapping
+      </h2>
 
-        <h2 class="text-3xl font-bold text-gray-700 mb-6" data-lang-key="page_title">Exam Subject Mapping</h2>
+      <!-- 1. Exam Selection and Details -->
+      <div id="subject-assignment-area" class="centered-card mb-8">
+        <h3
+          class="text-xl font-bold text-gray-700 mb-4"
+          data-lang-key="select_exam"
+        >
+          Select exam:
+        </h3>
 
-        <!-- 1. Exam Selection and Details -->
-        <div id="subject-assignment-area" class="centered-card mb-8">
-            <h3 class="text-xl font-bold text-gray-700 mb-4" data-lang-key="select_exam">Select exam:</h3>
-
-            <!-- Exam Select -->
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
-                <div class="form-group md:col-span-2">
-                    <select id="exam-select" class="form-input" onchange="handleExamSelectionChange()"></select>
-                </div>
-            </div>
-
-            <!-- Exam Info Display -->
-            <div id="exam-info" class="mt-6 p-4 bg-gray-50 rounded-lg text-sm text-left">
-                <p>-- Please select an Exam --</p>
-            </div>
+        <!-- Exam Select -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+          <div class="form-group md:col-span-2">
+            <select
+              id="exam-select"
+              class="form-input"
+              onchange="handleExamSelectionChange()"
+            ></select>
+          </div>
         </div>
 
-
-        <!-- 2. Add Subject to Exam Form -->
-        <div class="centered-card mb-8">
-            <h3 class="text-xl font-bold text-gray-700 mb-6" data-lang-key="add_subject">Add Subject</h3>
-
-            <form id="add-subject-form">
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
-
-                    <!-- Subject Select -->
-                    <div class="form-group md:col-span-2">
-                        <label for="subject-select-add" class="form-label" data-lang-key="subject">Subject:</label>
-                        <select id="subject-select-add" class="form-input" required></select>
-                    </div>
-
-                    <!-- Max Marks -->
-                    <div class="form-group">
-                        <label for="max-marks-add" class="form-label" data-lang-key="max_marks">Max Marks:</label>
-                        <input type="number" id="max-marks-add" class="form-input" min="1" step="1" required>
-                    </div>
-
-                    <!-- Add Button -->
-                    <div class="form-group">
-                        <button type="submit" class="primary-button w-full" data-lang-key="add_subject">Add
-                            Subject</button>
-                    </div>
-                </div>
-            </form>
+        <!-- Exam Info Display -->
+        <div
+          id="exam-info"
+          class="mt-6 p-4 bg-gray-50 rounded-lg text-sm text-left"
+        >
+          <p>-- Please select an Exam --</p>
         </div>
+      </div>
 
+      <!-- 2. Add Subject to Exam Form -->
+      <div class="centered-card mb-8">
+        <h3
+          class="text-xl font-bold text-gray-700 mb-6"
+          data-lang-key="add_subject"
+        >
+          Add Subject
+        </h3>
 
-        <!-- 3. Assigned Subjects Listing Table -->
-        <div id="assigned-subjects-card" class="bg-white p-6 md:p-8 rounded-xl shadow-2xl">
-            <h3 class="text-xl font-bold text-gray-700 mb-6" data-lang-key="subject_list">Assigned Subjects List</h3>
-
-            <div class="table-container">
-                <table class="admin-table">
-                    <thead>
-                        <tr>
-                            <th style="width: 30%" data-lang-key="subject">Subject</th>
-                            <th style="width: 15%" data-lang-key="max_marks_table">Max Marks</th>
-                            <th style="width: 15%" data-lang-key="status_col">Status</th>
-                            <th style="width: 40%" data-lang-key="actions">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="subject-table-body">
-                        <!-- Subject assignment data injected by JS -->
-                    </tbody>
-                </table>
+        <form id="add-subject-form">
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+            <!-- Subject Select -->
+            <div class="form-group md:col-span-2">
+              <label
+                for="subject-select-add"
+                class="form-label"
+                data-lang-key="subject"
+                >Subject:</label
+              >
+              <select
+                id="subject-select-add"
+                class="form-input"
+                required
+              ></select>
             </div>
+
+            <!-- Max Marks -->
+            <div class="form-group">
+              <label
+                for="max-marks-add"
+                class="form-label"
+                data-lang-key="max_marks"
+                >Max Marks:</label
+              >
+              <input
+                type="number"
+                id="max-marks-add"
+                class="form-input"
+                min="1"
+                step="1"
+                required
+              />
+            </div>
+
+            <!-- Add Button -->
+            <div class="form-group">
+              <button
+                type="submit"
+                class="primary-button w-full"
+                data-lang-key="add_subject"
+              >
+                Add Subject
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- 3. Assigned Subjects Listing Table -->
+      <div
+        id="assigned-subjects-card"
+        class="bg-white p-6 md:p-8 rounded-xl shadow-2xl"
+      >
+        <h3
+          class="text-xl font-bold text-gray-700 mb-6"
+          data-lang-key="subject_list"
+        >
+          Assigned Subjects List
+        </h3>
+
+        <div class="table-container">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th style="width: 30%" data-lang-key="subject">Subject</th>
+                <th style="width: 15%" data-lang-key="max_marks_table">
+                  Max Marks
+                </th>
+                <th style="width: 15%" data-lang-key="status_col">Status</th>
+                <th style="width: 40%" data-lang-key="actions">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="subject-table-body">
+              <!-- Subject assignment data injected by JS -->
+            </tbody>
+          </table>
         </div>
+      </div>
     </main>
-</body>
-
+  </body>
 </html>

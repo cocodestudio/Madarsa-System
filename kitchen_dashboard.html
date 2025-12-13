@@ -1,530 +1,620 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Kitchen Dashboard - Summary</title>
     <script src="https://cdn.tailwindcss.com"></script>
 
     <style>
-        :root {
-            --color-primary: #00A693;
-            --color-background: #F2F3F4;
-            --color-accent: #E08A27;
-            --color-text-dark: #1A1A1A;
-            --color-text-light: #FFFFFF;
-        }
+      :root {
+        --color-primary: #00a693;
+        --color-background: #f2f3f4;
+        --color-accent: #e08a27;
+        --color-text-dark: #1a1a1a;
+        --color-text-light: #ffffff;
+      }
 
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;700&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap');
+      @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;700&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap");
 
-        /* Language Styles */
-        body,
-        .lang-en {
-            font-family: 'Poppins', sans-serif;
-            direction: ltr;
-            background-color: var(--color-background);
-        }
+      /* Language Styles */
+      body,
+      .lang-en {
+        font-family: "Poppins", sans-serif;
+        direction: ltr;
+        background-color: var(--color-background);
+      }
 
-        .lang-hi {
-            font-family: 'Noto Sans Devanagari', sans-serif;
-            direction: ltr;
-        }
+      .lang-hi {
+        font-family: "Noto Sans Devanagari", sans-serif;
+        direction: ltr;
+      }
 
-        .lang-ur {
-            font-family: 'Noto Nastaliq Urdu', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
-            direction: rtl;
-            line-height: 1.8;
-            text-align: right;
-        }
+      .lang-ur {
+        font-family: "Noto Nastaliq Urdu", "Segoe UI", Tahoma, Geneva, Verdana,
+          sans-serif !important;
+        direction: rtl;
+        line-height: 1.8;
+        text-align: right;
+      }
 
-        /* Form & Inputs */
-        .form-input,
-        select {
-            padding: 0.75rem 1rem;
-            border-radius: 0.5rem;
-            border: 1px solid #ccc;
-            width: 100%;
-            font-family: inherit;
-        }
+      /* Form & Inputs */
+      .form-input,
+      select {
+        padding: 0.75rem 1rem;
+        border-radius: 0.5rem;
+        border: 1px solid #ccc;
+        width: 100%;
+        font-family: inherit;
+      }
 
-        /* Fixed Header */
-        header {
-            background-color: var(--color-text-light);
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            position: sticky;
-            top: 0;
-            width: 100%;
-            z-index: 10;
-            padding: 1rem 2rem;
-        }
+      /* Fixed Header */
+      header {
+        background-color: var(--color-text-light);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        position: sticky;
+        top: 0;
+        width: 100%;
+        z-index: 10;
+        padding: 1rem 2rem;
+      }
 
-        /* Dashboard Cards */
-        .card {
-            background-color: white;
-            border-radius: 0.5rem;
-            padding: 1.5rem;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-            transition: transform 0.2s;
-        }
+      /* Dashboard Cards */
+      .card {
+        background-color: white;
+        border-radius: 0.5rem;
+        padding: 1.5rem;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        transition: transform 0.2s;
+      }
 
-        .card-header {
-            font-weight: 700;
-            padding: 0.75rem;
-            border-radius: 0.5rem 0.5rem 0 0;
-            margin: -1.5rem -1.5rem 1.5rem -1.5rem;
-            color: var(--color-text-light);
-            text-align: center;
-        }
+      .card-header {
+        font-weight: 700;
+        padding: 0.75rem;
+        border-radius: 0.5rem 0.5rem 0 0;
+        margin: -1.5rem -1.5rem 1.5rem -1.5rem;
+        color: var(--color-text-light);
+        text-align: center;
+      }
 
-        .card-meal-plan {
-            background-color: #3b82f6;
-            /* Blue */
-        }
+      .card-meal-plan {
+        background-color: #3b82f6;
+        /* Blue */
+      }
 
-        .card-cooking-summary {
-            background-color: #10b981;
-            /* Green */
-        }
+      .card-cooking-summary {
+        background-color: #10b981;
+        /* Green */
+      }
 
-        .card-total-cooked {
-            background-color: #3b82f6;
-        }
+      .card-total-cooked {
+        background-color: #3b82f6;
+      }
 
-        .card-total-waste {
-            background-color: #ef4444;
-            /* Red */
-        }
+      .card-total-waste {
+        background-color: #ef4444;
+        /* Red */
+      }
 
-        .card-total-students {
-            background-color: #6b7280;
-            /* Gray */
-        }
+      .card-total-students {
+        background-color: #6b7280;
+        /* Gray */
+      }
 
-        .card-low-stock {
-            background-color: #f59e0b;
-            /* Yellow/Orange */
-        }
+      .card-low-stock {
+        background-color: #f59e0b;
+        /* Yellow/Orange */
+      }
 
-        .meal-slot-item {
-            margin-top: 0.5rem;
-            padding-left: 0.5rem;
-            border-left: 3px solid var(--color-primary);
-        }
+      .meal-slot-item {
+        margin-top: 0.5rem;
+        padding-left: 0.5rem;
+        border-left: 3px solid var(--color-primary);
+      }
 
-        /* Table Styling */
-        .admin-table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0 5px;
-        }
+      /* Table Styling */
+      .admin-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0 5px;
+      }
 
-        .admin-table th {
-            text-align: left;
-            padding: 0.5rem;
-            font-size: 0.8rem;
-            color: gray;
-            text-transform: uppercase;
-            font-weight: 700;
-        }
+      .admin-table th {
+        text-align: left;
+        padding: 0.5rem;
+        font-size: 0.8rem;
+        color: gray;
+        text-transform: uppercase;
+        font-weight: 700;
+      }
 
-        .admin-table td {
-            padding: 0.5rem;
-            background-color: white;
-            font-size: 0.8rem;
-            font-weight: 500;
-        }
+      .admin-table td {
+        padding: 0.5rem;
+        background-color: white;
+        font-size: 0.8rem;
+        font-weight: 500;
+      }
 
-        .lang-ur .admin-table th {
-            text-align: right;
-        }
+      .lang-ur .admin-table th {
+        text-align: right;
+      }
     </style>
-</head>
+  </head>
 
-<body class="lang-en">
-
+  <body class="lang-en">
     <script>
-        // Helper to format date YYYY-MM-DD
-        function formatDate(date) {
-            const d = new Date(date);
-            let month = '' + (d.getMonth() + 1);
-            let day = '' + d.getDate();
-            const year = d.getFullYear();
+      // Helper to format date YYYY-MM-DD
+      function formatDate(date) {
+        const d = new Date(date);
+        let month = "" + (d.getMonth() + 1);
+        let day = "" + d.getDate();
+        const year = d.getFullYear();
 
-            if (month.length < 2) month = '0' + month;
-            if (day.length < 2) day = '0' + day;
+        if (month.length < 2) month = "0" + month;
+        if (day.length < 2) day = "0" + day;
 
-            return [year, month, day].join('-');
-        }
+        return [year, month, day].join("-");
+      }
 
-        // Helper to get day name
-        function getDayName(date) {
-            const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-            return days[new Date(date).getDay()];
-        }
-
-        const TIME_SLOTS = ['Nashta', 'Lunch', 'Dinner']; // FIX: TIME_SLOTS defined here
-
-        // --- Dummy Data Accessors (Simulating Data Fetch) ---
-
-        // Items (from kitchen_items.html)
-        const DUMMY_KITCHEN_ITEMS = [
-            { id: 1, name: 'Aaloo', unit: 'kg', currentStock: 5.00 }, // Low Stock
-            { id: 2, name: 'Chawal', unit: 'kg', currentStock: 345.00 },
-            { id: 3, name: 'Dal', unit: 'kg', currentStock: 984.00 },
-            { id: 4, name: 'Doodh', unit: 'liter', currentStock: 66.00 },
-            { id: 5, name: 'Mirch', unit: 'grams', currentStock: 0.50 }, // Low Stock
+      // Helper to get day name
+      function getDayName(date) {
+        const days = [
+          "Sunday",
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
         ];
+        return days[new Date(date).getDay()];
+      }
 
-        // Meal Plan (from weekly_meal_plan.html)
-        function getMealPlanForDay(dayName) {
-            const plan = localStorage.getItem('madarsaWeeklyMealPlan');
-            if (plan) {
-                const parsedPlan = JSON.parse(plan);
-                return parsedPlan[dayName] || { Nashta: [], Lunch: [], Dinner: [] };
-            }
-            return { Nashta: [], Lunch: [{ name: 'Chane', qty: 10, unit: 'kg' }], Dinner: [] }; // Fallback plan
+      const TIME_SLOTS = ["Nashta", "Lunch", "Dinner"]; // FIX: TIME_SLOTS defined here
+
+      // --- Dummy Data Accessors (Simulating Data Fetch) ---
+
+      // Items (from kitchen_items.html)
+      const DUMMY_KITCHEN_ITEMS = [
+        { id: 1, name: "Aaloo", unit: "kg", currentStock: 5.0 }, // Low Stock
+        { id: 2, name: "Chawal", unit: "kg", currentStock: 345.0 },
+        { id: 3, name: "Dal", unit: "kg", currentStock: 984.0 },
+        { id: 4, name: "Doodh", unit: "liter", currentStock: 66.0 },
+        { id: 5, name: "Mirch", unit: "grams", currentStock: 0.5 }, // Low Stock
+      ];
+
+      // Meal Plan (from weekly_meal_plan.html)
+      function getMealPlanForDay(dayName) {
+        const plan = localStorage.getItem("madarsaWeeklyMealPlan");
+        if (plan) {
+          const parsedPlan = JSON.parse(plan);
+          return parsedPlan[dayName] || { Nashta: [], Lunch: [], Dinner: [] };
         }
+        return {
+          Nashta: [],
+          Lunch: [{ name: "Chane", qty: 10, unit: "kg" }],
+          Dinner: [],
+        }; // Fallback plan
+      }
 
-        // Consumption (from cooking_entry.html)
-        function getCookingSummaryForDate(date) {
-            const entries = localStorage.getItem('madarsaKitchenConsumption');
-            if (entries) {
-                const parsedEntries = JSON.parse(entries);
-                const dailyEntries = parsedEntries[date] || [];
+      // Consumption (from cooking_entry.html)
+      function getCookingSummaryForDate(date) {
+        const entries = localStorage.getItem("madarsaKitchenConsumption");
+        if (entries) {
+          const parsedEntries = JSON.parse(entries);
+          const dailyEntries = parsedEntries[date] || [];
 
-                return dailyEntries.reduce((total, entry) => total + entry.quantity, 0);
-            }
-            return 0.00;
+          return dailyEntries.reduce(
+            (total, entry) => total + entry.quantity,
+            0
+          );
         }
+        return 0.0;
+      }
 
-        // Waste (from waste_entry.html)
-        function getWasteSummaryForDate(date) {
-            const entries = localStorage.getItem('madarsaKitchenWaste');
-            if (entries) {
-                const parsedEntries = JSON.parse(entries);
-                const dailyWaste = parsedEntries[date] || [];
+      // Waste (from waste_entry.html)
+      function getWasteSummaryForDate(date) {
+        const entries = localStorage.getItem("madarsaKitchenWaste");
+        if (entries) {
+          const parsedEntries = JSON.parse(entries);
+          const dailyWaste = parsedEntries[date] || [];
 
-                return dailyWaste.reduce((total, entry) => total + entry.quantity, 0);
-            }
-            return 0.00;
+          return dailyWaste.reduce((total, entry) => total + entry.quantity, 0);
         }
+        return 0.0;
+      }
 
-        // --- Multilingual Data ---
-        const langData = {
-            'en': {
-                'kitchen_system': 'Kitchen System',
-                'page_title': 'Kitchen Dashboard',
-                'back_to_kitchen': 'Back to Kitchen',
-                'logout': 'Logout',
+      // --- Multilingual Data ---
+      const langData = {
+        en: {
+          kitchen_system: "Kitchen System",
+          page_title: "Kitchen Dashboard",
+          back_to_kitchen: "Back to Kitchen",
+          logout: "Logout",
 
-                // Slots/Days
-                'Monday': 'Monday',
-                'Nashta': 'Breakfast',
-                'Lunch': 'Lunch',
-                'Dinner': 'Dinner',
-                'Date': 'Date',
-                'Day': 'Day',
-                'Today\'s Meal Plan': 'Today\'s Meal Plan',
-                'Today\'s Cooking Summary': 'Today\'s Cooking Summary',
-                'No items planned': 'No items planned.',
-                'No cooking records for today.': 'No cooking records for today.',
-                'Low Stock Items (Below 10)': 'Low Stock Items (Below 10)',
+          // Slots/Days
+          Monday: "Monday",
+          Nashta: "Breakfast",
+          Lunch: "Lunch",
+          Dinner: "Dinner",
+          Date: "Date",
+          Day: "Day",
+          "Today's Meal Plan": "Today's Meal Plan",
+          "Today's Cooking Summary": "Today's Cooking Summary",
+          "No items planned": "No items planned.",
+          "No cooking records for today.": "No cooking records for today.",
+          "Low Stock Items (Below 10)": "Low Stock Items (Below 10)",
 
-                // Metrics
-                'Total Cooked': 'Total Cooked',
-                'Total Waste': 'Total Waste',
-                'Total Students': 'Total Students',
-                'Unit': 'Unit',
-                'Item': 'Item',
-                'Current Stock': 'Current Stock',
-                'Powered by': 'Powered by Madrassa Kitchen System'
-            },
-            'hi': {
-                'kitchen_system': 'रसोई प्रणाली',
-                'page_title': 'रसोई डैशबोर्ड',
-                'back_to_kitchen': 'रसोई पर वापस',
-                'logout': 'लॉगआउट',
+          // Metrics
+          "Total Cooked": "Total Cooked",
+          "Total Waste": "Total Waste",
+          "Total Students": "Total Students",
+          Unit: "Unit",
+          Item: "Item",
+          "Current Stock": "Current Stock",
+          "Powered by": "Powered by Madrassa Kitchen System",
+        },
+        hi: {
+          kitchen_system: "रसोई प्रणाली",
+          page_title: "रसोई डैशबोर्ड",
+          back_to_kitchen: "रसोई पर वापस",
+          logout: "लॉगआउट",
 
-                // Slots/Days
-                'Monday': 'सोमवार',
-                'Nashta': 'नाश्ता',
-                'Lunch': 'दोपहर का भोजन',
-                'Dinner': 'रात का भोजन',
-                'Date': 'तिथि',
-                'Day': 'दिन',
-                'Today\'s Meal Plan': 'आज की भोजन योजना',
-                'Today\'s Cooking Summary': 'आज का खाना पकाने का सारांश',
-                'No items planned': 'कोई आइटम प्लान नहीं किया गया।',
-                'No cooking records for today.': 'आज के लिए कोई खाना पकाने का रिकॉर्ड नहीं मिला।',
-                'Low Stock Items (Below 10)': 'कम स्टॉक आइटम (10 से कम)',
+          // Slots/Days
+          Monday: "सोमवार",
+          Nashta: "नाश्ता",
+          Lunch: "दोपहर का भोजन",
+          Dinner: "रात का भोजन",
+          Date: "तिथि",
+          Day: "दिन",
+          "Today's Meal Plan": "आज की भोजन योजना",
+          "Today's Cooking Summary": "आज का खाना पकाने का सारांश",
+          "No items planned": "कोई आइटम प्लान नहीं किया गया।",
+          "No cooking records for today.":
+            "आज के लिए कोई खाना पकाने का रिकॉर्ड नहीं मिला।",
+          "Low Stock Items (Below 10)": "कम स्टॉक आइटम (10 से कम)",
 
-                // Metrics
-                'Total Cooked': 'कुल खपत',
-                'Total Waste': 'कुल बर्बादी',
-                'Total Students': 'कुल छात्र',
-                'Unit': 'इकाई',
-                'Item': 'आइटम',
-                'Current Stock': 'वर्तमान स्टॉक',
-                'Powered by': 'पावर्ड बाय मदरसा किचन सिस्टम'
-            },
-            'ur': {
-                'kitchen_system': 'باورچی خانہ نظام',
-                'page_title': 'باورچی خانے کا ڈیش بورڈ',
-                'back_to_kitchen': 'باورچی خانے پر واپس جائیں',
-                'logout': 'لاگ آؤٹ',
+          // Metrics
+          "Total Cooked": "कुल खपत",
+          "Total Waste": "कुल बर्बादी",
+          "Total Students": "कुल छात्र",
+          Unit: "इकाई",
+          Item: "आइटम",
+          "Current Stock": "वर्तमान स्टॉक",
+          "Powered by": "पावर्ड बाय मदरसा किचन सिस्टम",
+        },
+        ur: {
+          kitchen_system: "باورچی خانہ نظام",
+          page_title: "باورچی خانے کا ڈیش بورڈ",
+          back_to_kitchen: "باورچی خانے پر واپس جائیں",
+          logout: "لاگ آؤٹ",
 
-                // Slots/Days
-                'Monday': 'پیر',
-                'Nashta': 'ناشتہ',
-                'Lunch': 'لنچ',
-                'Dinner': 'ڈنر',
-                'Date': 'تاریخ',
-                'Day': 'دن',
-                'Today\'s Meal Plan': 'آج کا کھانے کا منصوبہ',
-                'Today\'s Cooking Summary': 'آج کی کھانا پکانے کا خلاصہ',
-                'No items planned': 'کوئی آئٹم پلان نہیں کیا گیا۔',
-                'No cooking records for today.': 'آج کے لیے کھانا پکانے کا کوئی ریکارڈ نہیں ملا۔',
-                'Low Stock Items (Below 10)': 'کم اسٹاک آئٹمز (10 سے کم)',
+          // Slots/Days
+          Monday: "پیر",
+          Nashta: "ناشتہ",
+          Lunch: "لنچ",
+          Dinner: "ڈنر",
+          Date: "تاریخ",
+          Day: "دن",
+          "Today's Meal Plan": "آج کا کھانے کا منصوبہ",
+          "Today's Cooking Summary": "آج کی کھانا پکانے کا خلاصہ",
+          "No items planned": "کوئی آئٹم پلان نہیں کیا گیا۔",
+          "No cooking records for today.":
+            "آج کے لیے کھانا پکانے کا کوئی ریکارڈ نہیں ملا۔",
+          "Low Stock Items (Below 10)": "کم اسٹاک آئٹمز (10 سے کم)",
 
-                // Metrics
-                'Total Cooked': 'کل پکایا گیا',
-                'Total Waste': 'کل ضیاع',
-                'Total Students': 'کل طلباء',
-                'Unit': 'یونٹ',
-                'Item': 'آئٹم',
-                'Current Stock': 'موجودہ اسٹاک',
-                'Powered by': 'پاورڈ بائی مدرسہ کچن سسٹم'
-            }
-        };
+          // Metrics
+          "Total Cooked": "کل پکایا گیا",
+          "Total Waste": "کل ضیاع",
+          "Total Students": "کل طلباء",
+          Unit: "یونٹ",
+          Item: "آئٹم",
+          "Current Stock": "موجودہ اسٹاک",
+          "Powered by": "پاورڈ بائی مدرسہ کچن سسٹم",
+        },
+      };
 
-        let currentLang = 'en';
+      let currentLang = "en";
 
-        function getTranslation(key) {
-            return langData[currentLang][key] || langData['en'][key] || key;
+      function getTranslation(key) {
+        return langData[currentLang][key] || langData["en"][key] || key;
+      }
+
+      // --- Core UI Update Functions ---
+      function updateContent() {
+        document.body.className = "lang-" + currentLang;
+
+        document.querySelectorAll("[data-lang-key]").forEach((el) => {
+          const key = el.getAttribute("data-lang-key");
+          el.textContent = getTranslation(key);
+        });
+
+        renderDashboard();
+      }
+
+      function changeLanguage(lang) {
+        if (lang in langData) {
+          currentLang = lang;
+          localStorage.setItem("madarsaSystemLang", lang);
+          updateContent();
         }
+      }
 
-        // --- Core UI Update Functions ---
-        function updateContent() {
-            document.body.className = 'lang-' + currentLang;
+      function renderDashboard() {
+        const today = formatDate(new Date());
+        const todayDay = getDayName(today);
+        const todayPlan = getMealPlanForDay(todayDay);
 
-            document.querySelectorAll('[data-lang-key]').forEach(el => {
-                const key = el.getAttribute('data-lang-key');
-                el.textContent = getTranslation(key);
+        // --- 1. Render Meal Plan ---
+        document.getElementById("date-display").textContent = `${getTranslation(
+          "Date"
+        )}: ${today} | ${getTranslation("Day")}: ${getTranslation(todayDay)}`;
+
+        TIME_SLOTS.forEach((slot) => {
+          const plan = todayPlan[slot] || [];
+          const listElement = document.getElementById(
+            `plan-${slot.toLowerCase()}`
+          );
+          listElement.innerHTML = "";
+
+          if (plan.length === 0) {
+            listElement.innerHTML = `<li class="text-gray-500 text-sm">${getTranslation(
+              "No items planned"
+            )}</li>`;
+          } else {
+            plan.forEach((item) => {
+              const listItem = document.createElement("li");
+              listItem.textContent = `${item.name}`; // Simplified display for dashboard
+              listElement.appendChild(listItem);
             });
+          }
+        });
 
-            renderDashboard();
-        }
+        // --- 2. Render Cooking Summary ---
+        const totalCookedQty = getCookingSummaryForDate(today);
+        const totalWasteQty = getWasteSummaryForDate(today);
+        const totalStudents = 100; // Dummy fixed value
 
-        function changeLanguage(lang) {
-            if (lang in langData) {
-                currentLang = lang;
-                localStorage.setItem('madarsaSystemLang', lang);
-                updateContent();
-            }
-        }
+        document.getElementById(
+          "total-cooked-value"
+        ).textContent = `${totalCookedQty.toFixed(2)} kg`;
+        document.getElementById(
+          "total-waste-value"
+        ).textContent = `${totalWasteQty.toFixed(2)} kg`;
+        document.getElementById("total-students-value").textContent =
+          totalStudents;
 
-        function renderDashboard() {
-            const today = formatDate(new Date());
-            const todayDay = getDayName(today);
-            const todayPlan = getMealPlanForDay(todayDay);
+        // --- 3. Low Stock Items ---
+        const lowStockTableBody = document.getElementById("low-stock-body");
+        lowStockTableBody.innerHTML = "";
 
-            // --- 1. Render Meal Plan ---
-            document.getElementById('date-display').textContent = `${getTranslation('Date')}: ${today} | ${getTranslation('Day')}: ${getTranslation(todayDay)}`;
+        const lowStockItems = DUMMY_KITCHEN_ITEMS.filter(
+          (item) => item.currentStock < 10 && item.status !== "Disabled"
+        ); // Assuming status is active by default here
 
-            TIME_SLOTS.forEach(slot => {
-                const plan = todayPlan[slot] || [];
-                const listElement = document.getElementById(`plan-${slot.toLowerCase()}`);
-                listElement.innerHTML = '';
-
-                if (plan.length === 0) {
-                    listElement.innerHTML = `<li class="text-gray-500 text-sm">${getTranslation('No items planned')}</li>`;
-                } else {
-                    plan.forEach(item => {
-                        const listItem = document.createElement('li');
-                        listItem.textContent = `${item.name}`; // Simplified display for dashboard
-                        listElement.appendChild(listItem);
-                    });
-                }
-            });
-
-            // --- 2. Render Cooking Summary ---
-            const totalCookedQty = getCookingSummaryForDate(today);
-            const totalWasteQty = getWasteSummaryForDate(today);
-            const totalStudents = 100; // Dummy fixed value
-
-            document.getElementById('total-cooked-value').textContent = `${totalCookedQty.toFixed(2)} kg`;
-            document.getElementById('total-waste-value').textContent = `${totalWasteQty.toFixed(2)} kg`;
-            document.getElementById('total-students-value').textContent = totalStudents;
-
-            // --- 3. Low Stock Items ---
-            const lowStockTableBody = document.getElementById('low-stock-body');
-            lowStockTableBody.innerHTML = '';
-
-            const lowStockItems = DUMMY_KITCHEN_ITEMS.filter(item => item.currentStock < 10 && item.status !== 'Disabled'); // Assuming status is active by default here
-
-            if (lowStockItems.length === 0) {
-                lowStockTableBody.innerHTML = `<tr><td colspan="3" class="text-gray-500 text-center">All active stock levels are currently healthy.</td></tr>`;
-            } else {
-                lowStockItems.forEach(item => {
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = `
+        if (lowStockItems.length === 0) {
+          lowStockTableBody.innerHTML = `<tr><td colspan="3" class="text-gray-500 text-center">All active stock levels are currently healthy.</td></tr>`;
+        } else {
+          lowStockItems.forEach((item) => {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
                         <td class="font-bold">${item.name}</td>
                         <td>${item.unit}</td>
-                        <td class="text-red-500 font-semibold">${item.currentStock.toFixed(2)}</td>
+                        <td class="text-red-500 font-semibold">${item.currentStock.toFixed(
+                          2
+                        )}</td>
                     `;
-                    lowStockTableBody.appendChild(tr);
-                });
-            }
-
-            // --- 4. Today's Cooking Summary (Text Alert) ---
-            const cookingSummaryAlert = document.getElementById('cooking-summary-alert');
-            if (totalCookedQty > 0) {
-                cookingSummaryAlert.textContent = `${getTranslation('Total Cooked')}: ${totalCookedQty.toFixed(2)} kg. ${getTranslation('Total Waste')}: ${totalWasteQty.toFixed(2)} kg.`;
-                cookingSummaryAlert.classList.remove('bg-gray-200', 'text-gray-600');
-                cookingSummaryAlert.classList.add('bg-green-100', 'text-green-700');
-            } else {
-                cookingSummaryAlert.textContent = getTranslation('No cooking records for today.');
-                cookingSummaryAlert.classList.remove('bg-green-100', 'text-green-700');
-                cookingSummaryAlert.classList.add('bg-gray-200', 'text-gray-600');
-            }
-
+            lowStockTableBody.appendChild(tr);
+          });
         }
 
-        // Initialize content and language
-        window.onload = function () {
-            // Load all necessary initial data (though simplified accessors handle the loading)
+        // --- 4. Today's Cooking Summary (Text Alert) ---
+        const cookingSummaryAlert = document.getElementById(
+          "cooking-summary-alert"
+        );
+        if (totalCookedQty > 0) {
+          cookingSummaryAlert.textContent = `${getTranslation(
+            "Total Cooked"
+          )}: ${totalCookedQty.toFixed(2)} kg. ${getTranslation(
+            "Total Waste"
+          )}: ${totalWasteQty.toFixed(2)} kg.`;
+          cookingSummaryAlert.classList.remove("bg-gray-200", "text-gray-600");
+          cookingSummaryAlert.classList.add("bg-green-100", "text-green-700");
+        } else {
+          cookingSummaryAlert.textContent = getTranslation(
+            "No cooking records for today."
+          );
+          cookingSummaryAlert.classList.remove(
+            "bg-green-100",
+            "text-green-700"
+          );
+          cookingSummaryAlert.classList.add("bg-gray-200", "text-gray-600");
+        }
+      }
 
-            const storedLang = localStorage.getItem('madarsaSystemLang');
-            currentLang = (storedLang && storedLang in langData) ? storedLang : 'en';
+      function logOut() {
+        localStorage.removeItem("isUserLoggedIn");
+        localStorage.removeItem("authToken");
+        localStorage.removeItem("userData");
+        window.location.href = "index.html";
+      }
 
-            // Initial content update and table render
-            updateContent();
+      // Initialize content and language
+      window.onload = function () {
+        // Load all necessary initial data (though simplified accessors handle the loading)
 
-            // Optional: Set a timer to simulate real-time updates (like stock level check)
-            setInterval(updateContent, 60000); // Update every minute
+        const storedLang = localStorage.getItem("madarsaSystemLang");
+        currentLang = storedLang && storedLang in langData ? storedLang : "en";
 
-        };
+        // Initial content update and table render
+        updateContent();
+
+        // Optional: Set a timer to simulate real-time updates (like stock level check)
+        setInterval(updateContent, 60000); // Update every minute
+      };
     </script>
 
     <!-- HEADER -->
     <header>
-        <div class="max-w-7xl mx-auto w-full flex justify-between items-center">
-            <!-- Left: Back Button & Title -->
-            <div class="flex items-center space-x-4">
-                <a href="kitchen_system.html" class="action-button bg-gray-100 text-gray-700 hover:bg-gray-200"
-                    data-lang-key="back_to_kitchen">Back to Kitchen</a>
-                <h1 class="text-xl font-bold" data-lang-key="page_title" style="color: var(--color-primary);">Kitchen
-                    Dashboard</h1>
-            </div>
-
-            <!-- Right: Language Switch -->
-            <div class="flex items-center space-x-2">
-                <select onchange="changeLanguage(this.value)" class="bg-gray-100 rounded-lg p-1 text-sm">
-                    <option value="en" selected>English</option>
-                    <option value="hi">हिन्दी</option>
-                    <option value="ur">اردو</option>
-                </select>
-                <button onclick="window.location.href='login.html'"
-                    class="text-sm font-semibold text-red-600 hover:text-red-800 transition-colors ml-4"
-                    data-lang-key="logout">Logout</button>
-            </div>
+      <div class="max-w-7xl mx-auto w-full flex justify-between items-center">
+        <!-- Left: Back Button & Title -->
+        <div class="flex items-center space-x-4">
+          <a
+            href="kitchen_system.html"
+            class="action-button bg-gray-100 text-gray-700 hover:bg-gray-200"
+            data-lang-key="back_to_kitchen"
+            >Back to Kitchen</a
+          >
+          <h1
+            class="text-xl font-bold"
+            data-lang-key="page_title"
+            style="color: var(--color-primary)"
+          >
+            Kitchen Dashboard
+          </h1>
         </div>
+
+        <!-- Right: Language Switch -->
+        <div class="flex items-center space-x-2">
+          <select
+            onchange="changeLanguage(this.value)"
+            class="bg-gray-100 rounded-lg p-1 text-sm"
+          >
+            <option value="en" selected>English</option>
+            <option value="hi">हिन्दी</option>
+            <option value="ur">اردو</option>
+          </select>
+          <button
+            onclick="logOut()"
+            class="text-sm font-semibold text-red-600 hover:text-red-800 transition-colors ml-4"
+            data-lang-key="logout"
+          >
+            Logout
+          </button>
+        </div>
+      </div>
     </header>
 
     <!-- MAIN CONTENT AREA -->
     <main class="max-w-7xl mx-auto w-full p-4 md:p-8">
+      <!-- Dashboard Header & Date -->
+      <div class="mb-6">
+        <h2
+          class="text-3xl font-bold text-gray-800 mb-1"
+          data-lang-key="page_title"
+        >
+          Kitchen Dashboard
+        </h2>
+        <p id="date-display" class="text-gray-500 font-medium"></p>
+      </div>
 
-        <!-- Dashboard Header & Date -->
-        <div class="mb-6">
-            <h2 class="text-3xl font-bold text-gray-800 mb-1" data-lang-key="page_title">Kitchen Dashboard</h2>
-            <p id="date-display" class="text-gray-500 font-medium"></p>
+      <!-- Today's Meal Plan & Cooking Summary -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+        <!-- Meal Plan Card (Span 2) -->
+        <div class="card lg:col-span-2">
+          <div
+            class="card-header card-meal-plan"
+            data-lang-key="Today's Meal Plan"
+          >
+            Today's Meal Plan
+          </div>
+          <div class="grid grid-cols-3 gap-4">
+            <!-- Breakfast -->
+            <div class="meal-slot-item">
+              <h4 class="font-bold mb-1" data-lang-key="Nashta">Breakfast</h4>
+              <ul
+                id="plan-nashta"
+                class="list-disc ml-4 text-sm space-y-1"
+              ></ul>
+            </div>
+
+            <!-- Lunch -->
+            <div class="meal-slot-item">
+              <h4 class="font-bold mb-1" data-lang-key="Lunch">Lunch</h4>
+              <ul id="plan-lunch" class="list-disc ml-4 text-sm space-y-1"></ul>
+            </div>
+
+            <!-- Dinner -->
+            <div class="meal-slot-item">
+              <h4 class="font-bold mb-1" data-lang-key="Dinner">Dinner</h4>
+              <ul
+                id="plan-dinner"
+                class="list-disc ml-4 text-sm space-y-1"
+              ></ul>
+            </div>
+          </div>
         </div>
 
-        <!-- Today's Meal Plan & Cooking Summary -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+        <!-- Today's Cooking Summary Alert -->
+        <div
+          class="card flex items-center justify-center p-4 bg-gray-200 text-gray-600"
+          id="cooking-summary-alert"
+        >
+          <!-- Dynamic text alert -->
+        </div>
+      </div>
 
-            <!-- Meal Plan Card (Span 2) -->
-            <div class="card lg:col-span-2">
-                <div class="card-header card-meal-plan" data-lang-key="Today's Meal Plan">Today's Meal Plan</div>
-                <div class="grid grid-cols-3 gap-4">
-
-                    <!-- Breakfast -->
-                    <div class="meal-slot-item">
-                        <h4 class="font-bold mb-1" data-lang-key="Nashta">Breakfast</h4>
-                        <ul id="plan-nashta" class="list-disc ml-4 text-sm space-y-1"></ul>
-                    </div>
-
-                    <!-- Lunch -->
-                    <div class="meal-slot-item">
-                        <h4 class="font-bold mb-1" data-lang-key="Lunch">Lunch</h4>
-                        <ul id="plan-lunch" class="list-disc ml-4 text-sm space-y-1"></ul>
-                    </div>
-
-                    <!-- Dinner -->
-                    <div class="meal-slot-item">
-                        <h4 class="font-bold mb-1" data-lang-key="Dinner">Dinner</h4>
-                        <ul id="plan-dinner" class="list-disc ml-4 text-sm space-y-1"></ul>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Today's Cooking Summary Alert -->
-            <div class="card flex items-center justify-center p-4 bg-gray-200 text-gray-600" id="cooking-summary-alert">
-                <!-- Dynamic text alert -->
-            </div>
+      <!-- Key Metrics Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <!-- Total Cooked -->
+        <div class="card card-total-cooked text-center text-white">
+          <p class="text-sm uppercase opacity-80" data-lang-key="Total Cooked">
+            Total Cooked
+          </p>
+          <h3 id="total-cooked-value" class="text-3xl font-bold mt-2">
+            0.00 kg
+          </h3>
         </div>
 
-        <!-- Key Metrics Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-
-            <!-- Total Cooked -->
-            <div class="card card-total-cooked text-center text-white">
-                <p class="text-sm uppercase opacity-80" data-lang-key="Total Cooked">Total Cooked</p>
-                <h3 id="total-cooked-value" class="text-3xl font-bold mt-2">0.00 kg</h3>
-            </div>
-
-            <!-- Total Waste -->
-            <div class="card card-total-waste text-center text-white">
-                <p class="text-sm uppercase opacity-80" data-lang-key="Total Waste">Total Waste</p>
-                <h3 id="total-waste-value" class="text-3xl font-bold mt-2">0.00 kg</h3>
-            </div>
-
-            <!-- Total Students -->
-            <div class="card card-total-students text-center text-white">
-                <p class="text-sm uppercase opacity-80" data-lang-key="Total Students">Total Students</p>
-                <h3 id="total-students-value" class="text-3xl font-bold mt-2">100</h3>
-            </div>
+        <!-- Total Waste -->
+        <div class="card card-total-waste text-center text-white">
+          <p class="text-sm uppercase opacity-80" data-lang-key="Total Waste">
+            Total Waste
+          </p>
+          <h3 id="total-waste-value" class="text-3xl font-bold mt-2">
+            0.00 kg
+          </h3>
         </div>
 
-        <!-- Low Stock Items -->
-        <div class="card card-low-stock p-0 overflow-hidden">
-            <div class="p-4" data-lang-key="Low Stock Items (Below 10)">
-                <h3 class="font-bold text-lg text-white">Low Stock Items (Below 10)</h3>
-            </div>
-            <div class="p-4 pt-0">
-                <table class="admin-table w-full">
-                    <thead>
-                        <tr>
-                            <th data-lang-key="Item">Item</th>
-                            <th data-lang-key="Unit">Unit</th>
-                            <th data-lang-key="Current Stock">Current Stock</th>
-                        </tr>
-                    </thead>
-                    <tbody id="low-stock-body">
-                        <!-- Low stock items injected by JS -->
-                    </tbody>
-                </table>
-            </div>
+        <!-- Total Students -->
+        <div class="card card-total-students text-center text-white">
+          <p
+            class="text-sm uppercase opacity-80"
+            data-lang-key="Total Students"
+          >
+            Total Students
+          </p>
+          <h3 id="total-students-value" class="text-3xl font-bold mt-2">100</h3>
         </div>
+      </div>
 
+      <!-- Low Stock Items -->
+      <div class="card card-low-stock p-0 overflow-hidden">
+        <div class="p-4" data-lang-key="Low Stock Items (Below 10)">
+          <h3 class="font-bold text-lg text-white">
+            Low Stock Items (Below 10)
+          </h3>
+        </div>
+        <div class="p-4 pt-0">
+          <table class="admin-table w-full">
+            <thead>
+              <tr>
+                <th data-lang-key="Item">Item</th>
+                <th data-lang-key="Unit">Unit</th>
+                <th data-lang-key="Current Stock">Current Stock</th>
+              </tr>
+            </thead>
+            <tbody id="low-stock-body">
+              <!-- Low stock items injected by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
     </main>
 
     <!-- FOOTER -->
     <footer class="text-xs text-gray-500 text-center p-4">
-        <p data-lang-key="Powered by">Powered by Madrassa Kitchen System</p>
+      <p data-lang-key="Powered by">Powered by Madrassa Kitchen System</p>
     </footer>
-
-</body>
-
+  </body>
 </html>

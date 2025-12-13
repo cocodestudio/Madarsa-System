@@ -1,533 +1,643 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Library Purchases - Accounting System</title>
     <script src="https://cdn.tailwindcss.com"></script>
 
     <style>
-        :root {
-            --color-primary: #00A693;
-            --color-background: #F2F3F4;
-            --color-accent: #E08A27;
-            --color-text-dark: #1A1A1A;
-            --color-text-light: #FFFFFF;
-        }
+      :root {
+        --color-primary: #00a693;
+        --color-background: #f2f3f4;
+        --color-accent: #e08a27;
+        --color-text-dark: #1a1a1a;
+        --color-text-light: #ffffff;
+      }
 
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;700&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap');
+      @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;700&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap");
 
-        /* Language Styles */
-        body,
-        .lang-en {
-            font-family: 'Poppins', sans-serif;
-            direction: ltr;
-            background-color: var(--color-background);
-        }
+      /* Language Styles */
+      body,
+      .lang-en {
+        font-family: "Poppins", sans-serif;
+        direction: ltr;
+        background-color: var(--color-background);
+      }
 
-        .lang-hi {
-            font-family: 'Noto Sans Devanagari', sans-serif;
-            direction: ltr;
-        }
+      .lang-hi {
+        font-family: "Noto Sans Devanagari", sans-serif;
+        direction: ltr;
+      }
 
-        .lang-ur {
-            font-family: 'Noto Nastaliq Urdu', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
-            direction: rtl;
-            line-height: 1.8;
-            text-align: right;
-        }
+      .lang-ur {
+        font-family: "Noto Nastaliq Urdu", "Segoe UI", Tahoma, Geneva, Verdana,
+          sans-serif !important;
+        direction: rtl;
+        line-height: 1.8;
+        text-align: right;
+      }
 
-        /* Form & Inputs */
-        .form-input,
-        select {
-            padding: 0.75rem 1rem;
-            border-radius: 0.5rem;
-            border: 1px solid #ccc;
-            width: 100%;
-            font-family: inherit;
-        }
+      /* Form & Inputs */
+      .form-input,
+      select {
+        padding: 0.75rem 1rem;
+        border-radius: 0.5rem;
+        border: 1px solid #ccc;
+        width: 100%;
+        font-family: inherit;
+      }
 
-        .form-input:focus,
-        select:focus {
-            outline: none;
-            border-color: var(--color-primary);
-            box-shadow: 0 0 0 3px rgba(0, 166, 147, 0.2);
-        }
+      .form-input:focus,
+      select:focus {
+        outline: none;
+        border-color: var(--color-primary);
+        box-shadow: 0 0 0 3px rgba(0, 166, 147, 0.2);
+      }
 
-        .form-label {
-            display: block;
-            font-weight: 600;
-            margin-bottom: 0.25rem;
-            font-size: 0.875rem;
-        }
+      .form-label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 0.25rem;
+        font-size: 0.875rem;
+      }
 
-        /* Buttons */
-        .primary-button {
-            padding: 0.8rem 1.5rem;
-            background-color: var(--color-primary);
-            color: var(--color-text-light);
-            font-weight: 600;
-            border-radius: 0.75rem;
-            transition: background-color 0.3s, transform 0.1s;
-            cursor: pointer;
-        }
+      /* Buttons */
+      .primary-button {
+        padding: 0.8rem 1.5rem;
+        background-color: var(--color-primary);
+        color: var(--color-text-light);
+        font-weight: 600;
+        border-radius: 0.75rem;
+        transition: background-color 0.3s, transform 0.1s;
+        cursor: pointer;
+      }
 
-        .primary-button:hover {
-            background-color: #008f7d;
-            transform: translateY(-1px);
-        }
+      .primary-button:hover {
+        background-color: #008f7d;
+        transform: translateY(-1px);
+      }
 
-        .action-button {
-            padding: 0.5rem 0.75rem;
-            border-radius: 0.25rem;
-            font-size: 0.75rem;
-            font-weight: 600;
-            transition: background-color 0.2s;
-        }
+      .action-button {
+        padding: 0.5rem 0.75rem;
+        border-radius: 0.25rem;
+        font-size: 0.75rem;
+        font-weight: 600;
+        transition: background-color 0.2s;
+      }
 
-        /* Fixed Header */
-        header {
-            background-color: var(--color-text-light);
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            position: sticky;
-            top: 0;
-            width: 100%;
-            z-index: 10;
-            padding: 1rem 2rem;
-        }
+      /* Fixed Header */
+      header {
+        background-color: var(--color-text-light);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        position: sticky;
+        top: 0;
+        width: 100%;
+        z-index: 10;
+        padding: 1rem 2rem;
+      }
 
-        /* Table Styling */
-        .admin-table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0 10px;
-        }
+      /* Table Styling */
+      .admin-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0 10px;
+      }
 
-        .admin-table th {
-            text-align: left;
-            padding: 0.75rem 1rem;
-            font-size: 0.8rem;
-            color: gray;
-            text-transform: uppercase;
-            font-weight: 700;
-        }
+      .admin-table th {
+        text-align: left;
+        padding: 0.75rem 1rem;
+        font-size: 0.8rem;
+        color: gray;
+        text-transform: uppercase;
+        font-weight: 700;
+      }
 
-        .lang-ur .admin-table th {
-            text-align: right;
-        }
+      .lang-ur .admin-table th {
+        text-align: right;
+      }
 
-        .admin-table td {
-            padding: 0.75rem 1rem;
-            background-color: white;
-            border-top: 1px solid #eee;
-            border-bottom: 1px solid #eee;
-            font-size: 0.8rem;
-            font-weight: 500;
-        }
+      .admin-table td {
+        padding: 0.75rem 1rem;
+        background-color: white;
+        border-top: 1px solid #eee;
+        border-bottom: 1px solid #eee;
+        font-size: 0.8rem;
+        font-weight: 500;
+      }
 
-        .admin-table tr td:first-child {
-            border-top-left-radius: 0.75rem;
-            border-bottom-left-radius: 0.75rem;
-        }
+      .admin-table tr td:first-child {
+        border-top-left-radius: 0.75rem;
+        border-bottom-left-radius: 0.75rem;
+      }
 
-        .admin-table tr td:last-child {
-            border-top-right-radius: 0.75rem;
-            border-bottom-right-radius: 0.75rem;
-        }
+      .admin-table tr td:last-child {
+        border-top-right-radius: 0.75rem;
+        border-bottom-right-radius: 0.75rem;
+      }
 
-        .lang-ur .admin-table tr td:first-child {
-            border-radius: 0;
-            border-top-right-radius: 0.75rem;
-            border-bottom-right-radius: 0.75rem;
-        }
+      .lang-ur .admin-table tr td:first-child {
+        border-radius: 0;
+        border-top-right-radius: 0.75rem;
+        border-bottom-right-radius: 0.75rem;
+      }
 
-        .lang-ur .admin-table tr td:last-child {
-            border-radius: 0;
-            border-top-left-radius: 0.75rem;
-            border-bottom-left-radius: 0.75rem;
-        }
+      .lang-ur .admin-table tr td:last-child {
+        border-radius: 0;
+        border-top-left-radius: 0.75rem;
+        border-bottom-left-radius: 0.75rem;
+      }
 
-        .table-container {
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-        }
+      .table-container {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
 
-        .table-container table {
-            min-width: 1000px;
-        }
+      .table-container table {
+        min-width: 1000px;
+      }
 
-        /* Summary Card */
-        .summary-card {
-            background-color: var(--color-primary);
-            color: var(--color-text-light);
-            padding: 1.5rem;
-            border-radius: 0.75rem;
-            text-align: center;
-        }
+      /* Summary Card */
+      .summary-card {
+        background-color: var(--color-primary);
+        color: var(--color-text-light);
+        padding: 1.5rem;
+        border-radius: 0.75rem;
+        text-align: center;
+      }
     </style>
-</head>
+  </head>
 
-<body class="lang-en">
-
+  <body class="lang-en">
     <script>
-        // --- Dummy Data (Shared with Library Purchase for consistency) ---
-        const DUMMY_LIBRARY_ITEMS = [
-            { id: 1, name: "Tafsir Ibn Kathir" },
-            { id: 2, name: "Sahih Bukhari Vol 1" },
-            { id: 3, name: "Al-Qawaid al-Fiqhiyyah" },
-        ];
+      // --- Dummy Data (Shared with Library Purchase for consistency) ---
+      const DUMMY_LIBRARY_ITEMS = [
+        { id: 1, name: "Tafsir Ibn Kathir" },
+        { id: 2, name: "Sahih Bukhari Vol 1" },
+        { id: 3, name: "Al-Qawaid al-Fiqhiyyah" },
+      ];
 
-        let DUMMY_LIBRARY_PURCHASES = [
-            { id: 101, itemId: 1, itemName: "Tafsir Ibn Kathir", quantity: 5, unitCost: 1500.00, purchaseDate: '2025-08-15', invoice: 'INV-101', source: 'Maktaba Darus Salam' },
-            { id: 102, itemId: 2, itemName: "Sahih Bukhari Vol 1", quantity: 10, unitCost: 950.50, purchaseDate: '2025-09-01', invoice: 'INV-102', source: 'Kutub Khana' },
-            { id: 103, itemId: 3, itemName: "Al-Qawaid al-Fiqhiyyah", quantity: 20, unitCost: 450.00, purchaseDate: '2025-10-20', invoice: 'INV-103', source: 'Online Distributor' },
-        ];
+      let DUMMY_LIBRARY_PURCHASES = [
+        {
+          id: 101,
+          itemId: 1,
+          itemName: "Tafsir Ibn Kathir",
+          quantity: 5,
+          unitCost: 1500.0,
+          purchaseDate: "2025-08-15",
+          invoice: "INV-101",
+          source: "Maktaba Darus Salam",
+        },
+        {
+          id: 102,
+          itemId: 2,
+          itemName: "Sahih Bukhari Vol 1",
+          quantity: 10,
+          unitCost: 950.5,
+          purchaseDate: "2025-09-01",
+          invoice: "INV-102",
+          source: "Kutub Khana",
+        },
+        {
+          id: 103,
+          itemId: 3,
+          itemName: "Al-Qawaid al-Fiqhiyyah",
+          quantity: 20,
+          unitCost: 450.0,
+          purchaseDate: "2025-10-20",
+          invoice: "INV-103",
+          source: "Online Distributor",
+        },
+      ];
 
-        const LIBRARY_PURCHASE_STORAGE_KEY = 'madarsaLibraryPurchases';
+      const LIBRARY_PURCHASE_STORAGE_KEY = "madarsaLibraryPurchases";
 
-        // Load/Save Logic (Simplified)
-        function loadPurchases() {
-            const storedPurchases = localStorage.getItem(LIBRARY_PURCHASE_STORAGE_KEY);
-            if (storedPurchases) {
-                try {
-                    DUMMY_LIBRARY_PURCHASES = JSON.parse(storedPurchases);
-                } catch (e) {
-                    console.error("Error loading library purchases:", e);
-                }
-            }
+      // Load/Save Logic (Simplified)
+      function loadPurchases() {
+        const storedPurchases = localStorage.getItem(
+          LIBRARY_PURCHASE_STORAGE_KEY
+        );
+        if (storedPurchases) {
+          try {
+            DUMMY_LIBRARY_PURCHASES = JSON.parse(storedPurchases);
+          } catch (e) {
+            console.error("Error loading library purchases:", e);
+          }
+        }
+      }
+
+      // --- Multilingual Data ---
+      const langData = {
+        en: {
+          accounting_system: "Accounting System",
+          page_title: "Library Purchases",
+          back_to_accounting: "Back to Accounting",
+          logout: "Logout",
+
+          // Filters
+          filter_options: "Filter Options",
+          filter_by_item: "Filter by Item",
+          all_items: "-- All Items --",
+          from_date: "From Date",
+          to_date: "To Date",
+          apply_filter: "Apply Filter",
+          reset_filter: "Reset",
+
+          // Table Headers
+          date: "Date",
+          item_name: "Item Name",
+          source: "Source",
+          quantity: "Qty",
+          unit_cost: "Unit Cost",
+          total_cost: "Total Cost",
+          invoice: "Invoice No.",
+
+          // Summary
+          total_purchases_summary: "Total Purchases Count",
+          total_expenditure: "Total Expenditure (INR)",
+
+          // Messages
+          no_records: "No purchase records found matching filters.",
+          INR: "INR",
+        },
+        hi: {
+          accounting_system: "लेखांकन प्रणाली",
+          page_title: "पुस्तकालय खरीद",
+          back_to_accounting: "लेखांकन पर वापस",
+          logout: "लॉगआउट",
+
+          // Filters
+          filter_options: "फ़िल्टर विकल्प",
+          filter_by_item: "आइटम द्वारा फ़िल्टर करें",
+          all_items: "-- सभी आइटम --",
+          from_date: "इस तिथि से",
+          to_date: "इस तिथि तक",
+          apply_filter: "फ़िल्टर लागू करें",
+          reset_filter: "रीसेट करें",
+
+          // Table Headers
+          date: "तिथि",
+          item_name: "आइटम का नाम",
+          source: "स्रोत",
+          quantity: "मात्रा",
+          unit_cost: "इकाई लागत",
+          total_cost: "कुल लागत",
+          invoice: "चालान संख्या",
+
+          // Summary
+          total_purchases_summary: "कुल खरीद गणना",
+          total_expenditure: "कुल व्यय (INR)",
+
+          // Messages
+          no_records: "फ़िल्टर से मेल खाने वाला कोई खरीद रिकॉर्ड नहीं मिला।",
+          INR: "INR",
+        },
+        ur: {
+          accounting_system: "اکاؤنٹنگ نظام",
+          page_title: "لائبریری خریداری",
+          back_to_accounting: "اکاؤنٹنگ پر واپس جائیں",
+          logout: "لاگ آؤٹ",
+
+          // Filters
+          filter_options: "فلٹر کے اختیارات",
+          filter_by_item: "آئٹم کے ذریعے فلٹر کریں",
+          all_items: "-- تمام آئٹمز --",
+          from_date: "اس تاریخ سے",
+          to_date: "اس تاریخ تک",
+          apply_filter: "فلٹر لگائیں",
+          reset_filter: "ری سیٹ کریں",
+
+          // Table Headers
+          date: "تاریخ",
+          item_name: "آئٹم کا نام",
+          source: "ذریعہ",
+          quantity: "مقدار",
+          unit_cost: "فی یونٹ لاگت",
+          total_cost: "کل لاگت",
+          invoice: "انوائس نمبر",
+
+          // Summary
+          total_purchases_summary: "کل خریداریوں کی گنتی",
+          total_expenditure: "کل اخراجات (INR)",
+
+          // Messages
+          no_records: "فلٹر سے مماثل کوئی خریداری ریکارڈ نہیں ملا۔",
+          INR: "INR",
+        },
+      };
+
+      let currentLang = "en";
+
+      function getTranslation(key) {
+        return langData[currentLang][key] || langData["en"][key] || key;
+      }
+
+      // --- Core UI Update Functions ---
+      function updateContent() {
+        document.body.className = "lang-" + currentLang;
+
+        document.querySelectorAll("[data-lang-key]").forEach((el) => {
+          const key = el.getAttribute("data-lang-key");
+          el.textContent = getTranslation(key);
+        });
+
+        populateItemFilter();
+        renderPurchaseTable(filterPurchases());
+      }
+
+      function changeLanguage(lang) {
+        if (lang in langData) {
+          currentLang = lang;
+          localStorage.setItem("madarsaSystemLang", lang);
+          updateContent();
+        }
+      }
+
+      function populateItemFilter() {
+        const filterDropdown = document.getElementById("item-filter");
+        const selectedValue = filterDropdown.value;
+
+        const optionsHtml = DUMMY_LIBRARY_ITEMS.map(
+          (item) => `<option value="${item.id}">${item.name}</option>`
+        ).join("");
+
+        filterDropdown.innerHTML =
+          `<option value="" data-lang-key="all_items">${getTranslation(
+            "all_items"
+          )}</option>` + optionsHtml;
+        filterDropdown.value = selectedValue;
+      }
+
+      // --- Table Rendering and Calculation ---
+      function renderPurchaseTable(purchaseList) {
+        const tbody = document.getElementById("purchases-table-body");
+        if (!tbody) return;
+
+        tbody.innerHTML = "";
+
+        // Calculate totals for summary
+        let totalExpenditure = 0;
+
+        if (purchaseList.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="7" class="text-center text-gray-500 p-4">${getTranslation(
+            "no_records"
+          )}</td></tr>`;
+          document.getElementById("total-purchases-count").textContent = 0;
+          document.getElementById("total-expenditure-value").textContent =
+            "0.00";
+          return;
         }
 
-        // --- Multilingual Data ---
-        const langData = {
-            'en': {
-                'accounting_system': 'Accounting System',
-                'page_title': 'Library Purchases',
-                'back_to_accounting': 'Back to Accounting',
-                'logout': 'Logout',
+        purchaseList.forEach((purchase) => {
+          const totalCost = purchase.quantity * purchase.unitCost;
+          totalExpenditure += totalCost;
 
-                // Filters
-                'filter_options': 'Filter Options',
-                'filter_by_item': 'Filter by Item',
-                'all_items': '-- All Items --',
-                'from_date': 'From Date',
-                'to_date': 'To Date',
-                'apply_filter': 'Apply Filter',
-                'reset_filter': 'Reset',
+          const tr = document.createElement("tr");
 
-                // Table Headers
-                'date': 'Date',
-                'item_name': 'Item Name',
-                'source': 'Source',
-                'quantity': 'Qty',
-                'unit_cost': 'Unit Cost',
-                'total_cost': 'Total Cost',
-                'invoice': 'Invoice No.',
-
-                // Summary
-                'total_purchases_summary': 'Total Purchases Count',
-                'total_expenditure': 'Total Expenditure (INR)',
-
-                // Messages
-                'no_records': 'No purchase records found matching filters.',
-                'INR': 'INR'
-            },
-            'hi': {
-                'accounting_system': 'लेखांकन प्रणाली',
-                'page_title': 'पुस्तकालय खरीद',
-                'back_to_accounting': 'लेखांकन पर वापस',
-                'logout': 'लॉगआउट',
-
-                // Filters
-                'filter_options': 'फ़िल्टर विकल्प',
-                'filter_by_item': 'आइटम द्वारा फ़िल्टर करें',
-                'all_items': '-- सभी आइटम --',
-                'from_date': 'इस तिथि से',
-                'to_date': 'इस तिथि तक',
-                'apply_filter': 'फ़िल्टर लागू करें',
-                'reset_filter': 'रीसेट करें',
-
-                // Table Headers
-                'date': 'तिथि',
-                'item_name': 'आइटम का नाम',
-                'source': 'स्रोत',
-                'quantity': 'मात्रा',
-                'unit_cost': 'इकाई लागत',
-                'total_cost': 'कुल लागत',
-                'invoice': 'चालान संख्या',
-
-                // Summary
-                'total_purchases_summary': 'कुल खरीद गणना',
-                'total_expenditure': 'कुल व्यय (INR)',
-
-                // Messages
-                'no_records': 'फ़िल्टर से मेल खाने वाला कोई खरीद रिकॉर्ड नहीं मिला।',
-                'INR': 'INR'
-            },
-            'ur': {
-                'accounting_system': 'اکاؤنٹنگ نظام',
-                'page_title': 'لائبریری خریداری',
-                'back_to_accounting': 'اکاؤنٹنگ پر واپس جائیں',
-                'logout': 'لاگ آؤٹ',
-
-                // Filters
-                'filter_options': 'فلٹر کے اختیارات',
-                'filter_by_item': 'آئٹم کے ذریعے فلٹر کریں',
-                'all_items': '-- تمام آئٹمز --',
-                'from_date': 'اس تاریخ سے',
-                'to_date': 'اس تاریخ تک',
-                'apply_filter': 'فلٹر لگائیں',
-                'reset_filter': 'ری سیٹ کریں',
-
-                // Table Headers
-                'date': 'تاریخ',
-                'item_name': 'آئٹم کا نام',
-                'source': 'ذریعہ',
-                'quantity': 'مقدار',
-                'unit_cost': 'فی یونٹ لاگت',
-                'total_cost': 'کل لاگت',
-                'invoice': 'انوائس نمبر',
-
-                // Summary
-                'total_purchases_summary': 'کل خریداریوں کی گنتی',
-                'total_expenditure': 'کل اخراجات (INR)',
-
-                // Messages
-                'no_records': 'فلٹر سے مماثل کوئی خریداری ریکارڈ نہیں ملا۔',
-                'INR': 'INR'
-            }
-        };
-
-        let currentLang = 'en';
-
-        function getTranslation(key) {
-            return langData[currentLang][key] || langData['en'][key] || key;
-        }
-
-        // --- Core UI Update Functions ---
-        function updateContent() {
-            document.body.className = 'lang-' + currentLang;
-
-            document.querySelectorAll('[data-lang-key]').forEach(el => {
-                const key = el.getAttribute('data-lang-key');
-                el.textContent = getTranslation(key);
-            });
-
-            populateItemFilter();
-            renderPurchaseTable(filterPurchases());
-        }
-
-        function changeLanguage(lang) {
-            if (lang in langData) {
-                currentLang = lang;
-                localStorage.setItem('madarsaSystemLang', lang);
-                updateContent();
-            }
-        }
-
-        function populateItemFilter() {
-            const filterDropdown = document.getElementById('item-filter');
-            const selectedValue = filterDropdown.value;
-
-            const optionsHtml = DUMMY_LIBRARY_ITEMS.map(item =>
-                `<option value="${item.id}">${item.name}</option>`
-            ).join('');
-
-            filterDropdown.innerHTML = `<option value="" data-lang-key="all_items">${getTranslation('all_items')}</option>` + optionsHtml;
-            filterDropdown.value = selectedValue;
-        }
-
-        // --- Table Rendering and Calculation ---
-        function renderPurchaseTable(purchaseList) {
-            const tbody = document.getElementById('purchases-table-body');
-            if (!tbody) return;
-
-            tbody.innerHTML = '';
-
-            // Calculate totals for summary
-            let totalExpenditure = 0;
-
-            if (purchaseList.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="7" class="text-center text-gray-500 p-4">${getTranslation('no_records')}</td></tr>`;
-                document.getElementById('total-purchases-count').textContent = 0;
-                document.getElementById('total-expenditure-value').textContent = '0.00';
-                return;
-            }
-
-            purchaseList.forEach(purchase => {
-                const totalCost = purchase.quantity * purchase.unitCost;
-                totalExpenditure += totalCost;
-
-                const tr = document.createElement('tr');
-
-                tr.innerHTML = `
+          tr.innerHTML = `
                     <td>${purchase.purchaseDate}</td>
-                    <td class="font-bold text-gray-800">${purchase.itemName}</td>
+                    <td class="font-bold text-gray-800">${
+                      purchase.itemName
+                    }</td>
                     <td>${purchase.source}</td>
                     <td>${purchase.quantity}</td>
-                    <td>${purchase.unitCost.toFixed(2)} ${getTranslation('INR')}</td>
-                    <td class="font-bold text-green-700">${totalCost.toFixed(2)} ${getTranslation('INR')}</td>
+                    <td>${purchase.unitCost.toFixed(2)} ${getTranslation(
+            "INR"
+          )}</td>
+                    <td class="font-bold text-green-700">${totalCost.toFixed(
+                      2
+                    )} ${getTranslation("INR")}</td>
                     <td>${purchase.invoice}</td>
                 `;
-                tbody.appendChild(tr);
-            });
+          tbody.appendChild(tr);
+        });
 
-            // Update Summary
-            document.getElementById('total-purchases-count').textContent = purchaseList.length;
-            document.getElementById('total-expenditure-value').textContent = totalExpenditure.toFixed(2) + ` ${getTranslation('INR')}`;
-        }
+        // Update Summary
+        document.getElementById("total-purchases-count").textContent =
+          purchaseList.length;
+        document.getElementById("total-expenditure-value").textContent =
+          totalExpenditure.toFixed(2) + ` ${getTranslation("INR")}`;
+      }
 
-        // --- Filter Logic ---
-        function filterPurchases() {
-            const itemFilter = parseInt(document.getElementById('item-filter').value);
-            const fromDate = document.getElementById('from-date').value;
-            const toDate = document.getElementById('to-date').value;
+      // --- Filter Logic ---
+      function filterPurchases() {
+        const itemFilter = parseInt(
+          document.getElementById("item-filter").value
+        );
+        const fromDate = document.getElementById("from-date").value;
+        const toDate = document.getElementById("to-date").value;
 
-            return DUMMY_LIBRARY_PURCHASES.filter(purchase => {
+        return DUMMY_LIBRARY_PURCHASES.filter((purchase) => {
+          const matchesItem =
+            isNaN(itemFilter) || purchase.itemId === itemFilter;
 
-                const matchesItem = isNaN(itemFilter) || purchase.itemId === itemFilter;
+          const matchesFromDate =
+            !fromDate || new Date(purchase.purchaseDate) >= new Date(fromDate);
+          const matchesToDate =
+            !toDate || new Date(purchase.purchaseDate) <= new Date(toDate);
 
-                const matchesFromDate = !fromDate || new Date(purchase.purchaseDate) >= new Date(fromDate);
-                const matchesToDate = !toDate || new Date(purchase.purchaseDate) <= new Date(toDate);
+          return matchesItem && matchesFromDate && matchesToDate;
+        });
+      }
 
-                return matchesItem && matchesFromDate && matchesToDate;
-            });
-        }
+      function handleFilter() {
+        renderPurchaseTable(filterPurchases());
+      }
 
-        function handleFilter() {
-            renderPurchaseTable(filterPurchases());
-        }
+      function resetFilters() {
+        document.getElementById("item-filter").value = "";
+        document.getElementById("from-date").value = "";
+        document.getElementById("to-date").value = "";
+        handleFilter();
+      }
 
-        function resetFilters() {
-            document.getElementById('item-filter').value = '';
-            document.getElementById('from-date').value = '';
-            document.getElementById('to-date').value = '';
-            handleFilter();
-        }
+      function logOut() {
+        localStorage.removeItem("isUserLoggedIn");
+        localStorage.removeItem("authToken");
+        localStorage.removeItem("userData");
+        window.location.href = "index.html";
+      }
 
+      // Initialize content and language
+      window.onload = function () {
+        loadPurchases();
+        const storedLang = localStorage.getItem("madarsaSystemLang");
+        currentLang = storedLang && storedLang in langData ? storedLang : "en";
 
-        // Initialize content and language
-        window.onload = function () {
-            loadPurchases();
-            const storedLang = localStorage.getItem('madarsaSystemLang');
-            currentLang = (storedLang && storedLang in langData) ? storedLang : 'en';
+        // Initial content update and table render
+        updateContent();
 
-            // Initial content update and table render
-            updateContent();
-
-            // Attach filter listeners
-            document.getElementById('item-filter').addEventListener('change', handleFilter);
-            document.getElementById('from-date').addEventListener('change', handleFilter);
-            document.getElementById('to-date').addEventListener('change', handleFilter);
-            document.getElementById('apply-filter-btn').addEventListener('click', handleFilter);
-            document.getElementById('reset-filter-btn').addEventListener('click', resetFilters);
-        };
+        // Attach filter listeners
+        document
+          .getElementById("item-filter")
+          .addEventListener("change", handleFilter);
+        document
+          .getElementById("from-date")
+          .addEventListener("change", handleFilter);
+        document
+          .getElementById("to-date")
+          .addEventListener("change", handleFilter);
+        document
+          .getElementById("apply-filter-btn")
+          .addEventListener("click", handleFilter);
+        document
+          .getElementById("reset-filter-btn")
+          .addEventListener("click", resetFilters);
+      };
     </script>
 
     <!-- HEADER -->
     <header>
-        <div class="max-w-7xl mx-auto w-full flex justify-between items-center">
-            <!-- Left: Back Button & Title -->
-            <div class="flex items-center space-x-4">
-                <a href="accounting_system.html" class="action-button bg-gray-100 text-gray-700 hover:bg-gray-200"
-                    data-lang-key="back_to_accounting">Back to Accounting</a>
-                <h1 class="text-xl font-bold" data-lang-key="page_title" style="color: var(--color-primary);">Library
-                    Purchases</h1>
-            </div>
-
-            <!-- Right: Language Switch -->
-            <div class="flex items-center space-x-2">
-                <select onchange="changeLanguage(this.value)" class="bg-gray-100 rounded-lg p-1 text-sm">
-                    <option value="en" selected>English</option>
-                    <option value="hi">हिन्दी</option>
-                    <option value="ur">اردو</option>
-                </select>
-                <button onclick="window.location.href='login.html'"
-                    class="text-sm font-semibold text-red-600 hover:text-red-800 transition-colors ml-4"
-                    data-lang-key="logout">Logout</button>
-            </div>
+      <div class="max-w-7xl mx-auto w-full flex justify-between items-center">
+        <!-- Left: Back Button & Title -->
+        <div class="flex items-center space-x-4">
+          <a
+            href="accounting_system.html"
+            class="action-button bg-gray-100 text-gray-700 hover:bg-gray-200"
+            data-lang-key="back_to_accounting"
+            >Back to Accounting</a
+          >
+          <h1
+            class="text-xl font-bold"
+            data-lang-key="page_title"
+            style="color: var(--color-primary)"
+          >
+            Library Purchases
+          </h1>
         </div>
+
+        <!-- Right: Language Switch -->
+        <div class="flex items-center space-x-2">
+          <select
+            onchange="changeLanguage(this.value)"
+            class="bg-gray-100 rounded-lg p-1 text-sm"
+          >
+            <option value="en" selected>English</option>
+            <option value="hi">हिन्दी</option>
+            <option value="ur">اردو</option>
+          </select>
+          <button
+            onclick="logOut()"
+            class="text-sm font-semibold text-red-600 hover:text-red-800 transition-colors ml-4"
+            data-lang-key="logout"
+          >
+            Logout
+          </button>
+        </div>
+      </div>
     </header>
 
     <!-- MAIN CONTENT AREA -->
     <main class="max-w-7xl mx-auto w-full p-4 md:p-8">
-
-        <!-- Summary Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-
-            <!-- Total Purchases Count -->
-            <div class="summary-card bg-gray-600">
-                <p class="text-sm opacity-80" data-lang-key="total_purchases_summary">Total Purchases Count</p>
-                <h3 id="total-purchases-count" class="text-3xl font-bold mt-1">0</h3>
-            </div>
-
-            <!-- Total Expenditure -->
-            <div class="summary-card bg-red-600">
-                <p class="text-sm opacity-80" data-lang-key="total_expenditure">Total Expenditure (INR)</p>
-                <h3 id="total-expenditure-value" class="text-3xl font-bold mt-1">0.00 INR</h3>
-            </div>
+      <!-- Summary Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <!-- Total Purchases Count -->
+        <div class="summary-card bg-gray-600">
+          <p class="text-sm opacity-80" data-lang-key="total_purchases_summary">
+            Total Purchases Count
+          </p>
+          <h3 id="total-purchases-count" class="text-3xl font-bold mt-1">0</h3>
         </div>
 
-        <!-- Filter Options -->
-        <div class="bg-white p-6 md:p-8 rounded-xl shadow-2xl mb-8">
-            <h3 class="text-lg font-bold text-gray-700 mb-4" data-lang-key="filter_options">Filter Options</h3>
-            <div class="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
-
-                <!-- Item Filter -->
-                <div class="form-group md:col-span-2">
-                    <label for="item-filter" class="form-label" data-lang-key="filter_by_item">Filter by Item</label>
-                    <select id="item-filter" class="form-input">
-                        <!-- Options populated by JS -->
-                    </select>
-                </div>
-
-                <!-- From Date -->
-                <div class="form-group">
-                    <label for="from-date" class="form-label" data-lang-key="from_date">From Date</label>
-                    <input type="date" id="from-date" class="form-input">
-                </div>
-
-                <!-- To Date -->
-                <div class="form-group">
-                    <label for="to-date" class="form-label" data-lang-key="to_date">To Date</label>
-                    <input type="date" id="to-date" class="form-input">
-                </div>
-
-                <!-- Apply/Reset Buttons -->
-                <div class="form-group flex space-x-2">
-                    <button type="button" id="reset-filter-btn"
-                        class="action-button text-gray-700 hover:bg-gray-100 w-1/2"
-                        data-lang-key="reset_filter">Reset</button>
-                    <button type="button" id="apply-filter-btn" class="action-button primary-button w-1/2"
-                        data-lang-key="apply_filter">Apply Filter</button>
-                </div>
-            </div>
+        <!-- Total Expenditure -->
+        <div class="summary-card bg-red-600">
+          <p class="text-sm opacity-80" data-lang-key="total_expenditure">
+            Total Expenditure (INR)
+          </p>
+          <h3 id="total-expenditure-value" class="text-3xl font-bold mt-1">
+            0.00 INR
+          </h3>
         </div>
+      </div>
 
-        <!-- Purchase History Table -->
-        <div class="bg-white p-6 md:p-8 rounded-xl shadow-2xl">
-            <h3 class="text-lg font-semibold text-gray-700 mb-6" data-lang-key="page_title">Library Purchases</h3>
+      <!-- Filter Options -->
+      <div class="bg-white p-6 md:p-8 rounded-xl shadow-2xl mb-8">
+        <h3
+          class="text-lg font-bold text-gray-700 mb-4"
+          data-lang-key="filter_options"
+        >
+          Filter Options
+        </h3>
+        <div class="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
+          <!-- Item Filter -->
+          <div class="form-group md:col-span-2">
+            <label
+              for="item-filter"
+              class="form-label"
+              data-lang-key="filter_by_item"
+              >Filter by Item</label
+            >
+            <select id="item-filter" class="form-input">
+              <!-- Options populated by JS -->
+            </select>
+          </div>
 
-            <div class="table-container">
-                <table class="admin-table">
-                    <thead>
-                        <tr class="bg-gray-100 rounded-lg">
-                            <th data-lang-key="date">Date</th>
-                            <th data-lang-key="item_name">Item Name</th>
-                            <th data-lang-key="source">Source</th>
-                            <th data-lang-key="quantity">Qty</th>
-                            <th data-lang-key="unit_cost">Unit Cost</th>
-                            <th data-lang-key="total_cost">Total Cost</th>
-                            <th data-lang-key="invoice">Invoice No.</th>
-                        </tr>
-                    </thead>
-                    <tbody id="purchases-table-body">
-                        <!-- Purchase data will be injected here by JS -->
-                    </tbody>
-                </table>
-            </div>
+          <!-- From Date -->
+          <div class="form-group">
+            <label for="from-date" class="form-label" data-lang-key="from_date"
+              >From Date</label
+            >
+            <input type="date" id="from-date" class="form-input" />
+          </div>
+
+          <!-- To Date -->
+          <div class="form-group">
+            <label for="to-date" class="form-label" data-lang-key="to_date"
+              >To Date</label
+            >
+            <input type="date" id="to-date" class="form-input" />
+          </div>
+
+          <!-- Apply/Reset Buttons -->
+          <div class="form-group flex space-x-2">
+            <button
+              type="button"
+              id="reset-filter-btn"
+              class="action-button text-gray-700 hover:bg-gray-100 w-1/2"
+              data-lang-key="reset_filter"
+            >
+              Reset
+            </button>
+            <button
+              type="button"
+              id="apply-filter-btn"
+              class="action-button primary-button w-1/2"
+              data-lang-key="apply_filter"
+            >
+              Apply Filter
+            </button>
+          </div>
         </div>
+      </div>
+
+      <!-- Purchase History Table -->
+      <div class="bg-white p-6 md:p-8 rounded-xl shadow-2xl">
+        <h3
+          class="text-lg font-semibold text-gray-700 mb-6"
+          data-lang-key="page_title"
+        >
+          Library Purchases
+        </h3>
+
+        <div class="table-container">
+          <table class="admin-table">
+            <thead>
+              <tr class="bg-gray-100 rounded-lg">
+                <th data-lang-key="date">Date</th>
+                <th data-lang-key="item_name">Item Name</th>
+                <th data-lang-key="source">Source</th>
+                <th data-lang-key="quantity">Qty</th>
+                <th data-lang-key="unit_cost">Unit Cost</th>
+                <th data-lang-key="total_cost">Total Cost</th>
+                <th data-lang-key="invoice">Invoice No.</th>
+              </tr>
+            </thead>
+            <tbody id="purchases-table-body">
+              <!-- Purchase data will be injected here by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
     </main>
-</body>
-
+  </body>
 </html>

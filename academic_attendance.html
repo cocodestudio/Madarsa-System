@@ -1,507 +1,597 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Attendance Management - Academic</title>
     <script src="https://cdn.tailwindcss.com"></script>
 
     <style>
-        :root {
-            --color-primary: #00A693;
-            --color-background: #F2F3F4;
-            --color-accent: #E08A27;
-            --color-text-dark: #1A1A1A;
-            --color-text-light: #FFFFFF;
-            --color-yellow: #FBBF24;
-        }
+      :root {
+        --color-primary: #00a693;
+        --color-background: #f2f3f4;
+        --color-accent: #e08a27;
+        --color-text-dark: #1a1a1a;
+        --color-text-light: #ffffff;
+        --color-yellow: #fbbf24;
+      }
 
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;700&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap');
+      @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;700&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap");
 
-        /* Language Styles */
-        body,
-        .lang-en {
-            font-family: 'Poppins', sans-serif;
-            direction: ltr;
-            background-color: var(--color-background);
-        }
+      /* Language Styles */
+      body,
+      .lang-en {
+        font-family: "Poppins", sans-serif;
+        direction: ltr;
+        background-color: var(--color-background);
+      }
 
-        .lang-hi {
-            font-family: 'Noto Sans Devanagari', sans-serif;
-            direction: ltr;
-        }
+      .lang-hi {
+        font-family: "Noto Sans Devanagari", sans-serif;
+        direction: ltr;
+      }
 
-        .lang-ur {
-            font-family: 'Noto Nastaliq Urdu', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
-            direction: rtl;
-            line-height: 1.8;
-            text-align: right;
-        }
+      .lang-ur {
+        font-family: "Noto Nastaliq Urdu", "Segoe UI", Tahoma, Geneva, Verdana,
+          sans-serif !important;
+        direction: rtl;
+        line-height: 1.8;
+        text-align: right;
+      }
 
-        /* Form & Inputs */
-        .form-input,
-        select {
-            padding: 0.75rem 1rem;
-            border-radius: 0.5rem;
-            border: 1px solid #ccc;
-            width: 100%;
-            font-family: inherit;
-        }
+      /* Form & Inputs */
+      .form-input,
+      select {
+        padding: 0.75rem 1rem;
+        border-radius: 0.5rem;
+        border: 1px solid #ccc;
+        width: 100%;
+        font-family: inherit;
+      }
 
-        .form-input:focus,
-        select:focus {
-            outline: none;
-            border-color: var(--color-primary);
-            box-shadow: 0 0 0 3px rgba(0, 166, 147, 0.2);
-        }
+      .form-input:focus,
+      select:focus {
+        outline: none;
+        border-color: var(--color-primary);
+        box-shadow: 0 0 0 3px rgba(0, 166, 147, 0.2);
+      }
 
-        .form-label {
-            display: block;
-            font-weight: 600;
-            margin-bottom: 0.25rem;
-            font-size: 0.875rem;
-            color: var(--color-text-dark);
-        }
+      .form-label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 0.25rem;
+        font-size: 0.875rem;
+        color: var(--color-text-dark);
+      }
 
-        /* Buttons */
-        .primary-button {
-            padding: 0.8rem 1.5rem;
-            background-color: var(--color-yellow);
-            color: var(--color-text-dark);
-            font-weight: 700;
-            border-radius: 0.5rem;
-            transition: background-color 0.2s;
-            cursor: pointer;
-        }
+      /* Buttons */
+      .primary-button {
+        padding: 0.8rem 1.5rem;
+        background-color: var(--color-yellow);
+        color: var(--color-text-dark);
+        font-weight: 700;
+        border-radius: 0.5rem;
+        transition: background-color 0.2s;
+        cursor: pointer;
+      }
 
-        .primary-button:hover {
-            background-color: #f59e0b;
-        }
+      .primary-button:hover {
+        background-color: #f59e0b;
+      }
 
-        .action-button {
-            background-color: #f3f4f6;
-            color: var(--color-text-dark);
-            padding: 0.5rem 0.75rem;
-            border-radius: 0.5rem;
-            font-weight: 600;
-            transition: background-color 0.2s;
-        }
+      .action-button {
+        background-color: #f3f4f6;
+        color: var(--color-text-dark);
+        padding: 0.5rem 0.75rem;
+        border-radius: 0.5rem;
+        font-weight: 600;
+        transition: background-color 0.2s;
+      }
 
-        /* Fixed Header */
-        header {
-            background-color: var(--color-text-light);
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            position: sticky;
-            top: 0;
-            width: 100%;
-            z-index: 10;
-            padding: 1rem 2rem;
-        }
+      /* Fixed Header */
+      header {
+        background-color: var(--color-text-light);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        position: sticky;
+        top: 0;
+        width: 100%;
+        z-index: 10;
+        padding: 1rem 2rem;
+      }
 
-        /* Card Structure */
-        .centered-card {
-            background-color: white;
-            border-radius: 1rem;
-            padding: 2rem;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-            max-width: 900px;
-            width: 100%;
-            margin: 2rem auto;
-            text-align: center;
-        }
+      /* Card Structure */
+      .centered-card {
+        background-color: white;
+        border-radius: 1rem;
+        padding: 2rem;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        max-width: 900px;
+        width: 100%;
+        margin: 2rem auto;
+        text-align: center;
+      }
 
-        .main-title {
-            color: var(--color-text-dark);
-            font-size: 2.25rem;
-            font-weight: 700;
-            margin-bottom: 2rem;
-        }
+      .main-title {
+        color: var(--color-text-dark);
+        font-size: 2.25rem;
+        font-weight: 700;
+        margin-bottom: 2rem;
+      }
 
-        /* Table Styling (Matching Image Yellow/White) */
-        .attendance-table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0;
-        }
+      /* Table Styling (Matching Image Yellow/White) */
+      .attendance-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+      }
 
-        .attendance-table th,
-        .attendance-table td {
-            padding: 0.8rem 1rem;
-            font-size: 0.85rem;
-            border: 1px solid #ccc;
-        }
+      .attendance-table th,
+      .attendance-table td {
+        padding: 0.8rem 1rem;
+        font-size: 0.85rem;
+        border: 1px solid #ccc;
+      }
 
-        /* Header Styling (Matching Image Yellow) */
-        .attendance-table thead th {
-            background-color: var(--color-yellow);
-            color: var(--color-text-dark);
-            font-weight: 700;
-            text-transform: uppercase;
-            border-color: #f59e0b;
-        }
+      /* Header Styling (Matching Image Yellow) */
+      .attendance-table thead th {
+        background-color: var(--color-yellow);
+        color: var(--color-text-dark);
+        font-weight: 700;
+        text-transform: uppercase;
+        border-color: #f59e0b;
+      }
 
-        /* Radio Button Styling (Matching Primary Color) */
-        .attendance-radio {
-            accent-color: var(--color-primary);
-            width: 1.25rem;
-            height: 1.25rem;
-            cursor: pointer;
-        }
+      /* Radio Button Styling (Matching Primary Color) */
+      .attendance-radio {
+        accent-color: var(--color-primary);
+        width: 1.25rem;
+        height: 1.25rem;
+        cursor: pointer;
+      }
 
-        /* Responsive Table Container */
-        .table-container {
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-        }
+      /* Responsive Table Container */
+      .table-container {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
 
-        .table-container table {
-            min-width: 700px;
-        }
+      .table-container table {
+        min-width: 700px;
+      }
     </style>
-</head>
+  </head>
 
-<body class="lang-en">
-
+  <body class="lang-en">
     <script>
-        // Helper to format date YYYY-MM-DD
-        function formatDate(date) {
-            const d = new Date(date);
-            let month = '' + (d.getMonth() + 1);
-            let day = '' + d.getDate();
-            const year = d.getFullYear();
+      // Helper to format date YYYY-MM-DD
+      function formatDate(date) {
+        const d = new Date(date);
+        let month = "" + (d.getMonth() + 1);
+        let day = "" + d.getDate();
+        const year = d.getFullYear();
 
-            if (month.length < 2) month = '0' + month;
-            if (day.length < 2) day = '0' + day;
+        if (month.length < 2) month = "0" + month;
+        if (day.length < 2) day = "0" + day;
 
-            return [year, month, day].join('-');
+        return [year, month, day].join("-");
+      }
+
+      // --- Dummy Data ---
+      const DUMMY_STUDENTS = [
+        { id: 1, name: "Ayesha Siddiqui", class: "First" },
+        { id: 2, name: "Ali Raza", class: "First" },
+        { id: 3, name: "Rihana Saleem", class: "Fifth" },
+        { id: 4, name: "Ahmed Faraz", class: "Hifz" },
+      ];
+      const DUMMY_CLASSES = ["First", "Fifth", "Hifz", "Takhassus"];
+
+      // Attendance Data Structure: { date: { studentId: { status: 'Present'/'Absent'/'Leave', remarks: '...' } } }
+      const ATTENDANCE_STORAGE_KEY = "madarsaAcademicAttendance";
+      let studentAttendance = {
+        "2025-11-29": {
+          // Example pre-saved data for today
+          1: { status: "Present", remarks: "" },
+          2: { status: "Present", remarks: "Late arrival" },
+        },
+      };
+
+      // Load/Save Logic
+      function loadAttendance() {
+        const storedAttendance = localStorage.getItem(ATTENDANCE_STORAGE_KEY);
+        if (storedAttendance) {
+          try {
+            studentAttendance = JSON.parse(storedAttendance);
+          } catch (e) {
+            console.error("Error loading attendance:", e);
+          }
+        } else {
+          saveAttendance();
+        }
+      }
+
+      function saveAttendance() {
+        localStorage.setItem(
+          ATTENDANCE_STORAGE_KEY,
+          JSON.stringify(studentAttendance)
+        );
+      }
+
+      // --- Multilingual Data ---
+      const langData = {
+        en: {
+          academic_system: "Academic System",
+          page_title: "Enter attendance.",
+          back_to_academic: "Back to Academic",
+          logout: "Logout",
+
+          // Form/Labels
+          select_status: "Select status:",
+          select_date: "Select date:",
+          save_attendance: "Save attendance",
+
+          // Table Headers/Actions
+          student_name: "Student's name",
+          present: "Present",
+          absent: "Absent",
+          leave: "Leave",
+          remarks: "Remarks",
+          select_class: "-- Select Class --",
+
+          // Messages
+          attendance_saved: "Attendance successfully saved!",
+          select_date_alert: "Please select a date and class.",
+          no_students_found: "No students found for this class.",
+          confirm_save:
+            "Are you sure you want to save the attendance for this date/class? This will overwrite existing data.",
+        },
+        hi: {
+          academic_system: "शैक्षणिक प्रणाली",
+          page_title: "उपस्थिति दर्ज करें",
+          back_to_academic: "अकादमिक पर वापस जाएं",
+          logout: "लॉग आउट",
+
+          // Form/Labels
+          select_status: "स्थिति चुनें:",
+          select_date: "दिनांक चुनें:",
+          save_attendance: "उपस्थिति सहेजें",
+
+          // Table Headers/Actions
+          student_name: "छात्र का नाम",
+          present: "उपस्थित",
+          absent: "अनुपस्थित",
+          leave: "अवकाश",
+          remarks: "टिप्पणी",
+          select_class: "-- कक्षा चुनें --",
+
+          // Messages
+          attendance_saved: "उपस्थिति सफलतापूर्वक सहेजी गई!",
+          select_date_alert: "कृपया एक दिनांक और कक्षा चुनें।",
+          no_students_found: "इस कक्षा के लिए कोई छात्र नहीं मिला।",
+          confirm_save:
+            "क्या आप वाकई इस दिनांक/कक्षा के लिए उपस्थिति सहेजना चाहते हैं? यह मौजूदा डेटा को ओवरराइट (overwrite) कर देगा।",
+        },
+        ur: {
+          academic_system: "تعلیمی نظام",
+          page_title: "حاضری درج کریں۔",
+          back_to_academic: "اکیڈمک پر واپس جائیں",
+          logout: "لاگ آؤٹ",
+
+          // Form/Labels
+          select_status: "حالت منتخب کریں:",
+          select_date: "تاریخ منتخب کریں:",
+          save_attendance: "حاضری محفوظ کریں",
+
+          // Table Headers/Actions
+          student_name: "طالب علم کا نام",
+          present: "حاضر",
+          absent: "غیر حاضر",
+          leave: "چھٹی",
+          remarks: "ریمارکس",
+          select_class: "-- کلاس منتخب کریں --",
+
+          // Messages
+          attendance_saved: "حاضری کامیابی سے محفوظ ہو گئی!",
+          select_date_alert: "براہ کرم ایک تاریخ اور کلاس منتخب کریں۔",
+          no_students_found: "اس کلاس کے لیے کوئی طالب علم نہیں ملا۔",
+          confirm_save:
+            "کیا آپ واقعی اس تاریخ/کلاس کے لیے حاضری محفوظ کرنا چاہتے ہیں؟ یہ موجودہ ڈیٹا کو اوور رائٹ کر دے گا۔",
+        },
+      };
+
+      let currentLang = "en";
+
+      function getTranslation(key) {
+        return langData[currentLang][key] || langData["en"][key] || key;
+      }
+
+      // --- Core UI Update Functions ---
+      function updateContent() {
+        document.body.className = "lang-" + currentLang;
+
+        document.querySelectorAll("[data-lang-key]").forEach((el) => {
+          const key = el.getAttribute("data-lang-key");
+          el.textContent = getTranslation(key);
+        });
+
+        populateDropdowns();
+        renderAttendanceTable();
+      }
+
+      function changeLanguage(lang) {
+        if (lang in langData) {
+          currentLang = lang;
+          localStorage.setItem("madarsaSystemLang", lang);
+          updateContent();
+        }
+      }
+
+      function populateDropdowns() {
+        const classDropdown = document.getElementById("class-select");
+        const selectedValue = classDropdown.value;
+
+        classDropdown.innerHTML = `<option value="">${getTranslation(
+          "select_class"
+        )}</option>`;
+        DUMMY_CLASSES.forEach((c) => {
+          classDropdown.innerHTML += `<option value="${c}" ${
+            c === selectedValue ? "selected" : ""
+          }>${c}</option>`;
+        });
+      }
+
+      // --- Table Rendering ---
+      function renderAttendanceTable() {
+        const tbody = document.getElementById("attendance-table-body");
+        const selectedDate = document.getElementById("date-select").value;
+        const selectedClass = document.getElementById("class-select").value;
+
+        if (!tbody) return;
+        tbody.innerHTML = "";
+
+        if (!selectedDate || !selectedClass) {
+          tbody.innerHTML = `<tr><td colspan="5" class="text-center text-gray-500 font-semibold p-4">Please select a Date and Class.</td></tr>`;
+          return;
         }
 
-        // --- Dummy Data ---
-        const DUMMY_STUDENTS = [
-            { id: 1, name: 'Ayesha Siddiqui', class: 'First' },
-            { id: 2, name: 'Ali Raza', class: 'First' },
-            { id: 3, name: 'Rihana Saleem', class: 'Fifth' },
-            { id: 4, name: 'Ahmed Faraz', class: 'Hifz' },
-        ];
-        const DUMMY_CLASSES = ['First', 'Fifth', 'Hifz', 'Takhassus'];
+        // 1. Filter students by selected class
+        const filteredStudents = DUMMY_STUDENTS.filter(
+          (s) => s.class === selectedClass
+        );
 
-        // Attendance Data Structure: { date: { studentId: { status: 'Present'/'Absent'/'Leave', remarks: '...' } } }
-        const ATTENDANCE_STORAGE_KEY = 'madarsaAcademicAttendance';
-        let studentAttendance = {
-            '2025-11-29': { // Example pre-saved data for today
-                1: { status: 'Present', remarks: '' },
-                2: { status: 'Present', remarks: 'Late arrival' }
-            }
-        };
-
-        // Load/Save Logic
-        function loadAttendance() {
-            const storedAttendance = localStorage.getItem(ATTENDANCE_STORAGE_KEY);
-            if (storedAttendance) {
-                try {
-                    studentAttendance = JSON.parse(storedAttendance);
-                } catch (e) {
-                    console.error("Error loading attendance:", e);
-                }
-            } else {
-                saveAttendance();
-            }
+        if (filteredStudents.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="5" class="text-center text-red-600 font-semibold p-4">${getTranslation(
+            "no_students_found"
+          )}</td></tr>`;
+          return;
         }
 
-        function saveAttendance() {
-            localStorage.setItem(ATTENDANCE_STORAGE_KEY, JSON.stringify(studentAttendance));
-        }
+        // 2. Get existing attendance record for the date/class
+        const dailyRecords = studentAttendance[selectedDate] || {};
 
-        // --- Multilingual Data ---
-        const langData = {
-            'en': {
-                'academic_system': 'Academic System',
-                'page_title': 'Enter attendance.',
-                'back_to_academic': 'Back to Academic',
-                'logout': 'Logout',
+        // 3. Render rows
+        filteredStudents.forEach((student) => {
+          const record = dailyRecords[student.id] || {
+            status: "Absent",
+            remarks: "",
+          }; // Default to Absent
 
-                // Form/Labels
-                'select_status': 'Select status:',
-                'select_date': 'Select date:',
-                'save_attendance': 'Save attendance',
+          const tr = document.createElement("tr");
+          tr.dataset.studentId = student.id;
 
-                // Table Headers/Actions
-                'student_name': "Student's name",
-                'present': 'Present',
-                'absent': 'Absent',
-                'leave': 'Leave',
-                'remarks': 'Remarks',
-                'select_class': '-- Select Class --',
-
-                // Messages
-                'attendance_saved': 'Attendance successfully saved!',
-                'select_date_alert': 'Please select a date and class.',
-                'no_students_found': 'No students found for this class.',
-                'confirm_save': 'Are you sure you want to save the attendance for this date/class? This will overwrite existing data.'
-            },
-            'ur': {
-                'academic_system': 'تعلیمی نظام',
-                'page_title': 'حاضری درج کریں۔',
-                'back_to_academic': 'اکیڈمک پر واپس جائیں',
-                'logout': 'لاگ آؤٹ',
-
-                // Form/Labels
-                'select_status': 'حالت منتخب کریں:',
-                'select_date': 'تاریخ منتخب کریں:',
-                'save_attendance': 'حاضری محفوظ کریں',
-
-                // Table Headers/Actions
-                'student_name': "طالب علم کا نام",
-                'present': 'حاضر',
-                'absent': 'غیر حاضر',
-                'leave': 'چھٹی',
-                'remarks': 'ریمارکس',
-                'select_class': '-- کلاس منتخب کریں --',
-
-                // Messages
-                'attendance_saved': 'حاضری کامیابی سے محفوظ ہو گئی!',
-                'select_date_alert': 'براہ کرم ایک تاریخ اور کلاس منتخب کریں۔',
-                'no_students_found': 'اس کلاس کے لیے کوئی طالب علم نہیں ملا۔',
-                'confirm_save': 'کیا آپ واقعی اس تاریخ/کلاس کے لیے حاضری محفوظ کرنا چاہتے ہیں؟ یہ موجودہ ڈیٹا کو اوور رائٹ کر دے گا۔'
-            }
-        };
-
-        let currentLang = 'en';
-
-        function getTranslation(key) {
-            return langData[currentLang][key] || langData['en'][key] || key;
-        }
-
-        // --- Core UI Update Functions ---
-        function updateContent() {
-            document.body.className = 'lang-' + currentLang;
-
-            document.querySelectorAll('[data-lang-key]').forEach(el => {
-                const key = el.getAttribute('data-lang-key');
-                el.textContent = getTranslation(key);
-            });
-
-            populateDropdowns();
-            renderAttendanceTable();
-        }
-
-        function changeLanguage(lang) {
-            if (lang in langData) {
-                currentLang = lang;
-                localStorage.setItem('madarsaSystemLang', lang);
-                updateContent();
-            }
-        }
-
-        function populateDropdowns() {
-            const classDropdown = document.getElementById('class-select');
-            const selectedValue = classDropdown.value;
-
-            classDropdown.innerHTML = `<option value="">${getTranslation('select_class')}</option>`;
-            DUMMY_CLASSES.forEach(c => {
-                classDropdown.innerHTML += `<option value="${c}" ${c === selectedValue ? 'selected' : ''}>${c}</option>`;
-            });
-        }
-
-        // --- Table Rendering ---
-        function renderAttendanceTable() {
-            const tbody = document.getElementById('attendance-table-body');
-            const selectedDate = document.getElementById('date-select').value;
-            const selectedClass = document.getElementById('class-select').value;
-
-            if (!tbody) return;
-            tbody.innerHTML = '';
-
-            if (!selectedDate || !selectedClass) {
-                tbody.innerHTML = `<tr><td colspan="5" class="text-center text-gray-500 font-semibold p-4">Please select a Date and Class.</td></tr>`;
-                return;
-            }
-
-            // 1. Filter students by selected class
-            const filteredStudents = DUMMY_STUDENTS.filter(s => s.class === selectedClass);
-
-            if (filteredStudents.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" class="text-center text-red-600 font-semibold p-4">${getTranslation('no_students_found')}</td></tr>`;
-                return;
-            }
-
-            // 2. Get existing attendance record for the date/class
-            const dailyRecords = studentAttendance[selectedDate] || {};
-
-            // 3. Render rows
-            filteredStudents.forEach(student => {
-                const record = dailyRecords[student.id] || { status: 'Absent', remarks: '' }; // Default to Absent
-
-                const tr = document.createElement('tr');
-                tr.dataset.studentId = student.id;
-
-                const statusInput = (statusKey) => `
+          const statusInput = (statusKey) => `
                     <input type="radio" 
                            name="status_${student.id}" 
                            value="${statusKey}" 
                            class="attendance-radio" 
-                           ${record.status === statusKey ? 'checked' : ''} 
+                           ${record.status === statusKey ? "checked" : ""} 
                            required>
                 `;
 
-                // Fix L-R order for table body to match image: Name, Present, Absent, Leave, Remarks
-                tr.innerHTML = `
+          // Fix L-R order for table body to match image: Name, Present, Absent, Leave, Remarks
+          tr.innerHTML = `
                     <td class="font-bold text-gray-800">${student.name}</td>
-                    <td class="text-center">${statusInput('Present')}</td>
-                    <td class="text-center">${statusInput('Absent')}</td>
-                    <td class="text-center">${statusInput('Leave')}</td>
+                    <td class="text-center">${statusInput("Present")}</td>
+                    <td class="text-center">${statusInput("Absent")}</td>
+                    <td class="text-center">${statusInput("Leave")}</td>
                     <td class="text-left">
                         <input type="text" 
                                name="remarks_${student.id}" 
                                value="${record.remarks}" 
                                class="form-input text-sm h-8 px-2" 
-                               placeholder="${getTranslation('remarks')}">
+                               placeholder="${getTranslation("remarks")}">
                     </td>
                 `;
 
-                tbody.appendChild(tr);
-            });
+          tbody.appendChild(tr);
+        });
+      }
+
+      // --- Save Logic ---
+      function saveAttendanceEntry(event) {
+        event.preventDefault();
+        const form = event.target;
+
+        const selectedDate = document.getElementById("date-select").value;
+        const selectedClass = document.getElementById("class-select").value;
+
+        if (!selectedDate || !selectedClass) {
+          alert(getTranslation("select_date_alert"));
+          return false;
         }
 
-        // --- Save Logic ---
-        function saveAttendanceEntry(event) {
-            event.preventDefault();
-            const form = event.target;
-
-            const selectedDate = document.getElementById('date-select').value;
-            const selectedClass = document.getElementById('class-select').value;
-
-            if (!selectedDate || !selectedClass) {
-                alert(getTranslation('select_date_alert'));
-                return false;
-            }
-
-            if (!confirm(getTranslation('confirm_save'))) {
-                return false;
-            }
-
-            const newDailyRecords = {};
-            const studentRows = document.querySelectorAll('#attendance-table-body tr');
-
-            studentRows.forEach(row => {
-                const studentId = row.dataset.studentId;
-                const statusElement = form.querySelector(`input[name="status_${studentId}"]:checked`);
-                const remarksElement = form.querySelector(`input[name="remarks_${studentId}"]`);
-
-                if (statusElement) {
-                    newDailyRecords[studentId] = {
-                        status: statusElement.value,
-                        remarks: remarksElement ? remarksElement.value.trim() : '',
-                        class: selectedClass
-                    };
-                }
-            });
-
-            // Save the new records under the selected date
-            studentAttendance[selectedDate] = newDailyRecords;
-            saveAttendance();
-
-            alert(getTranslation('attendance_saved'));
-            updateContent();
-            return false;
+        if (!confirm(getTranslation("confirm_save"))) {
+          return false;
         }
 
+        const newDailyRecords = {};
+        const studentRows = document.querySelectorAll(
+          "#attendance-table-body tr"
+        );
 
-        // Initialize content and language
-        window.onload = function () {
-            loadAttendance();
-            const storedLang = localStorage.getItem('madarsaSystemLang');
-            currentLang = (storedLang && storedLang in langData) ? storedLang : 'en';
+        studentRows.forEach((row) => {
+          const studentId = row.dataset.studentId;
+          const statusElement = form.querySelector(
+            `input[name="status_${studentId}"]:checked`
+          );
+          const remarksElement = form.querySelector(
+            `input[name="remarks_${studentId}"]`
+          );
 
-            // Set default date
-            document.getElementById('date-select').value = formatDate(new Date());
+          if (statusElement) {
+            newDailyRecords[studentId] = {
+              status: statusElement.value,
+              remarks: remarksElement ? remarksElement.value.trim() : "",
+              class: selectedClass,
+            };
+          }
+        });
 
-            // Initial content update
-            updateContent();
+        // Save the new records under the selected date
+        studentAttendance[selectedDate] = newDailyRecords;
+        saveAttendance();
 
-            // Attach listeners
-            document.getElementById('class-select').addEventListener('change', renderAttendanceTable);
-            document.getElementById('date-select').addEventListener('change', renderAttendanceTable);
-            document.getElementById('attendance-form').addEventListener('submit', saveAttendanceEntry);
-        };
+        alert(getTranslation("attendance_saved"));
+        updateContent();
+        return false;
+      }
+
+      function logOut() {
+        localStorage.removeItem("isUserLoggedIn");
+        localStorage.removeItem("authToken");
+        localStorage.removeItem("userData");
+        window.location.href = "index.html";
+      }
+
+      // Initialize content and language
+      window.onload = function () {
+        loadAttendance();
+        const storedLang = localStorage.getItem("madarsaSystemLang");
+        currentLang = storedLang && storedLang in langData ? storedLang : "en";
+
+        // Set default date
+        document.getElementById("date-select").value = formatDate(new Date());
+
+        // Initial content update
+        updateContent();
+
+        // Attach listeners
+        document
+          .getElementById("class-select")
+          .addEventListener("change", renderAttendanceTable);
+        document
+          .getElementById("date-select")
+          .addEventListener("change", renderAttendanceTable);
+        document
+          .getElementById("attendance-form")
+          .addEventListener("submit", saveAttendanceEntry);
+      };
     </script>
 
     <!-- HEADER -->
     <header>
-        <div class="max-w-7xl mx-auto w-full flex justify-between items-center">
-            <!-- Left: Back Button & Title -->
-            <div class="flex items-center space-x-4">
-                <a href="academic_system.html" class="action-button bg-gray-100 text-gray-700 hover:bg-gray-200"
-                    data-lang-key="back_to_academic">Back to Academic</a>
-                <h1 class="text-xl font-bold" data-lang-key="page_title" style="color: var(--color-primary);">Enter
-                    attendance.</h1>
-            </div>
-
-            <!-- Right: Language Switch -->
-            <div class="flex items-center space-x-2">
-                <select onchange="changeLanguage(this.value)" class="bg-gray-100 rounded-lg p-1 text-sm">
-                    <option value="en" selected>English</option>
-                    <option value="ur">اردو</option>
-                </select>
-                <button onclick="window.location.href='login.html'"
-                    class="text-sm font-semibold text-red-600 hover:text-red-800 transition-colors ml-4 action-button px-3 py-1">Logout</button>
-            </div>
+      <div class="max-w-7xl mx-auto w-full flex justify-between items-center">
+        <!-- Left: Back Button & Title -->
+        <div class="flex items-center space-x-4">
+          <a
+            href="academic_system.html"
+            class="action-button bg-gray-100 text-gray-700 hover:bg-gray-200"
+            data-lang-key="back_to_academic"
+            >Back to Academic</a
+          >
+          <h1
+            class="text-xl font-bold"
+            data-lang-key="page_title"
+            style="color: var(--color-primary)"
+          >
+            Enter attendance.
+          </h1>
         </div>
+
+        <!-- Right: Language Switch -->
+        <div class="flex items-center space-x-2">
+          <select
+            onchange="changeLanguage(this.value)"
+            class="bg-gray-100 rounded-lg p-1 text-sm"
+          >
+            <option value="en" selected>English</option>
+            <option value="hi">हिन्दी</option>
+            <option value="ur">اردو</option>
+          </select>
+          <button
+            onclick="logOut()"
+            class="text-sm font-semibold text-red-600 hover:text-red-800 transition-colors ml-4 action-button px-3 py-1"
+          >
+            Logout
+          </button>
+        </div>
+      </div>
     </header>
 
     <!-- MAIN CONTENT AREA -->
     <main class="max-w-7xl mx-auto w-full p-4 md:p-8">
+      <h2 class="main-title text-center" data-lang-key="page_title">
+        Enter attendance.
+      </h2>
 
-        <h2 class="main-title text-center" data-lang-key="page_title">Enter attendance.</h2>
+      <!-- Attendance Controls Card -->
+      <div class="centered-card">
+        <!-- Filter and Date Select -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8 text-left">
+          <!-- Class Filter -->
+          <div class="form-group">
+            <label
+              for="class-select"
+              class="form-label"
+              data-lang-key="select_status"
+              >Select status:</label
+            >
+            <select id="class-select" class="form-input"></select>
+          </div>
 
-        <!-- Attendance Controls Card -->
-        <div class="centered-card">
-
-            <!-- Filter and Date Select -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8 text-left">
-
-                <!-- Class Filter -->
-                <div class="form-group">
-                    <label for="class-select" class="form-label" data-lang-key="select_status">Select status:</label>
-                    <select id="class-select" class="form-input"></select>
-                </div>
-
-                <!-- Date Selector -->
-                <div class="form-group md:col-span-1">
-                    <label for="date-select" class="form-label" data-lang-key="select_date">Select date:</label>
-                    <input type="date" id="date-select" class="form-input" required>
-                </div>
-            </div>
-
-            <!-- Attendance Table Form -->
-            <form id="attendance-form">
-                <div class="table-container">
-                    <table class="attendance-table">
-                        <thead>
-                            <tr>
-                                <th style="width: 35%" data-lang-key="student_name">Student's name</th>
-                                <th style="width: 10%" data-lang-key="present">Present</th>
-                                <th style="width: 10%" data-lang-key="absent">Absent</th>
-                                <th style="width: 10%" data-lang-key="leave">Leave</th>
-                                <th style="width: 35%" data-lang-key="remarks">Remarks</th>
-                            </tr>
-                        </thead>
-                        <tbody id="attendance-table-body">
-                            <!-- Student rows injected by JS -->
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="flex justify-center mt-8">
-                    <button type="submit" class="primary-button" data-lang-key="save_attendance">Save
-                        attendance</button>
-                </div>
-            </form>
-
+          <!-- Date Selector -->
+          <div class="form-group md:col-span-1">
+            <label
+              for="date-select"
+              class="form-label"
+              data-lang-key="select_date"
+              >Select date:</label
+            >
+            <input type="date" id="date-select" class="form-input" required />
+          </div>
         </div>
 
-    </main>
-</body>
+        <!-- Attendance Table Form -->
+        <form id="attendance-form">
+          <div class="table-container">
+            <table class="attendance-table">
+              <thead>
+                <tr>
+                  <th style="width: 35%" data-lang-key="student_name">
+                    Student's name
+                  </th>
+                  <th style="width: 10%" data-lang-key="present">Present</th>
+                  <th style="width: 10%" data-lang-key="absent">Absent</th>
+                  <th style="width: 10%" data-lang-key="leave">Leave</th>
+                  <th style="width: 35%" data-lang-key="remarks">Remarks</th>
+                </tr>
+              </thead>
+              <tbody id="attendance-table-body">
+                <!-- Student rows injected by JS -->
+              </tbody>
+            </table>
+          </div>
 
+          <div class="flex justify-center mt-8">
+            <button
+              type="submit"
+              class="primary-button"
+              data-lang-key="save_attendance"
+            >
+              Save attendance
+            </button>
+          </div>
+        </form>
+      </div>
+    </main>
+  </body>
 </html>

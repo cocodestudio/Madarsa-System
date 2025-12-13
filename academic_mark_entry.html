@@ -1,350 +1,386 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Enter Marks - Academic System</title>
     <script src="https://cdn.tailwindcss.com"></script>
 
     <style>
-        :root {
-            --color-primary: #00A693;
-            --color-background: #F2F3F4;
-            --color-accent: #E08A27;
-            --color-text-dark: #1A1A1A;
-            --color-text-light: #FFFFFF;
-            --color-yellow: #FBBF24;
-            --color-blue: #3b82f6;
-        }
+      :root {
+        --color-primary: #00a693;
+        --color-background: #f2f3f4;
+        --color-accent: #e08a27;
+        --color-text-dark: #1a1a1a;
+        --color-text-light: #ffffff;
+        --color-yellow: #fbbf24;
+        --color-blue: #3b82f6;
+      }
 
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;700&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap');
+      @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;700&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap");
 
-        /* Language Styles */
-        body,
-        .lang-en {
-            font-family: 'Poppins', sans-serif;
-            direction: ltr;
-            background-color: var(--color-background);
-        }
+      /* Language Styles */
+      body,
+      .lang-en {
+        font-family: "Poppins", sans-serif;
+        direction: ltr;
+        background-color: var(--color-background);
+      }
 
-        .lang-hi {
-            font-family: 'Noto Sans Devanagari', sans-serif;
-            direction: ltr;
-        }
+      .lang-hi {
+        font-family: "Noto Sans Devanagari", sans-serif;
+        direction: ltr;
+      }
 
-        .lang-ur {
-            font-family: 'Noto Nastaliq Urdu', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
-            direction: rtl;
-            line-height: 1.8;
-            text-align: right;
-        }
+      .lang-ur {
+        font-family: "Noto Nastaliq Urdu", "Segoe UI", Tahoma, Geneva, Verdana,
+          sans-serif !important;
+        direction: rtl;
+        line-height: 1.8;
+        text-align: right;
+      }
 
-        /* Form & Inputs */
-        .form-input,
-        select {
-            padding: 0.75rem 1rem;
-            border-radius: 0.5rem;
-            border: 1px solid #ccc;
-            width: 100%;
-            font-family: inherit;
-        }
+      /* Form & Inputs */
+      .form-input,
+      select {
+        padding: 0.75rem 1rem;
+        border-radius: 0.5rem;
+        border: 1px solid #ccc;
+        width: 100%;
+        font-family: inherit;
+      }
 
-        .form-input:focus,
-        select:focus {
-            outline: none;
-            border-color: var(--color-primary);
-            box-shadow: 0 0 0 3px rgba(0, 166, 147, 0.2);
-        }
+      .form-input:focus,
+      select:focus {
+        outline: none;
+        border-color: var(--color-primary);
+        box-shadow: 0 0 0 3px rgba(0, 166, 147, 0.2);
+      }
 
-        .form-label {
-            display: block;
-            font-weight: 600;
-            margin-bottom: 0.25rem;
-            font-size: 0.875rem;
-            color: var(--color-text-dark);
-        }
+      .form-label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 0.25rem;
+        font-size: 0.875rem;
+        color: var(--color-text-dark);
+      }
 
-        /* Buttons */
-        .primary-button {
-            padding: 0.8rem 1.5rem;
-            background-color: var(--color-yellow);
-            color: var(--color-text-dark);
-            font-weight: 700;
-            border-radius: 0.5rem;
-            transition: background-color 0.2s;
-            cursor: pointer;
-        }
+      /* Buttons */
+      .primary-button {
+        padding: 0.8rem 1.5rem;
+        background-color: var(--color-yellow);
+        color: var(--color-text-dark);
+        font-weight: 700;
+        border-radius: 0.5rem;
+        transition: background-color 0.2s;
+        cursor: pointer;
+      }
 
-        .primary-button:hover {
-            background-color: #f59e0b;
-        }
+      .primary-button:hover {
+        background-color: #f59e0b;
+      }
 
-        .action-button {
-            background-color: #f3f4f6;
-            color: var(--color-text-dark);
-            padding: 0.5rem 0.75rem;
-            border-radius: 0.5rem;
-            font-weight: 600;
-            transition: background-color 0.2s;
-        }
+      .action-button {
+        background-color: #f3f4f6;
+        color: var(--color-text-dark);
+        padding: 0.5rem 0.75rem;
+        border-radius: 0.5rem;
+        font-weight: 600;
+        transition: background-color 0.2s;
+      }
 
-        /* Fixed Header */
-        header {
-            background-color: var(--color-text-light);
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            position: sticky;
-            top: 0;
-            width: 100%;
-            z-index: 10;
-            padding: 1rem 2rem;
-        }
+      /* Fixed Header */
+      header {
+        background-color: var(--color-text-light);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        position: sticky;
+        top: 0;
+        width: 100%;
+        z-index: 10;
+        padding: 1rem 2rem;
+      }
 
-        /* Card Structure */
-        .centered-card {
-            background-color: white;
-            border-radius: 1rem;
-            padding: 2rem;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-            max-width: 900px;
-            width: 100%;
-            margin: 2rem auto;
-            text-align: center;
-        }
+      /* Card Structure */
+      .centered-card {
+        background-color: white;
+        border-radius: 1rem;
+        padding: 2rem;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        max-width: 900px;
+        width: 100%;
+        margin: 2rem auto;
+        text-align: center;
+      }
 
-        /* Table Styling (Matching Image Yellow/White) */
-        .marks-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
+      /* Table Styling (Matching Image Yellow/White) */
+      .marks-table {
+        width: 100%;
+        border-collapse: collapse;
+      }
 
-        .marks-table th,
-        .marks-table td {
-            padding: 0.8rem 1rem;
-            font-size: 0.9rem;
-            border: 1px solid #ccc;
-        }
+      .marks-table th,
+      .marks-table td {
+        padding: 0.8rem 1rem;
+        font-size: 0.9rem;
+        border: 1px solid #ccc;
+      }
 
-        .marks-table thead th {
-            background-color: var(--color-yellow);
-            color: var(--color-text-dark);
-            font-weight: 700;
-            text-transform: uppercase;
-            border-color: #f59e0b;
-        }
+      .marks-table thead th {
+        background-color: var(--color-yellow);
+        color: var(--color-text-dark);
+        font-weight: 700;
+        text-transform: uppercase;
+        border-color: #f59e0b;
+      }
 
-        .marks-input {
-            width: 80px;
-            padding: 0.4rem;
-            text-align: center;
-            border: 1px solid #ccc;
-            border-radius: 0.25rem;
-        }
+      .marks-input {
+        width: 80px;
+        padding: 0.4rem;
+        text-align: center;
+        border: 1px solid #ccc;
+        border-radius: 0.25rem;
+      }
 
-        .text-error {
-            color: #ef4444;
-            font-weight: 600;
-        }
+      .text-error {
+        color: #ef4444;
+        font-weight: 600;
+      }
     </style>
-</head>
+  </head>
 
-<body class="lang-en">
-
+  <body class="lang-en">
     <script>
-        // Helper to format date YYYY-MM-DD
-        function formatDate(date) {
-            const d = new Date(date);
-            let month = '' + (d.getMonth() + 1);
-            let day = '' + d.getDate();
-            const year = d.getFullYear();
+      // Helper to format date YYYY-MM-DD
+      function formatDate(date) {
+        const d = new Date(date);
+        let month = "" + (d.getMonth() + 1);
+        let day = "" + d.getDate();
+        const year = d.getFullYear();
 
-            if (month.length < 2) month = '0' + month;
-            if (day.length < 2) day = '0' + day;
+        if (month.length < 2) month = "0" + month;
+        if (day.length < 2) day = "0" + day;
 
-            return [year, month, day].join('-');
+        return [year, month, day].join("-");
+      }
+
+      // --- Dummy Data ---
+      const DUMMY_EXAMS = ["September 2025", "Mid-Term 2025", "University"];
+      const DUMMY_GRADES = ["First", "Arbitration", "Sania", "Fifth"];
+      const DUMMY_SUBJECTS = ["Arabic", "Fiqh", "Hadith", "English"];
+
+      // Simulating the list of students in a selected class, including roll no
+      const DUMMY_STUDENTS_ROLL = [
+        { id: 1, name: "Ahmed Faraz", roll: "R32001", grade: "Sania" },
+        { id: 2, name: "Nabila Khalid", roll: "R32002", grade: "Sania" },
+        { id: 3, name: "Ayesha Siddiqui", roll: "R10001", grade: "First" },
+        { id: 4, name: "Ali Raza", roll: "R10002", grade: "First" },
+      ];
+
+      // Structure: examMarks[examId][grade][subject] = { studentId: marks }
+      let examMarks = {
+        "September 2025": {
+          Sania: {
+            Arabic: { 1: 85, 2: 90 },
+          },
+        },
+      };
+
+      const MARKS_STORAGE_KEY = "madarsaExamMarks";
+
+      // Load/Save Logic
+      function loadMarks() {
+        const storedMarks = localStorage.getItem(MARKS_STORAGE_KEY);
+        if (storedMarks) {
+          try {
+            examMarks = JSON.parse(storedMarks);
+          } catch (e) {
+            console.error("Error loading marks:", e);
+          }
         }
+      }
 
-        // --- Dummy Data ---
-        const DUMMY_EXAMS = ['September 2025', 'Mid-Term 2025', 'University'];
-        const DUMMY_GRADES = ['First', 'Arbitration', 'Sania', 'Fifth'];
-        const DUMMY_SUBJECTS = ['Arabic', 'Fiqh', 'Hadith', 'English'];
+      function saveMarks() {
+        localStorage.setItem(MARKS_STORAGE_KEY, JSON.stringify(examMarks));
+      }
 
-        // Simulating the list of students in a selected class, including roll no
-        const DUMMY_STUDENTS_ROLL = [
-            { id: 1, name: 'Ahmed Faraz', roll: 'R32001', grade: 'Sania' },
-            { id: 2, name: 'Nabila Khalid', roll: 'R32002', grade: 'Sania' },
-            { id: 3, name: 'Ayesha Siddiqui', roll: 'R10001', grade: 'First' },
-            { id: 4, name: 'Ali Raza', roll: 'R10002', grade: 'First' },
-        ];
+      // --- Multilingual Data ---
+      const langData = {
+        en: {
+          academic_system: "Academic System",
+          page_title: "Enter the exam number.",
+          back_to_academic: "Back to Academic",
+          logout: "Logout",
 
-        // Structure: examMarks[examId][grade][subject] = { studentId: marks }
-        let examMarks = {
-            'September 2025': {
-                'Sania': {
-                    'Arabic': { '1': 85, '2': 90 }
-                }
-            }
-        };
+          // Form/Labels
+          select_exam: "Select exam:",
+          select_level: "Select level (select more than one):",
+          select_subject: "Select subject:",
+          save_number: "Save number",
+          enter_marks_heading: "Enter Marks",
 
-        const MARKS_STORAGE_KEY = 'madarsaExamMarks';
+          // Table Headers
+          student_name: "Student's name",
+          roll_number: "Roll number",
+          number: "Number",
 
-        // Load/Save Logic
-        function loadMarks() {
-            const storedMarks = localStorage.getItem(MARKS_STORAGE_KEY);
-            if (storedMarks) {
-                try {
-                    examMarks = JSON.parse(storedMarks);
-                } catch (e) {
-                    console.error("Error loading marks:", e);
-                }
-            }
+          // Messages
+          select_all_filters:
+            "Please select Exam, at least one Grade, and Subject.",
+          marks_saved: "Marks successfully saved!",
+          invalid_marks: "Marks must be valid numbers (0-100).",
+        },
+        hi: {
+          academic_system: "शैक्षणिक प्रणाली",
+          page_title: "परीक्षा के अंक दर्ज करें",
+          back_to_academic: "अकादमिक पर वापस जाएं",
+          logout: "लॉग आउट",
+
+          // Form/Labels
+          select_exam: "परीक्षा चुनें:",
+          select_level: "स्तर (Level) चुनें (एक से अधिक चुनें):",
+          select_subject: "विषय चुनें:",
+          save_number: "अंक सहेजें",
+          enter_marks_heading: "अंक दर्ज करें",
+
+          // Table Headers
+          student_name: "छात्र का नाम",
+          roll_number: "रोल नंबर",
+          number: "अंक", // Marks
+
+          // Messages
+          select_all_filters:
+            "कृपया परीक्षा, कम से कम एक ग्रेड, और विषय चुनें।",
+          marks_saved: "अंक सफलतापूर्वक सहेजे गए!",
+          invalid_marks: "अंक मान्य संख्याएँ होनी चाहिए (0-100)।",
+        },
+        ur: {
+          academic_system: "تعلیمی نظام",
+          page_title: "امتحان میں نمبر درج کریں۔",
+          back_to_academic: "اکیڈمک پر واپس جائیں",
+          logout: "لاگ آؤٹ",
+
+          // Form/Labels
+          select_exam: "امتحان منتخب کریں:",
+          select_level: "لیول منتخب کریں (ایک سے زیادہ منتخب کریں):",
+          select_subject: "مضمون منتخب کریں:",
+          save_number: "نمبر محفوظ کریں",
+          enter_marks_heading: "نمبر درج کریں",
+
+          // Table Headers
+          student_name: "طالب علم کا نام",
+          roll_number: "رول نمبر",
+          number: "نمبر",
+
+          // Messages
+          select_all_filters:
+            "براہ کرم امتحان، کم از کم ایک گریڈ، اور مضمون منتخب کریں۔",
+          marks_saved: "نمبر کامیابی سے محفوظ ہو گئے!",
+          invalid_marks: "نمبر درست اعداد ہونے چاہئیں (0-100).",
+        },
+      };
+
+      let currentLang = "en";
+
+      function getTranslation(key) {
+        return langData[currentLang][key] || langData["en"][key] || key;
+      }
+
+      // --- Core UI Update Functions ---
+      function updateContent() {
+        document.body.className = "lang-" + currentLang;
+
+        document.querySelectorAll("[data-lang-key]").forEach((el) => {
+          const key = el.getAttribute("data-lang-key");
+          el.textContent = getTranslation(key);
+        });
+
+        populateDropdowns();
+        renderMarksTable();
+      }
+
+      function changeLanguage(lang) {
+        if (lang in langData) {
+          currentLang = lang;
+          localStorage.setItem("madarsaSystemLang", lang);
+          updateContent();
         }
+      }
 
-        function saveMarks() {
-            localStorage.setItem(MARKS_STORAGE_KEY, JSON.stringify(examMarks));
-        }
+      function populateDropdowns() {
+        const examDropdown = document.getElementById("exam-select");
+        const subjectDropdown = document.getElementById("subject-select");
 
+        // Populate Exam Dropdown
+        examDropdown.innerHTML = `<option value="">-- Select Exam --</option>`;
+        DUMMY_EXAMS.forEach((exam) => {
+          examDropdown.innerHTML += `<option value="${exam}">${exam}</option>`;
+        });
 
-        // --- Multilingual Data ---
-        const langData = {
-            'en': {
-                'academic_system': 'Academic System',
-                'page_title': 'Enter the exam number.',
-                'back_to_academic': 'Back to Academic',
-                'logout': 'Logout',
+        // Populate Subject Dropdown
+        subjectDropdown.innerHTML = `<option value="">-- Select Subject --</option>`;
+        DUMMY_SUBJECTS.forEach((subject) => {
+          subjectDropdown.innerHTML += `<option value="${subject}">${subject}</option>`;
+        });
 
-                // Form/Labels
-                'select_exam': 'Select exam:',
-                'select_level': 'Select level (select more than one):',
-                'select_subject': 'Select subject:',
-                'save_number': 'Save number',
-                'enter_marks_heading': 'Enter Marks',
-
-                // Table Headers
-                'student_name': "Student's name",
-                'roll_number': 'Roll number',
-                'number': 'Number',
-
-                // Messages
-                'select_all_filters': 'Please select Exam, at least one Grade, and Subject.',
-                'marks_saved': 'Marks successfully saved!',
-                'invalid_marks': 'Marks must be valid numbers (0-100).'
-            },
-            'ur': {
-                'academic_system': 'تعلیمی نظام',
-                'page_title': 'امتحان میں نمبر درج کریں۔',
-                'back_to_academic': 'اکیڈمک پر واپس جائیں',
-                'logout': 'لاگ آؤٹ',
-
-                // Form/Labels
-                'select_exam': 'امتحان منتخب کریں:',
-                'select_level': 'لیول منتخب کریں (ایک سے زیادہ منتخب کریں):',
-                'select_subject': 'مضمون منتخب کریں:',
-                'save_number': 'نمبر محفوظ کریں',
-                'enter_marks_heading': 'نمبر درج کریں',
-
-                // Table Headers
-                'student_name': "طالب علم کا نام",
-                'roll_number': 'رول نمبر',
-                'number': 'نمبر',
-
-                // Messages
-                'select_all_filters': 'براہ کرم امتحان، کم از کم ایک گریڈ، اور مضمون منتخب کریں۔',
-                'marks_saved': 'نمبر کامیابی سے محفوظ ہو گئے!',
-                'invalid_marks': 'نمبر درست اعداد ہونے چاہئیں (0-100).'
-            }
-        };
-
-        let currentLang = 'en';
-
-        function getTranslation(key) {
-            return langData[currentLang][key] || langData['en'][key] || key;
-        }
-
-        // --- Core UI Update Functions ---
-        function updateContent() {
-            document.body.className = 'lang-' + currentLang;
-
-            document.querySelectorAll('[data-lang-key]').forEach(el => {
-                const key = el.getAttribute('data-lang-key');
-                el.textContent = getTranslation(key);
-            });
-
-            populateDropdowns();
-            renderMarksTable();
-        }
-
-        function changeLanguage(lang) {
-            if (lang in langData) {
-                currentLang = lang;
-                localStorage.setItem('madarsaSystemLang', lang);
-                updateContent();
-            }
-        }
-
-        function populateDropdowns() {
-            const examDropdown = document.getElementById('exam-select');
-            const subjectDropdown = document.getElementById('subject-select');
-
-            // Populate Exam Dropdown
-            examDropdown.innerHTML = `<option value="">-- Select Exam --</option>`;
-            DUMMY_EXAMS.forEach(exam => {
-                examDropdown.innerHTML += `<option value="${exam}">${exam}</option>`;
-            });
-
-            // Populate Subject Dropdown
-            subjectDropdown.innerHTML = `<option value="">-- Select Subject --</option>`;
-            DUMMY_SUBJECTS.forEach(subject => {
-                subjectDropdown.innerHTML += `<option value="${subject}">${subject}</option>`;
-            });
-
-            // Populate Class Checkboxes
-            const checkboxContainer = document.getElementById('level-checkboxes');
-            checkboxContainer.innerHTML = '';
-            DUMMY_GRADES.forEach(grade => {
-                checkboxContainer.innerHTML += `
-                    <label class="inline-flex items-center space-x-1 ${currentLang === 'ur' ? 'mr-4' : 'ml-4'}">
+        // Populate Class Checkboxes
+        const checkboxContainer = document.getElementById("level-checkboxes");
+        checkboxContainer.innerHTML = "";
+        DUMMY_GRADES.forEach((grade) => {
+          checkboxContainer.innerHTML += `
+                    <label class="inline-flex items-center space-x-1 ${
+                      currentLang === "ur" ? "mr-4" : "ml-4"
+                    }">
                         <input type="checkbox" name="grade-level" value="${grade}" class="checkbox-input" style="accent-color: var(--color-primary);">
                         <span class="text-sm">${grade}</span>
                     </label>
                 `;
-            });
+        });
+      }
+
+      // --- Table Rendering ---
+      function renderMarksTable() {
+        const tbody = document.getElementById("marks-table-body");
+        const exam = document.getElementById("exam-select").value;
+        const subject = document.getElementById("subject-select").value;
+        const selectedGrades = Array.from(
+          document.querySelectorAll('input[name="grade-level"]:checked')
+        ).map((cb) => cb.value);
+
+        if (!tbody) return;
+        tbody.innerHTML = "";
+
+        if (!exam || selectedGrades.length === 0 || !subject) {
+          tbody.innerHTML = `<tr><td colspan="3" class="text-center text-red-600 font-semibold p-4">${getTranslation(
+            "select_all_filters"
+          )}</td></tr>`;
+          return;
         }
 
-        // --- Table Rendering ---
-        function renderMarksTable() {
-            const tbody = document.getElementById('marks-table-body');
-            const exam = document.getElementById('exam-select').value;
-            const subject = document.getElementById('subject-select').value;
-            const selectedGrades = Array.from(document.querySelectorAll('input[name="grade-level"]:checked')).map(cb => cb.value);
+        // Filter students by selected grades
+        const studentsToMark = DUMMY_STUDENTS_ROLL.filter((s) =>
+          selectedGrades.includes(s.grade)
+        );
 
-            if (!tbody) return;
-            tbody.innerHTML = '';
+        if (studentsToMark.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="3" class="text-center text-red-600 font-semibold p-4">No students found in selected grades.</td></tr>`;
+          return;
+        }
 
-            if (!exam || selectedGrades.length === 0 || !subject) {
-                tbody.innerHTML = `<tr><td colspan="3" class="text-center text-red-600 font-semibold p-4">${getTranslation('select_all_filters')}</td></tr>`;
-                return;
-            }
+        // Load existing marks for the current exam/grade/subject context
+        const existingMarks =
+          (examMarks[exam] &&
+            examMarks[exam][selectedGrades[0]] &&
+            examMarks[exam][selectedGrades[0]][subject]) ||
+          {};
 
-            // Filter students by selected grades
-            const studentsToMark = DUMMY_STUDENTS_ROLL.filter(s => selectedGrades.includes(s.grade));
+        // Render rows
+        studentsToMark.forEach((student) => {
+          const existingMark = existingMarks[student.id] || "";
 
-            if (studentsToMark.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="3" class="text-center text-red-600 font-semibold p-4">No students found in selected grades.</td></tr>`;
-                return;
-            }
+          const tr = document.createElement("tr");
+          tr.dataset.studentId = student.id;
 
-            // Load existing marks for the current exam/grade/subject context
-            const existingMarks = examMarks[exam] && examMarks[exam][selectedGrades[0]] && examMarks[exam][selectedGrades[0]][subject] || {};
-
-            // Render rows
-            studentsToMark.forEach(student => {
-                const existingMark = existingMarks[student.id] || '';
-
-                const tr = document.createElement('tr');
-                tr.dataset.studentId = student.id;
-
-                tr.innerHTML = `
+          tr.innerHTML = `
                     <td class="font-bold text-gray-800">${student.name}</td>
                     <td>${student.roll}</td>
                     <td>
@@ -356,164 +392,228 @@
                                placeholder="100" required>
                     </td>
                 `;
-                tbody.appendChild(tr);
-            });
+          tbody.appendChild(tr);
+        });
+      }
+
+      // --- Save Logic ---
+      function saveMarksEntry(event) {
+        event.preventDefault();
+        const form = document.getElementById("marks-entry-form");
+
+        const exam = document.getElementById("exam-select").value;
+        const subject = document.getElementById("subject-select").value;
+        const selectedGrades = Array.from(
+          document.querySelectorAll('input[name="grade-level"]:checked')
+        ).map((cb) => cb.value);
+
+        if (!exam || selectedGrades.length === 0 || !subject) {
+          alert(getTranslation("select_all_filters"));
+          return false;
         }
 
-        // --- Save Logic ---
-        function saveMarksEntry(event) {
-            event.preventDefault();
-            const form = document.getElementById('marks-entry-form');
+        const gradeKey = selectedGrades[0]; // Assuming we only save against the first selected grade for simplicity
 
-            const exam = document.getElementById('exam-select').value;
-            const subject = document.getElementById('subject-select').value;
-            const selectedGrades = Array.from(document.querySelectorAll('input[name="grade-level"]:checked')).map(cb => cb.value);
+        const newMarks = {};
+        let saveSuccessful = true;
 
-            if (!exam || selectedGrades.length === 0 || !subject) {
-                alert(getTranslation('select_all_filters'));
-                return false;
-            }
+        document.querySelectorAll("#marks-table-body tr").forEach((row) => {
+          const studentId = row.dataset.studentId;
+          const markInput = row.querySelector(
+            `input[name="marks_${studentId}"]`
+          );
+          const mark = parseInt(markInput.value);
 
-            const gradeKey = selectedGrades[0]; // Assuming we only save against the first selected grade for simplicity
+          if (isNaN(mark) || mark < 0 || mark > 100) {
+            markInput.classList.add("border-red-500");
+            saveSuccessful = false;
+            return;
+          }
+          markInput.classList.remove("border-red-500");
+          newMarks[studentId] = mark;
+        });
 
-            const newMarks = {};
-            let saveSuccessful = true;
-
-            document.querySelectorAll('#marks-table-body tr').forEach(row => {
-                const studentId = row.dataset.studentId;
-                const markInput = row.querySelector(`input[name="marks_${studentId}"]`);
-                const mark = parseInt(markInput.value);
-
-                if (isNaN(mark) || mark < 0 || mark > 100) {
-                    markInput.classList.add('border-red-500');
-                    saveSuccessful = false;
-                    return;
-                }
-                markInput.classList.remove('border-red-500');
-                newMarks[studentId] = mark;
-            });
-
-            if (!saveSuccessful) {
-                alert(getTranslation('invalid_marks'));
-                return false;
-            }
-
-            // Save the new marks
-            if (!examMarks[exam]) examMarks[exam] = {};
-            if (!examMarks[exam][gradeKey]) examMarks[exam][gradeKey] = {};
-
-            examMarks[exam][gradeKey][subject] = newMarks;
-            saveMarks();
-
-            alert(getTranslation('marks_saved'));
-            updateContent();
-            return false;
+        if (!saveSuccessful) {
+          alert(getTranslation("invalid_marks"));
+          return false;
         }
 
+        // Save the new marks
+        if (!examMarks[exam]) examMarks[exam] = {};
+        if (!examMarks[exam][gradeKey]) examMarks[exam][gradeKey] = {};
 
-        // Initialize content and language
-        window.onload = function () {
-            loadMarks();
-            const storedLang = localStorage.getItem('madarsaSystemLang');
-            currentLang = (storedLang && storedLang in langData) ? storedLang : 'en';
+        examMarks[exam][gradeKey][subject] = newMarks;
+        saveMarks();
 
-            // Initial content update
-            updateContent();
+        alert(getTranslation("marks_saved"));
+        updateContent();
+        return false;
+      }
 
-            // Attach listeners
-            document.getElementById('exam-select').addEventListener('change', renderMarksTable);
-            document.getElementById('subject-select').addEventListener('change', renderMarksTable);
-            document.getElementById('level-checkboxes').addEventListener('change', renderMarksTable); // Watch for checkbox changes
+      function logOut() {
+        localStorage.removeItem("isUserLoggedIn");
+        localStorage.removeItem("authToken");
+        localStorage.removeItem("userData");
+        window.location.href = "index.html";
+      }
 
-            // Attach form listener (FIXED: Using correct function name)
-            document.getElementById('marks-entry-form').addEventListener('submit', saveMarksEntry);
-        };
+      // Initialize content and language
+      window.onload = function () {
+        loadMarks();
+        const storedLang = localStorage.getItem("madarsaSystemLang");
+        currentLang = storedLang && storedLang in langData ? storedLang : "en";
+
+        // Initial content update
+        updateContent();
+
+        // Attach listeners
+        document
+          .getElementById("exam-select")
+          .addEventListener("change", renderMarksTable);
+        document
+          .getElementById("subject-select")
+          .addEventListener("change", renderMarksTable);
+        document
+          .getElementById("level-checkboxes")
+          .addEventListener("change", renderMarksTable); // Watch for checkbox changes
+
+        // Attach form listener (FIXED: Using correct function name)
+        document
+          .getElementById("marks-entry-form")
+          .addEventListener("submit", saveMarksEntry);
+      };
     </script>
 
     <!-- HEADER -->
     <header>
-        <div class="max-w-7xl mx-auto w-full flex justify-between items-center">
-            <!-- Left: Back Button & Title -->
-            <div class="flex items-center space-x-4">
-                <a href="academic_system.html" class="action-button bg-gray-100 text-gray-700 hover:bg-gray-200"
-                    data-lang-key="back_to_academic">Back to Academic</a>
-                <h1 class="text-xl font-bold" data-lang-key="page_title" style="color: var(--color-primary);">Enter
-                    Marks</h1>
-            </div>
-
-            <!-- Right: Language Switch -->
-            <div class="flex items-center space-x-2">
-                <select onchange="changeLanguage(this.value)" class="bg-gray-100 rounded-lg p-1 text-sm">
-                    <option value="en" selected>English</option>
-                    <option value="ur">اردو</option>
-                </select>
-                <button onclick="window.location.href='login.html'"
-                    class="text-sm font-semibold text-red-600 hover:text-red-800 transition-colors ml-4 action-button px-3 py-1"
-                    data-lang-key="logout">Logout</button>
-            </div>
+      <div class="max-w-7xl mx-auto w-full flex justify-between items-center">
+        <!-- Left: Back Button & Title -->
+        <div class="flex items-center space-x-4">
+          <a
+            href="academic_system.html"
+            class="action-button bg-gray-100 text-gray-700 hover:bg-gray-200"
+            data-lang-key="back_to_academic"
+            >Back to Academic</a
+          >
+          <h1
+            class="text-xl font-bold"
+            data-lang-key="page_title"
+            style="color: var(--color-primary)"
+          >
+            Enter Marks
+          </h1>
         </div>
+
+        <!-- Right: Language Switch -->
+        <div class="flex items-center space-x-2">
+          <select
+            onchange="changeLanguage(this.value)"
+            class="bg-gray-100 rounded-lg p-1 text-sm"
+          >
+            <option value="en" selected>English</option>
+            <option value="hi">हिन्दी</option>
+            <option value="ur">اردو</option>
+          </select>
+          <button
+            onclick="logOut()"
+            class="text-sm font-semibold text-red-600 hover:text-red-800 transition-colors ml-4 action-button px-3 py-1"
+            data-lang-key="logout"
+          >
+            Logout
+          </button>
+        </div>
+      </div>
     </header>
 
     <!-- MAIN CONTENT AREA -->
     <main class="max-w-7xl mx-auto w-full p-4 md:p-8">
+      <h2 class="main-title text-center" data-lang-key="page_title">
+        Enter the exam number.
+      </h2>
 
-        <h2 class="main-title text-center" data-lang-key="page_title">Enter the exam number.</h2>
+      <!-- Marks Entry Card -->
+      <div class="centered-card">
+        <!-- Filters and Controls -->
+        <div
+          class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-6 mb-8 text-left"
+        >
+          <!-- Exam Select -->
+          <div class="form-group">
+            <label
+              for="exam-select"
+              class="form-label"
+              data-lang-key="select_exam"
+              >Select exam:</label
+            >
+            <select id="exam-select" class="form-input" required></select>
+          </div>
 
-        <!-- Marks Entry Card -->
-        <div class="centered-card">
+          <!-- Subject Select -->
+          <div class="form-group">
+            <label
+              for="subject-select"
+              class="form-label"
+              data-lang-key="select_subject"
+              >Select subject:</label
+            >
+            <select id="subject-select" class="form-input" required></select>
+          </div>
 
-            <!-- Filters and Controls -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-6 mb-8 text-left">
-
-                <!-- Exam Select -->
-                <div class="form-group">
-                    <label for="exam-select" class="form-label" data-lang-key="select_exam">Select exam:</label>
-                    <select id="exam-select" class="form-input" required></select>
-                </div>
-
-                <!-- Subject Select -->
-                <div class="form-group">
-                    <label for="subject-select" class="form-label" data-lang-key="select_subject">Select
-                        subject:</label>
-                    <select id="subject-select" class="form-input" required></select>
-                </div>
-
-                <!-- Level Checkboxes (Full Width) -->
-                <div class="form-group md:col-span-2">
-                    <label class="form-label" data-lang-key="select_level">Select level (select more than one):</label>
-                    <div id="level-checkboxes" class="flex flex-wrap items-center space-x-4 p-2 border rounded-md">
-                        <!-- Checkboxes injected by JS -->
-                    </div>
-                </div>
+          <!-- Level Checkboxes (Full Width) -->
+          <div class="form-group md:col-span-2">
+            <label class="form-label" data-lang-key="select_level"
+              >Select level (select more than one):</label
+            >
+            <div
+              id="level-checkboxes"
+              class="flex flex-wrap items-center space-x-4 p-2 border rounded-md"
+            >
+              <!-- Checkboxes injected by JS -->
             </div>
-
-            <!-- Marks Table Form -->
-            <form id="marks-entry-form" onsubmit="return saveMarksEntry(event)">
-                <h3 class="text-xl font-bold text-gray-700 mb-6" data-lang-key="enter_marks_heading">Enter Marks</h3>
-
-                <div class="table-container">
-                    <table class="marks-table">
-                        <thead>
-                            <tr>
-                                <th style="width: 40%" data-lang-key="student_name">Student's name</th>
-                                <th style="width: 25%" data-lang-key="roll_number">Roll number</th>
-                                <th style="width: 35%" data-lang-key="number">Number (Out of 100)</th>
-                            </tr>
-                        </thead>
-                        <tbody id="marks-table-body">
-                            <!-- Student rows injected by JS -->
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="flex justify-center mt-8">
-                    <button type="submit" class="primary-button" data-lang-key="save_number">Save number</button>
-                </div>
-            </form>
-
+          </div>
         </div>
 
-    </main>
-</body>
+        <!-- Marks Table Form -->
+        <form id="marks-entry-form" onsubmit="return saveMarksEntry(event)">
+          <h3
+            class="text-xl font-bold text-gray-700 mb-6"
+            data-lang-key="enter_marks_heading"
+          >
+            Enter Marks
+          </h3>
 
+          <div class="table-container">
+            <table class="marks-table">
+              <thead>
+                <tr>
+                  <th style="width: 40%" data-lang-key="student_name">
+                    Student's name
+                  </th>
+                  <th style="width: 25%" data-lang-key="roll_number">
+                    Roll number
+                  </th>
+                  <th style="width: 35%" data-lang-key="number">
+                    Number (Out of 100)
+                  </th>
+                </tr>
+              </thead>
+              <tbody id="marks-table-body">
+                <!-- Student rows injected by JS -->
+              </tbody>
+            </table>
+          </div>
+
+          <div class="flex justify-center mt-8">
+            <button
+              type="submit"
+              class="primary-button"
+              data-lang-key="save_number"
+            >
+              Save number
+            </button>
+          </div>
+        </form>
+      </div>
+    </main>
+  </body>
 </html>

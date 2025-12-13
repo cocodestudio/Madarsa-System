@@ -315,6 +315,36 @@
           entry_number: "Entry number",
           number: "Number",
         },
+        hi: {
+          academic_system: "शैक्षणिक प्रणाली",
+          page_title: "छात्र डेटा",
+          back_to_academic: "अकादमिक पर वापस जाएं",
+          logout: "लॉग आउट",
+
+          // Filters/Actions
+          apply_filter: "फ़िल्टर लागू करें",
+          print_report: "रिपोर्ट प्रिंट करें",
+          address_filter: "पता:",
+          pin_code_filter: "पिन कोड:",
+          residential_filter: "आवासीय / गैर-आवासीय:",
+          aided_filter: "सहायता प्राप्त / गैर-सहायता प्राप्त:",
+          select: "चुनें",
+
+          // Table Headers (Matching Image)
+          state: "राज्य",
+          city: "शहर",
+          pin_code: "पिन कोड",
+          post_office: "डाकघर",
+          address: "पता",
+          mobile: "मोबाइल",
+          aadhaar: "आधार",
+          date_of_birth: "जन्म तिथि",
+          status: "स्थिति",
+          father_name: "पिता का नाम",
+          name: "नाम",
+          entry_number: "प्रविष्टि संख्या (Entry No)",
+          number: "संख्या",
+        },
         ur: {
           academic_system: "تعلیمی نظام",
           page_title: "طالب علم کا ڈیٹا",
@@ -569,6 +599,13 @@
         doc.save(`Student_Data_Filter_${formatDate(new Date())}.pdf`);
       }
 
+      function logOut() {
+        localStorage.removeItem("isUserLoggedIn");
+        localStorage.removeItem("authToken");
+        localStorage.removeItem("userData");
+        window.location.href = "index.html";
+      }
+
       // Initialize content and language
       window.onload = function () {
         const storedLang = localStorage.getItem("madarsaSystemLang");
@@ -601,10 +638,8 @@
         document
           .getElementById("class-filter")
           .addEventListener("change", handleFilter);
-          document.getElementById("apply-filter-btn")
-          .innerHTML = "Apply";
-          document.getElementById("reset-filter-btn")
-          .innerHTML = "Reset";
+        document.getElementById("apply-filter-btn").innerHTML = "Apply";
+        document.getElementById("reset-filter-btn").innerHTML = "Reset";
       };
     </script>
 
@@ -635,10 +670,11 @@
             class="bg-gray-100 rounded-lg p-1 text-sm"
           >
             <option value="en" selected>English</option>
+            <option value="hi">हिन्दी</option>
             <option value="ur">اردو</option>
           </select>
           <button
-            onclick="window.location.href='login.html'"
+            onclick="logOut()"
             class="text-sm font-semibold text-red-600 hover:text-red-800 transition-colors ml-4 action-button px-3 py-1"
             data-lang-key="logout"
           >

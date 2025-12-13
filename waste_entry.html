@@ -723,6 +723,13 @@
         }, 300);
       };
 
+      function logOut() {
+        localStorage.removeItem("isUserLoggedIn");
+        localStorage.removeItem("authToken");
+        localStorage.removeItem("userData");
+        window.location.href = "index.html";
+      }
+
       // Initialize content and language
       window.onload = function () {
         loadWasteEntries(); // Load data
@@ -792,7 +799,7 @@
             <option value="ur">اردو</option>
           </select>
           <button
-            onclick="window.location.href='login.html'"
+            onclick="logOut()"
             class="text-sm font-semibold text-red-600 hover:text-red-800 transition-colors ml-4"
             data-lang-key="logout"
           >

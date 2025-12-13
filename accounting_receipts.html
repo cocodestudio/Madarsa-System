@@ -1,665 +1,838 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Receipts Management - Accounting</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- jsPDF Library for PDF Generation -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
     <style>
-        :root {
-            --color-primary: #00A693;
-            --color-background: #F2F3F4;
-            --color-accent: #E08A27;
-            --color-text-dark: #1A1A1A;
-            --color-text-light: #FFFFFF;
-        }
+      :root {
+        --color-primary: #00a693;
+        --color-background: #f2f3f4;
+        --color-accent: #e08a27;
+        --color-text-dark: #1a1a1a;
+        --color-text-light: #ffffff;
+      }
 
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;700&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap');
+      @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;700&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap");
 
-        /* Language Styles */
-        body,
-        .lang-en {
-            font-family: 'Poppins', sans-serif;
-            direction: ltr;
-            background-color: var(--color-background);
-        }
+      /* Language Styles */
+      body,
+      .lang-en {
+        font-family: "Poppins", sans-serif;
+        direction: ltr;
+        background-color: var(--color-background);
+      }
 
-        .lang-hi {
-            font-family: 'Noto Sans Devanagari', sans-serif;
-            direction: ltr;
-        }
+      .lang-hi {
+        font-family: "Noto Sans Devanagari", sans-serif;
+        direction: ltr;
+      }
 
-        .lang-ur {
-            font-family: 'Noto Nastaliq Urdu', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
-            direction: rtl;
-            line-height: 1.8;
-            text-align: right;
-        }
+      .lang-ur {
+        font-family: "Noto Nastaliq Urdu", "Segoe UI", Tahoma, Geneva, Verdana,
+          sans-serif !important;
+        direction: rtl;
+        line-height: 1.8;
+        text-align: right;
+      }
 
-        /* Form & Inputs */
-        .form-input,
-        select {
-            padding: 0.75rem 1rem;
-            border-radius: 0.5rem;
-            border: 1px solid #ccc;
-            width: 100%;
-            font-family: inherit;
-        }
+      /* Form & Inputs */
+      .form-input,
+      select {
+        padding: 0.75rem 1rem;
+        border-radius: 0.5rem;
+        border: 1px solid #ccc;
+        width: 100%;
+        font-family: inherit;
+      }
 
-        .form-input:focus,
-        select:focus {
-            outline: none;
-            border-color: var(--color-primary);
-            box-shadow: 0 0 0 3px rgba(0, 166, 147, 0.2);
-        }
+      .form-input:focus,
+      select:focus {
+        outline: none;
+        border-color: var(--color-primary);
+        box-shadow: 0 0 0 3px rgba(0, 166, 147, 0.2);
+      }
 
-        .form-label {
-            display: block;
-            font-weight: 600;
-            margin-bottom: 0.25rem;
-            font-size: 0.875rem;
-        }
+      .form-label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 0.25rem;
+        font-size: 0.875rem;
+      }
 
-        /* Buttons */
-        .primary-button {
-            padding: 0.8rem 1.5rem;
-            background-color: var(--color-primary);
-            color: var(--color-text-light);
-            font-weight: 600;
-            border-radius: 0.5rem;
-            transition: background-color 0.3s, transform 0.1s;
-            cursor: pointer;
-        }
+      /* Buttons */
+      .primary-button {
+        padding: 0.8rem 1.5rem;
+        background-color: var(--color-primary);
+        color: var(--color-text-light);
+        font-weight: 600;
+        border-radius: 0.5rem;
+        transition: background-color 0.3s, transform 0.1s;
+        cursor: pointer;
+      }
 
-        .primary-button:hover {
-            background-color: #008f7d;
-            transform: translateY(-1px);
-        }
+      .primary-button:hover {
+        background-color: #008f7d;
+        transform: translateY(-1px);
+      }
 
-        .action-button {
-            padding: 0.5rem 0.75rem;
-            border-radius: 0.5rem;
-            font-size: 0.75rem;
-            font-weight: 600;
-            transition: background-color 0.2s;
-        }
+      .action-button {
+        padding: 0.5rem 0.75rem;
+        border-radius: 0.5rem;
+        font-size: 0.75rem;
+        font-weight: 600;
+        transition: background-color 0.2s;
+      }
 
-        /* Fixed Header */
-        header {
-            background-color: var(--color-text-light);
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            position: sticky;
-            top: 0;
-            width: 100%;
-            z-index: 10;
-            padding: 1rem 2rem;
-        }
+      /* Fixed Header */
+      header {
+        background-color: var(--color-text-light);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        position: sticky;
+        top: 0;
+        width: 100%;
+        z-index: 10;
+        padding: 1rem 2rem;
+      }
 
-        /* Table Styling */
-        .admin-table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0 8px;
-        }
+      /* Table Styling */
+      .admin-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0 8px;
+      }
 
-        .admin-table th {
-            background-color: #f3f4f6;
-            color: var(--color-text-dark);
-            text-align: left;
-            padding: 0.75rem 1rem;
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            font-weight: 700;
-        }
+      .admin-table th {
+        background-color: #f3f4f6;
+        color: var(--color-text-dark);
+        text-align: left;
+        padding: 0.75rem 1rem;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        font-weight: 700;
+      }
 
-        .lang-ur .admin-table th {
-            text-align: right;
-        }
+      .lang-ur .admin-table th {
+        text-align: right;
+      }
 
-        .admin-table td {
-            padding: 0.75rem 1rem;
-            background-color: white;
-            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
-            font-size: 0.85rem;
-            font-weight: 500;
-            border: none;
-        }
+      .admin-table td {
+        padding: 0.75rem 1rem;
+        background-color: white;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+        font-size: 0.85rem;
+        font-weight: 500;
+        border: none;
+      }
 
-        .admin-table tbody tr:hover td {
-            background-color: #f7f7f7;
-        }
+      .admin-table tbody tr:hover td {
+        background-color: #f7f7f7;
+      }
 
-        .admin-table tbody tr td:first-child {
-            border-top-left-radius: 0.5rem;
-            border-bottom-left-radius: 0.5rem;
-        }
+      .admin-table tbody tr td:first-child {
+        border-top-left-radius: 0.5rem;
+        border-bottom-left-radius: 0.5rem;
+      }
 
-        .admin-table tbody tr td:last-child {
-            border-top-right-radius: 0.5rem;
-            border-bottom-right-radius: 0.5rem;
-        }
+      .admin-table tbody tr td:last-child {
+        border-top-right-radius: 0.5rem;
+        border-bottom-right-radius: 0.5rem;
+      }
 
-        .table-container {
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-        }
+      .table-container {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
 
-        .table-container table {
-            min-width: 1200px;
-        }
+      .table-container table {
+        min-width: 1200px;
+      }
 
-        /* Receipt Status */
-        .status-success {
-            color: #10b981;
-            font-weight: 600;
-        }
+      /* Receipt Status */
+      .status-success {
+        color: #10b981;
+        font-weight: 600;
+      }
 
-        .status-error {
-            color: #ef4444;
-            font-weight: 600;
-        }
+      .status-error {
+        color: #ef4444;
+        font-weight: 600;
+      }
 
-        /* Filter Input Positioning Fix */
-        .search-container {
-            position: relative;
-        }
+      /* Filter Input Positioning Fix */
+      .search-container {
+        position: relative;
+      }
 
-        .search-container .form-input {
-            padding-left: 2.5rem;
-        }
+      .search-container .form-input {
+        padding-left: 2.5rem;
+      }
 
-        .lang-ur .search-container .form-input {
-            padding-left: 1rem;
-            padding-right: 2.5rem;
-        }
+      .lang-ur .search-container .form-input {
+        padding-left: 1rem;
+        padding-right: 2.5rem;
+      }
 
-        .lang-ur .search-container svg {
-            right: 0.75rem;
-            left: auto;
-        }
+      .lang-ur .search-container svg {
+        right: 0.75rem;
+        left: auto;
+      }
     </style>
-</head>
+  </head>
 
-<body class="lang-en">
-
+  <body class="lang-en">
     <script>
-        // Helper to format date YYYY-MM-DD
-        function formatDate(date) {
-            const d = new Date(date);
-            let month = '' + (d.getMonth() + 1);
-            let day = '' + d.getDate();
-            const year = d.getFullYear();
+      // Helper to format date YYYY-MM-DD
+      function formatDate(date) {
+        const d = new Date(date);
+        let month = "" + (d.getMonth() + 1);
+        let day = "" + d.getDate();
+        const year = d.getFullYear();
 
-            if (month.length < 2) month = '0' + month;
-            if (day.length < 2) day = '0' + day;
+        if (month.length < 2) month = "0" + month;
+        if (day.length < 2) day = "0" + day;
 
-            return [year, month, day].join('-');
+        return [year, month, day].join("-");
+      }
+
+      // --- Dummy Data ---
+      let DUMMY_RECEIPTS = [
+        {
+          id: 1001,
+          type: "Income",
+          ref: "FEE-1002",
+          date: "2025-11-20",
+          amount: 1500.0,
+          source: "Student Fee",
+          recipient: "Arshad Khan",
+          description: "Monthly fee payment for November.",
+        },
+        {
+          id: 1002,
+          type: "Income",
+          ref: "DON-201",
+          date: "2025-11-25",
+          amount: 5000.0,
+          source: "Donation",
+          recipient: "Mr. Zafar",
+          description: "General charitable donation.",
+        },
+        {
+          id: 1003,
+          type: "Expense",
+          ref: "EXP-501",
+          date: "2025-11-25",
+          amount: 3500.0,
+          source: "Maintenance",
+          recipient: "Electrician",
+          description: "Repair of main circuit board.",
+        },
+        {
+          id: 1004,
+          type: "Income",
+          ref: "FEE-1003",
+          date: "2025-11-29",
+          amount: 400.0,
+          source: "Student Fee",
+          recipient: "Ali Hussain",
+          description: "Partial fee payment.",
+        },
+      ];
+
+      const RECEIPT_STORAGE_KEY = "madarsaReceipts";
+      const TRANSACTION_TYPES = ["Income", "Expense"];
+      const INCOME_SOURCES = ["Student Fee", "Donation", "Zakat Fund"];
+      const EXPENSE_SOURCES = ["Maintenance", "Salaries", "Kitchen"];
+
+      // Load/Save Logic
+      function loadReceipts() {
+        const storedReceipts = localStorage.getItem(RECEIPT_STORAGE_KEY);
+        if (storedReceipts) {
+          try {
+            DUMMY_RECEIPTS = JSON.parse(storedReceipts);
+          } catch (e) {
+            console.error("Error loading receipts:", e);
+          }
+        } else {
+          // Save dummy data if storage is empty
+          localStorage.setItem(
+            RECEIPT_STORAGE_KEY,
+            JSON.stringify(DUMMY_RECEIPTS)
+          );
+        }
+      }
+
+      // Helper to get receipt by ID
+      function getReceiptById(id) {
+        return DUMMY_RECEIPTS.find((r) => r.id === id);
+      }
+
+      // --- Multilingual Data ---
+      const langData = {
+        en: {
+          accounting_system: "Accounting System",
+          page_title: "Receipts & Vouchers",
+          back_to_accounting: "Back to Accounting",
+          logout: "Logout",
+
+          // Filters
+          search_by_ref: "Search by Ref No. / Recipient...",
+          filter_by_type: "Filter by Type",
+          all_types: "All Types",
+          income: "Income",
+          expense: "Expense",
+          from_date: "From Date",
+          to_date: "To Date",
+          apply_filter: "Apply Filter",
+          reset_filter: "Reset",
+
+          // Table Headers
+          receipt_id: "Receipt ID",
+          ref_no: "Ref No.",
+          date: "Date",
+          type: "Type",
+          amount: "Amount",
+          source: "Source/Category",
+          recipient: "Payer/Recipient",
+          actions: "Actions",
+          view_pdf: "View PDF",
+
+          // PDF Text
+          receipt_for_madrasa: "RECEIPT / VOUCHER",
+          madrasa_info_line1: "MADARSA MANAGEMENT SYSTEM",
+          madrasa_info_line2: "Financial Records Department",
+          receipt_type_income: "PAYMENT RECEIVED RECEIPT",
+          receipt_type_expense: "EXPENSE PAYMENT VOUCHER",
+          amount_in_words: "Amount in Words:",
+          signatory: "Accountant Signature",
+          description: "Description",
+        },
+        hi: {
+          accounting_system: "लेखांकन प्रणाली",
+          page_title: "रसीदें और वाउचर",
+          back_to_accounting: "लेखांकन पर वापस",
+          logout: "लॉगआउट",
+
+          // Filters
+          search_by_ref: "रेफ नंबर / प्राप्तकर्ता से खोजें...",
+          filter_by_type: "प्रकार द्वारा फ़िल्टर करें",
+          all_types: "सभी प्रकार",
+          income: "आय",
+          expense: "व्यय",
+          from_date: "इस तिथि से",
+          to_date: "इस तिथि तक",
+          apply_filter: "फ़िल्टर लागू करें",
+          reset_filter: "रीसेट करें",
+
+          // Table Headers
+          receipt_id: "रसीद आईडी",
+          ref_no: "रेफ नंबर",
+          date: "तिथि",
+          type: "प्रकार",
+          amount: "राशि",
+          source: "स्रोत/श्रेणी",
+          recipient: "भुगतानकर्ता/प्राप्तकर्ता",
+          actions: "कार्यवाही",
+          view_pdf: "पीडीएफ देखें",
+
+          // PDF Text
+          receipt_for_madrasa: "रसीद / वाउचर",
+          madrasa_info_line1: "मदरसा प्रबंधन प्रणाली",
+          madrasa_info_line2: "वित्तीय रिकॉर्ड विभाग",
+          receipt_type_income: "प्राप्त भुगतान रसीद",
+          receipt_type_expense: "व्यय भुगतान वाउचर",
+          amount_in_words: "शब्दों में राशि:",
+          signatory: "लेखाकार के हस्ताक्षर",
+          description: "विवरण",
+        },
+        ur: {
+          accounting_system: "اکاؤنٹنگ نظام",
+          page_title: "رسیدیں اور واؤچرز",
+          back_to_accounting: "اکاؤنٹنگ پر واپس جائیں",
+          logout: "لاگ آؤٹ",
+
+          // Filters
+          search_by_ref: "حوالہ نمبر / وصول کنندہ سے تلاش کریں...",
+          filter_by_type: "قسم کے ذریعے فلٹر کریں",
+          all_types: "تمام اقسام",
+          income: "آمدنی",
+          expense: "خرچ",
+          from_date: "اس تاریخ سے",
+          to_date: "اس تاریخ تک",
+          apply_filter: "فلٹر لگائیں",
+          reset_filter: "ری سیٹ کریں",
+
+          // Table Headers
+          receipt_id: "رسید آئی ڈی",
+          ref_no: "حوالہ نمبر",
+          date: "تاریخ",
+          type: "قسم",
+          amount: "رقم",
+          source: "ذریعہ/زمرہ",
+          recipient: "ادا کنندہ/وصول کنندہ",
+          actions: "عمل",
+          view_pdf: "پی ڈی ایف دیکھیں",
+
+          // PDF Text
+          receipt_for_madrasa: "رسید / واؤچر",
+          madrasa_info_line1: "مدرسہ انتظامی نظام",
+          madrasa_info_line2: "مالیاتی ریکارڈز ڈپارٹمنٹ",
+          receipt_type_income: "وصول شدہ ادائیگی کی رسید",
+          receipt_type_expense: "اخراجات کی ادائیگی کا واؤچر",
+          amount_in_words: "الفاظ میں رقم:",
+          signatory: "اکاؤنٹنٹ کے دستخط",
+          description: "تفصیل",
+        },
+      };
+
+      let currentLang = "en";
+
+      function getTranslation(key) {
+        return langData[currentLang][key] || langData["en"][key] || key;
+      }
+
+      // --- Core UI Update Functions ---
+      function updateContent() {
+        document.body.className = "lang-" + currentLang;
+
+        document.querySelectorAll("[data-lang-key]").forEach((el) => {
+          const key = el.getAttribute("data-lang-key");
+          el.textContent = getTranslation(key);
+        });
+
+        // Re-render table and apply filters
+        handleFilter();
+      }
+
+      function changeLanguage(lang) {
+        if (lang in langData) {
+          currentLang = lang;
+          localStorage.setItem("madarsaSystemLang", lang);
+          updateContent();
+        }
+      }
+
+      // --- Table Rendering ---
+      function renderReceiptTable(receiptList) {
+        const tbody = document.getElementById("receipts-table-body");
+        if (!tbody) return;
+
+        tbody.innerHTML = "";
+
+        if (receiptList.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="8" class="text-center text-gray-500 p-4">${
+            getTranslation("no_records") || "No records found."
+          }</td></tr>`;
+          return;
         }
 
-        // --- Dummy Data ---
-        let DUMMY_RECEIPTS = [
-            { id: 1001, type: 'Income', ref: 'FEE-1002', date: '2025-11-20', amount: 1500.00, source: 'Student Fee', recipient: 'Arshad Khan', description: 'Monthly fee payment for November.' },
-            { id: 1002, type: 'Income', ref: 'DON-201', date: '2025-11-25', amount: 5000.00, source: 'Donation', recipient: 'Mr. Zafar', description: 'General charitable donation.' },
-            { id: 1003, type: 'Expense', ref: 'EXP-501', date: '2025-11-25', amount: 3500.00, source: 'Maintenance', recipient: 'Electrician', description: 'Repair of main circuit board.' },
-            { id: 1004, type: 'Income', ref: 'FEE-1003', date: '2025-11-29', amount: 400.00, source: 'Student Fee', recipient: 'Ali Hussain', description: 'Partial fee payment.' },
-        ];
+        receiptList.forEach((receipt) => {
+          const tr = document.createElement("tr");
+          const isIncome = receipt.type === "Income";
+          const typeColor = isIncome ? "text-green-600" : "text-red-600";
 
-        const RECEIPT_STORAGE_KEY = 'madarsaReceipts';
-        const TRANSACTION_TYPES = ['Income', 'Expense'];
-        const INCOME_SOURCES = ['Student Fee', 'Donation', 'Zakat Fund'];
-        const EXPENSE_SOURCES = ['Maintenance', 'Salaries', 'Kitchen'];
-
-
-        // Load/Save Logic
-        function loadReceipts() {
-            const storedReceipts = localStorage.getItem(RECEIPT_STORAGE_KEY);
-            if (storedReceipts) {
-                try {
-                    DUMMY_RECEIPTS = JSON.parse(storedReceipts);
-                } catch (e) {
-                    console.error("Error loading receipts:", e);
-                }
-            } else {
-                // Save dummy data if storage is empty
-                localStorage.setItem(RECEIPT_STORAGE_KEY, JSON.stringify(DUMMY_RECEIPTS));
-            }
-        }
-
-        // Helper to get receipt by ID
-        function getReceiptById(id) {
-            return DUMMY_RECEIPTS.find(r => r.id === id);
-        }
-
-
-        // --- Multilingual Data ---
-        const langData = {
-            'en': {
-                'accounting_system': 'Accounting System',
-                'page_title': 'Receipts & Vouchers',
-                'back_to_accounting': 'Back to Accounting',
-                'logout': 'Logout',
-
-                // Filters
-                'search_by_ref': 'Search by Ref No. / Recipient...',
-                'filter_by_type': 'Filter by Type',
-                'all_types': 'All Types',
-                'income': 'Income',
-                'expense': 'Expense',
-                'from_date': 'From Date',
-                'to_date': 'To Date',
-                'apply_filter': 'Apply Filter',
-                'reset_filter': 'Reset',
-
-                // Table Headers
-                'receipt_id': 'Receipt ID',
-                'ref_no': 'Ref No.',
-                'date': 'Date',
-                'type': 'Type',
-                'amount': 'Amount',
-                'source': 'Source/Category',
-                'recipient': 'Payer/Recipient',
-                'actions': 'Actions',
-                'view_pdf': 'View PDF',
-
-                // PDF Text
-                'receipt_for_madrasa': 'RECEIPT / VOUCHER',
-                'madrasa_info_line1': 'MADARSA MANAGEMENT SYSTEM',
-                'madrasa_info_line2': 'Financial Records Department',
-                'receipt_type_income': 'PAYMENT RECEIVED RECEIPT',
-                'receipt_type_expense': 'EXPENSE PAYMENT VOUCHER',
-                'amount_in_words': 'Amount in Words:',
-                'signatory': 'Accountant Signature',
-                'description': 'Description'
-            },
-            'hi': {
-                'accounting_system': 'लेखांकन प्रणाली',
-                'page_title': 'रसीदें और वाउचर',
-                'back_to_accounting': 'लेखांकन पर वापस',
-                'logout': 'लॉगआउट',
-
-                // Filters
-                'search_by_ref': 'रेफ नंबर / प्राप्तकर्ता से खोजें...',
-                'filter_by_type': 'प्रकार द्वारा फ़िल्टर करें',
-                'all_types': 'सभी प्रकार',
-                'income': 'आय',
-                'expense': 'व्यय',
-                'from_date': 'इस तिथि से',
-                'to_date': 'इस तिथि तक',
-                'apply_filter': 'फ़िल्टर लागू करें',
-                'reset_filter': 'रीसेट करें',
-
-                // Table Headers
-                'receipt_id': 'रसीद आईडी',
-                'ref_no': 'रेफ नंबर',
-                'date': 'तिथि',
-                'type': 'प्रकार',
-                'amount': 'राशि',
-                'source': 'स्रोत/श्रेणी',
-                'recipient': 'भुगतानकर्ता/प्राप्तकर्ता',
-                'actions': 'कार्यवाही',
-                'view_pdf': 'पीडीएफ देखें',
-
-                // PDF Text
-                'receipt_for_madrasa': 'रसीद / वाउचर',
-                'madrasa_info_line1': 'मदरसा प्रबंधन प्रणाली',
-                'madrasa_info_line2': 'वित्तीय रिकॉर्ड विभाग',
-                'receipt_type_income': 'प्राप्त भुगतान रसीद',
-                'receipt_type_expense': 'व्यय भुगतान वाउचर',
-                'amount_in_words': 'शब्दों में राशि:',
-                'signatory': 'लेखाकार के हस्ताक्षर',
-                'description': 'विवरण'
-            },
-            'ur': {
-                'accounting_system': 'اکاؤنٹنگ نظام',
-                'page_title': 'رسیدیں اور واؤچرز',
-                'back_to_accounting': 'اکاؤنٹنگ پر واپس جائیں',
-                'logout': 'لاگ آؤٹ',
-
-                // Filters
-                'search_by_ref': 'حوالہ نمبر / وصول کنندہ سے تلاش کریں...',
-                'filter_by_type': 'قسم کے ذریعے فلٹر کریں',
-                'all_types': 'تمام اقسام',
-                'income': 'آمدنی',
-                'expense': 'خرچ',
-                'from_date': 'اس تاریخ سے',
-                'to_date': 'اس تاریخ تک',
-                'apply_filter': 'فلٹر لگائیں',
-                'reset_filter': 'ری سیٹ کریں',
-
-                // Table Headers
-                'receipt_id': 'رسید آئی ڈی',
-                'ref_no': 'حوالہ نمبر',
-                'date': 'تاریخ',
-                'type': 'قسم',
-                'amount': 'رقم',
-                'source': 'ذریعہ/زمرہ',
-                'recipient': 'ادا کنندہ/وصول کنندہ',
-                'actions': 'عمل',
-                'view_pdf': 'پی ڈی ایف دیکھیں',
-
-                // PDF Text
-                'receipt_for_madrasa': 'رسید / واؤچر',
-                'madrasa_info_line1': 'مدرسہ انتظامی نظام',
-                'madrasa_info_line2': 'مالیاتی ریکارڈز ڈپارٹمنٹ',
-                'receipt_type_income': 'وصول شدہ ادائیگی کی رسید',
-                'receipt_type_expense': 'اخراجات کی ادائیگی کا واؤچر',
-                'amount_in_words': 'الفاظ میں رقم:',
-                'signatory': 'اکاؤنٹنٹ کے دستخط',
-                'description': 'تفصیل'
-            }
-        };
-
-        let currentLang = 'en';
-
-        function getTranslation(key) {
-            return langData[currentLang][key] || langData['en'][key] || key;
-        }
-
-        // --- Core UI Update Functions ---
-        function updateContent() {
-            document.body.className = 'lang-' + currentLang;
-
-            document.querySelectorAll('[data-lang-key]').forEach(el => {
-                const key = el.getAttribute('data-lang-key');
-                el.textContent = getTranslation(key);
-            });
-
-            // Re-render table and apply filters
-            handleFilter();
-        }
-
-        function changeLanguage(lang) {
-            if (lang in langData) {
-                currentLang = lang;
-                localStorage.setItem('madarsaSystemLang', lang);
-                updateContent();
-            }
-        }
-
-        // --- Table Rendering ---
-        function renderReceiptTable(receiptList) {
-            const tbody = document.getElementById('receipts-table-body');
-            if (!tbody) return;
-
-            tbody.innerHTML = '';
-
-            if (receiptList.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="8" class="text-center text-gray-500 p-4">${getTranslation('no_records') || 'No records found.'}</td></tr>`;
-                return;
-            }
-
-            receiptList.forEach(receipt => {
-                const tr = document.createElement('tr');
-                const isIncome = receipt.type === 'Income';
-                const typeColor = isIncome ? 'text-green-600' : 'text-red-600';
-
-                tr.innerHTML = `
+          tr.innerHTML = `
                     <td>${receipt.id}</td>
                     <td>${receipt.ref}</td>
                     <td>${receipt.date}</td>
-                    <td class="${typeColor}">${getTranslation(receipt.type)}</td>
+                    <td class="${typeColor}">${getTranslation(
+            receipt.type
+          )}</td>
                     <td class="font-bold">${receipt.amount.toFixed(2)} INR</td>
                     <td>${getTranslation(receipt.source) || receipt.source}</td>
                     <td>${receipt.recipient}</td>
                     <td>
-                        <button onclick="handleAction('view_pdf', ${receipt.id})" class="action-button bg-blue-500 text-white hover:bg-blue-600" data-lang-key="view_pdf">${getTranslation('view_pdf')}</button>
+                        <button onclick="handleAction('view_pdf', ${
+                          receipt.id
+                        })" class="action-button bg-blue-500 text-white hover:bg-blue-600" data-lang-key="view_pdf">${getTranslation(
+            "view_pdf"
+          )}</button>
                     </td>
                 `;
-                tbody.appendChild(tr);
-            });
+          tbody.appendChild(tr);
+        });
+      }
+
+      // --- Filter Logic ---
+      function filterReceipts() {
+        const searchInput = document
+          .getElementById("search-input")
+          .value.toLowerCase();
+        const typeFilter = document.getElementById("type-filter").value;
+        const fromDate = document.getElementById("from-date").value;
+        const toDate = document.getElementById("to-date").value;
+
+        return DUMMY_RECEIPTS.filter((r) => {
+          const matchesSearch =
+            r.ref.toLowerCase().includes(searchInput) ||
+            r.recipient.toLowerCase().includes(searchInput);
+          const matchesType = !typeFilter || r.type === typeFilter;
+          const matchesFromDate =
+            !fromDate || new Date(r.date) >= new Date(fromDate);
+          const matchesToDate = !toDate || new Date(r.date) <= new Date(toDate);
+
+          return (
+            matchesSearch && matchesType && matchesFromDate && matchesToDate
+          );
+        });
+      }
+
+      function handleFilter() {
+        renderReceiptTable(filterReceipts());
+      }
+
+      function resetFilters() {
+        document.getElementById("search-input").value = "";
+        document.getElementById("type-filter").value = "";
+        document.getElementById("from-date").value = "";
+        document.getElementById("to-date").value = "";
+        handleFilter();
+      }
+
+      // --- PDF Generation Logic ---
+      function amountToWords(n) {
+        // Simplified dummy function for demonstration
+        if (n === 1500) return "One Thousand Five Hundred only";
+        if (n === 5000) return "Five Thousand only";
+        return "Amount in Words Placeholder";
+      }
+
+      function generateReceiptPDF(receipt) {
+        const { jsPDF } = window.jspdf;
+        if (!jsPDF) {
+          alert("PDF library (jsPDF) not loaded. Cannot generate PDF.");
+          return;
         }
 
-        // --- Filter Logic ---
-        function filterReceipts() {
-            const searchInput = document.getElementById('search-input').value.toLowerCase();
-            const typeFilter = document.getElementById('type-filter').value;
-            const fromDate = document.getElementById('from-date').value;
-            const toDate = document.getElementById('to-date').value;
+        const doc = new jsPDF();
+        const isIncome = receipt.type === "Income";
+        const title = getTranslation(
+          isIncome ? "receipt_type_income" : "receipt_type_expense"
+        );
+        const color = isIncome ? "#00A693" : "#ef4444";
+        const date = receipt.date;
 
-            return DUMMY_RECEIPTS.filter(r => {
-                const matchesSearch = r.ref.toLowerCase().includes(searchInput) || r.recipient.toLowerCase().includes(searchInput);
-                const matchesType = !typeFilter || r.type === typeFilter;
-                const matchesFromDate = !fromDate || new Date(r.date) >= new Date(fromDate);
-                const matchesToDate = !toDate || new Date(r.date) <= new Date(toDate);
+        // Header/Title Setup
+        doc.setFillColor(240, 240, 240);
+        doc.rect(0, 0, 210, 25, "F");
+        doc.setFontSize(16);
+        doc.setTextColor(50, 50, 50);
+        doc.text(
+          getTranslation("madrasa_info_line1"),
+          105,
+          10,
+          null,
+          null,
+          "center"
+        );
+        doc.setFontSize(10);
+        doc.text(
+          getTranslation("madrasa_info_line2"),
+          105,
+          15,
+          null,
+          null,
+          "center"
+        );
+        doc.setDrawColor(color);
+        doc.setLineWidth(1.5);
+        doc.line(10, 20, 200, 20);
 
-                return matchesSearch && matchesType && matchesFromDate && matchesToDate;
-            });
+        // Receipt Type and ID
+        doc.setFontSize(14);
+        doc.setTextColor(color);
+        doc.text(title, 10, 35);
+        doc.setFontSize(10);
+        doc.setTextColor(0, 0, 0);
+        doc.text(
+          `${getTranslation("receipt_id")}: ${receipt.id}`,
+          200,
+          35,
+          null,
+          null,
+          "right"
+        );
+
+        // Main Details Box
+        doc.setDrawColor(0, 0, 0);
+        doc.setLineWidth(0.2);
+        doc.rect(10, 45, 180, 55); // Main box
+
+        doc.setFontSize(10);
+        doc.text(`${getTranslation("date")}: ${date}`, 15, 55);
+        doc.text(`${getTranslation("ref_no")}: ${receipt.ref}`, 15, 65);
+
+        doc.text(
+          `${getTranslation(isIncome ? "recipient" : "recipient")}: ${
+            receipt.recipient
+          }`,
+          15,
+          75
+        );
+        doc.text(
+          `${getTranslation("source")}: ${
+            getTranslation(receipt.source) || receipt.source
+          }`,
+          15,
+          85
+        );
+
+        // Amount Section
+        doc.setFillColor(color);
+        doc.rect(10, 105, 180, 10, "F");
+        doc.setFontSize(12);
+        doc.setTextColor(255, 255, 255);
+        doc.text(getTranslation("amount_table"), 15, 112);
+        doc.text(
+          `INR ${receipt.amount.toFixed(2)}`,
+          190,
+          112,
+          null,
+          null,
+          "right"
+        );
+
+        // Amount in Words
+        doc.setFontSize(10);
+        doc.setTextColor(0, 0, 0);
+        doc.text(`${getTranslation("amount_in_words")}`, 15, 125);
+        doc.setFontSize(11);
+        doc.text(amountToWords(receipt.amount), 15, 135);
+
+        // Description
+        doc.setFontSize(10);
+        doc.text(
+          `${getTranslation("description")}: ${receipt.description}`,
+          15,
+          150
+        );
+
+        // Footer and Signature
+        doc.setDrawColor(0, 0, 0);
+        doc.line(140, 180, 200, 180);
+        doc.setFontSize(10);
+        doc.text(
+          `${getTranslation("signatory")}`,
+          190,
+          185,
+          null,
+          null,
+          "right"
+        );
+
+        // Open PDF in new tab
+        window.open(doc.output("bloburl"), "_blank");
+      }
+
+      // --- Action Dispatcher (View PDF) ---
+      function handleAction(action, id) {
+        const receipt = getReceiptById(id);
+
+        if (action === "view_pdf" && receipt) {
+          generateReceiptPDF(receipt);
         }
+      }
 
-        function handleFilter() {
-            renderReceiptTable(filterReceipts());
-        }
+      function logOut() {
+        localStorage.removeItem("isUserLoggedIn");
+        localStorage.removeItem("authToken");
+        localStorage.removeItem("userData");
+        window.location.href = "index.html";
+      }
 
-        function resetFilters() {
-            document.getElementById('search-input').value = '';
-            document.getElementById('type-filter').value = '';
-            document.getElementById('from-date').value = '';
-            document.getElementById('to-date').value = '';
-            handleFilter();
-        }
+      // Initialize content and language
+      window.onload = function () {
+        loadReceipts();
+        const storedLang = localStorage.getItem("madarsaSystemLang");
+        currentLang = storedLang && storedLang in langData ? storedLang : "en";
 
-        // --- PDF Generation Logic ---
-        function amountToWords(n) {
-            // Simplified dummy function for demonstration
-            if (n === 1500) return "One Thousand Five Hundred only";
-            if (n === 5000) return "Five Thousand only";
-            return "Amount in Words Placeholder";
-        }
+        // Initial content update and table render
+        updateContent();
 
-        function generateReceiptPDF(receipt) {
-            const { jsPDF } = window.jspdf;
-            if (!jsPDF) {
-                alert("PDF library (jsPDF) not loaded. Cannot generate PDF.");
-                return;
-            }
-
-            const doc = new jsPDF();
-            const isIncome = receipt.type === 'Income';
-            const title = getTranslation(isIncome ? 'receipt_type_income' : 'receipt_type_expense');
-            const color = isIncome ? '#00A693' : '#ef4444';
-            const date = receipt.date;
-
-            // Header/Title Setup
-            doc.setFillColor(240, 240, 240);
-            doc.rect(0, 0, 210, 25, 'F');
-            doc.setFontSize(16);
-            doc.setTextColor(50, 50, 50);
-            doc.text(getTranslation('madrasa_info_line1'), 105, 10, null, null, "center");
-            doc.setFontSize(10);
-            doc.text(getTranslation('madrasa_info_line2'), 105, 15, null, null, "center");
-            doc.setDrawColor(color);
-            doc.setLineWidth(1.5);
-            doc.line(10, 20, 200, 20);
-
-            // Receipt Type and ID
-            doc.setFontSize(14);
-            doc.setTextColor(color);
-            doc.text(title, 10, 35);
-            doc.setFontSize(10);
-            doc.setTextColor(0, 0, 0);
-            doc.text(`${getTranslation('receipt_id')}: ${receipt.id}`, 200, 35, null, null, "right");
-
-            // Main Details Box
-            doc.setDrawColor(0, 0, 0);
-            doc.setLineWidth(0.2);
-            doc.rect(10, 45, 180, 55); // Main box
-
-            doc.setFontSize(10);
-            doc.text(`${getTranslation('date')}: ${date}`, 15, 55);
-            doc.text(`${getTranslation('ref_no')}: ${receipt.ref}`, 15, 65);
-
-            doc.text(`${getTranslation(isIncome ? 'recipient' : 'recipient')}: ${receipt.recipient}`, 15, 75);
-            doc.text(`${getTranslation('source')}: ${getTranslation(receipt.source) || receipt.source}`, 15, 85);
-
-            // Amount Section
-            doc.setFillColor(color);
-            doc.rect(10, 105, 180, 10, 'F');
-            doc.setFontSize(12);
-            doc.setTextColor(255, 255, 255);
-            doc.text(getTranslation('amount_table'), 15, 112);
-            doc.text(`INR ${receipt.amount.toFixed(2)}`, 190, 112, null, null, "right");
-
-            // Amount in Words
-            doc.setFontSize(10);
-            doc.setTextColor(0, 0, 0);
-            doc.text(`${getTranslation('amount_in_words')}`, 15, 125);
-            doc.setFontSize(11);
-            doc.text(amountToWords(receipt.amount), 15, 135);
-
-            // Description
-            doc.setFontSize(10);
-            doc.text(`${getTranslation('description')}: ${receipt.description}`, 15, 150);
-
-            // Footer and Signature
-            doc.setDrawColor(0, 0, 0);
-            doc.line(140, 180, 200, 180);
-            doc.setFontSize(10);
-            doc.text(`${getTranslation('signatory')}`, 190, 185, null, null, "right");
-
-
-            // Open PDF in new tab
-            window.open(doc.output('bloburl'), '_blank');
-        }
-
-        // --- Action Dispatcher (View PDF) ---
-        function handleAction(action, id) {
-            const receipt = getReceiptById(id);
-
-            if (action === 'view_pdf' && receipt) {
-                generateReceiptPDF(receipt);
-            }
-        }
-
-
-        // Initialize content and language
-        window.onload = function () {
-            loadReceipts();
-            const storedLang = localStorage.getItem('madarsaSystemLang');
-            currentLang = (storedLang && storedLang in langData) ? storedLang : 'en';
-
-            // Initial content update and table render
-            updateContent();
-
-            // Attach filter listeners
-            document.getElementById('apply-filter-btn').addEventListener('click', handleFilter);
-            document.getElementById('reset-filter-btn').addEventListener('click', resetFilters);
-            document.getElementById('search-input').addEventListener('input', handleFilter);
-            document.getElementById('type-filter').addEventListener('change', handleFilter);
-        };
+        // Attach filter listeners
+        document
+          .getElementById("apply-filter-btn")
+          .addEventListener("click", handleFilter);
+        document
+          .getElementById("reset-filter-btn")
+          .addEventListener("click", resetFilters);
+        document
+          .getElementById("search-input")
+          .addEventListener("input", handleFilter);
+        document
+          .getElementById("type-filter")
+          .addEventListener("change", handleFilter);
+      };
     </script>
 
     <!-- HEADER -->
     <header>
-        <div class="max-w-7xl mx-auto w-full flex justify-between items-center">
-            <!-- Left: Back Button & Title -->
-            <div class="flex items-center space-x-4">
-                <a href="accounting_system.html" class="action-button bg-gray-100 text-gray-700 hover:bg-gray-200"
-                    data-lang-key="back_to_accounting">Back to Accounting</a>
-                <h1 class="text-xl font-bold" data-lang-key="page_title" style="color: var(--color-primary);">Receipts &
-                    Vouchers</h1>
-            </div>
-
-            <!-- Right: Language Switch -->
-            <div class="flex items-center space-x-2">
-                <select onchange="changeLanguage(this.value)" class="bg-gray-100 rounded-lg p-1 text-sm">
-                    <option value="en" selected>English</option>
-                    <option value="hi">हिन्दी</option>
-                    <option value="ur">اردو</option>
-                </select>
-                <button onclick="window.location.href='login.html'"
-                    class="text-sm font-semibold text-red-600 hover:text-red-800 transition-colors ml-4"
-                    data-lang-key="logout">Logout</button>
-            </div>
+      <div class="max-w-7xl mx-auto w-full flex justify-between items-center">
+        <!-- Left: Back Button & Title -->
+        <div class="flex items-center space-x-4">
+          <a
+            href="accounting_system.html"
+            class="action-button bg-gray-100 text-gray-700 hover:bg-gray-200"
+            data-lang-key="back_to_accounting"
+            >Back to Accounting</a
+          >
+          <h1
+            class="text-xl font-bold"
+            data-lang-key="page_title"
+            style="color: var(--color-primary)"
+          >
+            Receipts & Vouchers
+          </h1>
         </div>
+
+        <!-- Right: Language Switch -->
+        <div class="flex items-center space-x-2">
+          <select
+            onchange="changeLanguage(this.value)"
+            class="bg-gray-100 rounded-lg p-1 text-sm"
+          >
+            <option value="en" selected>English</option>
+            <option value="hi">हिन्दी</option>
+            <option value="ur">اردو</option>
+          </select>
+          <button
+            onclick="logOut()"
+            class="text-sm font-semibold text-red-600 hover:text-red-800 transition-colors ml-4"
+            data-lang-key="logout"
+          >
+            Logout
+          </button>
+        </div>
+      </div>
     </header>
 
     <!-- MAIN CONTENT AREA -->
     <main class="max-w-7xl mx-auto w-full p-4 md:p-8">
+      <!-- Filter Options -->
+      <div class="bg-white p-6 md:p-8 rounded-xl shadow-2xl mb-8">
+        <h2
+          class="text-2xl font-bold text-gray-700 mb-6"
+          data-lang-key="page_title"
+        >
+          Receipts & Vouchers
+        </h2>
 
-        <!-- Filter Options -->
-        <div class="bg-white p-6 md:p-8 rounded-xl shadow-2xl mb-8">
-            <h2 class="text-2xl font-bold text-gray-700 mb-6" data-lang-key="page_title">Receipts & Vouchers</h2>
+        <div class="grid grid-cols-1 md:grid-cols-6 gap-4 items-end">
+          <!-- Search Input -->
+          <div class="form-group md:col-span-2 search-container">
+            <label
+              for="search-input"
+              class="form-label text-gray-500"
+              data-lang-key="search_by_ref"
+              >Search by Ref No. / Recipient...</label
+            >
+            <input type="text" id="search-input" class="form-input" />
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="w-5 h-5 absolute left-3 bottom-3 transform -translate-y-1/2 text-gray-400"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+              />
+            </svg>
+          </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-6 gap-4 items-end">
+          <!-- Type Filter -->
+          <div class="form-group">
+            <label
+              for="type-filter"
+              class="form-label"
+              data-lang-key="filter_by_type"
+              >Filter by Type</label
+            >
+            <select id="type-filter" class="form-input">
+              <option value="" data-lang-key="all_types">All Types</option>
+              <option value="Income" data-lang-key="income">Income</option>
+              <option value="Expense" data-lang-key="expense">Expense</option>
+            </select>
+          </div>
 
-                <!-- Search Input -->
-                <div class="form-group md:col-span-2 search-container">
-                    <label for="search-input" class="form-label text-gray-500" data-lang-key="search_by_ref">Search by
-                        Ref No. / Recipient...</label>
-                    <input type="text" id="search-input" class="form-input">
-                    <svg xmlns="http://www.w3.org/2000/svg"
-                        class="w-5 h-5 absolute left-3 bottom-3 transform -translate-y-1/2 text-gray-400" fill="none"
-                        viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
-                </div>
+          <!-- From Date -->
+          <div class="form-group">
+            <label for="from-date" class="form-label" data-lang-key="from_date"
+              >From Date</label
+            >
+            <input type="date" id="from-date" class="form-input" />
+          </div>
 
-                <!-- Type Filter -->
-                <div class="form-group">
-                    <label for="type-filter" class="form-label" data-lang-key="filter_by_type">Filter by Type</label>
-                    <select id="type-filter" class="form-input">
-                        <option value="" data-lang-key="all_types">All Types</option>
-                        <option value="Income" data-lang-key="income">Income</option>
-                        <option value="Expense" data-lang-key="expense">Expense</option>
-                    </select>
-                </div>
+          <!-- To Date -->
+          <div class="form-group">
+            <label for="to-date" class="form-label" data-lang-key="to_date"
+              >To Date</label
+            >
+            <input type="date" id="to-date" class="form-input" />
+          </div>
 
-                <!-- From Date -->
-                <div class="form-group">
-                    <label for="from-date" class="form-label" data-lang-key="from_date">From Date</label>
-                    <input type="date" id="from-date" class="form-input">
-                </div>
-
-                <!-- To Date -->
-                <div class="form-group">
-                    <label for="to-date" class="form-label" data-lang-key="to_date">To Date</label>
-                    <input type="date" id="to-date" class="form-input">
-                </div>
-
-
-                <!-- Apply/Reset Buttons -->
-                <div class="form-group flex space-x-2">
-                    <button type="button" id="reset-filter-btn"
-                        class="action-button bg-gray-200 text-gray-700 hover:bg-gray-100 w-1/2"
-                        data-lang-key="reset_filter">Reset</button>
-                    <button type="button" id="apply-filter-btn" class="primary-button w-1/2"
-                        data-lang-key="apply_filter">Apply Filter</button>
-                </div>
-            </div>
+          <!-- Apply/Reset Buttons -->
+          <div class="form-group flex space-x-2">
+            <button
+              type="button"
+              id="reset-filter-btn"
+              class="action-button bg-gray-200 text-gray-700 hover:bg-gray-100 w-1/2"
+              data-lang-key="reset_filter"
+            >
+              Reset
+            </button>
+            <button
+              type="button"
+              id="apply-filter-btn"
+              class="primary-button w-1/2"
+              data-lang-key="apply_filter"
+            >
+              Apply Filter
+            </button>
+          </div>
         </div>
+      </div>
 
-        <!-- Receipt History Table -->
-        <div class="bg-white p-6 md:p-8 rounded-xl shadow-2xl">
-            <h3 class="text-lg font-semibold text-gray-700 mb-6" data-lang-key="page_title">Receipts & Vouchers History
-            </h3>
+      <!-- Receipt History Table -->
+      <div class="bg-white p-6 md:p-8 rounded-xl shadow-2xl">
+        <h3
+          class="text-lg font-semibold text-gray-700 mb-6"
+          data-lang-key="page_title"
+        >
+          Receipts & Vouchers History
+        </h3>
 
-            <div class="table-container">
-                <table class="admin-table">
-                    <thead>
-                        <tr class="rounded-lg">
-                            <th style="width: 8%" data-lang-key="receipt_id">Receipt ID</th>
-                            <th style="width: 10%" data-lang-key="ref_no">Ref No.</th>
-                            <th style="width: 10%" data-lang-key="date">Date</th>
-                            <th style="width: 10%" data-lang-key="type">Type</th>
-                            <th style="width: 10%" data-lang-key="amount">Amount</th>
-                            <th style="width: 17%" data-lang-key="source">Source/Category</th>
-                            <th style="width: 25%" data-lang-key="recipient">Payer/Recipient</th>
-                            <th style="width: 10%" data-lang-key="actions">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="receipts-table-body">
-                        <!-- Receipt data will be injected here by JS -->
-                    </tbody>
-                </table>
-            </div>
+        <div class="table-container">
+          <table class="admin-table">
+            <thead>
+              <tr class="rounded-lg">
+                <th style="width: 8%" data-lang-key="receipt_id">Receipt ID</th>
+                <th style="width: 10%" data-lang-key="ref_no">Ref No.</th>
+                <th style="width: 10%" data-lang-key="date">Date</th>
+                <th style="width: 10%" data-lang-key="type">Type</th>
+                <th style="width: 10%" data-lang-key="amount">Amount</th>
+                <th style="width: 17%" data-lang-key="source">
+                  Source/Category
+                </th>
+                <th style="width: 25%" data-lang-key="recipient">
+                  Payer/Recipient
+                </th>
+                <th style="width: 10%" data-lang-key="actions">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="receipts-table-body">
+              <!-- Receipt data will be injected here by JS -->
+            </tbody>
+          </table>
         </div>
+      </div>
     </main>
-
-</body>
-
+  </body>
 </html>

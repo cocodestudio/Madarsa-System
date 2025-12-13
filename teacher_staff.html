@@ -625,6 +625,8 @@
         modalTitle.textContent = getTranslation(titleKey);
         modalBody.innerHTML = contentHtml;
 
+        fetchRoles();
+
         modal.classList.remove("hidden");
         setTimeout(() => {
           modal.classList.remove("opacity-0");
@@ -808,6 +810,7 @@
       async function fetchRoles() {
         let roles = [];
         const token = localStorage.getItem("authToken");
+        const targetContainer = document.getElementById("edit-api-select");
 
         // If no token, fallback to local data
         if (!token) {
@@ -817,6 +820,9 @@
         }
 
         try {
+          targetContainer.innerHTML =
+            '<option value="0">Loading Roles...</option>';
+
           const res = await fetch(
             "https://www.sgemplusglobal.com/Madarsa-Management-Software/web-apis/auth/get_all_roles.php",
             {
@@ -849,11 +855,13 @@
 
             let htmlData = "";
 
+            targetContainer.innerHTML = htmlData;
+
             roles.forEach((item) => {
               htmlData += `<option value="${item.id}">${item.name}</option>`;
             });
 
-            document.getElementById("edit-api-select").innerHTML = htmlData;
+            targetContainer.innerHTML = htmlData;
           } else {
             // invalid token or server message
             if (json && json.message) alert(json.message);
@@ -865,7 +873,6 @@
 
       // --- NEW: Function to create the empty form for adding new staff ---
       function createAddForm() {
-        fetchRoles();
         const isRtl = currentLang === "ur";
         const alignment = isRtl ? "text-right" : "text-left";
         const newId = generateNewId();

@@ -1,446 +1,544 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Assign Curriculum - Academic System</title>
     <script src="https://cdn.tailwindcss.com"></script>
 
     <style>
-        :root {
-            --color-primary: #00A693;
-            --color-background: #F2F3F4;
-            --color-accent: #E08A27;
-            --color-text-dark: #1A1A1A;
-            --color-text-light: #FFFFFF;
-            --color-yellow-card: #fffbeb;
-            /* Light yellow background from image */
-        }
+      :root {
+        --color-primary: #00a693;
+        --color-background: #f2f3f4;
+        --color-accent: #e08a27;
+        --color-text-dark: #1a1a1a;
+        --color-text-light: #ffffff;
+        --color-yellow-card: #fffbeb;
+        /* Light yellow background from image */
+      }
 
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;700&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap');
+      @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;700&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap");
 
-        /* Language Styles */
-        body,
-        .lang-en {
-            font-family: 'Poppins', sans-serif;
-            direction: ltr;
-            background-color: var(--color-background);
-        }
+      /* Language Styles */
+      body,
+      .lang-en {
+        font-family: "Poppins", sans-serif;
+        direction: ltr;
+        background-color: var(--color-background);
+      }
 
-        .lang-hi {
-            font-family: 'Noto Sans Devangari', sans-serif;
-            direction: ltr;
-        }
+      .lang-hi {
+        font-family: "Noto Sans Devangari", sans-serif;
+        direction: ltr;
+      }
 
-        .lang-ur {
-            font-family: 'Noto Nastaliq Urdu', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
-            direction: rtl;
-            line-height: 1.8;
-            text-align: right;
-        }
+      .lang-ur {
+        font-family: "Noto Nastaliq Urdu", "Segoe UI", Tahoma, Geneva, Verdana,
+          sans-serif !important;
+        direction: rtl;
+        line-height: 1.8;
+        text-align: right;
+      }
 
-        /* Form & Inputs */
-        .form-input,
-        select {
-            padding: 0.75rem 1rem;
-            border-radius: 0.5rem;
-            border: 1px solid #ccc;
-            width: 100%;
-            font-family: inherit;
-        }
+      /* Form & Inputs */
+      .form-input,
+      select {
+        padding: 0.75rem 1rem;
+        border-radius: 0.5rem;
+        border: 1px solid #ccc;
+        width: 100%;
+        font-family: inherit;
+      }
 
-        .form-input:focus,
-        select:focus {
-            outline: none;
-            border-color: var(--color-primary);
-            box-shadow: 0 0 0 3px rgba(0, 166, 147, 0.2);
-        }
+      .form-input:focus,
+      select:focus {
+        outline: none;
+        border-color: var(--color-primary);
+        box-shadow: 0 0 0 3px rgba(0, 166, 147, 0.2);
+      }
 
-        .form-label {
-            display: block;
-            font-weight: 600;
-            margin-bottom: 0.25rem;
-            font-size: 0.875rem;
-            color: var(--color-text-dark);
-        }
+      .form-label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 0.25rem;
+        font-size: 0.875rem;
+        color: var(--color-text-dark);
+      }
 
-        /* Buttons */
-        .primary-button {
-            padding: 0.8rem 1.5rem;
-            background-color: var(--color-primary);
-            color: white;
-            font-weight: 600;
-            border-radius: 0.5rem;
-            transition: background-color 0.2s;
-            cursor: pointer;
-        }
+      /* Buttons */
+      .primary-button {
+        padding: 0.8rem 1.5rem;
+        background-color: var(--color-primary);
+        color: white;
+        font-weight: 600;
+        border-radius: 0.5rem;
+        transition: background-color 0.2s;
+        cursor: pointer;
+      }
 
-        .primary-button:hover {
-            background-color: #008f7d;
-        }
+      .primary-button:hover {
+        background-color: #008f7d;
+      }
 
-        /* Fixed Header */
-        header {
-            background-color: var(--color-text-light);
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            position: sticky;
-            top: 0;
-            width: 100%;
-            z-index: 10;
-            padding: 1rem 2rem;
-        }
+      /* Fixed Header */
+      header {
+        background-color: var(--color-text-light);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        position: sticky;
+        top: 0;
+        width: 100%;
+        z-index: 10;
+        padding: 1rem 2rem;
+      }
 
-        /* Card Structure */
-        .centered-card {
-            background-color: white;
-            /* Changed to white for clean contrast */
-            border-radius: 1rem;
-            padding: 2rem;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-            max-width: 750px;
-            /* Wider card for better checkbox layout */
-            width: 100%;
-            margin: 2rem auto;
-            text-align: center;
-            border: 1px solid #e5e5e5;
-            /* Subtle border */
-        }
+      /* Card Structure */
+      .centered-card {
+        background-color: white;
+        /* Changed to white for clean contrast */
+        border-radius: 1rem;
+        padding: 2rem;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        max-width: 750px;
+        /* Wider card for better checkbox layout */
+        width: 100%;
+        margin: 2rem auto;
+        text-align: center;
+        border: 1px solid #e5e5e5;
+        /* Subtle border */
+      }
 
-        .main-title {
-            color: var(--color-text-dark);
-            font-size: 2.25rem;
-            font-weight: 700;
-            margin-bottom: 1.5rem;
-        }
+      .main-title {
+        color: var(--color-text-dark);
+        font-size: 2.25rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+      }
 
-        /* Subject List */
-        .subject-list-container {
-            background-color: #f8f8f8;
-            /* Light gray background for the list box */
-            border: 1px solid #ddd;
-            padding: 1rem;
-            border-radius: 0.5rem;
-            max-height: 300px;
-            /* Increased height */
-            overflow-y: auto;
-            text-align: left;
-        }
+      /* Subject List */
+      .subject-list-container {
+        background-color: #f8f8f8;
+        /* Light gray background for the list box */
+        border: 1px solid #ddd;
+        padding: 1rem;
+        border-radius: 0.5rem;
+        max-height: 300px;
+        /* Increased height */
+        overflow-y: auto;
+        text-align: left;
+      }
 
-        .subject-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0.5rem 0;
-            border-bottom: 1px dashed #eee;
-            font-size: 0.9rem;
-        }
+      .subject-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.5rem 0;
+        border-bottom: 1px dashed #eee;
+        font-size: 0.9rem;
+      }
 
-        .subject-item:last-child {
-            border-bottom: none;
-        }
+      .subject-item:last-child {
+        border-bottom: none;
+      }
     </style>
-</head>
+  </head>
 
-<body class="lang-en">
-
+  <body class="lang-en">
     <script>
-        // --- Dummy Data ---
-        const DUMMY_EXAMS = ['September 2025', 'Mid-Term 2025', 'University'];
-        const DUMMY_GRADES = ['First', 'Arbitration', 'Sania', 'Memorization', 'Fifth', 'Hadith tour', 'Rabia', 'Nazra', 'Sixteenth'];
+      // --- Dummy Data ---
+      const DUMMY_EXAMS = ["September 2025", "Mid-Term 2025", "University"];
+      const DUMMY_GRADES = [
+        "First",
+        "Arbitration",
+        "Sania",
+        "Memorization",
+        "Fifth",
+        "Hadith tour",
+        "Rabia",
+        "Nazra",
+        "Sixteenth",
+      ];
 
-        // Simulating the subjects available for mapping (Course List)
-        const DUMMY_SUBJECTS = [
-            { id: 101, name: 'Arabic (Arabic book)', status: 'Active' },
-            { id: 102, name: 'Mathematics (Mathematics Book)', status: 'Active' },
-            { id: 103, name: 'English (English book)', status: 'Active' },
-            { id: 104, name: 'Fiqh (Noor ul Idah)', status: 'Active' },
-            { id: 105, name: 'Hadith (Mishkat)', status: 'Active' },
-            { id: 106, name: 'Tafseer (Jalalayn)', status: 'Active' },
-        ];
+      // Simulating the subjects available for mapping (Course List)
+      const DUMMY_SUBJECTS = [
+        { id: 101, name: "Arabic (Arabic book)", status: "Active" },
+        { id: 102, name: "Mathematics (Mathematics Book)", status: "Active" },
+        { id: 103, name: "English (English book)", status: "Active" },
+        { id: 104, name: "Fiqh (Noor ul Idah)", status: "Active" },
+        { id: 105, name: "Hadith (Mishkat)", status: "Active" },
+        { id: 106, name: "Tafseer (Jalalayn)", status: "Active" },
+      ];
 
-        // Structure: curriculumAssignment[exam][grade] = [subjectId, subjectId, ...]
-        let curriculumAssignment = {
-            'September 2025': {
-                'First': [101, 103],
-                'Sania': [101, 102]
-            }
-        };
+      // Structure: curriculumAssignment[exam][grade] = [subjectId, subjectId, ...]
+      let curriculumAssignment = {
+        "September 2025": {
+          First: [101, 103],
+          Sania: [101, 102],
+        },
+      };
 
-        const ASSIGNMENT_STORAGE_KEY = 'madarsaCurriculumAssignment';
+      const ASSIGNMENT_STORAGE_KEY = "madarsaCurriculumAssignment";
 
-        // Load/Save Logic
-        function loadAssignments() {
-            const storedAssignments = localStorage.getItem(ASSIGNMENT_STORAGE_KEY);
-            if (storedAssignments) {
-                try {
-                    curriculumAssignment = JSON.parse(storedAssignments);
-                } catch (e) {
-                    console.error("Error loading curriculum assignments:", e);
-                }
-            } else {
-                saveAssignments();
-            }
+      // Load/Save Logic
+      function loadAssignments() {
+        const storedAssignments = localStorage.getItem(ASSIGNMENT_STORAGE_KEY);
+        if (storedAssignments) {
+          try {
+            curriculumAssignment = JSON.parse(storedAssignments);
+          } catch (e) {
+            console.error("Error loading curriculum assignments:", e);
+          }
+        } else {
+          saveAssignments();
+        }
+      }
+
+      function saveAssignments() {
+        localStorage.setItem(
+          ASSIGNMENT_STORAGE_KEY,
+          JSON.stringify(curriculumAssignment)
+        );
+      }
+
+      // --- Multilingual Data ---
+      const langData = {
+        en: {
+          academic_system: "Academic System",
+          page_title: "Select the exam syllabus",
+          back_to_academic: "Back to Academic",
+          logout: "Logout",
+
+          // Form/Table
+          select_exam: "Select exam:",
+          select_status: "Select status:",
+          select_all_courses: "Select all courses",
+          save: "Save",
+
+          // Messages
+          validation_error: "Please select an Exam and Status (Grade).",
+          assignment_saved: "Curriculum assignment successfully saved!",
+          no_subjects: "No subjects available to assign.",
+          not_found_exam: "Exam not found.",
+          not_found_grade: "Grade not found.",
+        },
+        hi: {
+          academic_system: "शैक्षणिक प्रणाली",
+          page_title: "परीक्षा पाठ्यक्रम (Syllabus) चुनें",
+          back_to_academic: "अकादमिक पर वापस जाएं",
+          logout: "लॉग आउट",
+
+          // Form/Table
+          select_exam: "परीक्षा चुनें:",
+          select_status: "स्थिति (Status) चुनें:",
+          select_all_courses: "सभी विषय चुनें",
+          save: "सहेजें",
+
+          // Messages
+          validation_error: "कृपया एक परीक्षा और स्थिति (ग्रेड) चुनें।",
+          assignment_saved:
+            "पाठ्यक्रम (Curriculum) आवंटन सफलतापूर्वक सहेजा गया!",
+          no_subjects: "आवंटन के लिए कोई विषय उपलब्ध नहीं है।",
+          not_found_exam: "परीक्षा नहीं मिली।",
+          not_found_grade: "ग्रेड नहीं मिला।",
+        },
+        ur: {
+          academic_system: "تعلیمی نظام",
+          page_title: "امتحان کا نصاب منتخب کریں",
+          back_to_academic: "اکیڈمک پر واپس جائیں",
+          logout: "لاگ آؤٹ",
+
+          // Form/Table
+          select_exam: "امتحان منتخب کریں:",
+          select_status: "حالت منتخب کریں:",
+          select_all_courses: "تمام کورسز منتخب کریں",
+          save: "محفوظ کریں",
+
+          // Messages
+          validation_error: "براہ کرم امتحان اور حالت (گریڈ) منتخب کریں۔",
+          assignment_saved: "نصاب کی تفویض کامیابی سے محفوظ ہو گئی!",
+          no_subjects: "تفویض کرنے کے لیے کوئی مضمون دستیاب نہیں ہے۔",
+          not_found_exam: "امتحان نہیں ملا۔",
+          not_found_grade: "گریڈ نہیں ملا۔",
+        },
+      };
+
+      let currentLang = "en";
+
+      function getTranslation(key) {
+        return langData[currentLang][key] || langData["en"][key] || key;
+      }
+
+      // --- Core UI Update Functions ---
+      function updateContent() {
+        document.body.className = "lang-" + currentLang;
+
+        document.querySelectorAll("[data-lang-key]").forEach((el) => {
+          const key = el.getAttribute("data-lang-key");
+          el.textContent = getTranslation(key);
+        });
+
+        populateDropdowns();
+        renderSubjectCheckboxes();
+      }
+
+      function changeLanguage(lang) {
+        if (lang in langData) {
+          currentLang = lang;
+          localStorage.setItem("madarsaSystemLang", lang);
+          updateContent();
+        }
+      }
+
+      function populateDropdowns() {
+        const examDropdown = document.getElementById("exam-select");
+        const statusDropdown = document.getElementById("status-select");
+
+        // Populate Exam Dropdown
+        const selectedExam = examDropdown.value;
+        examDropdown.innerHTML = `<option value="">-- Select Exam --</option>`;
+        DUMMY_EXAMS.forEach((exam) => {
+          examDropdown.innerHTML += `<option value="${exam}" ${
+            exam === selectedExam ? "selected" : ""
+          }>${exam}</option>`;
+        });
+
+        // Populate Status/Grade Dropdown
+        const selectedStatus = statusDropdown.value;
+        statusDropdown.innerHTML = `<option value="">-- Select Status --</option>`;
+        DUMMY_GRADES.forEach((grade) => {
+          statusDropdown.innerHTML += `<option value="${grade}" ${
+            grade === selectedStatus ? "selected" : ""
+          }>${grade}</option>`;
+        });
+      }
+
+      // --- Checkbox Rendering Logic ---
+      function renderSubjectCheckboxes() {
+        const container = document.getElementById(
+          "subjects-checkbox-container"
+        );
+        if (!container) return;
+
+        const exam = document.getElementById("exam-select").value;
+        const grade = document.getElementById("status-select").value;
+
+        container.innerHTML = "";
+
+        if (!exam || !grade) {
+          container.innerHTML = `<p class="text-gray-500 text-center p-4">${getTranslation(
+            "validation_error"
+          )}</p>`;
+          return;
         }
 
-        function saveAssignments() {
-            localStorage.setItem(ASSIGNMENT_STORAGE_KEY, JSON.stringify(curriculumAssignment));
-        }
+        // Get currently assigned subjects for this exam/grade combination
+        const currentAssignment =
+          (curriculumAssignment[exam] && curriculumAssignment[exam][grade]) ||
+          [];
 
-        // --- Multilingual Data ---
-        const langData = {
-            'en': {
-                'academic_system': 'Academic System',
-                'page_title': 'Select the exam syllabus',
-                'back_to_academic': 'Back to Academic',
-                'logout': 'Logout',
+        // Render Checkboxes
+        const allSubjectsHtml = DUMMY_SUBJECTS.map((subject) => {
+          const isChecked = currentAssignment.includes(subject.id);
 
-                // Form/Table
-                'select_exam': 'Select exam:',
-                'select_status': 'Select status:',
-                'select_all_courses': 'Select all courses',
-                'save': 'Save',
-
-                // Messages
-                'validation_error': 'Please select an Exam and Status (Grade).',
-                'assignment_saved': 'Curriculum assignment successfully saved!',
-                'no_subjects': 'No subjects available to assign.',
-                'not_found_exam': 'Exam not found.',
-                'not_found_grade': 'Grade not found.'
-            },
-            'ur': {
-                'academic_system': 'تعلیمی نظام',
-                'page_title': 'امتحان کا نصاب منتخب کریں',
-                'back_to_academic': 'اکیڈمک پر واپس جائیں',
-                'logout': 'لاگ آؤٹ',
-
-                // Form/Table
-                'select_exam': 'امتحان منتخب کریں:',
-                'select_status': 'حالت منتخب کریں:',
-                'select_all_courses': 'تمام کورسز منتخب کریں',
-                'save': 'محفوظ کریں',
-
-                // Messages
-                'validation_error': 'براہ کرم امتحان اور حالت (گریڈ) منتخب کریں۔',
-                'assignment_saved': 'نصاب کی تفویض کامیابی سے محفوظ ہو گئی!',
-                'no_subjects': 'تفویض کرنے کے لیے کوئی مضمون دستیاب نہیں ہے۔',
-                'not_found_exam': 'امتحان نہیں ملا۔',
-                'not_found_grade': 'گریڈ نہیں ملا۔'
-            }
-        };
-
-        let currentLang = 'en';
-
-        function getTranslation(key) {
-            return langData[currentLang][key] || langData['en'][key] || key;
-        }
-
-        // --- Core UI Update Functions ---
-        function updateContent() {
-            document.body.className = 'lang-' + currentLang;
-
-            document.querySelectorAll('[data-lang-key]').forEach(el => {
-                const key = el.getAttribute('data-lang-key');
-                el.textContent = getTranslation(key);
-            });
-
-            populateDropdowns();
-            renderSubjectCheckboxes();
-        }
-
-        function changeLanguage(lang) {
-            if (lang in langData) {
-                currentLang = lang;
-                localStorage.setItem('madarsaSystemLang', lang);
-                updateContent();
-            }
-        }
-
-        function populateDropdowns() {
-            const examDropdown = document.getElementById('exam-select');
-            const statusDropdown = document.getElementById('status-select');
-
-            // Populate Exam Dropdown
-            const selectedExam = examDropdown.value;
-            examDropdown.innerHTML = `<option value="">-- Select Exam --</option>`;
-            DUMMY_EXAMS.forEach(exam => {
-                examDropdown.innerHTML += `<option value="${exam}" ${exam === selectedExam ? 'selected' : ''}>${exam}</option>`;
-            });
-
-            // Populate Status/Grade Dropdown
-            const selectedStatus = statusDropdown.value;
-            statusDropdown.innerHTML = `<option value="">-- Select Status --</option>`;
-            DUMMY_GRADES.forEach(grade => {
-                statusDropdown.innerHTML += `<option value="${grade}" ${grade === selectedStatus ? 'selected' : ''}>${grade}</option>`;
-            });
-        }
-
-        // --- Checkbox Rendering Logic ---
-        function renderSubjectCheckboxes() {
-            const container = document.getElementById('subjects-checkbox-container');
-            if (!container) return;
-
-            const exam = document.getElementById('exam-select').value;
-            const grade = document.getElementById('status-select').value;
-
-            container.innerHTML = '';
-
-            if (!exam || !grade) {
-                container.innerHTML = `<p class="text-gray-500 text-center p-4">${getTranslation('validation_error')}</p>`;
-                return;
-            }
-
-            // Get currently assigned subjects for this exam/grade combination
-            const currentAssignment = curriculumAssignment[exam] && curriculumAssignment[exam][grade] || [];
-
-            // Render Checkboxes
-            const allSubjectsHtml = DUMMY_SUBJECTS.map(subject => {
-                const isChecked = currentAssignment.includes(subject.id);
-
-                return `
+          return `
                     <div class="subject-item">
                         <span class="font-medium">${subject.name}</span>
                         <input type="checkbox" 
                                id="sub-${subject.id}" 
                                name="subject" 
                                value="${subject.id}"
-                               ${isChecked ? 'checked' : ''}
+                               ${isChecked ? "checked" : ""}
                                class="checkbox-input" style="accent-color: var(--color-primary);">
                     </div>
                 `;
-            }).join('');
+        }).join("");
 
-            if (DUMMY_SUBJECTS.length === 0) {
-                container.innerHTML = `<p class="text-red-500 text-center p-4">${getTranslation('no_subjects')}</p>`;
-            } else {
-                container.innerHTML = allSubjectsHtml;
-            }
+        if (DUMMY_SUBJECTS.length === 0) {
+          container.innerHTML = `<p class="text-red-500 text-center p-4">${getTranslation(
+            "no_subjects"
+          )}</p>`;
+        } else {
+          container.innerHTML = allSubjectsHtml;
+        }
+      }
+
+      // --- Action Logic ---
+      function toggleSelectAll(checkbox) {
+        document.querySelectorAll('input[name="subject"]').forEach((cb) => {
+          cb.checked = checkbox.checked;
+        });
+      }
+
+      function saveCurriculumAssignment(event) {
+        event.preventDefault();
+
+        const exam = document.getElementById("exam-select").value;
+        const grade = document.getElementById("status-select").value;
+
+        if (!exam || !grade) {
+          alert(getTranslation("validation_error"));
+          return false;
         }
 
-        // --- Action Logic ---
-        function toggleSelectAll(checkbox) {
-            document.querySelectorAll('input[name="subject"]').forEach(cb => {
-                cb.checked = checkbox.checked;
-            });
-        }
+        const selectedSubjectIds = Array.from(
+          document.querySelectorAll('input[name="subject"]:checked')
+        ).map((cb) => parseInt(cb.value));
 
-        function saveCurriculumAssignment(event) {
-            event.preventDefault();
+        // Save the assignment
+        if (!curriculumAssignment[exam]) curriculumAssignment[exam] = {};
+        curriculumAssignment[exam][grade] = selectedSubjectIds;
+        saveAssignments();
 
-            const exam = document.getElementById('exam-select').value;
-            const grade = document.getElementById('status-select').value;
+        alert(getTranslation("assignment_saved"));
+        updateContent();
+        return false;
+      }
 
-            if (!exam || !grade) {
-                alert(getTranslation('validation_error'));
-                return false;
-            }
+      function logOut() {
+        localStorage.removeItem("isUserLoggedIn");
+        localStorage.removeItem("authToken");
+        localStorage.removeItem("userData");
+        window.location.href = "index.html";
+      }
 
-            const selectedSubjectIds = Array.from(document.querySelectorAll('input[name="subject"]:checked')).map(cb => parseInt(cb.value));
+      // Initialize content and language
+      window.onload = function () {
+        loadAssignments();
+        const storedLang = localStorage.getItem("madarsaSystemLang");
+        currentLang = storedLang && storedLang in langData ? storedLang : "en";
 
-            // Save the assignment
-            if (!curriculumAssignment[exam]) curriculumAssignment[exam] = {};
-            curriculumAssignment[exam][grade] = selectedSubjectIds;
-            saveAssignments();
+        // Initial content update
+        updateContent();
 
-            alert(getTranslation('assignment_saved'));
-            updateContent();
-            return false;
-        }
-
-
-        // Initialize content and language
-        window.onload = function () {
-            loadAssignments();
-            const storedLang = localStorage.getItem('madarsaSystemLang');
-            currentLang = (storedLang && storedLang in langData) ? storedLang : 'en';
-
-            // Initial content update
-            updateContent();
-
-            // Attach listeners
-            document.getElementById('exam-select').addEventListener('change', updateContent);
-            document.getElementById('status-select').addEventListener('change', updateContent);
-            document.getElementById('assignment-form').addEventListener('submit', saveCurriculumAssignment);
-        };
+        // Attach listeners
+        document
+          .getElementById("exam-select")
+          .addEventListener("change", updateContent);
+        document
+          .getElementById("status-select")
+          .addEventListener("change", updateContent);
+        document
+          .getElementById("assignment-form")
+          .addEventListener("submit", saveCurriculumAssignment);
+      };
     </script>
 
     <!-- HEADER -->
     <header>
-        <div class="max-w-7xl mx-auto w-full flex justify-between items-center">
-            <!-- Left: Back Button & Title -->
-            <div class="flex items-center space-x-4">
-                <a href="academic_system.html" class="action-button bg-gray-100 text-gray-700 hover:bg-gray-200"
-                    data-lang-key="back_to_academic">Back to Academic</a>
-                <h1 class="text-xl font-bold" data-lang-key="page_title" style="color: var(--color-primary);">Assign
-                    Curriculum</h1>
-            </div>
-
-            <!-- Right: Language Switch -->
-            <div class="flex items-center space-x-2">
-                <select onchange="changeLanguage(this.value)" class="bg-gray-100 rounded-lg p-1 text-sm">
-                    <option value="en" selected>English</option>
-                    <option value="ur">اردو</option>
-                </select>
-                <button onclick="window.location.href='login.html'"
-                    class="text-sm font-semibold text-red-600 hover:text-red-800 transition-colors ml-4 action-button px-3 py-1"
-                    data-lang-key="logout">Logout</button>
-            </div>
+      <div class="max-w-7xl mx-auto w-full flex justify-between items-center">
+        <!-- Left: Back Button & Title -->
+        <div class="flex items-center space-x-4">
+          <a
+            href="academic_system.html"
+            class="action-button bg-gray-100 text-gray-700 hover:bg-gray-200"
+            data-lang-key="back_to_academic"
+            >Back to Academic</a
+          >
+          <h1
+            class="text-xl font-bold"
+            data-lang-key="page_title"
+            style="color: var(--color-primary)"
+          >
+            Assign Curriculum
+          </h1>
         </div>
+
+        <!-- Right: Language Switch -->
+        <div class="flex items-center space-x-2">
+          <select
+            onchange="changeLanguage(this.value)"
+            class="bg-gray-100 rounded-lg p-1 text-sm"
+          >
+            <option value="en" selected>English</option>
+            <option value="hi">हिन्दी</option>
+            <option value="ur">اردو</option>
+          </select>
+          <button
+            onclick="logOut()"
+            class="text-sm font-semibold text-red-600 hover:text-red-800 transition-colors ml-4 action-button px-3 py-1"
+            data-lang-key="logout"
+          >
+            Logout
+          </button>
+        </div>
+      </div>
     </header>
 
     <!-- MAIN CONTENT AREA -->
     <main class="w-full p-4 md:p-8">
+      <h2 class="main-title text-center" data-lang-key="page_title">
+        Select the exam syllabus
+      </h2>
 
-        <h2 class="main-title text-center" data-lang-key="page_title">Select the exam syllabus</h2>
+      <!-- Assignment Card -->
+      <div class="centered-card">
+        <form id="assignment-form">
+          <!-- Exam & Status Selection -->
+          <div
+            class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-6 mb-8 text-left"
+          >
+            <!-- Select Exam -->
+            <div class="form-group">
+              <label
+                for="exam-select"
+                class="form-label"
+                data-lang-key="select_exam"
+                >Select exam:</label
+              >
+              <select id="exam-select" class="form-input" required></select>
+            </div>
 
-        <!-- Assignment Card -->
-        <div class="centered-card">
+            <!-- Select Status (Grade) -->
+            <div class="form-group">
+              <label
+                for="status-select"
+                class="form-label"
+                data-lang-key="select_status"
+                >Select status:</label
+              >
+              <select id="status-select" class="form-input" required></select>
+            </div>
+          </div>
 
-            <form id="assignment-form">
+          <!-- Subject Selection -->
+          <div class="border-t pt-6">
+            <div class="flex justify-end mb-3">
+              <label class="inline-flex items-center space-x-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  id="select-all-courses"
+                  onclick="toggleSelectAll(this)"
+                  class="checkbox-input"
+                />
+                <span
+                  class="font-bold text-sm"
+                  data-lang-key="select_all_courses"
+                  >Select all courses</span
+                >
+              </label>
+            </div>
 
-                <!-- Exam & Status Selection -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-6 mb-8 text-left">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8">
+              <div
+                id="subjects-checkbox-container"
+                class="subject-list-container md:col-span-2"
+              >
+                <!-- Subjects injected by JS -->
+              </div>
+            </div>
+          </div>
 
-                    <!-- Select Exam -->
-                    <div class="form-group">
-                        <label for="exam-select" class="form-label" data-lang-key="select_exam">Select exam:</label>
-                        <select id="exam-select" class="form-input" required></select>
-                    </div>
-
-                    <!-- Select Status (Grade) -->
-                    <div class="form-group">
-                        <label for="status-select" class="form-label" data-lang-key="select_status">Select
-                            status:</label>
-                        <select id="status-select" class="form-input" required></select>
-                    </div>
-                </div>
-
-                <!-- Subject Selection -->
-                <div class="border-t pt-6">
-                    <div class="flex justify-end mb-3">
-                        <label class="inline-flex items-center space-x-2 cursor-pointer">
-                            <input type="checkbox" id="select-all-courses" onclick="toggleSelectAll(this)"
-                                class="checkbox-input">
-                            <span class="font-bold text-sm" data-lang-key="select_all_courses">Select all courses</span>
-                        </label>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8">
-                        <div id="subjects-checkbox-container" class="subject-list-container md:col-span-2">
-                            <!-- Subjects injected by JS -->
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Save Button -->
-                <div class="flex justify-center mt-8">
-                    <button type="submit" class="primary-button w-40" data-lang-key="save">Save</button>
-                </div>
-            </form>
-
-        </div>
-
+          <!-- Save Button -->
+          <div class="flex justify-center mt-8">
+            <button
+              type="submit"
+              class="primary-button w-40"
+              data-lang-key="save"
+            >
+              Save
+            </button>
+          </div>
+        </form>
+      </div>
     </main>
-</body>
-
+  </body>
 </html>

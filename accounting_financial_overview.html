@@ -1,817 +1,1114 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title data-lang-key="page_title">Financial Overview - Accounting System</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title data-lang-key="page_title">
+      Financial Overview - Accounting System
+    </title>
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Chart.js for data visualization -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
     <style>
-        :root {
-            --color-primary: #00A693;
-            --color-background: #F2F3F4;
-            --color-accent: #E08A27;
-            --color-text-dark: #1A1A1A;
-            --color-text-light: #FFFFFF;
-            --color-blue: #3b82f6;
-            --color-income: #10b981;
-            --color-expense: #ef4444;
-        }
+      :root {
+        --color-primary: #00a693;
+        --color-background: #f2f3f4;
+        --color-accent: #e08a27;
+        --color-text-dark: #1a1a1a;
+        --color-text-light: #ffffff;
+        --color-blue: #3b82f6;
+        --color-income: #10b981;
+        --color-expense: #ef4444;
+      }
 
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;700&display=swap');
-        /* Note: Noto Nastaliq Urdu is difficult to ensure cross-platform availability, using Poppins/sans-serif as fallback, but setting direction to rtl */
+      @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;700&display=swap");
+      /* Note: Noto Nastaliq Urdu is difficult to ensure cross-platform availability, using Poppins/sans-serif as fallback, but setting direction to rtl */
 
-        /* Language Styles */
-        body,
-        .lang-en {
-            font-family: 'Poppins', sans-serif;
-            direction: ltr;
-            background-color: var(--color-background);
-        }
+      /* Language Styles */
+      body,
+      .lang-en {
+        font-family: "Poppins", sans-serif;
+        direction: ltr;
+        background-color: var(--color-background);
+      }
 
-        .lang-hi {
-            font-family: 'Noto Sans Devanagari', sans-serif;
-            direction: ltr;
-        }
+      .lang-hi {
+        font-family: "Noto Sans Devanagari", sans-serif;
+        direction: ltr;
+      }
 
-        .lang-ur {
-            font-family: 'Poppins', sans-serif;
-            direction: rtl;
-            text-align: right;
-        }
+      .lang-ur {
+        font-family: "Poppins", sans-serif;
+        direction: rtl;
+        text-align: right;
+      }
 
-        /* Form & Inputs */
-        .form-input {
-            padding: 0.5rem 0.75rem;
-            border-radius: 0.5rem;
-            border: 1px solid #ccc;
-            font-family: inherit;
-        }
+      /* Form & Inputs */
+      .form-input {
+        padding: 0.5rem 0.75rem;
+        border-radius: 0.5rem;
+        border: 1px solid #ccc;
+        font-family: inherit;
+      }
 
-        /* Buttons */
-        .primary-button {
-            padding: 0.5rem 1rem;
-            background-color: var(--color-primary);
-            color: var(--color-text-light);
-            font-weight: 600;
-            border-radius: 0.5rem;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
+      /* Buttons */
+      .primary-button {
+        padding: 0.5rem 1rem;
+        background-color: var(--color-primary);
+        color: var(--color-text-light);
+        font-weight: 600;
+        border-radius: 0.5rem;
+        cursor: pointer;
+        transition: background-color 0.2s;
+      }
 
-        .primary-button:hover {
-            background-color: #008f7d;
-        }
+      .primary-button:hover {
+        background-color: #008f7d;
+      }
 
-        /* Fixed Header */
-        header {
-            background-color: var(--color-text-light);
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            position: sticky;
-            top: 0;
-            width: 100%;
-            z-index: 20;
-            padding: 1rem 2rem;
-        }
+      /* Fixed Header */
+      header {
+        background-color: var(--color-text-light);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        position: sticky;
+        top: 0;
+        width: 100%;
+        z-index: 20;
+        padding: 1rem 2rem;
+      }
 
-        /* Dashboard Metrics */
-        .metric-card {
-            background: white;
-            border-radius: 1rem;
-            padding: 1.5rem;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            transition: transform 0.2s;
-            position: relative;
-            overflow: hidden;
-            height: 100%;
-        }
+      /* Dashboard Metrics */
+      .metric-card {
+        background: white;
+        border-radius: 1rem;
+        padding: 1.5rem;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        transition: transform 0.2s;
+        position: relative;
+        overflow: hidden;
+        height: 100%;
+      }
 
-        .metric-card:hover {
-            transform: translateY(-3px);
-        }
+      .metric-card:hover {
+        transform: translateY(-3px);
+      }
 
-        .metric-icon {
-            position: absolute;
-            right: -10px;
-            bottom: -10px;
-            font-size: 5rem;
-            opacity: 0.1;
-            transform: rotate(-15deg);
-        }
+      .metric-icon {
+        position: absolute;
+        right: -10px;
+        bottom: -10px;
+        font-size: 5rem;
+        opacity: 0.1;
+        transform: rotate(-15deg);
+      }
 
-        .metric-value {
-            font-size: 2.25rem;
-            font-weight: 700;
-            margin-top: 0.5rem;
-        }
+      .metric-value {
+        font-size: 2.25rem;
+        font-weight: 700;
+        margin-top: 0.5rem;
+      }
 
-        /* Chart Container */
-        .chart-container {
-            background: white;
-            border-radius: 0.75rem;
-            padding: 1.5rem;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-            height: 100%;
-        }
+      /* Chart Container */
+      .chart-container {
+        background: white;
+        border-radius: 0.75rem;
+        padding: 1.5rem;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        height: 100%;
+      }
 
-        /* Recent Transactions Table */
-        .trans-table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0 8px;
-        }
+      /* Recent Transactions Table */
+      .trans-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0 8px;
+      }
 
-        .trans-table th {
-            background-color: #f3f4f6;
-            color: var(--color-text-dark);
-            text-align: left;
-            padding: 0.75rem 1rem;
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            font-weight: 700;
-            border-radius: 0.5rem 0.5rem 0 0;
-        }
+      .trans-table th {
+        background-color: #f3f4f6;
+        color: var(--color-text-dark);
+        text-align: left;
+        padding: 0.75rem 1rem;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        font-weight: 700;
+        border-radius: 0.5rem 0.5rem 0 0;
+      }
 
-        .lang-ur .trans-table th {
-            text-align: right;
-        }
+      .lang-ur .trans-table th {
+        text-align: right;
+      }
 
-        .trans-table td {
-            padding: 0.75rem 1rem;
-            background-color: white;
-            border-top: 1px solid #eee;
-            border-bottom: 1px solid #eee;
-            font-size: 0.85rem;
-            font-weight: 500;
-        }
+      .trans-table td {
+        padding: 0.75rem 1rem;
+        background-color: white;
+        border-top: 1px solid #eee;
+        border-bottom: 1px solid #eee;
+        font-size: 0.85rem;
+        font-weight: 500;
+      }
 
-        /* Transaction Types Indicators (Using Tailwind's rounded-full on the rows to match modern table design) */
-        .trans-table tr {
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-            border-radius: 0.5rem;
-        }
+      /* Transaction Types Indicators (Using Tailwind's rounded-full on the rows to match modern table design) */
+      .trans-table tr {
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        border-radius: 0.5rem;
+      }
 
-        .trans-table td:first-child {
-            border-radius: 0.5rem 0 0 0.5rem;
-        }
+      .trans-table td:first-child {
+        border-radius: 0.5rem 0 0 0.5rem;
+      }
 
-        .trans-table td:last-child {
-            border-radius: 0 0.5rem 0.5rem 0;
-        }
+      .trans-table td:last-child {
+        border-radius: 0 0.5rem 0.5rem 0;
+      }
 
-        .lang-ur .trans-table td:first-child {
-            border-radius: 0 0.5rem 0.5rem 0;
-        }
+      .lang-ur .trans-table td:first-child {
+        border-radius: 0 0.5rem 0.5rem 0;
+      }
 
-        .lang-ur .trans-table td:last-child {
-            border-radius: 0.5rem 0 0 0.5rem;
-        }
+      .lang-ur .trans-table td:last-child {
+        border-radius: 0.5rem 0 0 0.5rem;
+      }
 
-        .type-income td {
-            border-left: 4px solid var(--color-income);
-        }
+      .type-income td {
+        border-left: 4px solid var(--color-income);
+      }
 
-        .type-expense td {
-            border-left: 4px solid var(--color-expense);
-        }
+      .type-expense td {
+        border-left: 4px solid var(--color-expense);
+      }
 
-        .lang-ur .type-income td {
-            border-left: none;
-            border-right: 4px solid var(--color-income);
-        }
+      .lang-ur .type-income td {
+        border-left: none;
+        border-right: 4px solid var(--color-income);
+      }
 
-        .lang-ur .type-expense td {
-            border-left: none;
-            border-right: 4px solid var(--color-expense);
-        }
+      .lang-ur .type-expense td {
+        border-left: none;
+        border-right: 4px solid var(--color-expense);
+      }
     </style>
-</head>
+  </head>
 
-<body class="lang-en">
-
+  <body class="lang-en">
     <script type="module">
-        // Firebase Imports
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, query, onSnapshot, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+      // Firebase Imports
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+      import {
+        getAuth,
+        signInAnonymously,
+        signInWithCustomToken,
+        onAuthStateChanged,
+      } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+      import {
+        getFirestore,
+        collection,
+        query,
+        onSnapshot,
+        getDocs,
+      } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // Configuration Variables provided by the Canvas Environment
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
-        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+      // Configuration Variables provided by the Canvas Environment
+      const appId =
+        typeof __app_id !== "undefined" ? __app_id : "default-app-id";
+      const firebaseConfig = JSON.parse(
+        typeof __firebase_config !== "undefined" ? __firebase_config : "{}"
+      );
+      const initialAuthToken =
+        typeof __initial_auth_token !== "undefined"
+          ? __initial_auth_token
+          : null;
 
-        let db, auth;
-        let userId = null;
-        let isAuthReady = false;
-        let allTransactions = []; // Stores all fetched transactions from all collections
-        let barChartInstance = null;
-        let donutChartInstance = null;
+      let db, auth;
+      let userId = null;
+      let isAuthReady = false;
+      let allTransactions = []; // Stores all fetched transactions from all collections
+      let barChartInstance = null;
+      let donutChartInstance = null;
 
-        const ITEM_COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#6366f1', '#00A693', '#e08a27', '#4b5563'];
+      const ITEM_COLORS = [
+        "#3b82f6",
+        "#10b981",
+        "#f59e0b",
+        "#ef4444",
+        "#6366f1",
+        "#00A693",
+        "#e08a27",
+        "#4b5563",
+      ];
 
-        // Helper to fetch CSS variable color value
-        function varColor(cssVar) {
-            const style = getComputedStyle(document.body);
-            return style.getPropertyValue(cssVar).trim();
+      // Helper to fetch CSS variable color value
+      function varColor(cssVar) {
+        const style = getComputedStyle(document.body);
+        return style.getPropertyValue(cssVar).trim();
+      }
+
+      // Helper to format date YYYY-MM-DD
+      function formatDate(date) {
+        const d = new Date(date);
+        let month = "" + (d.getMonth() + 1);
+        let day = "" + d.getDate();
+        const year = d.getFullYear();
+
+        if (month.length < 2) month = "0" + month;
+        if (day.length < 2) day = "0" + day;
+
+        return [year, month, day].join("-");
+      }
+
+      // --- Multilingual Data ---
+      let currentLang = localStorage.getItem("madarsaSystemLang") || "en";
+      const langData = {
+        en: {
+          accounting_system: "Accounting System",
+          page_title: "Financial Overview",
+          back_to_accounting: "Back to Accounting",
+          logout: "Logout",
+          from: "From:",
+          to: "To:",
+          apply: "Apply",
+          total_income: "Total Income",
+          total_expense: "Total Expense",
+          net_balance: "Net Balance",
+          cash_flow: "Cash Flow Health",
+          income_vs_expense: "Income vs Expense Trend",
+          expense_breakdown: "Expense Breakdown",
+          recent_transactions: "Recent Transactions",
+          date: "Date",
+          description: "Description",
+          category: "Category",
+          amount: "Amount",
+          type: "Type",
+          no_data: "No transactions found for this period.",
+          General: "General",
+          Maintenance: "Maintenance",
+          "Utility Bill": "Utility Bill",
+          "Staff Benefit": "Staff Benefit",
+          Stationery: "Stationery",
+          Fees: "Fees",
+          "Donation (General)": "Donation (General)",
+          "Zakat Fund": "Zakat Fund",
+          Sadaqa: "Sadaqa",
+          "Fee Remittance": "Fee Remittance",
+          Kitchen: "Kitchen",
+          Library: "Library",
+          Salaries: "Salaries",
+          Income: "Income",
+          Expense: "Expense",
+          healthy: "Healthy",
+          critical: "Critical",
+          INR: "₹", // Currency Symbol Fix
+        },
+        hi: {
+          accounting_system: "लेखांकन प्रणाली",
+          page_title: "वित्तीय अवलोकन",
+          back_to_accounting: "लेखांकन पर वापस",
+          logout: "लॉगआउट",
+          from: "से:",
+          to: "तक:",
+          apply: "लागू करें",
+          total_income: "कुल आय",
+          total_expense: "कुल व्यय",
+          net_balance: "शुद्ध शेष",
+          cash_flow: "नकदी प्रवाह स्वास्थ्य",
+          income_vs_expense: "आय बनाम व्यय प्रवृत्ति",
+          expense_breakdown: "व्यय विवरण",
+          recent_transactions: "हाल के लेनदेन",
+          no_data: "इस अवधि के लिए कोई लेनदेन नहीं मिला।",
+          date: "तिथि",
+          description: "विवरण",
+          category: "श्रेणी",
+          amount: "राशि",
+          type: "प्रकार",
+          General: "सामान्य",
+          Maintenance: "रखरखाव",
+          "Utility Bill": "उपयोगिता बिल",
+          "Staff Benefit": "कर्मचारी लाभ",
+          Stationery: "स्टेशनरी",
+          Fees: "शुल्क",
+          "Donation (General)": "दान (सामान्य)",
+          "Zakat Fund": "ज़कात कोष",
+          Sadaqa: "सदक़ा",
+          "Fee Remittance": "शुल्क प्रेषण",
+          Kitchen: "रसोई",
+          Library: "पुस्तकालय",
+          Salaries: "वेतन",
+          Income: "आय",
+          Expense: "व्यय",
+          healthy: "स्वस्थ",
+          critical: "गंभीर",
+          INR: "₹",
+        },
+        ur: {
+          accounting_system: "اکاؤنٹنگ نظام",
+          page_title: "مالیاتی جائزہ",
+          back_to_accounting: "اکاؤنٹنگ پر واپس جائیں",
+          logout: "لاگ آؤٹ",
+          from: "سے:",
+          to: "تک:",
+          apply: "لاگو کریں",
+          total_income: "کل آمدنی",
+          total_expense: "کل اخراجات",
+          net_balance: "خالص بیلنس",
+          cash_flow: "کیوش فلو صحت",
+          income_vs_expense: "آمدنی بمقابلہ اخراجات کا رجحان",
+          expense_breakdown: "اخراجات کی تفصیل",
+          recent_transactions: "حالیہ لین دین",
+          no_data: "اس مدت کے لیے کوئی لین دین نہیں ملا۔",
+          date: "تاریخ",
+          description: "تفصیل",
+          category: "زمرہ",
+          amount: "رقم",
+          type: "قسم",
+          General: "عام",
+          Maintenance: "دیکھ بھال",
+          "Utility Bill": "یوٹیلیٹی بل",
+          "Staff Benefit": "عملے کا فائدہ",
+          Stationery: "اسٹیشنری",
+          Fees: "فیس",
+          "Donation (General)": "عطیہ (عام)",
+          "Zakat Fund": "زکوٰۃ فنڈ",
+          Sadaqa: "صدقہ",
+          "Fee Remittance": "فیس کی ترسیل",
+          Kitchen: "باورچی خانہ",
+          Library: "لائبریری",
+          Salaries: "تنخواہیں",
+          Income: "آمدنی",
+          Expense: "خرچ",
+          healthy: "بہتر",
+          critical: "تشویشناک",
+          INR: "₹",
+        },
+      };
+
+      function getTranslation(key) {
+        return langData[currentLang][key] || langData["en"][key] || key;
+      }
+
+      function updateContent() {
+        document.body.className = "lang-" + currentLang;
+
+        document.querySelectorAll("[data-lang-key]").forEach((el) => {
+          const key = el.getAttribute("data-lang-key");
+          el.textContent = getTranslation(key);
+        });
+
+        // Re-run filter/render to update translated chart titles/labels
+        if (isAuthReady) {
+          handleFilter();
         }
+      }
 
-        // Helper to format date YYYY-MM-DD
-        function formatDate(date) {
-            const d = new Date(date);
-            let month = '' + (d.getMonth() + 1);
-            let day = '' + d.getDate();
-            const year = d.getFullYear();
-
-            if (month.length < 2) month = '0' + month;
-            if (day.length < 2) day = '0' + day;
-
-            return [year, month, day].join('-');
+      function changeLanguage(lang) {
+        if (lang in langData) {
+          currentLang = lang;
+          localStorage.setItem("madarsaSystemLang", lang);
+          updateContent();
         }
+      }
 
-        // --- Multilingual Data ---
-        let currentLang = localStorage.getItem('madarsaSystemLang') || 'en';
-        const langData = {
-            'en': {
-                'accounting_system': 'Accounting System', 'page_title': 'Financial Overview', 'back_to_accounting': 'Back to Accounting', 'logout': 'Logout',
-                'from': 'From:', 'to': 'To:', 'apply': 'Apply', 'total_income': 'Total Income', 'total_expense': 'Total Expense', 'net_balance': 'Net Balance', 'cash_flow': 'Cash Flow Health',
-                'income_vs_expense': 'Income vs Expense Trend', 'expense_breakdown': 'Expense Breakdown', 'recent_transactions': 'Recent Transactions',
-                'date': 'Date', 'description': 'Description', 'category': 'Category', 'amount': 'Amount', 'type': 'Type', 'no_data': 'No transactions found for this period.',
-                'General': 'General', 'Maintenance': 'Maintenance', 'Utility Bill': 'Utility Bill', 'Staff Benefit': 'Staff Benefit', 'Stationery': 'Stationery',
-                'Fees': 'Fees', 'Donation (General)': 'Donation (General)', 'Zakat Fund': 'Zakat Fund', 'Sadaqa': 'Sadaqa', 'Fee Remittance': 'Fee Remittance',
-                'Kitchen': 'Kitchen', 'Library': 'Library', 'Salaries': 'Salaries', 'Income': 'Income', 'Expense': 'Expense', 'healthy': 'Healthy', 'critical': 'Critical',
-                'INR': '₹' // Currency Symbol Fix
-            },
-            'hi': {
-                'accounting_system': 'लेखांकन प्रणाली', 'page_title': 'वित्तीय अवलोकन', 'back_to_accounting': 'लेखांकन पर वापस', 'logout': 'लॉगआउट',
-                'from': 'से:', 'to': 'तक:', 'apply': 'लागू करें', 'total_income': 'कुल आय', 'total_expense': 'कुल व्यय', 'net_balance': 'शुद्ध शेष', 'cash_flow': 'नकदी प्रवाह स्वास्थ्य',
-                'income_vs_expense': 'आय बनाम व्यय प्रवृत्ति', 'expense_breakdown': 'व्यय विवरण', 'recent_transactions': 'हाल के लेनदेन', 'no_data': 'इस अवधि के लिए कोई लेनदेन नहीं मिला।',
-                'date': 'तिथि', 'description': 'विवरण', 'category': 'श्रेणी', 'amount': 'राशि', 'type': 'प्रकार',
-                'General': 'सामान्य', 'Maintenance': 'रखरखाव', 'Utility Bill': 'उपयोगिता बिल', 'Staff Benefit': 'कर्मचारी लाभ', 'Stationery': 'स्टेशनरी',
-                'Fees': 'शुल्क', 'Donation (General)': 'दान (सामान्य)', 'Zakat Fund': 'ज़कात कोष', 'Sadaqa': 'सदक़ा', 'Fee Remittance': 'शुल्क प्रेषण',
-                'Kitchen': 'रसोई', 'Library': 'पुस्तकालय', 'Salaries': 'वेतन', 'Income': 'आय', 'Expense': 'व्यय', 'healthy': 'स्वस्थ', 'critical': 'गंभीर',
-                'INR': '₹'
-            },
-            'ur': {
-                'accounting_system': 'اکاؤنٹنگ نظام', 'page_title': 'مالیاتی جائزہ', 'back_to_accounting': 'اکاؤنٹنگ پر واپس جائیں', 'logout': 'لاگ آؤٹ',
-                'from': 'سے:', 'to': 'تک:', 'apply': 'لاگو کریں', 'total_income': 'کل آمدنی', 'total_expense': 'کل اخراجات', 'net_balance': 'خالص بیلنس', 'cash_flow': 'کیوش فلو صحت',
-                'income_vs_expense': 'آمدنی بمقابلہ اخراجات کا رجحان', 'expense_breakdown': 'اخراجات کی تفصیل', 'recent_transactions': 'حالیہ لین دین', 'no_data': 'اس مدت کے لیے کوئی لین دین نہیں ملا۔',
-                'date': 'تاریخ', 'description': 'تفصیل', 'category': 'زمرہ', 'amount': 'رقم', 'type': 'قسم',
-                'General': 'عام', 'Maintenance': 'دیکھ بھال', 'Utility Bill': 'یوٹیلیٹی بل', 'Staff Benefit': 'عملے کا فائدہ', 'Stationery': 'اسٹیشنری',
-                'Fees': 'فیس', 'Donation (General)': 'عطیہ (عام)', 'Zakat Fund': 'زکوٰۃ فنڈ', 'Sadaqa': 'صدقہ', 'Fee Remittance': 'فیس کی ترسیل',
-                'Kitchen': 'باورچی خانہ', 'Library': 'لائبریری', 'Salaries': 'تنخواہیں', 'Income': 'آمدنی', 'Expense': 'خرچ', 'healthy': 'بہتر', 'critical': 'تشویشناک',
-                'INR': '₹'
-            }
-        };
+      // --- Data Aggregation Logic (Refactored for Firestore Snapshot) ---
 
-        function getTranslation(key) {
-            return langData[currentLang][key] || langData['en'][key] || key;
-        }
-
-        function updateContent() {
-            document.body.className = 'lang-' + currentLang;
-
-            document.querySelectorAll('[data-lang-key]').forEach(el => {
-                const key = el.getAttribute('data-lang-key');
-                el.textContent = getTranslation(key);
-            });
-
-            // Re-run filter/render to update translated chart titles/labels
-            if (isAuthReady) {
-                handleFilter();
-            }
-        }
-
-        function changeLanguage(lang) {
-            if (lang in langData) {
-                currentLang = lang;
-                localStorage.setItem('madarsaSystemLang', lang);
-                updateContent();
-            }
-        }
-
-        // --- Data Aggregation Logic (Refactored for Firestore Snapshot) ---
-
-        const COLLECTION_MAPS = {
-            // General Income (Donations/Other)
-            'income': (doc, month) => ({
-                date: doc.date || `${month}-01`,
-                desc: doc.source + (doc.description ? ` - ${doc.description}` : ''),
-                amount: parseFloat(doc.amount) || 0,
-                type: 'Income',
-                category: doc.source || 'Donation (General)'
-            }),
-            // General Expenses (Maintenance/Utility/Staff Benefit)
-            'expenses': (doc, month) => ({
-                date: doc.date || `${month}-10`,
-                desc: doc.category + ` - ${doc.recipient}`,
-                amount: parseFloat(doc.amount) || 0,
-                type: 'Expense',
-                category: doc.category || 'General'
-            }),
-            // Fees (Income) - Aggregated from students' totalPaid
-            'fees': (doc, month) => {
-                const amount = parseFloat(doc.totalPaid) || 0;
-                if (amount > 0) {
-                    return {
-                        date: formatDate(new Date()), // Use current date for fees aggregation
-                        desc: `Fee Payment - ${doc.name}`,
-                        amount: amount,
-                        type: 'Income',
-                        category: 'Fees'
-                    };
-                }
-                return null;
-            },
-            // Library Purchases (Expense)
-            'library': (doc, month) => ({
-                date: doc.purchaseDate || `${month}-15`,
-                desc: `Library: ${doc.itemName} (${doc.source})`,
-                amount: (parseFloat(doc.quantity) * parseFloat(doc.unitCost)) || 0,
-                type: 'Expense',
-                category: 'Library'
-            }),
-            // Kitchen Purchases (Expense)
-            'kitchen': (doc, month) => ({
-                date: doc.date || `${month}-20`,
-                desc: `Kitchen: ${doc.itemName} (${doc.unit})`,
-                amount: (parseFloat(doc.quantity) * parseFloat(doc.unitPrice)) || 0,
-                type: 'Expense',
-                category: 'Kitchen'
-            }),
-            // Payroll (Expense) - Payroll data is typically structured differently, handling as a snapshot
-            'payroll': (doc, month) => {
-                // Assuming payroll documents might contain records for one month or multiple staff
-                const transactions = [];
-                // Check if doc itself contains salary records (e.g., if the doc key is a month 'YYYY-MM')
-                if (doc.status === 'Paid') {
-                    const amount = (doc.netSalary || 0) + (doc.adjustedAmount || 0);
-                    const date = doc.paymentDate || `${month}-28`; // Use payment date if available, otherwise end of month
-                    transactions.push({
-                        date: date,
-                        desc: `Salary - ${doc.staffId}`,
-                        amount: amount,
-                        type: 'Expense',
-                        category: 'Salaries'
-                    });
-                }
-                return transactions; // Returns an array of transactions, or null/empty array
-            }
-        };
-
-        function processFirestoreSnapshot(dataSnapshots) {
-            let allTransactions = [];
-            const currentMonth = new Date().toISOString().substring(0, 7); // YYYY-MM
-
-            // Loop through the object where keys are collection names and values are snapshots
-            for (const collectionName in dataSnapshots) {
-                const snapshot = dataSnapshots[collectionName];
-                const mapFunction = COLLECTION_MAPS[collectionName];
-
-                if (!mapFunction) continue;
-
-                snapshot.forEach(doc => {
-                    const data = doc.data();
-                    let transactions = mapFunction(data, currentMonth);
-
-                    if (Array.isArray(transactions)) {
-                        allTransactions.push(...transactions);
-                    } else if (transactions) {
-                        allTransactions.push(transactions);
-                    }
-                });
-            }
-
-            // Add dummy data if the database is empty for better visualization initially
-            if (allTransactions.length === 0) {
-                allTransactions.push(
-                    { date: '2024-01-01', desc: 'Dummy Donation (Initial)', amount: 15000, type: 'Income', category: 'Donation (General)' },
-                    { date: '2024-01-15', desc: 'Dummy Staff Salary (Initial)', amount: 8000, type: 'Expense', category: 'Salaries' },
-                    { date: '2024-02-01', desc: 'Dummy Fees (Initial)', amount: 6000, type: 'Income', category: 'Fees' },
-                    { date: '2024-02-20', desc: 'Dummy Kitchen Purchase (Initial)', amount: 2000, type: 'Expense', category: 'Kitchen' }
-                );
-            }
-
-            allTransactions.sort((a, b) => new Date(b.date) - new Date(a.date));
-            window.allTransactions = allTransactions; // Store globally for filtering
-
-            // Trigger the filter with the newly loaded data
-            handleFilter();
-        }
-
-        function setupRealtimeListeners() {
-            if (!db || !userId) {
-                console.error("Firestore not initialized or userId not set.");
-                return;
-            }
-
-            const collectionsToWatch = Object.keys(COLLECTION_MAPS);
-            const snapshots = {};
-            let listenersInitialized = 0;
-            const expectedListeners = collectionsToWatch.length;
-
-            collectionsToWatch.forEach(colName => {
-                const colPath = `/artifacts/${appId}/users/${userId}/${colName}`;
-                const colRef = collection(db, colPath);
-
-                onSnapshot(colRef, (snapshot) => {
-                    snapshots[colName] = snapshot;
-
-                    // Only process and render when all initial listeners have fired at least once
-                    if (listenersInitialized < expectedListeners) {
-                        listenersInitialized++;
-                    }
-
-                    if (listenersInitialized === expectedListeners) {
-                        processFirestoreSnapshot(snapshots);
-                    }
-                }, (error) => {
-                    console.error(`Error listening to ${colName}:`, error);
-                });
-            });
-        }
-
-        // --- Dashboard Data Processing (for Filtered Set) ---
-        function processDataForDashboard(transactions) {
-            let totalIncome = 0;
-            let totalExpense = 0;
-            const breakdown = { income: {}, expense: {} };
-            const monthlyTrend = {};
-
-            transactions.forEach(t => {
-                const amount = parseFloat(t.amount) || 0;
-                const monthYear = t.date ? t.date.substring(0, 7) : 'Unknown'; // YYYY-MM
-
-                if (!monthlyTrend[monthYear]) monthlyTrend[monthYear] = { income: 0, expense: 0 };
-
-                if (t.type === 'Income') {
-                    totalIncome += amount;
-                    breakdown.income[t.category] = (breakdown.income[t.category] || 0) + amount;
-                    monthlyTrend[monthYear].income += amount;
-                } else {
-                    totalExpense += amount;
-                    breakdown.expense[t.category] = (breakdown.expense[t.category] || 0) + amount;
-                    monthlyTrend[monthYear].expense += amount;
-                }
-            });
-
+      const COLLECTION_MAPS = {
+        // General Income (Donations/Other)
+        income: (doc, month) => ({
+          date: doc.date || `${month}-01`,
+          desc: doc.source + (doc.description ? ` - ${doc.description}` : ""),
+          amount: parseFloat(doc.amount) || 0,
+          type: "Income",
+          category: doc.source || "Donation (General)",
+        }),
+        // General Expenses (Maintenance/Utility/Staff Benefit)
+        expenses: (doc, month) => ({
+          date: doc.date || `${month}-10`,
+          desc: doc.category + ` - ${doc.recipient}`,
+          amount: parseFloat(doc.amount) || 0,
+          type: "Expense",
+          category: doc.category || "General",
+        }),
+        // Fees (Income) - Aggregated from students' totalPaid
+        fees: (doc, month) => {
+          const amount = parseFloat(doc.totalPaid) || 0;
+          if (amount > 0) {
             return {
-                totalIncome,
-                totalExpense,
-                balance: totalIncome - totalExpense,
-                breakdown,
-                monthlyTrend
+              date: formatDate(new Date()), // Use current date for fees aggregation
+              desc: `Fee Payment - ${doc.name}`,
+              amount: amount,
+              type: "Income",
+              category: "Fees",
             };
+          }
+          return null;
+        },
+        // Library Purchases (Expense)
+        library: (doc, month) => ({
+          date: doc.purchaseDate || `${month}-15`,
+          desc: `Library: ${doc.itemName} (${doc.source})`,
+          amount: parseFloat(doc.quantity) * parseFloat(doc.unitCost) || 0,
+          type: "Expense",
+          category: "Library",
+        }),
+        // Kitchen Purchases (Expense)
+        kitchen: (doc, month) => ({
+          date: doc.date || `${month}-20`,
+          desc: `Kitchen: ${doc.itemName} (${doc.unit})`,
+          amount: parseFloat(doc.quantity) * parseFloat(doc.unitPrice) || 0,
+          type: "Expense",
+          category: "Kitchen",
+        }),
+        // Payroll (Expense) - Payroll data is typically structured differently, handling as a snapshot
+        payroll: (doc, month) => {
+          // Assuming payroll documents might contain records for one month or multiple staff
+          const transactions = [];
+          // Check if doc itself contains salary records (e.g., if the doc key is a month 'YYYY-MM')
+          if (doc.status === "Paid") {
+            const amount = (doc.netSalary || 0) + (doc.adjustedAmount || 0);
+            const date = doc.paymentDate || `${month}-28`; // Use payment date if available, otherwise end of month
+            transactions.push({
+              date: date,
+              desc: `Salary - ${doc.staffId}`,
+              amount: amount,
+              type: "Expense",
+              category: "Salaries",
+            });
+          }
+          return transactions; // Returns an array of transactions, or null/empty array
+        },
+      };
+
+      function processFirestoreSnapshot(dataSnapshots) {
+        let allTransactions = [];
+        const currentMonth = new Date().toISOString().substring(0, 7); // YYYY-MM
+
+        // Loop through the object where keys are collection names and values are snapshots
+        for (const collectionName in dataSnapshots) {
+          const snapshot = dataSnapshots[collectionName];
+          const mapFunction = COLLECTION_MAPS[collectionName];
+
+          if (!mapFunction) continue;
+
+          snapshot.forEach((doc) => {
+            const data = doc.data();
+            let transactions = mapFunction(data, currentMonth);
+
+            if (Array.isArray(transactions)) {
+              allTransactions.push(...transactions);
+            } else if (transactions) {
+              allTransactions.push(transactions);
+            }
+          });
         }
 
-        // --- Chart Rendering ---
-        function renderCharts(data) {
-            if (barChartInstance) barChartInstance.destroy();
-            if (donutChartInstance) donutChartInstance.destroy();
-
-            // Prepare Bar Chart Data (Income vs Expense Trend)
-            const sortedMonths = Object.keys(data.monthlyTrend).sort();
-            const labels = sortedMonths.map(m => new Date(m).toLocaleString(currentLang, { month: 'short', year: 'numeric' }));
-            const incomeData = sortedMonths.map(m => data.monthlyTrend[m].income);
-            const expenseData = sortedMonths.map(m => data.monthlyTrend[m].expense);
-
-            const ctxBar = document.getElementById('bar-chart').getContext('2d');
-            barChartInstance = new Chart(ctxBar, {
-                type: 'bar',
-                data: {
-                    labels: labels,
-                    datasets: [
-                        { label: getTranslation('Income'), data: incomeData, backgroundColor: varColor('--color-income'), borderRadius: 4 },
-                        { label: getTranslation('Expense'), data: expenseData, backgroundColor: varColor('--color-expense'), borderRadius: 4 }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { position: 'bottom' } },
-                    scales: { y: { beginAtZero: true, grid: { color: 'rgba(0, 0, 0, 0.05)' } } }
-                }
-            });
-
-            // Prepare Donut Chart Data (Expense Breakdown)
-            const expenseLabels = Object.keys(data.breakdown.expense).map(key => getTranslation(key));
-            const expenseValues = Object.values(data.breakdown.expense);
-
-            const donutContainer = document.getElementById('donut-chart-container');
-            if (expenseLabels.length === 0 || expenseValues.every(v => v === 0)) {
-                donutContainer.innerHTML = `<div class="flex items-center justify-center h-full p-8 text-center text-gray-500">${getTranslation('no_data')}</div>`;
-                return;
-            } else {
-                // Ensure canvas exists for rendering
-                if (!document.getElementById('donut-chart')) {
-                    donutContainer.innerHTML = `<canvas id="donut-chart"></canvas>`;
-                }
+        // Add dummy data if the database is empty for better visualization initially
+        if (allTransactions.length === 0) {
+          allTransactions.push(
+            {
+              date: "2024-01-01",
+              desc: "Dummy Donation (Initial)",
+              amount: 15000,
+              type: "Income",
+              category: "Donation (General)",
+            },
+            {
+              date: "2024-01-15",
+              desc: "Dummy Staff Salary (Initial)",
+              amount: 8000,
+              type: "Expense",
+              category: "Salaries",
+            },
+            {
+              date: "2024-02-01",
+              desc: "Dummy Fees (Initial)",
+              amount: 6000,
+              type: "Income",
+              category: "Fees",
+            },
+            {
+              date: "2024-02-20",
+              desc: "Dummy Kitchen Purchase (Initial)",
+              amount: 2000,
+              type: "Expense",
+              category: "Kitchen",
             }
-
-            const ctxDonut = document.getElementById('donut-chart').getContext('2d');
-            donutChartInstance = new Chart(ctxDonut, {
-                type: 'doughnut',
-                data: {
-                    labels: expenseLabels,
-                    datasets: [{
-                        data: expenseValues,
-                        backgroundColor: ITEM_COLORS.slice(0, expenseLabels.length),
-                        borderWidth: 0
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    aspectRatio: 1,
-                    plugins: { legend: { position: 'right' } }
-                }
-            });
+          );
         }
 
-        // --- Table Rendering ---
-        function renderTransactionTable(transactions) {
-            const tbody = document.getElementById('trans-body');
-            if (!tbody) return;
+        allTransactions.sort((a, b) => new Date(b.date) - new Date(a.date));
+        window.allTransactions = allTransactions; // Store globally for filtering
 
-            tbody.innerHTML = '';
+        // Trigger the filter with the newly loaded data
+        handleFilter();
+      }
 
-            if (transactions.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" class="text-center text-gray-500 p-4 rounded-xl shadow-inner">${getTranslation('no_data')}</td></tr>`;
-                return;
+      function setupRealtimeListeners() {
+        if (!db || !userId) {
+          console.error("Firestore not initialized or userId not set.");
+          return;
+        }
+
+        const collectionsToWatch = Object.keys(COLLECTION_MAPS);
+        const snapshots = {};
+        let listenersInitialized = 0;
+        const expectedListeners = collectionsToWatch.length;
+
+        collectionsToWatch.forEach((colName) => {
+          const colPath = `/artifacts/${appId}/users/${userId}/${colName}`;
+          const colRef = collection(db, colPath);
+
+          onSnapshot(
+            colRef,
+            (snapshot) => {
+              snapshots[colName] = snapshot;
+
+              // Only process and render when all initial listeners have fired at least once
+              if (listenersInitialized < expectedListeners) {
+                listenersInitialized++;
+              }
+
+              if (listenersInitialized === expectedListeners) {
+                processFirestoreSnapshot(snapshots);
+              }
+            },
+            (error) => {
+              console.error(`Error listening to ${colName}:`, error);
             }
+          );
+        });
+      }
 
-            // Show latest 10 transactions
-            transactions.slice(0, 10).forEach(t => {
-                const tr = document.createElement('tr');
-                const isIncome = t.type === 'Income';
-                const typeClass = isIncome ? 'type-income' : 'type-expense';
-                const amountColor = isIncome ? 'text-green-600' : 'text-red-600';
-                const amountPrefix = isIncome ? '+' : '-';
+      // --- Dashboard Data Processing (for Filtered Set) ---
+      function processDataForDashboard(transactions) {
+        let totalIncome = 0;
+        let totalExpense = 0;
+        const breakdown = { income: {}, expense: {} };
+        const monthlyTrend = {};
 
-                const safeAmount = parseFloat(t.amount) || 0;
-                const currencySymbol = getTranslation('INR');
+        transactions.forEach((t) => {
+          const amount = parseFloat(t.amount) || 0;
+          const monthYear = t.date ? t.date.substring(0, 7) : "Unknown"; // YYYY-MM
 
-                tr.className = typeClass;
-                tr.innerHTML = `
+          if (!monthlyTrend[monthYear])
+            monthlyTrend[monthYear] = { income: 0, expense: 0 };
+
+          if (t.type === "Income") {
+            totalIncome += amount;
+            breakdown.income[t.category] =
+              (breakdown.income[t.category] || 0) + amount;
+            monthlyTrend[monthYear].income += amount;
+          } else {
+            totalExpense += amount;
+            breakdown.expense[t.category] =
+              (breakdown.expense[t.category] || 0) + amount;
+            monthlyTrend[monthYear].expense += amount;
+          }
+        });
+
+        return {
+          totalIncome,
+          totalExpense,
+          balance: totalIncome - totalExpense,
+          breakdown,
+          monthlyTrend,
+        };
+      }
+
+      // --- Chart Rendering ---
+      function renderCharts(data) {
+        if (barChartInstance) barChartInstance.destroy();
+        if (donutChartInstance) donutChartInstance.destroy();
+
+        // Prepare Bar Chart Data (Income vs Expense Trend)
+        const sortedMonths = Object.keys(data.monthlyTrend).sort();
+        const labels = sortedMonths.map((m) =>
+          new Date(m).toLocaleString(currentLang, {
+            month: "short",
+            year: "numeric",
+          })
+        );
+        const incomeData = sortedMonths.map((m) => data.monthlyTrend[m].income);
+        const expenseData = sortedMonths.map(
+          (m) => data.monthlyTrend[m].expense
+        );
+
+        const ctxBar = document.getElementById("bar-chart").getContext("2d");
+        barChartInstance = new Chart(ctxBar, {
+          type: "bar",
+          data: {
+            labels: labels,
+            datasets: [
+              {
+                label: getTranslation("Income"),
+                data: incomeData,
+                backgroundColor: varColor("--color-income"),
+                borderRadius: 4,
+              },
+              {
+                label: getTranslation("Expense"),
+                data: expenseData,
+                backgroundColor: varColor("--color-expense"),
+                borderRadius: 4,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { position: "bottom" } },
+            scales: {
+              y: { beginAtZero: true, grid: { color: "rgba(0, 0, 0, 0.05)" } },
+            },
+          },
+        });
+
+        // Prepare Donut Chart Data (Expense Breakdown)
+        const expenseLabels = Object.keys(data.breakdown.expense).map((key) =>
+          getTranslation(key)
+        );
+        const expenseValues = Object.values(data.breakdown.expense);
+
+        const donutContainer = document.getElementById("donut-chart-container");
+        if (expenseLabels.length === 0 || expenseValues.every((v) => v === 0)) {
+          donutContainer.innerHTML = `<div class="flex items-center justify-center h-full p-8 text-center text-gray-500">${getTranslation(
+            "no_data"
+          )}</div>`;
+          return;
+        } else {
+          // Ensure canvas exists for rendering
+          if (!document.getElementById("donut-chart")) {
+            donutContainer.innerHTML = `<canvas id="donut-chart"></canvas>`;
+          }
+        }
+
+        const ctxDonut = document
+          .getElementById("donut-chart")
+          .getContext("2d");
+        donutChartInstance = new Chart(ctxDonut, {
+          type: "doughnut",
+          data: {
+            labels: expenseLabels,
+            datasets: [
+              {
+                data: expenseValues,
+                backgroundColor: ITEM_COLORS.slice(0, expenseLabels.length),
+                borderWidth: 0,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            aspectRatio: 1,
+            plugins: { legend: { position: "right" } },
+          },
+        });
+      }
+
+      // --- Table Rendering ---
+      function renderTransactionTable(transactions) {
+        const tbody = document.getElementById("trans-body");
+        if (!tbody) return;
+
+        tbody.innerHTML = "";
+
+        if (transactions.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="5" class="text-center text-gray-500 p-4 rounded-xl shadow-inner">${getTranslation(
+            "no_data"
+          )}</td></tr>`;
+          return;
+        }
+
+        // Show latest 10 transactions
+        transactions.slice(0, 10).forEach((t) => {
+          const tr = document.createElement("tr");
+          const isIncome = t.type === "Income";
+          const typeClass = isIncome ? "type-income" : "type-expense";
+          const amountColor = isIncome ? "text-green-600" : "text-red-600";
+          const amountPrefix = isIncome ? "+" : "-";
+
+          const safeAmount = parseFloat(t.amount) || 0;
+          const currencySymbol = getTranslation("INR");
+
+          tr.className = typeClass;
+          tr.innerHTML = `
                     <td>${t.date}</td>
                     <td class="font-semibold text-gray-700">${t.desc}</td>
-                    <td><span class="px-2 py-1 rounded-full text-xs font-bold ${isIncome ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}">${getTranslation(t.category)}</span></td>
+                    <td><span class="px-2 py-1 rounded-full text-xs font-bold ${
+                      isIncome
+                        ? "bg-green-100 text-green-700"
+                        : "bg-red-100 text-red-700"
+                    }">${getTranslation(t.category)}</span></td>
                     <td>${getTranslation(t.type)}</td>
-                    <td class="font-bold ${amountColor} whitespace-nowrap">${amountPrefix} ${currencySymbol}${safeAmount.toFixed(2)}</td>
+                    <td class="font-bold ${amountColor} whitespace-nowrap">${amountPrefix} ${currencySymbol}${safeAmount.toFixed(
+            2
+          )}</td>
                 `;
-                tbody.appendChild(tr);
-            });
+          tbody.appendChild(tr);
+        });
+      }
+
+      // --- Main Filter Logic ---
+      function handleFilter() {
+        // Wait for data load
+        if (!window.allTransactions || !isAuthReady) return;
+
+        const fromDateStr = document.getElementById("from-date").value;
+        const toDateStr = document.getElementById("to-date").value;
+
+        const fromDate = fromDateStr ? new Date(fromDateStr) : null;
+        const toDate = toDateStr ? new Date(toDateStr) : null;
+
+        // 1. Filter transactions based on date range
+        const filteredTransactions = window.allTransactions.filter((t) => {
+          // Parse date string (YYYY-MM-DD) into a Date object
+          if (!t.date) return false;
+          const transactionDate = new Date(t.date);
+
+          const matchesFromDate = !fromDate || transactionDate >= fromDate;
+          // For 'To Date', include the entire day by comparing with the start of the next day
+          const matchesToDate = !toDate || transactionDate <= toDate;
+
+          return matchesFromDate && matchesToDate;
+        });
+
+        // 2. Re-process metrics and trends for the FILTERED set
+        const dashboardData = processDataForDashboard(filteredTransactions);
+
+        // 3. Update Metrics (Currency symbol fix applied here)
+        const currencySymbol = getTranslation("INR");
+
+        document.getElementById("total-income").textContent =
+          currencySymbol +
+          " " +
+          dashboardData.totalIncome.toLocaleString("en-IN", {
+            minimumFractionDigits: 2,
+          });
+        document.getElementById("total-expense").textContent =
+          currencySymbol +
+          " " +
+          dashboardData.totalExpense.toLocaleString("en-IN", {
+            minimumFractionDigits: 2,
+          });
+        document.getElementById("net-balance").textContent =
+          currencySymbol +
+          " " +
+          dashboardData.balance.toLocaleString("en-IN", {
+            minimumFractionDigits: 2,
+          });
+
+        const balanceEl = document.getElementById("net-balance");
+        const statusEl = document.getElementById("val-status");
+
+        if (dashboardData.balance >= 0) {
+          balanceEl.className = "metric-value text-green-600";
+          statusEl.textContent = getTranslation("healthy");
+          statusEl.className =
+            "text-xs font-bold text-green-600 uppercase tracking-wide";
+        } else {
+          balanceEl.className = "metric-value text-red-600";
+          statusEl.textContent = getTranslation("critical");
+          statusEl.className =
+            "text-xs font-bold text-red-600 uppercase tracking-wide";
         }
 
-        // --- Main Filter Logic ---
-        function handleFilter() {
-            // Wait for data load
-            if (!window.allTransactions || !isAuthReady) return;
+        // 4. Render Charts and Table
+        renderCharts(dashboardData);
+        renderTransactionTable(filteredTransactions);
+      }
 
-            const fromDateStr = document.getElementById('from-date').value;
-            const toDateStr = document.getElementById('to-date').value;
+      function logOut() {
+        localStorage.removeItem("isUserLoggedIn");
+        localStorage.removeItem("authToken");
+        localStorage.removeItem("userData");
+        window.location.href = "index.html";
+      }
 
-            const fromDate = fromDateStr ? new Date(fromDateStr) : null;
-            const toDate = toDateStr ? new Date(toDateStr) : null;
+      // --- Initialization ---
+      window.onload = async function () {
+        // Firebase Initialization
+        if (firebaseConfig.apiKey) {
+          const app = initializeApp(firebaseConfig);
+          db = getFirestore(app);
+          auth = getAuth(app);
 
-            // 1. Filter transactions based on date range
-            const filteredTransactions = window.allTransactions.filter(t => {
-                // Parse date string (YYYY-MM-DD) into a Date object
-                if (!t.date) return false;
-                const transactionDate = new Date(t.date);
-
-                const matchesFromDate = !fromDate || transactionDate >= fromDate;
-                // For 'To Date', include the entire day by comparing with the start of the next day
-                const matchesToDate = !toDate || transactionDate <= toDate;
-
-                return matchesFromDate && matchesToDate;
-            });
-
-            // 2. Re-process metrics and trends for the FILTERED set
-            const dashboardData = processDataForDashboard(filteredTransactions);
-
-            // 3. Update Metrics (Currency symbol fix applied here)
-            const currencySymbol = getTranslation('INR');
-
-            document.getElementById('total-income').textContent = currencySymbol + ' ' + dashboardData.totalIncome.toLocaleString('en-IN', { minimumFractionDigits: 2 });
-            document.getElementById('total-expense').textContent = currencySymbol + ' ' + dashboardData.totalExpense.toLocaleString('en-IN', { minimumFractionDigits: 2 });
-            document.getElementById('net-balance').textContent = currencySymbol + ' ' + dashboardData.balance.toLocaleString('en-IN', { minimumFractionDigits: 2 });
-
-            const balanceEl = document.getElementById('net-balance');
-            const statusEl = document.getElementById('val-status');
-
-            if (dashboardData.balance >= 0) {
-                balanceEl.className = "metric-value text-green-600";
-                statusEl.textContent = getTranslation('healthy');
-                statusEl.className = "text-xs font-bold text-green-600 uppercase tracking-wide";
+          // Authentication
+          try {
+            if (initialAuthToken) {
+              await signInWithCustomToken(auth, initialAuthToken);
             } else {
-                balanceEl.className = "metric-value text-red-600";
-                statusEl.textContent = getTranslation('critical');
-                statusEl.className = "text-xs font-bold text-red-600 uppercase tracking-wide";
+              await signInAnonymously(auth);
+            }
+          } catch (error) {
+            console.error("Firebase Auth Error:", error);
+          }
+
+          // Auth State Listener to ensure we have a userId before querying Firestore
+          onAuthStateChanged(auth, (user) => {
+            if (user) {
+              userId = user.uid;
+              isAuthReady = true;
+
+              // Set up data listeners only once auth is confirmed
+              setupRealtimeListeners();
+            } else {
+              userId = null;
+              isAuthReady = true;
+              console.log("Signed out or anonymous user.");
             }
 
-            // 4. Render Charts and Table
-            renderCharts(dashboardData);
-            renderTransactionTable(filteredTransactions);
+            // Set default date range (e.g., this month)
+            const today = formatDate(new Date());
+            const firstDayOfMonth = today.substring(0, 8) + "01";
+
+            document.getElementById("from-date").value = firstDayOfMonth;
+            document.getElementById("to-date").value = today;
+
+            // Initial content update (will trigger handleFilter if isAuthReady is true)
+            updateContent();
+
+            // Attach filter listeners
+            document
+              .getElementById("apply-filter-btn")
+              .addEventListener("click", handleFilter);
+          });
+        } else {
+          console.error(
+            "Firebase config not available. Cannot initialize Firestore."
+          );
+          isAuthReady = true; // Still allow UI updates to proceed even without data.
+          updateContent();
         }
-
-        // --- Initialization ---
-        window.onload = async function () {
-            // Firebase Initialization
-            if (firebaseConfig.apiKey) {
-                const app = initializeApp(firebaseConfig);
-                db = getFirestore(app);
-                auth = getAuth(app);
-
-                // Authentication
-                try {
-                    if (initialAuthToken) {
-                        await signInWithCustomToken(auth, initialAuthToken);
-                    } else {
-                        await signInAnonymously(auth);
-                    }
-                } catch (error) {
-                    console.error("Firebase Auth Error:", error);
-                }
-
-                // Auth State Listener to ensure we have a userId before querying Firestore
-                onAuthStateChanged(auth, (user) => {
-                    if (user) {
-                        userId = user.uid;
-                        isAuthReady = true;
-
-                        // Set up data listeners only once auth is confirmed
-                        setupRealtimeListeners();
-                    } else {
-                        userId = null;
-                        isAuthReady = true;
-                        console.log("Signed out or anonymous user.");
-                    }
-
-                    // Set default date range (e.g., this month)
-                    const today = formatDate(new Date());
-                    const firstDayOfMonth = today.substring(0, 8) + '01';
-
-                    document.getElementById('from-date').value = firstDayOfMonth;
-                    document.getElementById('to-date').value = today;
-
-                    // Initial content update (will trigger handleFilter if isAuthReady is true)
-                    updateContent();
-
-                    // Attach filter listeners
-                    document.getElementById('apply-filter-btn').addEventListener('click', handleFilter);
-                });
-            } else {
-                console.error("Firebase config not available. Cannot initialize Firestore.");
-                isAuthReady = true; // Still allow UI updates to proceed even without data.
-                updateContent();
-            }
-        };
+      };
     </script>
 
     <!-- HEADER -->
     <header>
-        <div class="max-w-7xl mx-auto w-full flex justify-between items-center">
-            <!-- Left: Back Button & Title -->
-            <div class="flex items-center space-x-4">
-                <!-- NOTE: 'accounting_system.html' is a placeholder link -->
-                <a href="accounting_system.html" class="primary-button bg-gray-100 text-gray-700 hover:bg-gray-200"
-                    data-lang-key="back_to_accounting">Back to Accounting</a>
-                <h1 class="text-xl font-bold" data-lang-key="page_title" style="color: var(--color-primary);">Financial
-                    Overview</h1>
-            </div>
-
-            <!-- Right: Language Switch -->
-            <div class="flex items-center space-x-2">
-                <select onchange="changeLanguage(this.value)" id="lang-select" class="form-input text-sm py-1">
-                    <option value="en">English</option>
-                    <option value="hi">हिन्दी</option>
-                    <option value="ur">اردو</option>
-                </select>
-                <button onclick="window.location.href='login.html'"
-                    class="text-sm font-semibold text-red-600 hover:text-red-800 transition-colors ml-4"
-                    data-lang-key="logout">Logout</button>
-            </div>
+      <div class="max-w-7xl mx-auto w-full flex justify-between items-center">
+        <!-- Left: Back Button & Title -->
+        <div class="flex items-center space-x-4">
+          <!-- NOTE: 'accounting_system.html' is a placeholder link -->
+          <a
+            href="accounting_system.html"
+            class="primary-button bg-gray-100 text-gray-700 hover:bg-gray-200"
+            data-lang-key="back_to_accounting"
+            >Back to Accounting</a
+          >
+          <h1
+            class="text-xl font-bold"
+            data-lang-key="page_title"
+            style="color: var(--color-primary)"
+          >
+            Financial Overview
+          </h1>
         </div>
+
+        <!-- Right: Language Switch -->
+        <div class="flex items-center space-x-2">
+          <select
+            onchange="changeLanguage(this.value)"
+            id="lang-select"
+            class="form-input text-sm py-1"
+          >
+            <option value="en">English</option>
+            <option value="hi">हिन्दी</option>
+            <option value="ur">اردو</option>
+          </select>
+          <button
+            onclick="logOut()"
+            class="text-sm font-semibold text-red-600 hover:text-red-800 transition-colors ml-4"
+            data-lang-key="logout"
+          >
+            Logout
+          </button>
+        </div>
+      </div>
     </header>
 
     <!-- MAIN CONTENT AREA -->
     <main class="max-w-7xl mx-auto w-full p-4 md:p-8">
+      <!-- Page Title -->
+      <h2
+        class="text-3xl font-bold text-gray-800 mb-6"
+        data-lang-key="page_title"
+      >
+        Financial Overview
+      </h2>
 
-        <!-- Page Title -->
-        <h2 class="text-3xl font-bold text-gray-800 mb-6" data-lang-key="page_title">Financial Overview</h2>
+      <!-- Filter Options -->
+      <div
+        class="flex flex-wrap items-center space-x-3 space-y-2 md:space-y-0 mb-8 bg-white p-4 rounded-xl shadow-lg"
+      >
+        <h4 class="text-sm font-semibold text-gray-700" data-lang-key="from">
+          From:
+        </h4>
+        <input type="date" id="from-date" class="form-input text-sm" />
 
-        <!-- Filter Options -->
-        <div
-            class="flex flex-wrap items-center space-x-3 space-y-2 md:space-y-0 mb-8 bg-white p-4 rounded-xl shadow-lg">
-            <h4 class="text-sm font-semibold text-gray-700" data-lang-key="from">From:</h4>
-            <input type="date" id="from-date" class="form-input text-sm">
+        <h4 class="text-sm font-semibold text-gray-700" data-lang-key="to">
+          To:
+        </h4>
+        <input type="date" id="to-date" class="form-input text-sm" />
 
-            <h4 class="text-sm font-semibold text-gray-700" data-lang-key="to">To:</h4>
-            <input type="date" id="to-date" class="form-input text-sm">
+        <button
+          id="apply-filter-btn"
+          class="primary-button text-sm flex-shrink-0"
+          data-lang-key="apply"
+        >
+          Apply
+        </button>
+      </div>
 
-            <button id="apply-filter-btn" class="primary-button text-sm flex-shrink-0"
-                data-lang-key="apply">Apply</button>
+      <!-- Top Metrics Cards -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+        <!-- Total Income -->
+        <div class="metric-card border-l-4 border-green-500">
+          <h3
+            class="text-sm uppercase text-gray-500 font-bold"
+            data-lang-key="total_income"
+          >
+            Total Income
+          </h3>
+          <p id="total-income" class="metric-value text-green-600">₹ 0.00</p>
+          <!-- Background Icon (Heart) -->
+          <svg
+            class="metric-icon text-green-500"
+            xmlns="http://www.w3.org/2000/svg"
+            width="1em"
+            height="1em"
+            viewBox="0 0 24 24"
+          >
+            <path
+              fill="currentColor"
+              d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5C2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3C19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54z"
+            />
+          </svg>
         </div>
-
-
-        <!-- Top Metrics Cards -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-            <!-- Total Income -->
-            <div class="metric-card border-l-4 border-green-500">
-                <h3 class="text-sm uppercase text-gray-500 font-bold" data-lang-key="total_income">Total Income</h3>
-                <p id="total-income" class="metric-value text-green-600">₹ 0.00</p>
-                <!-- Background Icon (Heart) -->
-                <svg class="metric-icon text-green-500" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"
-                    viewBox="0 0 24 24">
-                    <path fill="currentColor"
-                        d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5C2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3C19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54z" />
-                </svg>
-            </div>
-            <!-- Total Expense -->
-            <div class="metric-card border-l-4 border-red-500">
-                <h3 class="text-sm uppercase text-gray-500 font-bold" data-lang-key="total_expense">Total Expense</h3>
-                <p id="total-expense" class="metric-value text-red-600">₹ 0.00</p>
-                <!-- Background Icon (Alert) -->
-                <svg class="metric-icon text-red-500" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"
-                    viewBox="0 0 24 24">
-                    <path fill="currentColor"
-                        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10s10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" />
-                </svg>
-            </div>
-            <!-- Net Balance -->
-            <div class="metric-card border-l-4 border-blue-500">
-                <div class="flex justify-between items-start">
-                    <h3 class="text-sm uppercase text-gray-500 font-bold" data-lang-key="net_balance">Net Balance</h3>
-                    <div class="flex flex-col items-end">
-                        <span class="text-xs text-gray-400" data-lang-key="cash_flow">Cash Flow Health:</span>
-                        <span id="val-status" class="text-xs font-bold uppercase tracking-wide">...</span>
-                    </div>
-                </div>
-                <p id="net-balance" class="metric-value">₹ 0.00</p>
-                <!-- Background Icon (Ledger) -->
-                <svg class="metric-icon text-blue-500" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"
-                    viewBox="0 0 24 24">
-                    <path fill="currentColor"
-                        d="M5 21h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2zm2-6h2v2H7zm10-6H7v2h10zm0 4H7v2h10zm0-8H7v2h10z" />
-                </svg>
-            </div>
+        <!-- Total Expense -->
+        <div class="metric-card border-l-4 border-red-500">
+          <h3
+            class="text-sm uppercase text-gray-500 font-bold"
+            data-lang-key="total_expense"
+          >
+            Total Expense
+          </h3>
+          <p id="total-expense" class="metric-value text-red-600">₹ 0.00</p>
+          <!-- Background Icon (Alert) -->
+          <svg
+            class="metric-icon text-red-500"
+            xmlns="http://www.w3.org/2000/svg"
+            width="1em"
+            height="1em"
+            viewBox="0 0 24 24"
+          >
+            <path
+              fill="currentColor"
+              d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10s10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"
+            />
+          </svg>
         </div>
-
-        <!-- Charts Section -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-
-            <!-- Bar Chart (Income vs Expense) -->
-            <div class="chart-container lg:col-span-2">
-                <h3 class="text-lg font-bold text-gray-700 mb-4" data-lang-key="income_vs_expense">Income vs Expense
-                    Trend</h3>
-                <div class="h-80 md:h-96">
-                    <canvas id="bar-chart"></canvas>
-                </div>
-            </div>
-
-            <!-- Donut Chart (Expense Breakdown) -->
-            <div class="chart-container">
-                <h3 class="text-lg font-bold text-gray-700 mb-4" data-lang-key="expense_breakdown">Expense Breakdown
-                </h3>
-                <div id="donut-chart-container" class="h-80 md:h-96 flex items-center justify-center">
-                    <canvas id="donut-chart"></canvas>
-                </div>
-            </div>
-        </div>
-
-        <!-- Recent Transactions -->
-        <div class="bg-white rounded-xl shadow-lg p-6">
-            <h3 class="text-lg font-bold text-gray-700 mb-6" data-lang-key="recent_transactions">Recent Transactions
+        <!-- Net Balance -->
+        <div class="metric-card border-l-4 border-blue-500">
+          <div class="flex justify-between items-start">
+            <h3
+              class="text-sm uppercase text-gray-500 font-bold"
+              data-lang-key="net_balance"
+            >
+              Net Balance
             </h3>
-            <div class="overflow-x-auto">
-                <table class="trans-table">
-                    <thead>
-                        <tr>
-                            <th data-lang-key="date">Date</th>
-                            <th data-lang-key="description">Description</th>
-                            <th data-lang-key="category">Category</th>
-                            <th data-lang-key="type">Type</th>
-                            <th data-lang-key="amount">Amount</th>
-                        </tr>
-                    </thead>
-                    <tbody id="trans-body">
-                        <!-- Data will be injected here via JS -->
-                        <tr>
-                            <td colspan="5" class="text-center text-gray-500 p-4 rounded-xl shadow-inner">Loading
-                                data...</td>
-                        </tr>
-                    </tbody>
-                </table>
+            <div class="flex flex-col items-end">
+              <span class="text-xs text-gray-400" data-lang-key="cash_flow"
+                >Cash Flow Health:</span
+              >
+              <span
+                id="val-status"
+                class="text-xs font-bold uppercase tracking-wide"
+                >...</span
+              >
             </div>
+          </div>
+          <p id="net-balance" class="metric-value">₹ 0.00</p>
+          <!-- Background Icon (Ledger) -->
+          <svg
+            class="metric-icon text-blue-500"
+            xmlns="http://www.w3.org/2000/svg"
+            width="1em"
+            height="1em"
+            viewBox="0 0 24 24"
+          >
+            <path
+              fill="currentColor"
+              d="M5 21h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2zm2-6h2v2H7zm10-6H7v2h10zm0 4H7v2h10zm0-8H7v2h10z"
+            />
+          </svg>
+        </div>
+      </div>
+
+      <!-- Charts Section -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+        <!-- Bar Chart (Income vs Expense) -->
+        <div class="chart-container lg:col-span-2">
+          <h3
+            class="text-lg font-bold text-gray-700 mb-4"
+            data-lang-key="income_vs_expense"
+          >
+            Income vs Expense Trend
+          </h3>
+          <div class="h-80 md:h-96">
+            <canvas id="bar-chart"></canvas>
+          </div>
         </div>
 
+        <!-- Donut Chart (Expense Breakdown) -->
+        <div class="chart-container">
+          <h3
+            class="text-lg font-bold text-gray-700 mb-4"
+            data-lang-key="expense_breakdown"
+          >
+            Expense Breakdown
+          </h3>
+          <div
+            id="donut-chart-container"
+            class="h-80 md:h-96 flex items-center justify-center"
+          >
+            <canvas id="donut-chart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Transactions -->
+      <div class="bg-white rounded-xl shadow-lg p-6">
+        <h3
+          class="text-lg font-bold text-gray-700 mb-6"
+          data-lang-key="recent_transactions"
+        >
+          Recent Transactions
+        </h3>
+        <div class="overflow-x-auto">
+          <table class="trans-table">
+            <thead>
+              <tr>
+                <th data-lang-key="date">Date</th>
+                <th data-lang-key="description">Description</th>
+                <th data-lang-key="category">Category</th>
+                <th data-lang-key="type">Type</th>
+                <th data-lang-key="amount">Amount</th>
+              </tr>
+            </thead>
+            <tbody id="trans-body">
+              <!-- Data will be injected here via JS -->
+              <tr>
+                <td
+                  colspan="5"
+                  class="text-center text-gray-500 p-4 rounded-xl shadow-inner"
+                >
+                  Loading data...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </main>
-
-</body>
-
+  </body>
 </html>
